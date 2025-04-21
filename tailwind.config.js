@@ -5,7 +5,73 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        // 메인 컬러 설정
+        primary: {
+          light: '#AED581', // 밝은 녹색
+          DEFAULT: '#8BC34A', // 기본 녹색
+          dark: '#689F38', // 어두운 녹색
+        },
+        secondary: {
+          light: '#FFF59D', // 밝은 노란색
+          DEFAULT: '#FFEB3B', // 기본 노란색
+          dark: '#FBC02D', // 어두운 노란색
+        },
+        // 배경색 및 텍스트 색상
+        background: {
+          light: '#F1F8E9', // 매우 밝은 녹색 배경
+          DEFAULT: '#E8F5E9', // 기본 배경
+          content: '#FFFFFF', // 콘텐츠 배경
+        },
+        text: {
+          primary: '#2E7D32', // 기본 텍스트 (녹색)
+          secondary: '#33691E', // 보조 텍스트
+          dark: '#1B5E20', // 어두운 텍스트
+          light: '#FFFFFF', // 밝은 배경 위 텍스트
+        },
+        // 상태 색상
+        status: {
+          success: '#4CAF50', // 성공
+          warning: '#FFC107', // 경고
+          danger: '#F44336', // 위험
+        },
+      },
+      fontSize: {
+        // 고령층 사용자를 위한 큰 폰트 사이즈
+        '2xl': '1.75rem',   // 28px
+        '3xl': '2rem',      // 32px
+        '4xl': '2.5rem',    // 40px
+        '5xl': '3rem',      // 48px
+      },
+      borderRadius: {
+        // 부드러운 모서리
+        'lg': '1rem',       // 16px
+        'xl': '1.5rem',     // 24px
+      },
+      boxShadow: {
+        // 버튼 및 카드 그림자
+        'button': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        'card': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+      },
+      animation: {
+        // 애니메이션 (천천히 움직이는 효과)
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      },
+    },
+    // 고령층 사용자를 위한 기본 설정
+    fontFamily: {
+      sans: [
+        'system-ui',
+        '-apple-system',
+        'BlinkMacSystemFont',
+        'Segoe UI',
+        'Roboto',
+        'Helvetica Neue',
+        'Arial',
+        'sans-serif',
+      ],
+    },
   },
   plugins: [],
 }
