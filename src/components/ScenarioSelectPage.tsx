@@ -12,7 +12,7 @@ const ScenarioSelectPage = () => {
                 <div className="w-3/5 bg-green-500 border-8 border-green-700 
                 rounded-2xl px-14 py-[25px] mb-0">
                 <h1 className="text-4xl font-bold text-white text-center">
-                    원하는 안전 교육 게임을 선택하세요
+                    원하는 안전교육 게임을 선택하세요
                 </h1>
                 </div>
                 <ScenarioList />
