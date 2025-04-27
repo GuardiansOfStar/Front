@@ -62,7 +62,6 @@ module.exports = {
     // 고령층 사용자를 위한 기본 설정
     fontFamily: {
       sans: [
-        'Pretendard Variable', /*추가가했는데 바뀌는게 없다... */
         'system-ui',
         '-apple-system',
         'BlinkMacSystemFont',
