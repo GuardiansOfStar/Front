@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+    "target": "ES2022", /*ts를 js로 변환할 때 어떤 버전의 js를 출력할지. 버전이 높을수록 새로운 기능 사용 가능능*/
+    "lib": ["ES2023"],
+    "module": "ESNext", /*작성하는 앱의 대상을 프엔으로 할건지, 백엔드로 할 건지에 따라 달라진다. 프엔이니 ESNext*/
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
+  },
+  "include": ["vite.config.ts"]
+}
