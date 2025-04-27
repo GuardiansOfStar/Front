@@ -4,7 +4,8 @@ const Setting = () => {
             src="/setting.png"
             alt="setting"
             className="absolute top-5 right-10 
-            w-[100px] h-auto"
+            w-[100px] h-auto
+            z-50"
         />
     );
 };
