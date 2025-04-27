@@ -5,15 +5,23 @@ const ScenarioItem = ({ scenario }: { scenario: { id: number; title: string; ima
 
     return (
         <div
-        className="flex-shrink-0 w-64 h-80 bg-white 
-        rounded-lg 
-        shadow-lg 
-        scroll-snap-align-center 
-        cursor-pointer"
-        onClick={() => navigate(`/map?scenario=${scenario.id}`)}
+            className="cursor-pointer"
+            onClick={() => navigate(`/map?scenario=${scenario.id}`)}
         >
-        <img src={scenario.image} alt={scenario.title} className="w-full h-2/3 object-cover rounded-t-lg" />
-        <div className="p-4 text-center font-bold">{scenario.title}</div>
+            <div className="flex flex-col items-center">
+                {/* 이미지 */}
+                <div className="w-64 aspect-[2/3]">
+                    <img 
+                    src={scenario.image} 
+                    alt={scenario.title} 
+                    className="w-full h-full object-contain rounded-lg block"
+                    />
+                
+                <div className="w-64 bg-black bg-opacity-40 text-white text-center py-2 font-bold">
+                    {scenario.title}
+                </div>
+                </div>
+            </div>
         </div>
     );
 };
