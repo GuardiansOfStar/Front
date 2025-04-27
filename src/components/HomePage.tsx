@@ -20,7 +20,7 @@ const HomePage = () => {
       <h2 className="absolute bottom-[50px] right-[50px]
       text-3xl font-bold text-gray-400 
       z-10">
-        별따러가자       한양대 불가사리팀 
+        별따러가자 & 한양대 불가사리팀 
       </h2>
     </div>
   );
