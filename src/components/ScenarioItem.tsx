@@ -9,26 +9,24 @@ const ScenarioItem = ({ scenario }: { scenario: { id: number; title: string; ima
         setIsSelected(true); // 이미지 확대 시작
         setTimeout(() => {
             navigate(`/map?scenario=${scenario.id}`); // 2초 후 페이지 이동!
-        }, 2000);
+        }, 1500);
     };
 
     return (
         <div className="flex flex-col items-center">
-            {/* 이미지 */}
-            <div className="w-64 aspect-[2/3]">
-                <img 
-                    src={scenario.image} 
-                    alt={scenario.title} 
-                    onClick={handleClick}
-                    className={`w-full h-full object-contain rounded-lg block 
-                    cursor-pointer 
-                    transition-transform duration-[2000ms] 
-                    ${isSelected ? 'scale-110' : ''}`}
-                />
-                <div className="w-64 bg-black bg-opacity-40 text-white text-center py-2 font-bold">
-                    {scenario.title}
-                </div>
-            </div>            
+            <img 
+                src={scenario.image} 
+                alt={scenario.title} 
+                onClick={handleClick}
+                className={`w-64 object-contain 
+                rounded-lg cursor-pointer 
+                transition-transform duration-[1500ms] 
+                ${isSelected ? 'scale-110 border-4 border-red-500' : 'border-4 border-transparent'}`}
+            />
+            <div className="w-64 bg-black bg-opacity-40 text-white text-center 
+            rounded-lg py-2 font-bold mt-5">
+                {scenario.title}
+            </div>
         </div>
     );
 };
