@@ -30,11 +30,11 @@ const ScenarioItem = ({ scenario, isCenter }: {
                 cursor-pointer 
                 transition-transform duration-[1500ms]
                 ${isCenter ? 'w-84 h-60' : 'w-64'} 
-                ${isSelected ? 'border-4 border-red-500' : 'border-4 border-transparent'}`}
+                ${isSelected ? 'border-8 border-green-700' : 'border-4 border-transparent'}`}
             />
             <div className={`text-center bg-black bg-opacity-60 text-white 
                 rounded-lg py-2 font-bold mt-5 
-                ${isCenter ? 'text-xl w-80' : 'text-lg w-64'}`}>
+                ${isCenter ? 'text-xl w-80 bg-green-600 bg-opacity-100' : 'text-lg w-64'}`}>
                 {scenario.title}
             </div>
         </div>
