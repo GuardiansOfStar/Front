@@ -16,7 +16,7 @@ body {
     transform: translate(0, -50%);/* 현재 위치(좌측 중앙)에서 시작 */
   }
   100% {
-    transform: translate(15vw, 12vh);  /* 중앙 하단 */
+    transform: translate(15vw, 11vh);  /* 중앙 하단 */
   }
 }
 .animate-move-diagonal {

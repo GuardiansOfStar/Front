@@ -3,7 +3,7 @@ import ScenarioItem from "./ScenarioItem";
 const scenarios = [
     { id: 2, title: '시내로 나가기', image: '/scenario2.png' },
     { id: 1, title: '수확하러 가기', image: '/scenario1.png' },
-    { id: 3, title: '시장 들리기', image: '/scenario3.png' }, // 시나리오 3개 임시
+    { id: 3, title: '시장 들리기', image: '/scenario3.png' }, 
 ];
 
 const ScenarioList = () => {
