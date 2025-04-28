@@ -10,18 +10,19 @@ const HomePage = () => {
     <div className="relative w-full h-screen overflow-hidden">
       <Background />
       <Setting/>
-      <h1 className="absolute top-[150px] left-1/2 transform -translate-x-1/2
-      text-7xl font-bold text-green-600 
-      drop-shadow-lg z-10">
-        별 따라 안전 운전
-      </h1>
+      <img 
+        src="/title.png"
+        alt="제목"
+        className="absolute top-3/7 left-1/2 transform -translate-x-1/2
+        drop-shadow-lg z-10"
+      />
       <CharacterAnimation />
       <StartButton />
-      <h2 className="absolute bottom-[50px] right-[50px]
-      text-2xl font-bold text-gray-400 
-      drop-shadow-lg z-10">
-        별따러가자 & 한양대 불가사리팀 
-      </h2>
+      <img 
+        src="/team_name.png"
+        alt="팀이름"
+        className="absolute bottom-[50px] right-[50px] z-10"
+      />
     </div>
   );
 };

@@ -10,8 +10,8 @@ const StartButton = () => {
         src="/start_button.png"
         alt="시작하기 버튼"
         onClick={() => navigate('/scenarios')}
-        className="absolute bottom-1/4 left-1/2 transform -translate-x-1/2
-        w-[350px] h-auto 
+        className="absolute bottom-[15%] left-1/2 transform -translate-x-1/2
+        w-[400px] h-auto 
         cursor-pointer z-10 
         hover:scale-105 transition-transform duration-300"
         />
