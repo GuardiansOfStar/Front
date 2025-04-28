@@ -1,11 +1,18 @@
-import './App.css'
-import GameComponent from './components/game/GameComponent';
+// src/App.tsx
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import HomePage from './components/HomePage';
+import ScenarioSelectPage from './components/ScenarioSelectPage';
+import MapPage from './components/MapPage';
 
 function App() {
   return (
-    <div className="w-full h-screen overflow-hidden">
-      <GameComponent />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/scenarios" element={<ScenarioSelectPage />} />
+        <Route path="/map" element={<MapPage />} />
+      </Routes>
+    </Router>
   );
 }
 
