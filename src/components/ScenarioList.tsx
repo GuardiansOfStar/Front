@@ -9,11 +9,16 @@ const scenarios = [
 const ScenarioList = () => {
     return (
         <div className="flex space-x-16 px-10 justify-center mt-16">
-            {scenarios.map((scenario) => (
-                <ScenarioItem key={scenario.id} scenario={scenario} />
+            {scenarios.map((scenario, index) => (
+                <ScenarioItem 
+                    key={scenario.id} 
+                    scenario={scenario} 
+                    isCenter={index === 1} // 두 번째 시나리오만 true
+                />
             ))}
         </div>
     );
 };
+
 
 export default ScenarioList;

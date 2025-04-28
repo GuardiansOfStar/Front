@@ -13,7 +13,7 @@ const CharacterAnimation = () => {
         <img
         src="/star_character.png"
         alt="캐릭터"
-        className={`absolute top-1/2 left-[200px] transform -translate-y-1/2
+        className={`absolute top-1/2 left-[250px] transform -translate-y-1/2
         w-[300px] h-auto z-50
         ${animate ? 'animate-move-diagonal' : ''}`}
         />
