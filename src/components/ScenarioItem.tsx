@@ -6,10 +6,8 @@ const ScenarioItem = ({ scenario, isCenter }: {
     isCenter?: boolean 
     }) => {
     const navigate = useNavigate();
-    const [isSelected, setIsSelected] = useState(false); // 확대 상태 관리
 
     const handleClick = () => {
-        setIsSelected(true); // 이미지 확대 시작
         setTimeout(() => {
             navigate(`/map?scenario=${scenario.id}`); // 1.5초 후 페이지 이동!
         }, 1500);
@@ -29,12 +27,11 @@ const ScenarioItem = ({ scenario, isCenter }: {
                 className={`object-contain rounded-lg 
                 cursor-pointer 
                 transition-transform duration-[1500ms]
-                ${isCenter ? 'w-84 h-60' : 'w-64'} 
-                ${isSelected ? 'border-8 border-green-700' : 'border-4 border-transparent'}`}
-            />
+                ${isCenter ? 'w-84 h-60 border-8 border-green-700' : 'w-64'} 
+            `}/>
             <div className={`text-center bg-black bg-opacity-60 text-white 
                 rounded-lg py-2 font-bold mt-5 
-                ${isCenter ? 'text-xl w-80 bg-green-600 bg-opacity-100' : 'text-lg w-64'}`}>
+                ${isCenter ? 'text-xl w-80 bg-green-600' : 'text-lg w-60'}`}>
                 {scenario.title}
             </div>
         </div>
