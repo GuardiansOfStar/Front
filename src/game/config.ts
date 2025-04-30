@@ -4,10 +4,10 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
   // 전체 화면을 사용하도록 설정
   scale: {
-    mode: Phaser.Scale.RESIZE,
+    mode: Phaser.Scale.FIT,
+    parent: 'game-container',
     width: '100%',
     height: '100%',
-    parent: 'game-container',
     autoCenter: Phaser.Scale.CENTER_BOTH
   },
   physics: {
