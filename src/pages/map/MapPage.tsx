@@ -1,4 +1,4 @@
-import map from 'assets/images/map.png'
+const map = '/assets/images/map.png'
 
 const MapPage = () => {
     return (

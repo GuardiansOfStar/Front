@@ -1,4 +1,4 @@
-import back_button from 'assets/images/back_button.png'
+const back_button = '/assets/images/back_button.png'
 
 const BackButton = () => {
     const handleBack = () => {

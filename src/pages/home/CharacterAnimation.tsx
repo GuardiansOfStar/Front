@@ -1,6 +1,6 @@
 // src/components/CharacterAnimation.tsx
 import { useEffect, useState } from 'react';
-import star_character from 'assets/images/star_character.png'
+const star_character = '/assets/images/star_character.png'
 
 const CharacterAnimation = () => {
     const [animate, setAnimate] = useState(true);

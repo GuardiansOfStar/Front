@@ -1,4 +1,4 @@
-import setting from 'assets/images/setting.png'
+const setting = '/assets/images/setting.png'
 
 const Setting = () => {
     return (
