@@ -1,8 +1,8 @@
 // src/pages/HomePage.tsx
 import Background from '../../components/ui/Background';
 import CharacterAnimation from './CharacterAnimation';
-import Setting from './Setting';
-import StartButton from './StartButton';
+import Setting from '../../components/ui/SettingButton';
+import StartButton from '../../components/ui/StartButton';
 
 const title = '/assets/images/title.png';
 const team_name = '/assets/images/team_name.png'
