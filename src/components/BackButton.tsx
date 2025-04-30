@@ -1,3 +1,5 @@
+import back_button from 'assets/images/back_button.png'
+
 const BackButton = () => {
     const handleBack = () => {
         window.history.back();  // 브라우저 히스토리 강제 뒤로가기
@@ -5,7 +7,7 @@ const BackButton = () => {
 
     return (
         <img 
-        src="/back_button.png" 
+        src={back_button} 
         alt="뒤로가기"
         onClick={handleBack}
         className="absolute top-4 left-4 

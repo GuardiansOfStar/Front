@@ -1,8 +1,8 @@
 // src/App.tsx
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import HomePage from './components/HomePage';
-import ScenarioSelectPage from './components/ScenarioSelectPage';
-import MapPage from './components/MapPage';
+import HomePage from './pages/home/HomePage';
+import ScenarioSelectPage from './pages/scenarioSelect/ScenarioSelectPage';
+import MapPage from './pages/map/MapPage';
 
 function App() {
   return (
