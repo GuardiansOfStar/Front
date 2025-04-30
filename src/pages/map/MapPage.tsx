@@ -1,3 +1,5 @@
+import map from 'assets/images/map.png'
+
 const MapPage = () => {
     return (
         <div 
@@ -5,7 +7,7 @@ const MapPage = () => {
             style={{ backgroundColor: '#8AB948' }} // 배경색 설정
         >
             <img
-                src="/map.png"  
+                src={map} 
                 alt="지도"
                 className="w-1/2 h-auto 
                 "

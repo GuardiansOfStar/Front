@@ -1,7 +1,7 @@
 // src/pages/ScenarioSelectPage.tsx
 import ScenarioList from './ScenarioList';
-import Background from './Background';
-import BackButton from './BackButton';
+import Background from '../../components/Background';
+import BackButton from '../../components/BackButton';
 
 const ScenarioSelectPage = () => {
     return (

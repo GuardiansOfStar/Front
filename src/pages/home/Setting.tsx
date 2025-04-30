@@ -1,7 +1,9 @@
+import setting from 'assets/images/setting.png'
+
 const Setting = () => {
     return (
         <img
-            src="/setting.png"
+            src={setting}
             alt="setting"
             className="absolute top-5 right-10 
             w-[100px] h-auto

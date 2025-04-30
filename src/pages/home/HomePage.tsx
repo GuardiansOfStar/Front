@@ -1,9 +1,12 @@
 // src/pages/HomePage.tsx
-import Background from './Background';
+import Background from '../../components/Background';
 import CharacterAnimation from './CharacterAnimation';
 import Setting from './Setting';
-//import CharacterAnimation from './CharacterAnimation';
 import StartButton from './StartButton';
+
+import title from 'assets/images/title.png';
+import team_name from 'assets/images/team_name.png';
+
 
 const HomePage = () => {
   return (
@@ -11,7 +14,7 @@ const HomePage = () => {
       <Background />
       <Setting/>
       <img 
-        src="/title.png"
+        src={title}
         alt="제목"
         className="absolute top-3/7 left-1/2 transform -translate-x-1/2
         drop-shadow-lg z-10"
@@ -19,7 +22,7 @@ const HomePage = () => {
       <CharacterAnimation />
       <StartButton />
       <img 
-        src="/team_name.png"
+        src={team_name}
         alt="팀이름"
         className="absolute bottom-[50px] right-[50px] z-10"
       />
