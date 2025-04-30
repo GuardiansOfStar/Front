@@ -22,7 +22,7 @@ const ScenarioItem = ({
 
     const handleClick = () => {
         setTimeout(() => {
-        navigate(`/map?scenario=${scenario.id}`); // 1초 후 페이지 이동
+        navigate(`/prologue?scenario=${scenario.id}`); // 1초 후 프롤로그 페이지로 이동
         }, 1000);
     };
 

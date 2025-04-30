@@ -1,4 +1,4 @@
-const map = '/assets/images/map.png'
+const map = '/assets/images/scenario1_full_map.png'
 
 const MapPage = () => {
     return (

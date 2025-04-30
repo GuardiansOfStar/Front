@@ -4,6 +4,9 @@ import AspectRatioContainer from './components/layout/AspectRatioContainer';
 import HomePage from './pages/home/HomePage';
 import ScenarioSelectPage from './pages/scenarioSelect/ScenarioSelectPage';
 import MapPage from './pages/map/MapPage';
+import ProloguePage from './pages/prologue/ProloguePage';
+import DrivingPrepPage from './pages/driving/DrivingPrepPage';
+import QuestPage from './pages/quest/QuestPage';
 
 function App() {
   return (
@@ -13,6 +16,9 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/scenarios" element={<ScenarioSelectPage />} />
           <Route path="/map" element={<MapPage />} />
+          <Route path="/prologue" element={<ProloguePage />} />
+          <Route path="/driving-prep" element={<DrivingPrepPage />} />
+          <Route path="/quest" element={<QuestPage />} />
         </Routes>
       </AspectRatioContainer>
     </Router>
