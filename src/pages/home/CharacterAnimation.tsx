@@ -14,8 +14,8 @@ const CharacterAnimation = () => {
         <img
         src={star_character}
         alt="캐릭터"
-        className={`absolute top-1/2 left-[230px] transform -translate-y-1/2
-        w-[300px] h-auto z-50
+        className={`absolute top-1/2 left-[10%] transform -translate-y-1/2
+        w-[20%] h-auto z-20
         ${animate ? 'animate-move-diagonal' : ''}`}
         />
     );
