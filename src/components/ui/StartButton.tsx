@@ -1,6 +1,6 @@
 // src/components/StartButton.tsx
 import { useNavigate } from 'react-router-dom';
-import start_button from 'assets/images/start_button.png'
+const start_button = '/assets/images/start_button.png'
 
 const StartButton = () => {
     const navigate = useNavigate();

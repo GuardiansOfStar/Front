@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 
-import scenario1 from 'assets/images/scenario1.png';
-import scenario2 from 'assets/images/scenario2.png';
-import scenario3 from 'assets/images/scenario3.png';
+const scenario1 = '/assets/images/scenario1.png'
+const scenario2 = '/assets/images/scenario2.png'
+const scenario3 = '/assets/images/scenario3.png'
 
 // id에 따라 이미지 매핑
 const imageMap: Record<number, string> = {
@@ -22,7 +22,7 @@ const ScenarioItem = ({
 
     const handleClick = () => {
         setTimeout(() => {
-        navigate(`/map?scenario=${scenario.id}`); // 1초 후 페이지 이동
+        navigate(`/prologue?scenario=${scenario.id}`); // 1초 후 프롤로그 페이지로 이동
         }, 1000);
     };
 
