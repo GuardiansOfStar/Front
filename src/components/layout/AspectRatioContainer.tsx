@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 interface AspectRatioContainerProps {
   children: ReactNode;
-  ratio?: '16/10' | '4/3' | '16/9';
+  ratio?: '16/10' | '4/3' | '16/9' | '5/4';
 }
 
 const AspectRatioContainer = ({ children, ratio = '16/10' }: AspectRatioContainerProps) => {
