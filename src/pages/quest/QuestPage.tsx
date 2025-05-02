@@ -13,7 +13,7 @@ const successCircle = '/assets/images/success_circle.png';
 const failX = '/assets/images/fail_x.png';
 const homeButton = '/assets/images/home_button.png';
 const scoreBackground = '/assets/images/score_background.png';
-const oldManWithHelmet = '/assets/images/character_with_helmet.png'; // 헬멧 쓴 노인 이미지
+const oldManWithHelmet = '/assets/images/character_with_helmet.png';
 
 // 퀘스트 타입 정의
 interface Quest {
@@ -28,7 +28,7 @@ interface Quest {
   }[];
 }
 
-// 퀘스트 1 데이터
+// Quest 1 데이터
 const quest1: Quest = {
   id: '1',
   title: '모자 선택하기',
@@ -60,7 +60,7 @@ const QuestPage = () => {
     setScenarioId(sId);
     setQuestId(qId);
   }, [location]);
-  
+
   // 옵션 선택 핸들러
   const handleOptionSelect = (optionId: string) => {
     setSelectedOption(optionId);
@@ -70,7 +70,7 @@ const QuestPage = () => {
     const option = quest1.options.find(opt => opt.id === optionId);
     if (option) {
       setIsCorrect(option.isCorrect);
-      
+
       if (!option.isCorrect) {
         // 오답인 경우, 해당 옵션을 목록에서 제거
         setRemainingOptions(prev => prev.filter(opt => opt.id !== optionId));
@@ -84,7 +84,7 @@ const QuestPage = () => {
         // 정답인 경우, 정답 화면 표시
         setTimeout(() => {
           setShowCorrectScreen(true);
-          
+
           // 4초 후 점수 화면 표시 후 다음 퀘스트로 이동
           setTimeout(() => {
             setShowScore(true);
@@ -97,7 +97,7 @@ const QuestPage = () => {
       }
     }
   };
-  
+
   // 홈으로 이동 핸들러
   const handleGoHome = () => {
     navigate('/');
@@ -111,7 +111,7 @@ const QuestPage = () => {
         alt="주행 전 배경"
         className="absolute w-full h-full object-cover"
       />
-      
+
       {/* 헤더 영역 */}
       <div className="absolute top-4 right-4 z-10">
         <img
@@ -122,7 +122,7 @@ const QuestPage = () => {
         />
       </div>
       <BackButton />
-      
+
       {/* 점수 화면 */}
       {showScore && (
         <div className="absolute inset-0 flex items-center justify-center z-30 bg-black bg-opacity-50">
@@ -138,7 +138,7 @@ const QuestPage = () => {
           </div>
         </div>
       )}
-      
+
       {/* 정답 화면 */}
       {showCorrectScreen ? (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -149,10 +149,10 @@ const QuestPage = () => {
               className="w-full h-full object-cover"
             />
           </div>
-          
+
           <div className="relative z-10 flex flex-col items-center">
             <h2 className="text-4xl font-bold mb-4">정답입니다!</h2>
-            
+
             <div className="relative">
               <div className="w-64 h-64 rounded-full bg-green-600 flex items-center justify-center">
                 <img
@@ -162,7 +162,6 @@ const QuestPage = () => {
                 />
               </div>
             </div>
-            
             <div className="mt-8 bg-white bg-opacity-90 rounded-xl p-6 max-w-lg">
               <p className="text-2xl text-center text-green-800">
                 이륜차 운전을 할 때는 혹시 모를 사고에 대비해<br />
@@ -181,7 +180,7 @@ const QuestPage = () => {
             <p className="text-2xl text-center mb-8">
               {quest1.description}
             </p>
-            
+
             {/* 캐릭터 표시 */}
             <div className="flex justify-center mb-8">
               <img

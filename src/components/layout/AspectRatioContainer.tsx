@@ -2,10 +2,10 @@ import { ReactNode } from 'react';
 
 interface AspectRatioContainerProps {
   children: ReactNode;
-  ratio?: '5/4' | '4/3' | '16/9';
+  ratio?: '16/10' | '4/3' | '16/9';
 }
 
-const AspectRatioContainer = ({ children, ratio = '5/4' }: AspectRatioContainerProps) => {
+const AspectRatioContainer = ({ children, ratio = '16/10' }: AspectRatioContainerProps) => {
   return (
     <div className="w-full h-screen flex items-center justify-center bg-gray-100">
       <div 
