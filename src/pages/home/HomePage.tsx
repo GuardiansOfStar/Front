@@ -10,7 +10,7 @@ import team_name from 'assets/images/team_name.png';
 const HomePage = () => {
   return (
     <div className="relative h-full aspect-[8/5] max-w-[1300px] mx-auto overflow-hidden">
-      {/* 화면 높이에 맞춰서 비율을 유지하도록 설정 */}
+      {/* 화면 높이에 맞춰서 비율을 유지 */}
 
       <Background />
       <Setting/>
