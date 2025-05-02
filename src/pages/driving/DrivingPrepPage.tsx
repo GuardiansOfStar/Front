@@ -8,7 +8,7 @@ const motorcycleSideView = '/assets/images/motorcycle_side_view.png';
 const DrivingPrepPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [motorcyclePosition, setMotorcyclePosition] = useState(-100); // 화면 왼쪽 바깥에서 시작
+  const [motorcyclePosition, setMotorcyclePosition] = useState(-100);
   const [scenarioId, setScenarioId] = useState<string | null>(null);
   
   // URL 쿼리 파라미터에서 시나리오 ID 가져오기
