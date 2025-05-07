@@ -1,6 +1,9 @@
+import { useNavigate } from 'react-router-dom';
 import setting from 'assets/images/setting.png'
 
 const Setting = () => {
+    const navigate = useNavigate(); // 이거 추가해야 함
+
     return (
         <img
             src={setting}
@@ -10,6 +13,7 @@ const Setting = () => {
             cursor-pointer
             z-50
             active:scale-90 transition-transform duration-150"
+            onClick={() => navigate('/result')}
         />
     );
 };
