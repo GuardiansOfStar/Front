@@ -1,3 +1,4 @@
+// src/pages/driving/DrivingPrepPage.tsx 수정 부분
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -10,16 +11,19 @@ const DrivingPrepPage = () => {
   const location = useLocation();
   const [motorcyclePosition, setMotorcyclePosition] = useState(-100);
   const [scenarioId, setScenarioId] = useState<string | null>(null);
+  const [nextQuestId, setNextQuestId] = useState<string | null>(null);
   
-  // URL 쿼리 파라미터에서 시나리오 ID 가져오기
+  // URL 쿼리 파라미터에서 시나리오 ID와 다음 퀘스트 ID 가져오기
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    const id = searchParams.get('scenario');
-    setScenarioId(id);
+    const sId = searchParams.get('scenario');
+    const qId = searchParams.get('nextQuest');
+    setScenarioId(sId);
+    setNextQuestId(qId);
     
-    // 4초 후 퀘스트 페이지로 이동
+    // 다음 화면으로 자동 이동 타이머
     const timer = setTimeout(() => {
-      navigate(`/quest?scenario=${id}&quest=1`);
+      navigate(`/quest?scenario=${sId}&quest=${qId}`);
     }, 4000);
     
     return () => clearTimeout(timer);
@@ -58,9 +62,9 @@ const DrivingPrepPage = () => {
         style={{ 
           position: 'absolute',
           left: `${motorcyclePosition}px`,
-          width: '900px',
+          bottom: '20%',
+          width: '280px',
           height: 'auto',
-          transform: 'translateY(0)'
         }}
       />
       

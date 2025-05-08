@@ -50,13 +50,24 @@ module.exports = {
         'xl': '1.5rem',     // 24px
       },
       boxShadow: {
-        // 버튼 및 카드 그림자
         'button': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
         'card': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
       },
       animation: {
-        // 애니메이션 (천천히 움직이는 효과)
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      },
+      animation: {
+        'shake': 'shake 0.5s ease-in-out',
+        'bounce': 'bounce 1s infinite',
+        'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      },
+      keyframes: {
+        shake: {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '25%': { transform: 'translateX(-5px)' },
+          '50%': { transform: 'translateX(5px)' },
+          '75%': { transform: 'translateX(-5px)' },
+        },
       },
     },
     // 고령층 사용자를 위한 기본 설정

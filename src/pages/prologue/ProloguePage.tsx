@@ -1,13 +1,15 @@
+// src/pages/prologue/ProloguePage.tsx
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import Background from '../../components/ui/Background';
-import BackButton from '../../components/ui/BackButton';
 
 // 이미지 임포트
 const scenario1FullMap = '/assets/images/scenario1_full_map.png';
+const starCharacter = '/assets/images/star_character.png';
+const departButton = '/assets/images/depart_button.png';
 const grandson = '/assets/images/grandson.png';
 const granddaughter = '/assets/images/granddaughter.png';
-const departButton = '/assets/images/depart_button.png';
+const homeButton = '/assets/images/home_button.png';
+const backButton = '/assets/images/back_button.png';
 
 // 프롤로그 단계 정의
 type PrologueStep = 'mission' | 'map' | 'encouragement';
@@ -30,54 +32,77 @@ const ProloguePage = () => {
     if (step === 'mission') {
       const timer = setTimeout(() => {
         setStep('map');
-      }, 3000); // 3초 후 다음 단계로
+      }, 4000); // 4초 후 다음 단계로
       return () => clearTimeout(timer);
     } else if (step === 'map') {
       const timer = setTimeout(() => {
         setStep('encouragement');
-      }, 3000); // 3초 후 다음 단계로
+      }, 4000); // 4초 후 다음 단계로
       return () => clearTimeout(timer);
     }
   }, [step]);
 
-  // 출발하기 버튼 클릭 핸들러
+  // 홈으로 이동 핸들러
+  const handleGoHome = () => {
+    navigate('/');
+  };
+
+  // 뒤로 가기 핸들러
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
   const handleDepartClick = () => {
-    navigate(`/driving-prep?scenario=${scenarioId}`);
+    navigate(`/driving-prep?scenario=${scenarioId}&nextQuest=1`);
   };
 
   // 미션 소개 컴포넌트
   const MissionIntro = () => (
-    <div className="absolute inset-0 flex flex-col items-center justify-center">
-      <div className="flex items-center justify-center w-full mb-8">
-        <img src={grandson} alt="손자" className="w-48 h-auto mr-12" />
-        <div className="bg-yellow-100 border-4 border-green-600 rounded-2xl p-6 max-w-lg shadow-lg">
-          <h2 className="text-3xl font-bold text-green-800 mb-4 text-center">
-            [논밭 수확하러 가기]
-          </h2>
-          <p className="text-2xl text-center leading-relaxed">
-            오늘은 이륜차 타고 논밭까지 작업하러 가는 날입니다. 
-            <br />
-            안전하게 우리 집까지 도착하세요!
+    <div className="absolute inset-0 flex items-center justify-center">
+      <div className="w-full h-full bg-[#FFFDE7] flex flex-col items-center justify-center">
+        <h1 className="text-4xl font-bold text-green-700 mb-12">[ 논밭 작업 하는 날 ]</h1>
+        
+        <div className="relative bg-green-600 rounded-2xl p-8 max-w-3xl mx-auto">
+          <p className="text-3xl text-white text-center leading-relaxed">
+            이륜차를 타고 논밭에 갔다가<br />
+            집으로 안전하게 돌아오세요
           </p>
+          
+          {/* 캐릭터가 박스와 겹치도록 배치 */}
+          <img 
+            src={starCharacter}
+            alt="별별이 캐릭터" 
+            className="absolute -bottom-16 -right-16 w-48 h-auto"
+          />
         </div>
-        <img src={granddaughter} alt="손녀" className="w-48 h-auto ml-12" />
       </div>
     </div>
   );
 
   // 약도 컴포넌트
   const MapDisplay = () => (
-    <div className="absolute inset-0 flex flex-col items-center justify-center">
-      <div className="w-4/5 bg-white border-4 border-green-600 rounded-2xl p-6 shadow-lg">
-        <h2 className="text-3xl font-bold text-green-800 mb-4 text-center">
-          오늘 갈 경로입니다
-        </h2>
-        <div className="flex justify-center">
-          <img 
-            src={scenario1FullMap} 
-            alt="경로 지도" 
-            className="w-4/5 h-auto rounded-lg" 
-          />
+    <div className="absolute inset-0">
+      {/* 전체 배경으로 지도 사용 */}
+      <div className="w-full h-full relative">
+        <img 
+          src={scenario1FullMap} 
+          alt="경로 지도" 
+          className="w-full h-full object-cover"
+        />
+        
+        {/* 말풍선 형태로 메시지 표시 */}
+        <div className="absolute bottom-12 right-12 bg-green-600 rounded-xl p-4 max-w-md">
+          <div className="flex items-center">
+            <img 
+              src={starCharacter}
+              alt="별별이 캐릭터" 
+              className="w-16 h-16 mr-3"
+            />
+            <p className="text-white text-xl">
+              이륜차 운전 중 여러 상황이 벌어져요!<br />
+              안전 운전에 유의하여 문제를 해결해보아요
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -85,30 +110,72 @@ const ProloguePage = () => {
 
   // 격려 메시지 컴포넌트
   const EncouragementMessage = () => (
-    <div className="absolute inset-0 flex flex-col items-center justify-center">
-      <div className="flex items-center justify-center w-full mb-8">
-        <img src={grandson} alt="손자" className="w-48 h-auto mr-12" />
-        <div className="bg-green-100 border-4 border-green-600 rounded-2xl p-6 text-center shadow-lg">
-          <p className="text-3xl font-bold text-green-800">
-            할머니 / 할아버지<br />
-            이륜차 안전운전 하세요!
-          </p>
+    <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#FFFDE7]">
+      <div className="w-full h-full flex flex-col items-center justify-center relative">
+        {/* 배경에 지도 흐리게 표시 */}
+        <div className="absolute inset-0 opacity-20">
+          <img 
+            src={scenario1FullMap} 
+            alt="배경 지도" 
+            className="w-full h-full object-cover"
+          />
         </div>
-        <img src={granddaughter} alt="손녀" className="w-48 h-auto ml-12" />
+        
+        <div className="relative z-10 flex flex-col items-center">
+          {/* 손자/손녀 이미지 */}
+          <div className="flex items-center justify-center mb-4">
+            <img src={grandson} alt="손자" className="w-24 h-auto" />
+            <img src={granddaughter} alt="손녀" className="w-24 h-auto ml-3" />
+          </div>
+          
+          {/* 메시지 박스 */}
+          <div className="bg-white border-4 border-green-600 rounded-2xl p-5 max-w-lg mb-8">
+            <p className="text-2xl font-bold text-center text-green-700">
+              무엇보다 할아버지가 제일 소중해요!<br />
+              조심히 다녀오세요!
+            </p>
+          </div>
+          
+          {/* 출발하기 버튼 */}
+          <img
+            src={departButton}
+            alt="출발하기"
+            onClick={handleDepartClick}
+            className="w-48 cursor-pointer hover:scale-105 transition-transform"
+          />
+        </div>
       </div>
-      <img 
-        src={departButton} 
-        alt="출발하기" 
-        className="w-64 cursor-pointer hover:scale-105 transition-transform duration-300"
-        onClick={handleDepartClick}
-      />
     </div>
+  );
+
+  // 네비게이션 버튼 컴포넌트
+  const NavigationButtons = () => (
+    <>
+      {/* 뒤로가기 버튼 */}
+      <button
+        onClick={handleGoBack}
+        className="absolute top-6 left-6 z-20 w-20 h-20 bg-green-600 rounded-full flex items-center justify-center shadow-lg"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      
+      {/* 홈 버튼 */}
+      <button
+        onClick={handleGoHome}
+        className="absolute top-6 right-6 z-20 w-20 h-20 bg-green-600 rounded-full flex items-center justify-center shadow-lg"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+      </button>
+    </>
   );
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
-      <Background />
-      <BackButton />
+      <NavigationButtons />
       
       {/* 단계별 컴포넌트 조건부 렌더링 */}
       {step === 'mission' && <MissionIntro />}
