@@ -15,9 +15,10 @@ const Certificate = () => {
         src={smiling_grandchildren}
         alt="웃는 손주들"
         className="absolute top-[10%] left-1/2 transform -translate-x-1/2
-        w-[15%] h-auto"
+        w-[15%] h-auto
+        z-50"
         />
-      <div className="w-[70%] h-[40%] bg-white border-8 border-green-600 rounded-lg flex flex-col items-center justify-center text-black font-bold z-50">
+      <div className="w-[70%] h-[40%] bg-white border-8 border-green-600 rounded-lg flex flex-col items-center justify-center text-black font-bold z-40">
         <h2 className="text-2xl mb-2">무사히 돌아와줘서 고마워요</h2>
         <h3 className="text-2xl">안전운전하는 할머니/할아버지가 자랑스러워요</h3>
       </div>

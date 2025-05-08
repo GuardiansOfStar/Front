@@ -9,7 +9,7 @@ const NextButton = () => {
         <img
         src={next_button}
         alt="다음 버튼"
-        onClick={() => navigate('/')}
+        onClick={() => navigate('/star')}
         className="absolute bottom-[10%] left-1/2 transform -translate-x-1/2
         w-[27%] h-auto 
         cursor-pointer z-50 

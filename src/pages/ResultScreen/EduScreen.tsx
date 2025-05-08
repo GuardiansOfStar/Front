@@ -19,10 +19,10 @@ const EduScreen = () => {
 
       <div className="flex w-[75%] justify-between z-50">
         <div className="w-[48%] h-40 bg-white border-8 border-green-600 rounded-lg flex items-center justify-center text-green-600 font-bold text-xl">
-          박스1 내용
+          칭찬해요
         </div>
         <div className="w-[48%] h-40 bg-white border-8 border-green-600 rounded-lg flex items-center justify-center text-green-600 font-bold text-xl">
-          박스2 내용
+          기억해요
         </div>
       </div>
     </div>
