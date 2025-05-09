@@ -13,6 +13,8 @@ import StarSurvey from './pages/ResultScreen/StarSurvey';
 import ProloguePage from './pages/prologue/ProloguePage';
 import DrivingPrepPage from './pages/driving/DrivingPrepPage';
 import QuestPage from './pages/quest/QuestPage';
+import MemoryCardQuest from 'pages/quest/MemoryCardQuest';
+import ScorePage from 'pages/score/ScorePage';
 
 
 function App() {
