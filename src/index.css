@@ -19,7 +19,7 @@ body {
   }
 }
 .animate-move-diagonal {
-  animation: move-diagonal 2s linear forwards;  /* 5초동안 이동 */
+  animation: move-diagonal 2s linear forwards;
 }
 
 :root {
