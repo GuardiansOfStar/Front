@@ -9,7 +9,9 @@ const departButton = '/assets/images/depart_button.png';
 const grandson = '/assets/images/grandson.png';
 const granddaughter = '/assets/images/granddaughter.png';
 const homeButton = '/assets/images/home_button.png';
-const backButton = '/assets/images/back_button.png';
+// const BackButton = '/assets/images/back_button.png';
+import BackButton from '../../components/ui/BackButton'
+import Background from '../../components/ui/Background';
 
 // 프롤로그 단계 정의
 type PrologueStep = 'mission' | 'map' | 'encouragement';
@@ -59,22 +61,22 @@ const ProloguePage = () => {
   // 미션 소개 컴포넌트
   const MissionIntro = () => (
     <div className="absolute inset-0 flex items-center justify-center">
-      <div className="w-full h-full bg-[#FFFDE7] flex flex-col items-center justify-center">
+      <Background/>
+      <div className="w-full h-full flex flex-col items-center justify-center z-10">
         <h1 className="text-4xl font-bold text-green-700 mb-12">[ 논밭 작업 하는 날 ]</h1>
-        
-        <div className="relative bg-green-600 rounded-2xl p-8 max-w-3xl mx-auto">
-          <p className="text-3xl text-white text-center leading-relaxed">
-            이륜차를 타고 논밭에 갔다가<br />
-            집으로 안전하게 돌아오세요
-          </p>
-          
-          {/* 캐릭터가 박스와 겹치도록 배치 */}
-          <img 
-            src={starCharacter}
-            alt="별별이 캐릭터" 
-            className="absolute -bottom-16 -right-16 w-48 h-auto"
-          />
-        </div>
+          <div className="relative bg-green-600 border-8 border-green-700 rounded-2xl p-10 w-3/4 h- mx-w-5xl">
+            <p className="text-3xl text-white text-center leading-relaxed">
+              이륜차를 타고 논밭에 갔다가<br />
+              집으로 안전하게 돌아오세요
+            </p>
+            
+            {/* 캐릭터가 박스와 겹치도록 배치 */}
+            <img 
+              src={starCharacter}
+              alt="별별이 캐릭터" 
+              className="absolute -bottom-24 -left-24 w-48 h-auto"
+            />
+          </div>
       </div>
     </div>
   );
@@ -152,24 +154,17 @@ const ProloguePage = () => {
   const NavigationButtons = () => (
     <>
       {/* 뒤로가기 버튼 */}
-      <button
-        onClick={handleGoBack}
-        className="absolute top-6 left-6 z-20 w-20 h-20 bg-green-600 rounded-full flex items-center justify-center shadow-lg"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
+      <div className="absolute top-4 left-4 z-20">
+        <BackButton/>
+      </div>
       
       {/* 홈 버튼 */}
-      <button
-        onClick={handleGoHome}
-        className="absolute top-6 right-6 z-20 w-20 h-20 bg-green-600 rounded-full flex items-center justify-center shadow-lg"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-        </svg>
-      </button>
+      <img
+      src={homeButton}
+      alt="홈으로"
+      onClick={handleGoHome}
+      className="absolute top-4 right-4 z-20 w-16 h-16 cursor-pointer active:scale-90 transition-transform duration-150"
+    />
     </>
   );
 

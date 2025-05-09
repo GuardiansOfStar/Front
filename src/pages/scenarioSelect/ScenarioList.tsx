@@ -105,7 +105,7 @@ const ScenarioList = () => {
                         <div 
                             className={`w-80 h-56 rounded-lg overflow-hidden 
                                 ${scenario.position === 'center' 
-                                    ? 'border-4 border-green-600' 
+                                    ? 'border-8 border-green-600' 
                                     : 'border-2 border-gray-300'
                                 }
                                 ${scenario.locked ? 'grayscale' : ''}

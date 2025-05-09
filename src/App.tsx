@@ -15,24 +15,27 @@ import DrivingPrepPage from './pages/driving/DrivingPrepPage';
 import QuestPage from './pages/quest/QuestPage';
 import MemoryCardQuest from './pages/quest/MemoryCardQuest';
 import ScorePage from './pages/score/ScorePage';
-
+import PotholeQuest from './pages/quest/PotholeQuest'
+import DrivingBaseScreen from './pages/driving/DrivingBaseScreen'
 
 function App() {
   return (
     <Router>
       <AspectRatioContainer ratio="16/10">
       <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/result" element={<EduScreen />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/result" element={<EduScreen />} />
         <Route path="/scenarios" element={<ScenarioSelectPage />} />
-          <Route path="/map" element={<MapPage />} />
-          <Route path="/prologue" element={<ProloguePage />} />
-          <Route path="/driving-prep" element={<DrivingPrepPage />} />
-          <Route path="/quest" element={<MemoryCardQuest />} />
-          <Route path="/score" element={<ScorePage />} />  {/* 추가된 부분 */}
-          <Route path="/certificate" element={<Certificate />} />
+        <Route path="/map" element={<MapPage />} />
+        <Route path="/prologue" element={<ProloguePage />} />
+        <Route path="/driving-prep" element={<DrivingPrepPage />} />
+        <Route path="/quest" element={<MemoryCardQuest />} />
+        <Route path="/score" element={<ScorePage />} />  {/* 추가된 부분 */}
+        <Route path="/certificate" element={<Certificate />} />
         <Route path='/info' element={<PersonalInfo />} />
         <Route path='/star' element={<StarSurvey />} />
+        <Route path='/pothole-quest' element={<PotholeQuest />} />
+        <Route path='/driving-base' element={<DrivingBaseScreen/>}/>
       </Routes>
       </AspectRatioContainer>
     </Router>

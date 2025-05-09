@@ -62,18 +62,11 @@ const DrivingPrepPage = () => {
         style={{ 
           position: 'absolute',
           left: `${motorcyclePosition}px`,
-          bottom: '20%',
-          width: '280px',
+          bottom: '0%',
+          width: '820px',
           height: 'auto',
         }}
       />
-      
-      {/* 로딩 표시 */}
-      <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2">
-        <p className="text-2xl text-white bg-green-600 px-8 py-3 rounded-full shadow-lg">
-          주행 준비 중...
-        </p>
-      </div>
     </div>
   );
 };

@@ -1,100 +1,71 @@
 // src/pages/score/ScorePage.tsx
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import Background from '../../components/ui/Background';
 
 // 이미지 임포트
-const scoreBackground = '/assets/images/score_background.png';
-const grandchildren = '/assets/images/grandchildren.png';
-const homeButton = '/assets/images/home_button.png';
-
-interface ScoreProps {
-  score: number;
-  questId: string;
-  scenarioId: string;
-  isCorrect: boolean;
-}
+const grandchildrenHappy = '/assets/images/grandchildren_happy.png';
+const grandchildrenSad = '/assets/images/grandchildren_sad.png';
 
 const ScorePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [scoreData, setScoreData] = useState<ScoreProps>({
-    score: 0,
-    questId: '1',
-    scenarioId: '2',
-    isCorrect: true
-  });
   
+  const [score, setScore] = useState(0);
+  const [isCorrect, setIsCorrect] = useState(true);
+  const [scenarioId, setScenarioId] = useState<string | null>(null);
+  const [questId, setQuestId] = useState<string | null>(null);
+  
+  // URL 쿼리 파라미터에서 정보 가져오기
   useEffect(() => {
-    // URL 쿼리 파라미터에서 데이터 가져오기
     const searchParams = new URLSearchParams(location.search);
-    const score = parseInt(searchParams.get('score') || '0');
-    const questId = searchParams.get('quest') || '1';
-    const scenarioId = searchParams.get('scenario') || '2';
-    const isCorrect = searchParams.get('correct') === 'true';
+    const scoreParam = searchParams.get('score');
+    const correctParam = searchParams.get('correct');
+    const sId = searchParams.get('scenario');
+    const qId = searchParams.get('quest');
     
-    setScoreData({
-      score,
-      questId,
-      scenarioId,
-      isCorrect
-    });
+    setScore(scoreParam ? parseInt(scoreParam) : 0);
+    setIsCorrect(correctParam === 'true');
+    setScenarioId(sId);
+    setQuestId(qId);
     
     // 3초 후 다음 화면으로 자동 이동
     const timer = setTimeout(() => {
-      handleContinue();
+      // 미션 1이 끝났으면 주행 기본 화면으로 이동
+      if (qId === '1') {
+        navigate(`/driving-base?scenario=${sId}&nextQuest=2`);
+      } 
+      // 미션 2가 끝났으면 미션 3으로 이동 (추후 구현)
+      else if (qId === '2') {
+        navigate(`/driving-base?scenario=${sId}&nextQuest=3`);
+      }
+      // 그 외 미션은 추가 구현 필요
+      else {
+        navigate(`/`);
+      }
     }, 3000);
     
     return () => clearTimeout(timer);
-  }, [location]);
-  
-  // 계속하기 버튼 클릭 핸들러
-  const handleContinue = () => {
-    const nextQuestId = parseInt(scoreData.questId) + 1;
-    
-    // 다음 퀘스트가 있으면 이동, 없으면 결과 화면으로 이동
-    if (nextQuestId <= 5) {
-      navigate(`/quest?scenario=${scoreData.scenarioId}&quest=${nextQuestId}`);
-    } else {
-      navigate(`/completion?scenario=${scoreData.scenarioId}`);
-    }
-  };
-  
-  // 홈으로 이동 핸들러
-  const handleGoHome = () => {
-    navigate('/');
-  };
+  }, [location, navigate]);
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
-      {/* 배경 이미지 */}
-      <img
-        src={scoreBackground}
-        alt="점수 배경"
-        className="absolute w-full h-full object-cover"
-      />
+      {/* 배경 컴포넌트 사용 */}
+      <Background />
       
-      {/* 홈 버튼 */}
-      <div className="absolute top-4 right-4 z-10">
-        <img
-          src={homeButton}
-          alt="홈으로"
-          className="w-16 h-16 cursor-pointer"
-          onClick={handleGoHome}
-        />
-      </div>
-      
-      {/* 매우 단순화된 점수 표시 */}
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        {/* 손주 이미지 */}
-        <img 
-          src={grandchildren} 
-          alt="손자손녀" 
-          className="w-48 h-auto mb-6"
-        />
-        
-        {/* 점수 표시 - 녹색 원형 박스 */}
-        <div className="bg-green-600 rounded-full py-5 px-16 shadow-lg">
-          <span className="text-6xl font-bold text-white">+ {scoreData.score}</span>
+        <div className="flex flex-col items-center">
+          {/* 손자/손녀 이미지 */}
+          <img
+            src={isCorrect ? grandchildrenHappy : grandchildrenSad}
+            alt={isCorrect ? "기쁜 손자손녀" : "슬픈 손자손녀"}
+            className="w-44 h-auto mb-[-15px] z-10" // 크기 키우고 마이너스 마진 적용, z-index 추가
+          />
+          
+          {/* 점수 표시 - 크기 키우고 스타일 조정 */}
+          <div className="bg-green-500 border-8 border-green-700 rounded-[100px] px-64 py-10 shadow-lg flex items-center justify-center">
+            <span className="text-8xl font-bold text-white">+{score}</span>
+          </div>
         </div>
       </div>
     </div>

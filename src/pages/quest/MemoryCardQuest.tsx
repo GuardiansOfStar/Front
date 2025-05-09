@@ -398,13 +398,26 @@ const MemoryCardQuest = () => {
             안전모를 착용했어요
           </div>
           
-          <div className="bg-white bg-opacity-40 rounded-full p-8">
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+          {/* 중앙에 큰 success_circle 이미지 */}
+          <div className="relative w-[800px] h-[800px]">
             <img
-              src={characterWithHelmet}
-              alt="헬멧을 쓴 캐릭터"
-              className="w-64 h-auto"
+              src={successCircle} 
+              alt="성공 원" 
+              className="w-full h-full absolute top-0 left-0 z-10"
             />
+            {/* 그 위에 헬멧 쓴 할아버지 이미지 */}
+            <div className="absolute inset-0 flex items-center justify-center z-20">
+              (
+                <img 
+                  src="/assets/images/character_with_helmet.png"  
+                  alt="헬멧 쓴 캐릭터" 
+                  className="w-[400px] h-auto"
+                />
+              )
+            </div>
           </div>
+        </div>
         </div>
       )}
     </div>
