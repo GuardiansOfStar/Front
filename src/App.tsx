@@ -16,6 +16,9 @@ import QuestPage from './pages/quest/QuestPage';
 import MemoryCardQuest from './pages/quest/MemoryCardQuest';
 import ScorePage from './pages/score/ScorePage';
 
+import CompletionBackground from './pages/questFinish/CompletionBackground';
+import SuccessBackground from './pages/questFinish/SuccessBackground';
+
 
 function App() {
   return (
@@ -23,7 +26,7 @@ function App() {
       <AspectRatioContainer ratio="16/10">
       <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/result" element={<EduScreen />} />
+          <Route path="/result" element={<SuccessBackground />} />
         <Route path="/scenarios" element={<ScenarioSelectPage />} />
           <Route path="/map" element={<MapPage />} />
           <Route path="/prologue" element={<ProloguePage />} />
