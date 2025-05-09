@@ -1,6 +1,7 @@
 // src/components/StartButton.tsx
 import { useNavigate } from 'react-router-dom';
-import next_button from 'assets/images/next_button.png';
+// import next_button from 'assets/images/next_button.png';
+const next_button = '/assets/images/next_button.png'
 
 const NextButton = () => {
     const navigate = useNavigate();

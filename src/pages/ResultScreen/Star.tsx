@@ -1,6 +1,9 @@
 import { useState } from 'react';
-import filled_star from 'assets/images/filled_star.png';
-import empty_star from 'assets/images/empty_star.png';
+// import filled_star from 'assets/images/filled_star.png';
+// import empty_star from 'assets/images/empty_star.png';
+
+const filled_star = '/assets/images/filled_star.png'
+const empty_star = '/assets/images/empty_star.png'
 
 const Star = ({ size = 100 }: { size?: number }) => {
     const [isClicked, setIsClicked] = useState(true);

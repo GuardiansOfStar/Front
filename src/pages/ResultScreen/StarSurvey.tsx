@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import Background from '../../components/Background';
+import Background from '../../components/ui/Background';
 import NextButton from './NextButton';
 import Star from './Star';
 

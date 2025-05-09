@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import Background from '../../components/Background';
-import score from 'assets/images/score.png';
+import Background from '../../components/ui/Background';
 
 const EduScreen = () => {
   const navigate = useNavigate();
@@ -12,7 +11,7 @@ const EduScreen = () => {
       <Background />
 
       <img
-        src={score}
+        src="/assets/images/score_background.png"
         alt="점수 이미지"
         className="w-[60%] z-50 mb-5"
       />

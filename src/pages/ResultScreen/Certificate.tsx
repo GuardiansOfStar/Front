@@ -1,7 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-import Background from '../../components/Background';
-import smiling_grandchildren from 'assets/images/smiling_grandchildren.png'
-import get_certificate from 'assets/images/get_certificate.png'
+import Background from '../../components/ui/Background';
+
+// import smiling_grandchildren from 'assets/images/smiling_grandchildren.png'
+// import get_certificate from 'assets/images/get_certificate.png'
+
+const smiling_grandchildren = '/assets/images/grandchildren_happy.png'
+const get_certificate = '/assets/images/get_certificate.png'
 
 const Certificate = () => {
   const navigate = useNavigate();
