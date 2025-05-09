@@ -1,5 +1,9 @@
+<<<<<<< HEAD:src/pages/home/Setting.tsx
 import { useNavigate } from 'react-router-dom';
 import setting from 'assets/images/setting.png'
+=======
+const setting = '/assets/images/setting.png'
+>>>>>>> main:src/components/ui/SettingButton.tsx
 
 const Setting = () => {
     const navigate = useNavigate(); // 이거 추가해야 함

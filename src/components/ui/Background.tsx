@@ -1,4 +1,4 @@
-import background_homepage from 'assets/images/background_homepage.png'
+const background_homepage = '/assets/images/background_homepage.png';
 
 const Background = () => {
     return (
