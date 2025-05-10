@@ -158,7 +158,7 @@ const PotholeQuest = () => {
           
           <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
             {/* 선택지 제목 및 설명 */}
-            <div className="bg-white border-4 border-green-600 rounded-xl p-6 mb-8 w-4/5 max-w-3xl">
+            <div className="bg-white border-8 border-green-600 rounded-xl p-6 mb-8 w-4/5 max-w-3xl">
               <h2 className="text-3xl font-bold text-green-700 text-center mb-4">구덩이 조심</h2>
               <p className="text-2xl text-black text-center">
                 앞에 큰 구덩이가 있어요!<br/>
@@ -170,10 +170,11 @@ const PotholeQuest = () => {
             {/* 선택지 버튼 */}
             <div className="flex justify-center space-x-6 w-4/5">
               <button
-                className={`w-1/2 bg-green-100 border-4 border-green-600 rounded-xl p-4 text-xl font-bold text-green-800 transition-all duration-300 
+                className={`w-1/2 bg-green-100 border-8 border-green-600 rounded-xl p-4 text-xl font-bold text-green-800 transition-all duration-300 focus:outline-none focus:ring-0
+
                 ${selectedOption === 'A' 
-                  ? 'bg-green-300 scale-105' 
-                  : 'hover:bg-green-200'}`}
+                  ? 'bg-green-200 scale-105' 
+                  : 'hover:bg-green-300'}`}
                 onClick={() => handleOptionSelect('A')}
                 disabled={!!selectedOption}
               >
@@ -181,10 +182,11 @@ const PotholeQuest = () => {
               </button>
               
               <button
-                className={`w-1/2 bg-green-100 border-4 border-green-600 rounded-xl p-4 text-xl font-bold text-green-800 transition-all duration-300 
+                className={`w-1/2 bg-green-100 border-8 border-green-600 rounded-xl p-4 text-xl font-bold text-green-800 transition-all duration-300 focus:outline-none focus:ring-0
+
                 ${selectedOption === 'B' 
-                  ? 'bg-green-300 scale-105' 
-                  : 'hover:bg-green-200'}`}
+                  ? 'bg-green-200 scale-105' 
+                  : 'hover:bg-green-300'}`}
                 onClick={() => handleOptionSelect('B')}
                 disabled={!!selectedOption}
               >
