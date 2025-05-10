@@ -29,12 +29,12 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/result" element={<SuccessBackground />} />
         <Route path="/scenarios" element={<ScenarioSelectPage />} />
-          <Route path="/map" element={<MapPage />} />
-          <Route path="/prologue" element={<ProloguePage />} />
-          <Route path="/driving-prep" element={<DrivingPrepPage />} />
-          <Route path="/quest" element={<MemoryCardQuest />} />
-          <Route path="/score" element={<ScorePage />} />  {/* 추가된 부분 */}
-          <Route path="/certificate" element={<Certificate />} />
+        <Route path="/map" element={<MapPage />} />
+        <Route path="/prologue" element={<ProloguePage />} />
+        <Route path="/driving-prep" element={<DrivingPrepPage />} />
+        <Route path="/quest" element={<MemoryCardQuest />} />
+        <Route path="/score" element={<ScorePage />} />  {/* 추가된 부분 */}
+        <Route path="/certificate" element={<Certificate />} />
         <Route path='/info' element={<PersonalInfo />} />
         <Route path='/star' element={<StarSurvey />} />
       </Routes>
