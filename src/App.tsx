@@ -18,13 +18,20 @@ import ScorePage from './pages/score/ScorePage';
 import PotholeQuest from './pages/quest/PotholeQuest'
 import DrivingBaseScreen from './pages/driving/DrivingBaseScreen'
 
+import CompletionBackground from './pages/questFinish/CompletionBackground';
+import SuccessBackground from './pages/questFinish/SuccessBackground';
+// import PathChoiceQuest from './pages/quest/PathChoiceQuest';
+
+
 function App() {
   return (
     <Router>
-      <AspectRatioContainer ratio="16/10">
+      
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/result" element={<EduScreen />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/result" element={<SuccessBackground />} />
         <Route path="/scenarios" element={<ScenarioSelectPage />} />
         <Route path="/map" element={<MapPage />} />
         <Route path="/prologue" element={<ProloguePage />} />
@@ -37,7 +44,7 @@ function App() {
         <Route path='/pothole-quest' element={<PotholeQuest />} />
         <Route path='/driving-base' element={<DrivingBaseScreen/>}/>
       </Routes>
-      </AspectRatioContainer>
+      
     </Router>
   );
 }
