@@ -15,36 +15,40 @@ import DrivingPrepPage from './pages/driving/DrivingPrepPage';
 import QuestPage from './pages/quest/QuestPage';
 import MemoryCardQuest from './pages/quest/MemoryCardQuest';
 import ScorePage from './pages/score/ScorePage';
-import PotholeQuest from './pages/quest/PotholeQuest'
-import DrivingBaseScreen from './pages/driving/DrivingBaseScreen'
+import PotholeQuest from './pages/quest/PotholeQuest';
+import DrivingBaseScreen from './pages/driving/DrivingBaseScreen';
 
 import CompletionBackground from './pages/questFinish/CompletionBackground';
 import SuccessBackground from './pages/questFinish/SuccessBackground';
 // import PathChoiceQuest from './pages/quest/PathChoiceQuest';
 
-
 function App() {
   return (
     <Router>
-      
       <Routes>
+        {/* 기본 화면들 */}
         <Route path="/" element={<HomePage />} />
-        <Route path="/result" element={<EduScreen />} />
-          <Route path="/" element={<HomePage />} />
-          <Route path="/result" element={<SuccessBackground />} />
         <Route path="/scenarios" element={<ScenarioSelectPage />} />
         <Route path="/map" element={<MapPage />} />
         <Route path="/prologue" element={<ProloguePage />} />
+
+        {/* 주행 관련 화면들 */}
         <Route path="/driving-prep" element={<DrivingPrepPage />} />
         <Route path="/quest" element={<MemoryCardQuest />} />
-        <Route path="/score" element={<ScorePage />} />  {/* 추가된 부분 */}
+        <Route path="/pothole-quest" element={<PotholeQuest />} />
+        <Route path="/driving-base" element={<DrivingBaseScreen/>} />
+        <Route path="/score" element={<ScorePage />} />
+        
+        {/* 주행 완료 관련 화면들 */}
+        <Route path="/success" element={<SuccessBackground />} />
+        <Route path="/completion" element={<CompletionBackground />} />
+        
+        {/* 결과 및 수료 관련 화면들 */}
+        <Route path="/result" element={<EduScreen />} />
         <Route path="/certificate" element={<Certificate />} />
-        <Route path='/info' element={<PersonalInfo />} />
-        <Route path='/star' element={<StarSurvey />} />
-        <Route path='/pothole-quest' element={<PotholeQuest />} />
-        <Route path='/driving-base' element={<DrivingBaseScreen/>}/>
+        <Route path="/info" element={<PersonalInfo />} />
+        <Route path="/star" element={<StarSurvey />} />
       </Routes>
-      
     </Router>
   );
 }

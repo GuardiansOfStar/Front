@@ -1,9 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-// import setting from 'assets/images/setting.png'
 const setting = '/assets/images/setting.png'
 
 const Setting = () => {
-    const navigate = useNavigate(); // 이거 추가해야 함
+    const navigate = useNavigate();
 
     return (
         <img
@@ -14,7 +13,7 @@ const Setting = () => {
             cursor-pointer
             z-50
             active:scale-90 transition-transform duration-150"
-            onClick={() => navigate('/result')}
+            onClick={() => navigate('/success')} // '/result' 대신 '/success'로 변경
         />
     );
 };

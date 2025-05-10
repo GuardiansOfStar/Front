@@ -1,8 +1,19 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Background from '../../components/ui/Background';
 
 const EduScreen = () => {
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    // 5초 후 자동으로 수료증 화면으로 이동
+    const timer = setTimeout(() => {
+      navigate('/certificate');
+    }, 5000);
+    
+    return () => clearTimeout(timer);
+  }, [navigate]);
+
   return (
     <div
       className="relative w-full h-screen overflow-hidden flex flex-col items-center justify-center"
