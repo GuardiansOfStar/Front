@@ -1,7 +1,7 @@
 // src/App.tsx
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import AspectRatioContainer from './components/layout/AspectRatioContainer';
+import AspectRatioContainer from './components/layout/AspectRatio';
 import HomePage from './pages/home/HomePage';
 import ScenarioSelectPage from './pages/scenarioSelect/ScenarioSelectPage';
 import MapPage from './pages/map/MapPage';
@@ -18,12 +18,13 @@ import ScorePage from './pages/score/ScorePage';
 
 import CompletionBackground from './pages/questFinish/CompletionBackground';
 import SuccessBackground from './pages/questFinish/SuccessBackground';
+import PathChoiceQuest from './pages/quest/PathChoiceQuest';
 
 
 function App() {
   return (
     <Router>
-      <AspectRatioContainer ratio="16/10">
+      
       <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/result" element={<SuccessBackground />} />
@@ -37,7 +38,7 @@ function App() {
         <Route path='/info' element={<PersonalInfo />} />
         <Route path='/star' element={<StarSurvey />} />
       </Routes>
-      </AspectRatioContainer>
+      
     </Router>
   );
 }
