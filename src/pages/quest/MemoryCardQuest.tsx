@@ -250,7 +250,7 @@ const MemoryCardQuest = () => {
           
           {/* 설명 텍스트 */}
           <div className="bg-white bg-opacity-90 border-4 border-green-600 rounded-xl p-8 max-w-3xl mx-auto">
-            <p className="text-3xl font-bold text-center mb-6">
+            <p className="text-3xl font-bold text-black text-center mb-6">
               선물은 과연 무엇일까요?<br />
               같은 그림의 카드 두 개를 찾아주세요!
             </p>
