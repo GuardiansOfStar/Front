@@ -15,8 +15,9 @@ const successCircle = '/assets/images/success_circle.png';
 const failX = '/assets/images/fail_x.png';
 const homeButton = '/assets/images/home_button.png';
 const giftBox = '/assets/images/gift.png';
-const giftOpenHelmet = '/assets/images/gift_open_helmet.png';
+const giftOpenHelmet = '/assets/images/gift_open.png';
 const grandchildren = '/assets/images/grandchildren.png';
+const helmet = '/assets/images/helmet.png'
 
 // 카드 타입 정의
 interface Card {
