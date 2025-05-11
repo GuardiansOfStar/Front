@@ -72,17 +72,16 @@ module.exports = {
     },
     // 고령층 사용자를 위한 기본 설정
     fontFamily: {
-      sans: [
-        'system-ui',
-        '-apple-system',
-        'BlinkMacSystemFont',
-        'Segoe UI',
-        'Roboto',
-        'Helvetica Neue',
-        'Arial',
-        'sans-serif',
-      ],
-    },
+      sans: ['Pretendard',
+             '-apple-system',
+             'BlinkMacSystemFont',
+             'system-ui',
+             'Roboto',
+             'Helvetica Neue',
+             'Arial',
+             'sans-serif'
+            ],
+      },
   },
   plugins: [],
 }
