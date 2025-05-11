@@ -18,6 +18,7 @@ const giftBox = '/assets/images/gift.png';
 const giftOpenHelmet = '/assets/images/gift_open.png';
 const grandchildren = '/assets/images/grandchildren.png';
 const helmet = '/assets/images/helmet.png'
+const NextButton = 'assets/images/next_button.png'
 
 // 카드 타입 정의
 interface Card {
@@ -31,7 +32,8 @@ interface Card {
 // 게임 단계 정의
 type GamePhase = 
   | 'intro1'             // 시작 화면
-  | 'intro2'             // 게임 설명
+  | 'intro2'             // 손자손녀 메시지 - 선물 소개
+  | 'intro3'             // 게임 설명
   | 'showCards'          // 카드 미리보기
   | 'game'               // 카드 게임 진행
   | 'foundMatch'         // 카드 쌍 찾음
@@ -108,6 +110,8 @@ const MemoryCardQuest = () => {
     if (gamePhase === 'intro1') {
       setGamePhase('intro2');
     } else if (gamePhase === 'intro2') {
+      setGamePhase('intro3');
+    } else if (gamePhase === 'intro3') {
       setGamePhase('showCards');
     } else if (gamePhase === 'foundMatch') {
       setGamePhase('showGift');
@@ -226,24 +230,66 @@ const MemoryCardQuest = () => {
           className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer"
           onClick={handleNextPhase}
         >
-          <div className="bg-green-600 bg-opacity-90 py-4 px-10 rounded-lg mb-8">
-            <h1 className="text-4xl font-bold text-white">주행 준비하기</h1>
+          <div className="mt-24 text-center">
+            <h1 className="text-8xl font-bold">
+              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">주</span>
+              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">행</span>
+              {' '} {/* Space */}
+              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">준</span>
+              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">비</span>
+              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">하</span>
+              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">기</span>
+            </h1>
           </div>
           
-          <img 
-            src={gameCharacter} 
-            alt="캐릭터" 
-            className="w-80 h-auto mb-8"
+          <img
+            src={gameCharacter}
+            alt="캐릭터"
+            className="w-80 h-auto mt-6" /* Added mt-8 to move character down */
           />
         </div>
       )}
 
-      {/* 두 번째 단계 - 게임 설명 화면 (첨부 이미지처럼 구성) */}
+      {/* intro2 */}
       {gamePhase === 'intro2' && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="absolute inset-0 bg-white bg-opacity-30 backdrop-blur-sm"></div>
+          <div className="relative z-10 max-w-xl mx-auto mt-64">
+            <div className="bg-white border-4 border-green-600 rounded-xl p-6 shadow-lg">
+              <p className="text-2xl font-bold text-black text-center mb-4">
+                할아버지,<br />
+                운전하시기 전에 중요한 선물이 있어요!
+              </p>
+            </div>
+            <img
+              src={grandchildren}
+              alt="손자손녀"
+              className="absolute -top-36 left-1/2 transform -translate-x-1/2 w-48 h-auto z-20"
+            />
+            <div className="flex justify-center">
+              <img
+                src={NextButton}
+                alt="다음"
+                onClick={handleNextPhase}
+                className="w-1/2 h-auto cursor-pointer hover:scale-105 transition-transform"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 두 번째 단계 - 게임 설명 화면 (첨부 이미지처럼 구성) */}
+      {gamePhase === 'intro3' && (
+        
         <div 
           className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer"
           onClick={handleNextPhase}
         >
+
+        <div className="absolute inset-0 bg-white bg-opacity-30 backdrop-blur-sm"></div>
+
+          <div className="relative z-10">
+
           {/* 타이틀 */}
           <h2 className="text-4xl font-bold text-green-600 mb-8">
             손주가 준비한 선물 찾기
@@ -260,6 +306,16 @@ const MemoryCardQuest = () => {
               힌트: 이 선물은 머리를 보호해줘요
             </p>
           </div>
+
+          <div className="flex justify-center">
+              <img
+                src={NextButton}
+                alt="다음"
+                onClick={handleNextPhase}
+                className="w-1/3 h-auto cursor-pointer hover:scale-105 transition-transform"
+              />
+              </div>
+            </div>
         </div>
       )}
 
