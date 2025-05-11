@@ -14,25 +14,37 @@ const DrivingBaseScreen = () => {
   const [nextQuestId, setNextQuestId] = useState<string | null>(null);
   const [showStartText, setShowStartText] = useState(false);
   
-  // URL 쿼리 파라미터에서 시나리오 ID와 다음 퀘스트 ID 가져오기
   useEffect(() => {
+    console.log("DrivingBaseScreen - URL:", location.search);
     const searchParams = new URLSearchParams(location.search);
     const sId = searchParams.get('scenario');
-    const qId = searchParams.get('nextQuest');
+    const nqId = searchParams.get('nextQuest');
+    
+    console.log("DrivingBaseScreen - 파라미터:", { scenario: sId, nextQuest: nqId });
+    
     setScenarioId(sId);
-    setNextQuestId(qId || '2');
+    setNextQuestId(nqId);
     
     // 3초 후 '주행 시작' 텍스트 표시
     const textTimer = setTimeout(() => {
       setShowStartText(true);
       
-      // 텍스트 표시 후 3초 더 기다린 뒤 사라짐
+      // 텍스트 표시 후 3초 후 사라짐
       const hideTextTimer = setTimeout(() => {
         setShowStartText(false);
         
-        // 텍스트 사라진 후 2초 후 미션 2로 이동
+        // 텍스트 사라진 후 2초 후 다음 미션으로 이동
         const navigationTimer = setTimeout(() => {
-          navigate(`/pothole-quest?scenario=${sId}&quest=${qId || '2'}`);
+          // 명확한 분기 처리
+          if (nqId === '3') {
+            // 미션3 (막걸리 미션)으로 이동
+            console.log("→→→ 미션3(막걸리)으로 이동합니다:", `/makgeolli-quest?scenario=${sId}&quest=3`);
+            navigate(`/makgeolli-quest?scenario=${sId}&quest=3`);
+          } else {
+            // 미션2 (포트홀 미션)으로 이동
+            console.log("→→→ 미션2(포트홀)로 이동합니다:", `/pothole-quest?scenario=${sId}&quest=2`);
+            navigate(`/pothole-quest?scenario=${sId}&quest=2`);
+          }
         }, 2000);
         
         return () => clearTimeout(navigationTimer);
@@ -49,7 +61,7 @@ const DrivingBaseScreen = () => {
     navigate('/');
   };
 
-  // 타이틀 텍스트 렌더링 함수 - PotholeQuest에서 가져온 스타일
+  // 타이틀 텍스트 렌더링 함수
   const renderTitleText = (text: string) => (
     <div className="relative inline-block">
       <h1 className="text-6xl font-extrabold text-green-600 px-12 py-4"
@@ -87,6 +99,11 @@ const DrivingBaseScreen = () => {
           {renderTitleText('주행 시작')}
         </div>
       )}
+      
+      {/* 디버그 정보 (개발 중에만 표시) */}
+      {/* <div className="absolute bottom-4 left-4 bg-black bg-opacity-50 text-white p-2 text-sm z-50">
+        다음 미션: {nextQuestId === '3' ? '막걸리 미션(3)' : '포트홀 미션(2)'}
+      </div> */}
       
       {/* 오토바이 - 애니메이션 없이 고정 위치에 표시 */}
       <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-10 w-full flex justify-center">
