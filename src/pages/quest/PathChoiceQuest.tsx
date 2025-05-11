@@ -16,6 +16,7 @@ const starCharacter = '/assets/images/star_character.png';
 const grandfaRushing = '/assets/images/mission5_success_gfa.png';
 const successRoad = '/assets/images/success_road.png'
 
+
 // 게임 단계 정의
 type GamePhase = 
   | 'intro'         // 시작 화면
@@ -37,7 +38,9 @@ const PathChoiceQuest = () => {
   //const [isAnimating, setIsAnimating] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [fallbackImage, setFallbackImage] = useState(false);
-  
+  const [showWarning, setShowWarning] = useState(false);
+
+
   // URL 쿼리 파라미터에서 시나리오 ID와 퀘스트 ID 가져오기
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -95,12 +98,24 @@ const PathChoiceQuest = () => {
           setGamePhase('failResult');
           setTimeout(() => {
             navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=10&correct=false`);
-          }, 3000);
+          }, 10000); //오답 결과 유지 시간
         }, 2500);
       }, 1000);
     }
   };
   
+  useEffect(() => {
+    if (gamePhase === 'failResult') {
+      const timer = setTimeout(() => {
+        setShowWarning(true);
+      }, 4000); // 2초 후 쓰러진 할부지 이미지
+
+      return () => clearTimeout(timer); // 클린업
+    } else {
+      setShowWarning(false); // 다시 숨기기
+    }
+  }, [gamePhase]);
+
   // 홈으로 이동 핸들러
   const handleGoHome = () => {
     navigate('/');
@@ -210,11 +225,11 @@ const PathChoiceQuest = () => {
             <div className="flex justify-center space-x-6 w-4/5">
               <button
                 className={`w-1/2 bg-green-600 bg-opacity-70
-                border-4 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 border-green-700 rounded-lg p-4
+                border-4 border-green-700 rounded-lg p-4
                 text-xl font-bold text-white 
                 transition duration-300 
                 ${selectedOption === 'A' ? 
-                'bg-green-700 scale-105 bg-opacity-100' : 'hover:bg-green-700'}`}
+                'bg-green-700 scale-105 bg-opacity-95' : 'hover:bg-green-700'}`}
                 onClick={() => handleOptionSelect('A')}
                 disabled={!!selectedOption}
               >
@@ -227,7 +242,7 @@ const PathChoiceQuest = () => {
                 text-xl font-bold text-white
                 transition duration-300 
                 ${selectedOption === 'B' 
-                ? 'bg-green-700 scale-105 bg-opacity-100' : 'hover:bg-green-700'}`}
+                ? 'bg-green-700 scale-105 bg-opacity-95' : 'hover:bg-green-700'}`}
                 onClick={() => handleOptionSelect('B')}
                 disabled={!!selectedOption}
               >
@@ -256,13 +271,13 @@ const PathChoiceQuest = () => {
                 <img 
                   src={grandfaRushing}
                   alt="오토바이 질주하는 할아버지" 
-                  className="absolute w-[30%] h-auto object-contain z-50"
+                  className="absolute w-[22%] h-auto object-contain z-50"
                   onError={handleImageError}
                 />
                 <img 
                   src={successRoad}
                   alt="오토바이 질주할 도로" 
-                  className="absolute bottom-[2%] w-[35%] h-auto object-contain z-40"
+                  className="absolute bottom-[1%] w-[25%] object-contain z-40"
                   onError={handleImageError}
                 />
                 </>
@@ -296,7 +311,7 @@ const PathChoiceQuest = () => {
           <img 
             src={starCharacter} 
             alt="별별이" 
-            className="absolute bottom-[10%] left-0 w-[27%]"
+            className="absolute bottom-[10%] left-[5%] w-[20%]"
           />
         </div>
       )}
@@ -318,7 +333,8 @@ const PathChoiceQuest = () => {
             alt="사고 장면"
             className="absolute inset-0 w-full h-full object-cover"
           />
-          
+          {/* 3초 후에 등장 */}
+          {showWarning && (
           <div className="absolute inset-0 bg-white bg-opacity-30 flex flex-col items-center justify-end pb-32 z-10">
             <img 
                 src={dangerWarning} 
@@ -333,6 +349,7 @@ const PathChoiceQuest = () => {
               </p>
             </div>
           </div>
+          )}
         </div>
       )}
     </div>
