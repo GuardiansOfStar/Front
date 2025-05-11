@@ -7,10 +7,10 @@ const HarvestBox = () => {
 
     // 사과박스의 위치와 크기 지정
     const boxData = [
-        { top: '50%', left: '10%', width: '45vw' },
-        { top: '60%', left: '50%', width: '40vw' },
-        { top: '75%', left: '80%', width: '65vw' },
-        { top: '75%', left: '15%', width: '48vw' },
+        { top: '55%', left: '20%', width: '50%' },
+        { top: '65%', left: '45%', width: '45%' },
+        { top: '75%', left: '79%', width: '71%' },
+        { top: '82%', left: '24%', width: '55%' },
     ];
 
     useEffect(() => {
@@ -28,7 +28,7 @@ const HarvestBox = () => {
     }, []);
 
     return (
-        <div className="relative h-full aspect-[4/3] max-w-[100vw] max-h-[100vh] mx-auto overflow-hidden">
+        <div className="w-full h-full">
         {boxData.map((box, index) => (
             <img
             key={index}

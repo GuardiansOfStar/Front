@@ -25,7 +25,8 @@ import HarvestQuest from './pages/quest/HarvestQuest';
 
 function App() {
   return (
-    <Router>
+      <AspectRatioContainer>
+<Router>
       <Routes>
         {/* 기본 화면들 */}
         <Route path="/" element={<HomePage />} />
@@ -50,7 +51,9 @@ function App() {
         <Route path="/info" element={<PersonalInfo />} />
         <Route path="/star" element={<StarSurvey />} />
       </Routes>
+      
     </Router>
+    </AspectRatioContainer>
   );
 }
 

@@ -1,4 +1,4 @@
-// src/pages/quest/PotholeQuest.tsx
+// src/pages/quest/HarvestQuest.tsx
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import BackButton from '../../components/ui/BackButton';
@@ -127,7 +127,7 @@ const HarvestQuest = () => {
   };
 
   // 타이틀 텍스트 렌더링 함수 - 고대비 스타일 적용
-  const renderTitleText = (text: string, fontSize = "7vw", color = "text-green-600") => (
+  const renderTitleText = (text: string, fontSize = "6rem", color = "text-green-600") => (
       <h1 className={`absolute top-[23%] left-1/2 transform -translate-x-1/2 font-extrabold ${color} px-8 py-3 whitespace-nowrap`}
           style={{ 
             fontSize,
@@ -139,7 +139,7 @@ const HarvestQuest = () => {
   );
 
   return (
-    <div className="relative h-full aspect-[4/3] max-w-[100vw] max-h-[100vh] mx-auto overflow-hidden">
+    <div className="w-full h-full">
       {/* 배경 - 게임 단계에 따라 다른 배경 표시 */}
       {(gamePhase !== 'fadeOut') && (
         <img
@@ -195,9 +195,9 @@ const HarvestQuest = () => {
           
           <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
             {/* 선택지 제목 및 설명 */}
-            <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-3xl p-6 mb-8 w-4/5 max-w-3xl">
-              <h2 className="text-4xl font-extrabold text-green-600 text-center mb-4">무거운 짐 싣기</h2>
-              <p className="text-2xl font-semibold text-black text-center">
+            <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-3xl p-6 mb-8 w-[75%]">
+              <h2 className="text-5xl font-extrabold text-green-600 text-center mb-4">무거운 짐 싣기</h2>
+              <p className="text-4xl font-bold text-black text-center">
                 드디어 작업이 끝났어요<br/>
                 수확한 농작물을 이륜차에 싣고 싶어요<br/>
                 어떻게 옮길까요?
@@ -205,14 +205,14 @@ const HarvestQuest = () => {
             </div>
             
             {/* 선택지 버튼 */}
-            <div className="flex justify-center space-x-6 w-4/5">
+            <div className="flex justify-center space-x-10 w-4/5">
               <button
-                className={`w-1/2 bg-green-600 bg-opacity-70
-                border-4 border-green-700 rounded-lg p-4
-                text-xl font-bold text-white 
+                className={`w-[40%] bg-green-600 bg-opacity-70
+                border-8 border-green-600 rounded-xl p-4
+                text-3xl font-bold text-white 
                 transition duration-300 
                 ${selectedOption === 'A' ? 
-                'bg-green-700 scale-105 bg-opacity-95' : 'hover:bg-green-700'}`}
+                'bg-green-600 scale-105 bg-opacity-95' : 'hover:bg-green-600'}`}
                 onClick={() => handleOptionSelect('A')}
                 disabled={!!selectedOption}
               >
@@ -220,12 +220,12 @@ const HarvestQuest = () => {
               </button>
               
               <button
-                className={`w-1/2 bg-green-600 bg-opacity-70
-                border-4 border-green-700 rounded-lg p-4
-                text-xl font-bold text-white
+                className={`w-[40%] bg-green-600 bg-opacity-70
+                border-8 border-green-600 rounded-xl p-4
+                text-3xl font-bold text-white
                 transition duration-300 
-                ${selectedOption === 'B' 
-                ? 'bg-green-700 scale-105 bg-opacity-95' : 'hover:bg-green-700'}`}
+                ${selectedOption === 'B' ? 
+                'bg-green-600 scale-105 bg-opacity-95' : 'hover:bg-green-600'}`}
                 onClick={() => handleOptionSelect('B')}
                 disabled={!!selectedOption}
               >
@@ -240,7 +240,7 @@ const HarvestQuest = () => {
       {gamePhase === 'successResult' && !showSuccessMessage && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           {/* 중앙에 큰 success_circle 이미지 */}
-          <div className="relative w-[100vw] h-[100vh] flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center">
             <img
               src={successCircle} 
               alt="성공 원" 
@@ -254,13 +254,13 @@ const HarvestQuest = () => {
                 <img 
                   src={grandfaSuccess}
                   alt="수레 끄시는 할아버지" 
-                  className="absolute left-[20%] w-[26%] h-auto object-contain z-40"
+                  className="absolute left-[20%] w-[35%] h-auto object-contain z-40"
                   onError={handleImageError}
                 />
                 <img 
                   src={motorcycle}
                   alt="오토바이" 
-                  className="absolute right-[35%] w-[18%] object-contain z-50"
+                  className="absolute right-[26%] w-[25%] object-contain z-50"
                   onError={handleImageError}
                 />
                 </>
@@ -268,7 +268,7 @@ const HarvestQuest = () => {
                 <img 
                   src="/assets/images/character_with_helmet.png"  
                   alt="헬멧 쓴 캐릭터" 
-                  className="w-4/5 h-auto object-contain"
+                  className="w-2/5 h-auto object-contain"
                 />
               )}
             </div>
@@ -278,14 +278,14 @@ const HarvestQuest = () => {
       
       {/* 정답 후 성공 메시지 화면 - 오토바이 제거 */}
       {gamePhase === 'successResult' && showSuccessMessage && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <div className="absolute inset-0 bg-white bg-opacity-30 flex flex-col items-center justify-center z-10">
           {/* 중앙 상단에 정답입니다! */}
-          <div className="absolute top-[15%] text-5xl font-extrabold text-green-700 left-1/2 transform -translate-x-1/2">
+          <div className="absolute top-[20%] text-6xl font-extrabold text-green-700 left-1/2 transform -translate-x-1/2 z-20">
             정답입니다!
             </div>
             {/* 중앙에 녹색 박스에 메시지 */}
-            <div className="mt-5 bg-green-500 bg-opacity-70 border-green-600 rounded-3xl border-8 border-green p-10 max-w-xl w-4/5 mx-auto text-center relative">
-              <p className="text-3xl text-white font-bold">
+            <div className="mt-10 bg-green-600 bg-opacity-60 border-green-700 border-8  rounded-3xl p-10 w-[75%] mx-auto text-center relative">
+              <p className="text-4xl font-extrabold text-white">
                 어르신의 안전과<br/>
                 소중한 자산을 보호하는 <br/> 현명한 선택이에요
               </p>
@@ -294,7 +294,7 @@ const HarvestQuest = () => {
           <img 
             src={starCharacter} 
             alt="별별이" 
-            className="absolute bottom-[10%] left-[5%] w-[20%]"
+            className="absolute bottom-[10%] left-[5%] w-[27%] z-30"
           />
         </div>
       )}
@@ -320,19 +320,20 @@ const HarvestQuest = () => {
           {showWarning && (
           <div className="absolute inset-0 bg-white bg-opacity-30 flex flex-col items-center justify-end pb-32 z-10">
             <img 
-                src={dangerWarning} 
-                alt="위험 경고" 
-                className="absolute top-[7%] left-1/2 transform -translate-x-1/2 w-[18%]"
-              />
-            <div className="absolute w-[70vw] bg-white bg-opacity-80 border-red-600 border-8 rounded-xl p-6 text-center mb-4">
-              <h2 className="text-4xl font-extrabold text-red-600 mb-4">이륜차에 깔렸어요!</h2>
-              <p className="text-2xl font-bold text-black">
-                논밭에서 이륜차는 전복되기 쉬워요<br/>
+              src={dangerWarning} 
+              alt="위험 경고" 
+              className="w-[16%] mb-1" //간격 조절 여기서
+            />
+            
+            <div className="w-[80%] bg-white bg-opacity-80 border-red-600 border-8 rounded-xl p-8 text-center">
+              <h2 className="text-6xl font-extrabold text-red-600 mb-4">이륜차에 깔렸어요!</h2>
+              <p className="text-4xl font-extrabold text-black">
+                논밭에서 이륜차는 전복되기 쉬워요<br />
                 도로에 두고 짐을 옮겨야 안전해요
               </p>
             </div>
           </div>
-          )}
+        )}
         </div>
       )}
     </div>
