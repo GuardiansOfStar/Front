@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+//import { useNavigate } from 'react-router-dom';
 
 const background = '/assets/images/basic_road_long.png';
 const motorcycle = '/assets/images/motorcycle.png';

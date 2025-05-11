@@ -9,6 +9,15 @@ body {
 }
 
 /* src/index.css (Tailwind + 캐릭터 애니메이션 추가)*/
+@keyframes fadein {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fadein {
+  animation: fadein 2.5s ease-out forwards;
+}
+
 
 @keyframes move-diagonal {
   0% {

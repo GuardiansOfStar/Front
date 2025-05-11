@@ -96,7 +96,7 @@ const PathChoiceQuest = () => {
           setTimeout(() => {
             navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=10&correct=false`);
           }, 3000);
-        }, 1500);
+        }, 2500);
       }, 1000);
     }
   };
@@ -126,7 +126,7 @@ const PathChoiceQuest = () => {
   return (
     <div className="relative h-full aspect-[4/3] max-w-[100vw] max-h-[100vh] mx-auto overflow-hidden">
       {/* 배경 - 게임 단계에 따라 다른 배경 표시 */}
-      {(gamePhase !== 'driving') && (
+      {(gamePhase !== 'driving' && gamePhase !== 'fadeOut') && (
         <img
           src={gamePhase === 'twoPathsNotice' || gamePhase === 'selection' ? twoPathScene : basicRoad}
           alt="갈림길 배경"
@@ -210,9 +210,11 @@ const PathChoiceQuest = () => {
             <div className="flex justify-center space-x-6 w-4/5">
               <button
                 className={`w-1/2 bg-green-600 bg-opacity-70
-                border-4 border-green-700 rounded-lg p-4
+                border-4 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 border-green-700 rounded-lg p-4
                 text-xl font-bold text-white 
-                transition duration-300`}
+                transition duration-300 
+                ${selectedOption === 'A' ? 
+                'bg-green-700 scale-105 bg-opacity-100' : 'hover:bg-green-700'}`}
                 onClick={() => handleOptionSelect('A')}
                 disabled={!!selectedOption}
               >
@@ -223,7 +225,9 @@ const PathChoiceQuest = () => {
                 className={`w-1/2 bg-green-600 bg-opacity-70
                 border-4 border-green-700 rounded-lg p-4
                 text-xl font-bold text-white
-                transition duration-300`}
+                transition duration-300 
+                ${selectedOption === 'B' 
+                ? 'bg-green-700 scale-105 bg-opacity-100' : 'hover:bg-green-700'}`}
                 onClick={() => handleOptionSelect('B')}
                 disabled={!!selectedOption}
               >
@@ -299,7 +303,11 @@ const PathChoiceQuest = () => {
       
       {/* 페이드아웃 화면 */}
       {gamePhase === 'fadeOut' && (
-        <div className="absolute inset-0 bg-black z-50 transition-opacity duration-1500 opacity-100"></div>
+        <img
+        src="/assets/images/accident_fadeout.png"
+        alt="전환 이미지"
+        className="absolute inset-0 w-full h-full object-cover z-50 opacity-0 animate-fadein"
+        />
       )}
       
       {/* 오답 결과 화면 */}
