@@ -21,7 +21,7 @@ const RegionBubble = ({ show }: RegionBubbleProps) => {
 
   return (
     <div 
-      className="absolute top-[160px] right-7 transform origin-top-right 
+      className="absolute top-[160px] right-5 transform origin-top-right 
                  z-40"
     >
       {/* 말풍선 꼬리 - 더 길고 뚜렷하게 */}

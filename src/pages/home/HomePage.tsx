@@ -1,4 +1,3 @@
-// src/pages/home/HomePage.tsx
 import { useState, useEffect } from 'react';
 import Background from '../../components/ui/Background';
 import CharacterAnimation from './CharacterAnimation';
@@ -25,16 +24,24 @@ const HomePage = () => {
     setAnimationCompleted(true);
   };
 
-  // 애니메이션 완료 후 0.5초 뒤에 말풍선 표시
+  // 페이지 로드 후 10초 후에 말풍선 표시, 5초 후에 말풍선 숨김
   useEffect(() => {
-    if (animationCompleted && !hasRegion) {
-      const timer = setTimeout(() => {
+    if (!hasRegion) {
+      // 10초 후 말풍선 표시
+      const showTimer = setTimeout(() => {
         setShowBubble(true);
-      }, 500); // 0.5초 딜레이
+        
+        // 말풍선 표시 5초 후 숨김
+        const hideTimer = setTimeout(() => {
+          setShowBubble(false);
+        }, 5000);
+        
+        return () => clearTimeout(hideTimer);
+      }, 10000);
       
-      return () => clearTimeout(timer);
+      return () => clearTimeout(showTimer);
     }
-  }, [animationCompleted, hasRegion]);
+  }, [hasRegion]);
 
   return (
     <div className="relative h-full aspect-[4/3] max-w-[100vw] max-h-[100vh] mx-auto overflow-hidden">
