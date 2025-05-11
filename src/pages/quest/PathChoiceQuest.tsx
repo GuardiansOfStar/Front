@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import BackButton from '../../components/ui/BackButton';
+import RoadSliding from './RoadSliding';
 
 // 이미지 임포트
 const basicRoad = '/assets/images/basic_road.png';
@@ -126,11 +127,14 @@ const PathChoiceQuest = () => {
   return (
     <div className="relative h-full aspect-[4/3] max-w-[100vw] max-h-[100vh] mx-auto overflow-hidden">
       {/* 배경 - 게임 단계에 따라 다른 배경 표시 */}
-      <img
-        src={gamePhase === 'twoPathsNotice' || gamePhase === 'selection' ? twoPathScene : basicRoad}
-        alt="주행 배경"
-        className="absolute w-full h-full object-cover"
-      />
+      {(gamePhase !== 'driving') && (
+        <img
+          src={gamePhase === 'twoPathsNotice' || gamePhase === 'selection' ? twoPathScene : basicRoad}
+          alt="갈림길 배경"
+          className="absolute w-full h-full object-cover"
+        />
+      )}
+
       
       {/* 헤더 영역 */}
       {(gamePhase !== 'fadeOut' && gamePhase !== 'failResult') && (
@@ -164,20 +168,10 @@ const PathChoiceQuest = () => {
       )}
       
       {/* 주행 화면 */}
-      {gamePhase === 'driving' && (
-        <div className="absolute inset-0">
-          {/* 오토바이 화면 하단에 크게 배치하고 움직이는 효과 */}
-          <div className="absolute bottom-0 w-full flex justify-center">
-            <img
-              src={motorcycle}
-              alt="이륜차"
-              className={`w-4/5 max-h-[50vh] object-contain object-bottom transition-all duration-500 ${isAnimating ? 'animate-pulse' : ''}`}
-            />
-          </div>
-        </div>
-      )}
+      {gamePhase === 'driving' && <RoadSliding />}
+
       
-      {/* 포트홀 경고 화면 */}
+      {/* 갈림길 등장 화면 */}
       {gamePhase === 'twoPathsNotice' && (
         <div className="absolute inset-0">
           {/* 오토바이 화면 하단에 크게 배치 */}
@@ -285,7 +279,7 @@ const PathChoiceQuest = () => {
       {gamePhase === 'successResult' && showSuccessMessage && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           {/* 중앙 상단에 정답입니다! */}
-          <div className="absolute top-[15%] text-3xl font-extrabold text-green-700 left-1/2 transform -translate-x-1/2">
+          <div className="absolute top-[15%] text-5xl font-extrabold text-green-700 left-1/2 transform -translate-x-1/2">
             정답입니다!
             </div>
             {/* 중앙에 녹색 박스에 메시지 */}
