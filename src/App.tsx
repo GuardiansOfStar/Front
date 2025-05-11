@@ -1,7 +1,7 @@
 // src/App.tsx
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
 import AspectRatioContainer from './components/layout/AspectRatioContainer';
+
 import HomePage from './pages/home/HomePage';
 import ScenarioSelectPage from './pages/scenarioSelect/ScenarioSelectPage';
 import MapPage from './pages/map/MapPage';
@@ -22,15 +22,15 @@ import CompletionBackground from './pages/questFinish/CompletionBackground';
 import SuccessBackground from './pages/questFinish/SuccessBackground';
 import PathChoiceQuest from './pages/quest/PathChoiceQuest';
 import HarvestQuest from './pages/quest/HarvestQuest';
+import MakgeolliQuest from './pages/quest/MakgeolliQuest';
 
 function App() {
   return (
-      <AspectRatioContainer>
-<Router>
+    <AspectRatioContainer targetRatio={4/3} fillMode="fill">
       <Routes>
         {/* 기본 화면들 */}
         <Route path="/" element={<HomePage />} />
-        <Route path="/scenarios" element={<HarvestQuest/>} />
+        <Route path="/scenarios" element={<ScenarioSelectPage />} />
         <Route path="/map" element={<MapPage />} />
         <Route path="/prologue" element={<ProloguePage />} />
 
@@ -38,6 +38,9 @@ function App() {
         <Route path="/driving-prep" element={<DrivingPrepPage />} />
         <Route path="/quest" element={<MemoryCardQuest />} />
         <Route path="/pothole-quest" element={<PotholeQuest />} />
+        <Route path="/makgeolli-quest" element={<MakgeolliQuest/>} />
+        <Route path="/harvest-quest" element={<HarvestQuest />} />
+        <Route path="/path-choice-quest" element={<PathChoiceQuest />} />
         <Route path="/driving-base" element={<DrivingBaseScreen/>} />
         <Route path="/score" element={<ScorePage />} />
         
@@ -51,8 +54,6 @@ function App() {
         <Route path="/info" element={<PersonalInfo />} />
         <Route path="/star" element={<StarSurvey />} />
       </Routes>
-      
-    </Router>
     </AspectRatioContainer>
   );
 }

@@ -15,31 +15,32 @@ const SuccessBackground = () => {
     const [showDancingStar, setShowDancingStar] = useState(false);
     const [hideMotorcycle, setHideMotorcycle] = useState(false);
 
+    // SuccessBackground.tsx의 useEffect 부분 수정
     useEffect(() => {
-        // 컨페티는 8초 후 중단
-        const confettiTimer = setTimeout(() => {
-            setShowConfetti(false);
-        }, 10000);
+    // 컨페티는 8초 후 중단
+    const confettiTimer = setTimeout(() => {
+        setShowConfetti(false);
+    }, 10000);
 
-        // 애니메이션 시작
-        setStartAnimation(true);
+    // 애니메이션 시작
+    setStartAnimation(true);
 
-        // 4초 뒤 댄싱스타 등장 및 오토바이 페이드아웃
-        const transitionTimer = setTimeout(() => {
-            setShowDancingStar(true);
-            setHideMotorcycle(true);
-        }, 7400);
-        
-        // 8초 후 결과 화면으로 자동 이동
-        const navigationTimer = setTimeout(() => {
-            navigate('/result');
-        }, 8000);
+    // 4초 뒤 댄싱스타 등장 및 오토바이 페이드아웃
+    const transitionTimer = setTimeout(() => {
+        setShowDancingStar(true);
+        setHideMotorcycle(true);
+    }, 7400);
+    
+    // 8초 후 결과 화면으로 자동 이동 (수정: /result 대신 /completion으로 이동)
+    const navigationTimer = setTimeout(() => {
+        navigate('/completion');
+    }, 8000);
 
-        return () => {
-            clearTimeout(confettiTimer);
-            clearTimeout(transitionTimer);
-            clearTimeout(navigationTimer);
-        };
+    return () => {
+        clearTimeout(confettiTimer);
+        clearTimeout(transitionTimer);
+        clearTimeout(navigationTimer);
+    };
     }, [navigate]);
 
     return (

@@ -6,8 +6,10 @@ const EduScreen = () => {
   const navigate = useNavigate();
   
   useEffect(() => {
+    console.log("EduScreen - 결과 화면 표시 중");
     // 5초 후 자동으로 수료증 화면으로 이동
     const timer = setTimeout(() => {
+      console.log("EduScreen - 수료증 화면으로 이동");
       navigate('/certificate');
     }, 5000);
     
@@ -16,7 +18,7 @@ const EduScreen = () => {
 
   return (
     <div
-      className="relative w-full h-screen overflow-hidden flex flex-col items-center justify-center"
+      className="relative w-full h-full flex flex-col items-center justify-center"
       onClick={() => navigate('/certificate')}
     >
       <Background />

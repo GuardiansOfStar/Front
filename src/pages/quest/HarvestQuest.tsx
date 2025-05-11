@@ -47,7 +47,7 @@ const HarvestQuest = () => {
     const sId = searchParams.get('scenario');
     const qId = searchParams.get('quest');
     setScenarioId(sId);
-    setQuestId(qId || '5');
+    setQuestId(qId || '4');
     
     // 인트로 화면 후 자동으로 드라이빙 시작
     const timer = setTimeout(() => {

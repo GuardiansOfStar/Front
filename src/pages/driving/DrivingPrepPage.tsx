@@ -21,8 +21,11 @@ const DrivingPrepPage = () => {
     setScenarioId(sId);
     setNextQuestId(qId);
     
+    console.log("DrivingPrepPage - 주행 준비 중:", { scenarioId: sId, nextQuestId: qId });
+    
     // 다음 화면으로 자동 이동 타이머
     const timer = setTimeout(() => {
+      console.log("DrivingPrepPage - 미션 화면으로 이동:", { path: `/quest?scenario=${sId}&quest=${qId}` });
       navigate(`/quest?scenario=${sId}&quest=${qId}`);
     }, 4000);
     
@@ -47,7 +50,7 @@ const DrivingPrepPage = () => {
   }, []);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden">
+    <div className="relative w-full h-full">
       {/* 배경 */}
       <img
         src={drivingBackground}

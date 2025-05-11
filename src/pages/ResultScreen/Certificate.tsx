@@ -12,7 +12,7 @@ const Certificate = () => {
 
   return (
     <div
-      className="relative w-full h-screen overflow-hidden flex flex-col items-center justify-center"
+      className="relative w-full h-full flex flex-col items-center justify-center"
     >
       <Background />
       <img

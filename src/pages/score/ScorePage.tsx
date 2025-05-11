@@ -24,6 +24,8 @@ const ScorePage = () => {
     const sId = searchParams.get('scenario');
     const qId = searchParams.get('quest');
     
+    console.log("ScorePage - 받은 파라미터:", { score: scoreParam, correct: correctParam, scenario: sId, quest: qId });
+    
     setScore(scoreParam ? parseInt(scoreParam) : 0);
     setIsCorrect(correctParam === 'true');
     setScenarioId(sId);
@@ -31,17 +33,39 @@ const ScorePage = () => {
     
     // 3초 후 다음 화면으로 자동 이동
     const timer = setTimeout(() => {
-      // 미션 1이 끝났으면 주행 기본 화면으로 이동
-      if (qId === '1') {
-        navigate(`/driving-base?scenario=${sId}&nextQuest=2`);
-      } 
-      // 미션 2가 끝났으면 미션 3으로 이동 (추후 구현)
-      else if (qId === '2') {
-        navigate(`/driving-base?scenario=${sId}&nextQuest=3`);
-      }
-      // 그 외 미션은 추가 구현 필요
-      else {
-        navigate(`/`);
+      // 미션별 분기 처리 확장
+      console.log("ScorePage - 다음 화면 결정 중:", { questId: qId });
+
+      switch(qId) {
+        case '1':
+          // 미션1 완료 → 미션2 준비로 이동
+          console.log("미션1 완료 → 미션2 준비로 이동");
+          navigate(`/driving-base?scenario=${sId}&nextQuest=2`);
+          break;
+        case '2':
+          // 미션2 완료 → 미션3 준비로 이동
+          console.log("미션2 완료 → 미션3 준비로 이동");
+          navigate(`/driving-base?scenario=${sId}&nextQuest=3`);
+          break;
+        case '3':
+          // 미션3 완료 → 미션4 준비로 이동
+          console.log("미션3 완료 → 미션4 준비로 이동");
+          navigate(`/driving-base?scenario=${sId}&nextQuest=4`);
+          break;
+        case '4':
+          // 미션4 완료 → 미션5 준비로 이동
+          console.log("미션4 완료 → 미션5 준비로 이동");
+          navigate(`/driving-base?scenario=${sId}&nextQuest=5`);
+          break;
+        case '5':
+          // 미션5 완료 → 성공 화면으로 이동
+          console.log("미션5 완료 → 성공 화면으로 이동");
+          navigate(`/success?scenario=${sId}`);
+          break;
+        default:
+          // 알 수 없는 미션 → 홈으로 이동
+          console.log("알 수 없는 미션 ID입니다. 홈으로 이동합니다.");
+          navigate('/');
       }
     }, 3000);
     
@@ -49,7 +73,7 @@ const ScorePage = () => {
   }, [location, navigate]);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden">
+    <div className="relative w-full h-full">
       {/* 배경 컴포넌트 사용 */}
       <Background />
       

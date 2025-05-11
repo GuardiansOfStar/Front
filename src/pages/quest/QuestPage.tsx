@@ -104,7 +104,7 @@ const QuestPage = () => {
   };
 
   return (
-    <div className="relative w-full h-screen overflow-hidden">
+    <div className="relative w-full h-full">
       {/* 배경 */}
       <img
         src={preDriveBackground}
