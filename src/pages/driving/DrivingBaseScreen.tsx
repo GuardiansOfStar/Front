@@ -12,28 +12,39 @@ const DrivingBaseScreen = () => {
   const location = useLocation();
   const [scenarioId, setScenarioId] = useState<string | null>(null);
   const [nextQuestId, setNextQuestId] = useState<string | null>(null);
-  const [motorcyclePosition, setMotorcyclePosition] = useState(20);
   const [showStartText, setShowStartText] = useState(false);
   
-  // URL 쿼리 파라미터에서 시나리오 ID와 다음 퀘스트 ID 가져오기
   useEffect(() => {
+    console.log("DrivingBaseScreen - URL:", location.search);
     const searchParams = new URLSearchParams(location.search);
     const sId = searchParams.get('scenario');
-    const qId = searchParams.get('nextQuest');
+    const nqId = searchParams.get('nextQuest');
+    
+    console.log("DrivingBaseScreen - 파라미터:", { scenario: sId, nextQuest: nqId });
+    
     setScenarioId(sId);
-    setNextQuestId(qId || '2');
+    setNextQuestId(nqId);
     
     // 3초 후 '주행 시작' 텍스트 표시
     const textTimer = setTimeout(() => {
       setShowStartText(true);
       
-      // 텍스트 표시 후 3초 더 기다린 뒤 사라짐
+      // 텍스트 표시 후 3초 후 사라짐
       const hideTextTimer = setTimeout(() => {
         setShowStartText(false);
         
-        // 텍스트 사라진 후 2초 후 미션 2로 이동
+        // 텍스트 사라진 후 2초 후 다음 미션으로 이동
         const navigationTimer = setTimeout(() => {
-          navigate(`/pothole-quest?scenario=${sId}&quest=${qId || '2'}`);
+          // 명확한 분기 처리
+          if (nqId === '3') {
+            // 미션3 (막걸리 미션)으로 이동
+            console.log("→→→ 미션3(막걸리)으로 이동합니다:", `/makgeolli-quest?scenario=${sId}&quest=3`);
+            navigate(`/makgeolli-quest?scenario=${sId}&quest=3`);
+          } else {
+            // 미션2 (포트홀 미션)으로 이동
+            console.log("→→→ 미션2(포트홀)로 이동합니다:", `/pothole-quest?scenario=${sId}&quest=2`);
+            navigate(`/pothole-quest?scenario=${sId}&quest=2`);
+          }
         }, 2000);
         
         return () => clearTimeout(navigationTimer);
@@ -45,25 +56,23 @@ const DrivingBaseScreen = () => {
     return () => clearTimeout(textTimer);
   }, [location, navigate]);
   
-  // 오토바이 애니메이션 효과
-  useEffect(() => {
-    const animationInterval = setInterval(() => {
-      setMotorcyclePosition(prev => {
-        if (prev >= 50) {
-          clearInterval(animationInterval);
-          return prev;
-        }
-        return prev + 0.5;
-      });
-    }, 50);
-    
-    return () => clearInterval(animationInterval);
-  }, []);
-  
   // 홈으로 이동 핸들러
   const handleGoHome = () => {
     navigate('/');
   };
+
+  // 타이틀 텍스트 렌더링 함수
+  const renderTitleText = (text: string) => (
+    <div className="relative inline-block">
+      <h1 className="text-6xl font-extrabold text-green-600 px-12 py-4"
+          style={{ 
+            textShadow: '2px 2px 0 #FFF, -2px -2px 0 #FFF, 2px -2px 0 #FFF, -2px 2px 0 #FFF',
+            WebkitTextStroke: '1px white'
+          }}>
+        {text}
+      </h1>
+    </div>
+  );
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
@@ -84,16 +93,19 @@ const DrivingBaseScreen = () => {
         />
       </div>
       
-      {/* 주행 시작 텍스트 */}
+      {/* 주행 시작 텍스트 - 더 크게, 중앙 상단에 표시 */}
       {showStartText && (
         <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
-          <div className="bg-green-600 py-4 px-12 rounded-xl shadow-lg">
-            <h1 className="text-4xl font-bold text-white text-center">주행 시작</h1>
-          </div>
+          {renderTitleText('주행 시작')}
         </div>
       )}
       
-      {/* 오토바이 - 위치 및 크기 수정 */}
+      {/* 디버그 정보 (개발 중에만 표시) */}
+      {/* <div className="absolute bottom-4 left-4 bg-black bg-opacity-50 text-white p-2 text-sm z-50">
+        다음 미션: {nextQuestId === '3' ? '막걸리 미션(3)' : '포트홀 미션(2)'}
+      </div> */}
+      
+      {/* 오토바이 - 애니메이션 없이 고정 위치에 표시 */}
       <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-10 w-full flex justify-center">
         <img
           src={motorcycle}
@@ -101,7 +113,6 @@ const DrivingBaseScreen = () => {
           style={{
             width: '60%', // 화면의 60% 크기로 설정
             maxHeight: '50vh', // 화면 높이의 50%로 최대 높이 제한
-            transform: `translateX(${motorcyclePosition - 50}%)`, // 애니메이션 적용하면서 중앙 정렬
             objectFit: 'contain',
             objectPosition: 'bottom'
           }}

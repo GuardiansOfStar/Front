@@ -2,23 +2,22 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import BackButton from '../../components/ui/BackButton';
+import RoadGameComponent from '../../components/game/RoadGameComponent';
 
 // 이미지 임포트
 const basicRoad = '/assets/images/basic_road.png';
-const roadWithPotholes = '/assets/images/road_with_potholes.png';
+const roadWithPotholes = '/assets/images/road_with_small_pothole.png';
 const motorcycle = '/assets/images/motorcycle.png';
 const potholeAccident = '/assets/images/pothole_flat_tire.png';
-const accidentTurnoff = '/assets/images/accident_turnoff.png';
+const accidentTurnoff = '/assets/images/accident_turnoff_gfa.png';
 const dangerWarning = '/assets/images/danger_warning.png';
 const successCircle = '/assets/images/success_circle.png';
 const homeButton = '/assets/images/home_button.png';
 const starCharacter = '/assets/images/star_character.png';
-const grandfaMotorcycle = '/assets/images/mission2_success.png';
 
 // 게임 단계 정의
 type GamePhase = 
-  | 'intro'         // 시작 화면
-  | 'driving'       // 오토바이 주행
+  | 'driving'       // 오토바이 주행 (Phaser 게임)
   | 'potholeAlert'  // 포트홀 발견
   | 'selection'     // 선택지 제공
   | 'successResult' // 정답 선택 결과
@@ -31,9 +30,8 @@ const PotholeQuest = () => {
   const location = useLocation();
   const [scenarioId, setScenarioId] = useState<string | null>(null);
   const [questId, setQuestId] = useState<string | null>(null);
-  const [gamePhase, setGamePhase] = useState<GamePhase>('intro');
+  const [gamePhase, setGamePhase] = useState<GamePhase>('driving');
   const [selectedOption, setSelectedOption] = useState<'A' | 'B' | null>(null);
-  const [isAnimating, setIsAnimating] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [fallbackImage, setFallbackImage] = useState(false);
   
@@ -44,29 +42,17 @@ const PotholeQuest = () => {
     const qId = searchParams.get('quest');
     setScenarioId(sId);
     setQuestId(qId || '2');
-    
-    // 인트로 화면 후 자동으로 드라이빙 시작
-    const timer = setTimeout(() => {
-      setGamePhase('driving');
-      setIsAnimating(true);
-      
-      // 운전 애니메이션 후 포트홀 발견 화면으로 전환
-      const drivingTimer = setTimeout(() => {
-        setGamePhase('potholeAlert');
-        
-        // 포트홀 발견 후 선택지 화면으로 전환
-        const alertTimer = setTimeout(() => {
-          setGamePhase('selection');
-        }, 2000);
-        
-        return () => clearTimeout(alertTimer);
-      }, 5000);
-      
-      return () => clearTimeout(drivingTimer);
-    }, 3000);
-    
-    return () => clearTimeout(timer);
   }, [location]);
+  
+  // 포트홀 충돌 핸들러 (Phaser 게임에서 호출됨)
+  const handlePotholeCollision = () => {
+    // 포트홀 발견 후 선택지 화면으로 전환
+    setGamePhase('potholeAlert');
+    
+    setTimeout(() => {
+      setGamePhase('selection');
+    }, 2000);
+  };
   
   // 선택지 선택 핸들러
   const handleOptionSelect = (option: 'A' | 'B') => {
@@ -126,12 +112,20 @@ const PotholeQuest = () => {
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
-      {/* 배경 - 게임 단계에 따라 다른 배경 표시 */}
-      <img
-        src={gamePhase === 'potholeAlert' || gamePhase === 'selection' ? roadWithPotholes : basicRoad}
-        alt="주행 배경"
-        className="absolute w-full h-full object-cover"
-      />
+      {/* 게임 단계에 따라 다른 배경 표시 */}
+      {gamePhase === 'driving' ? (
+        // Phaser 게임 렌더링 - 전체 화면으로 조정
+        <div className="absolute inset-0">
+          <RoadGameComponent onPotholeCollision={handlePotholeCollision} />
+        </div>
+      ) : (
+        // 정적 배경 이미지
+        <img
+          src={gamePhase === 'potholeAlert' || gamePhase === 'selection' ? roadWithPotholes : basicRoad}
+          alt="주행 배경"
+          className="absolute w-full h-full object-cover"
+        />
+      )}
       
       {/* 헤더 영역 */}
       {(gamePhase !== 'fadeOut' && gamePhase !== 'failResult') && (
@@ -146,51 +140,10 @@ const PotholeQuest = () => {
       )}
       {(gamePhase !== 'fadeOut' && gamePhase !== 'failResult') && <BackButton />}
       
-      {/* 인트로 화면 */}
-      {gamePhase === 'intro' && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <div className="mb-12">
-            {renderTitleText('주행 시작')}
-          </div>
-          
-          {/* 오토바이 중앙 하단에 크게 표시 */}
-          <div className="absolute bottom-0 w-full flex justify-center">
-            <img 
-              src={motorcycle} 
-              alt="이륜차" 
-              className="w-4/5 max-h-[50vh] object-contain object-bottom"
-            />
-          </div>
-        </div>
-      )}
-      
-      {/* 주행 화면 */}
-      {gamePhase === 'driving' && (
-        <div className="absolute inset-0">
-          {/* 오토바이 화면 하단에 크게 배치하고 움직이는 효과 */}
-          <div className="absolute bottom-0 w-full flex justify-center">
-            <img
-              src={motorcycle}
-              alt="이륜차"
-              className={`w-4/5 max-h-[50vh] object-contain object-bottom transition-all duration-500 ${isAnimating ? 'animate-pulse' : ''}`}
-            />
-          </div>
-        </div>
-      )}
-      
       {/* 포트홀 경고 화면 */}
       {gamePhase === 'potholeAlert' && (
         <div className="absolute inset-0">
-          {/* 오토바이 화면 하단에 크게 배치 */}
-          <div className="absolute bottom-0 w-full flex justify-center">
-            <img
-              src={motorcycle}
-              alt="이륜차"
-              className="w-4/5 max-h-[50vh] object-contain object-bottom z-10"
-            />
-          </div>
-          
-          {/* 경고 텍스트 상단에 표시 */}
+          {/* 경고 텍스트만 상단에 표시 */}
           <div className="absolute top-20 left-1/2 transform -translate-x-1/2">
             {renderTitleText('앞에 구덩이가 있어요!')}
           </div>
@@ -205,7 +158,7 @@ const PotholeQuest = () => {
           
           <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
             {/* 선택지 제목 및 설명 */}
-            <div className="bg-white border-4 border-green-600 rounded-xl p-6 mb-8 w-4/5 max-w-3xl">
+            <div className="bg-white border-8 border-green-600 rounded-xl p-6 mb-8 w-4/5 max-w-3xl">
               <h2 className="text-3xl font-bold text-green-700 text-center mb-4">구덩이 조심</h2>
               <p className="text-2xl text-black text-center">
                 앞에 큰 구덩이가 있어요!<br/>
@@ -217,7 +170,11 @@ const PotholeQuest = () => {
             {/* 선택지 버튼 */}
             <div className="flex justify-center space-x-6 w-4/5">
               <button
-                className={`w-1/2 bg-green-100 border-4 border-green-600 rounded-xl p-4 text-xl font-bold text-green-800 transition duration-300 ${selectedOption === 'A' ? 'bg-green-200 scale-105' : 'hover:bg-green-200'}`}
+                className={`w-1/2 bg-green-100 border-8 border-green-600 rounded-xl p-4 text-xl font-bold text-green-800 transition-all duration-300 focus:outline-none focus:ring-0
+
+                ${selectedOption === 'A' 
+                  ? 'bg-green-200 scale-105' 
+                  : 'hover:bg-green-300'}`}
                 onClick={() => handleOptionSelect('A')}
                 disabled={!!selectedOption}
               >
@@ -225,7 +182,11 @@ const PotholeQuest = () => {
               </button>
               
               <button
-                className={`w-1/2 bg-green-100 border-4 border-green-600 rounded-xl p-4 text-xl font-bold text-green-800 transition duration-300 ${selectedOption === 'B' ? 'bg-green-200 scale-105' : 'hover:bg-green-200'}`}
+                className={`w-1/2 bg-green-100 border-8 border-green-600 rounded-xl p-4 text-xl font-bold text-green-800 transition-all duration-300 focus:outline-none focus:ring-0
+
+                ${selectedOption === 'B' 
+                  ? 'bg-green-200 scale-105' 
+                  : 'hover:bg-green-300'}`}
                 onClick={() => handleOptionSelect('B')}
                 disabled={!!selectedOption}
               >
@@ -310,7 +271,7 @@ const PotholeQuest = () => {
           <div className="absolute inset-0 bg-white bg-opacity-30 flex flex-col items-center justify-end pb-32 z-10">
             <div className="relative bg-white border-4 border-red-600 rounded-xl p-6 max-w-lg text-center mb-4">
               <img 
-                src={dangerWarning} 
+              src={dangerWarning} 
                 alt="위험 경고" 
                 className="absolute -top-12 left-1/2 transform -translate-x-1/2 w-16 h-16"
               />

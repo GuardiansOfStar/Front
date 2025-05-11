@@ -22,6 +22,8 @@ import CompletionBackground from './pages/questFinish/CompletionBackground';
 import SuccessBackground from './pages/questFinish/SuccessBackground';
 import PathChoiceQuest from './pages/quest/PathChoiceQuest';
 import HarvestQuest from './pages/quest/HarvestQuest';
+import MakgeolliQuest from './pages/quest/MakgeolliQuest';
+// import PathChoiceQuest from './pages/quest/PathChoiceQuest';
 
 function App() {
   return (
@@ -37,6 +39,7 @@ function App() {
         <Route path="/driving-prep" element={<DrivingPrepPage />} />
         <Route path="/quest" element={<MemoryCardQuest />} />
         <Route path="/pothole-quest" element={<PotholeQuest />} />
+        <Route path="/makgeolli-quest" element={<MakgeolliQuest/>} />
         <Route path="/driving-base" element={<DrivingBaseScreen/>} />
         <Route path="/score" element={<ScorePage />} />
         

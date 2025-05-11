@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+// Scene 클래스는 여기서 참조하지 않고 직접 사용하는 곳에서 임포트하기
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -6,8 +7,8 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
   scale: {
     mode: Phaser.Scale.FIT,
     parent: 'game-container',
-    width: '100%',
-    height: '100%',
+    width: 1024,
+    height: 768,
     autoCenter: Phaser.Scale.CENTER_BOTH
   },
   physics: {
@@ -17,6 +18,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
       debug: false
     }
   },
+  // scene 필드는 RoadGameComponent에서 직접 설정하므로 여기서는 빈 배열로 둠
   scene: [],
   backgroundColor: '#87CEEB',
 };
