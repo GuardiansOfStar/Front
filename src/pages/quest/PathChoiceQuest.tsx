@@ -139,7 +139,7 @@ const PathChoiceQuest = () => {
   );
 
   return (
-    <div className="relative h-full aspect-[4/3] max-w-[100vw] max-h-[100vh] mx-auto overflow-hidden">
+    <div className="w-full h-full">
       {/* 배경 - 게임 단계에 따라 다른 배경 표시 */}
       {(gamePhase !== 'driving' && gamePhase !== 'fadeOut') && (
         <img
@@ -212,9 +212,9 @@ const PathChoiceQuest = () => {
           
           <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
             {/* 선택지 제목 및 설명 */}
-            <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-3xl p-6 mb-8 w-4/5 max-w-3xl">
-              <h2 className="text-4xl font-extrabold text-green-600 text-center mb-4">집 가는 길 선택하기</h2>
-              <p className="text-2xl font-semibold text-black text-center">
+            <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-3xl p-6 mb-8 w-[75%]">
+              <h2 className="text-5xl font-extrabold text-green-600 text-center mb-4">집 가는 길 선택하기</h2>
+              <p className="text-4xl font-bold text-black text-center">
                 집에 갈 수 있는 두 개의 길이 있어요<br/>
                 지름길과 깔끔한 도로 중<br/>
                 어느 쪽으로 갈까요?
@@ -222,14 +222,14 @@ const PathChoiceQuest = () => {
             </div>
             
             {/* 선택지 버튼 */}
-            <div className="flex justify-center space-x-6 w-4/5">
+            <div className="flex justify-center space-x-10 w-4/5">
               <button
-                className={`w-1/2 bg-green-600 bg-opacity-70
-                border-4 border-green-700 rounded-lg p-4
-                text-xl font-bold text-white 
-                transition duration-300 
+                className={`w-[45%] bg-green-600 bg-opacity-70
+                border-8 border-green-600 rounded-xl p-4
+                text-3xl font-bold text-white 
+                transition duration-300
                 ${selectedOption === 'A' ? 
-                'bg-green-700 scale-105 bg-opacity-95' : 'hover:bg-green-700'}`}
+                'bg-green-600 scale-105 bg-opacity-95' : 'hover:bg-green-600'}`}
                 onClick={() => handleOptionSelect('A')}
                 disabled={!!selectedOption}
               >
@@ -237,12 +237,12 @@ const PathChoiceQuest = () => {
               </button>
               
               <button
-                className={`w-1/2 bg-green-600 bg-opacity-70
-                border-4 border-green-700 rounded-lg p-4
-                text-xl font-bold text-white
+                className={`w-[45%] bg-green-600 bg-opacity-70
+                border-8 border-green-600 rounded-xl p-4
+                text-3xl font-bold text-white
                 transition duration-300 
                 ${selectedOption === 'B' 
-                ? 'bg-green-700 scale-105 bg-opacity-95' : 'hover:bg-green-700'}`}
+                ? 'bg-green-600 scale-105 bg-opacity-95' : 'hover:bg-green-600'}`}
                 onClick={() => handleOptionSelect('B')}
                 disabled={!!selectedOption}
               >
@@ -257,7 +257,7 @@ const PathChoiceQuest = () => {
       {gamePhase === 'successResult' && !showSuccessMessage && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           {/* 중앙에 큰 success_circle 이미지 */}
-          <div className="relative w-[100vw] h-[100vh] flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center">
             <img
               src={successCircle} 
               alt="성공 원" 
@@ -277,7 +277,7 @@ const PathChoiceQuest = () => {
                 <img 
                   src={successRoad}
                   alt="오토바이 질주할 도로" 
-                  className="absolute bottom-[1%] w-[25%] object-contain z-40"
+                  className="absolute bottom-[22%] w-[25%] object-contain z-40"
                   onError={handleImageError}
                 />
                 </>
@@ -285,7 +285,7 @@ const PathChoiceQuest = () => {
                 <img 
                   src="/assets/images/character_with_helmet.png"  
                   alt="헬멧 쓴 캐릭터" 
-                  className="w-4/5 h-auto object-contain"
+                  className="w-2/5 h-auto object-contain"
                 />
               )}
             </div>
@@ -295,14 +295,14 @@ const PathChoiceQuest = () => {
       
       {/* 정답 후 성공 메시지 화면 - 오토바이 제거 */}
       {gamePhase === 'successResult' && showSuccessMessage && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <div className="absolute inset-0 bg-white bg-opacity-30 flex flex-col items-center justify-center z-10">
           {/* 중앙 상단에 정답입니다! */}
-          <div className="absolute top-[15%] text-5xl font-extrabold text-green-700 left-1/2 transform -translate-x-1/2">
+          <div className="absolute top-[20%] text-6xl font-extrabold text-green-700 left-1/2 transform -translate-x-1/2 z-20">
             정답입니다!
             </div>
             {/* 중앙에 녹색 박스에 메시지 */}
-            <div className="mt-5 bg-green-500 bg-opacity-70 border-green-600 rounded-3xl border-8 border-green p-10 max-w-xl w-4/5 mx-auto text-center relative">
-              <p className="text-3xl text-white font-bold">
+            <div className="mt-10 bg-green-600 bg-opacity-60 border-green-700 border-8  rounded-3xl p-10 w-[75%] mx-auto text-center relative">
+              <p className="text-4xl font-extrabold text-white">
                 평탄한 도로로 달린 덕분에<br/>
                 무사히 집에 도착했어요
               </p>
@@ -311,7 +311,7 @@ const PathChoiceQuest = () => {
           <img 
             src={starCharacter} 
             alt="별별이" 
-            className="absolute bottom-[10%] left-[5%] w-[20%]"
+            className="absolute bottom-[10%] left-[5%] w-[27%] z-30"
           />
         </div>
       )}
@@ -337,13 +337,14 @@ const PathChoiceQuest = () => {
           {showWarning && (
           <div className="absolute inset-0 bg-white bg-opacity-30 flex flex-col items-center justify-end pb-32 z-10">
             <img 
-                src={dangerWarning} 
-                alt="위험 경고" 
-                className="absolute top-[7%] left-1/2 transform -translate-x-1/2 w-[18%]"
-              />
-            <div className="absolute w-[70vw] bg-white bg-opacity-80 border-red-600 border-8 rounded-xl p-6 text-center mb-4">
-              <h2 className="text-4xl font-extrabold text-red-600 mb-4">이륜차와 넘어졌어요!</h2>
-              <p className="text-2xl font-bold text-black">
+              src={dangerWarning} 
+              alt="위험 경고" 
+              className="w-[16%] mb-1" //간격 조절 여기서
+            />
+
+            <div className="w-[80%] bg-white bg-opacity-80 border-red-600 border-8 rounded-xl p-8 text-center">
+              <h2 className="text-6xl font-extrabold text-red-600 mb-4">이륜차와 넘어졌어요!</h2>
+              <p className="text-4xl font-extrabold text-black">
                 5분 아끼려다가 평생 상처가 남아요<br/>
                 평탄한 도로로 안전하게 귀가해요
               </p>

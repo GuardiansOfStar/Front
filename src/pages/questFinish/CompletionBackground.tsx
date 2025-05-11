@@ -36,7 +36,7 @@ const CompletionBackground = () => {
     }, [navigate]);
 
     return (
-        <div className="relative h-full aspect-[4/3] max-w-[100vw] max-h-[100vh] mx-auto overflow-hidden">
+        <div className="w-full h-full">
             {/* 배경 이미지 애니메이션 컨테이너 */}
             <div
                 className={`transition-transform duration-[5000ms] ease-out`}
