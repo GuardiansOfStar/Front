@@ -20,7 +20,7 @@ const RoadGameComponent = ({ onPotholeCollision }: RoadGameComponentProps) => {
     gameRef.current = new Phaser.Game({
       type: Phaser.AUTO,
       scale: {
-        mode: Phaser.Scale.RESIZE, // FIT 대신 RESIZE 사용으로 컨테이너에 맞게 리사이징
+        mode: Phaser.Scale.RESIZE,
         parent: 'game-container',
         width: '100%',
         height: '100%',

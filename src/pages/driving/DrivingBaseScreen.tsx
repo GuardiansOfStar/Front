@@ -14,6 +14,7 @@ const DrivingBaseScreen = () => {
   const [nextQuestId, setNextQuestId] = useState<string | null>(null);
   const [showStartText, setShowStartText] = useState(false);
   
+  // DrivingBaseScreen.tsx의 useEffect 부분 수정
   useEffect(() => {
     console.log("DrivingBaseScreen - URL:", location.search);
     const searchParams = new URLSearchParams(location.search);
@@ -35,15 +36,37 @@ const DrivingBaseScreen = () => {
         
         // 텍스트 사라진 후 2초 후 다음 미션으로 이동
         const navigationTimer = setTimeout(() => {
-          // 명확한 분기 처리
-          if (nqId === '3') {
-            // 미션3 (막걸리 미션)으로 이동
-            console.log("→→→ 미션3(막걸리)으로 이동합니다:", `/makgeolli-quest?scenario=${sId}&quest=3`);
-            navigate(`/makgeolli-quest?scenario=${sId}&quest=3`);
-          } else {
-            // 미션2 (포트홀 미션)으로 이동
-            console.log("→→→ 미션2(포트홀)로 이동합니다:", `/pothole-quest?scenario=${sId}&quest=2`);
-            navigate(`/pothole-quest?scenario=${sId}&quest=2`);
+          // 미션 번호에 따른 분기 처리 확장
+          switch(nqId) {
+              case '1':
+              // 미션 1 (안전모 미션)으로 이동 (추가)
+              console.log("→→→ 미션1(안전모)으로 이동합니다:", `/quest?scenario=${sId}&quest=1`);
+              navigate(`/quest?scenario=${sId}&quest=1`);
+              break;
+            case '2':
+              // 미션2 (포트홀 미션)으로 이동
+              console.log("→→→ 미션2(포트홀)으로 이동합니다:", `/pothole-quest?scenario=${sId}&quest=2`);
+              navigate(`/pothole-quest?scenario=${sId}&quest=2`);
+              break;
+            case '3':
+              // 미션3 (막걸리 미션)으로 이동
+              console.log("→→→ 미션3(막걸리)으로 이동합니다:", `/makgeolli-quest?scenario=${sId}&quest=3`);
+              navigate(`/makgeolli-quest?scenario=${sId}&quest=3`);
+              break;
+            case '4':
+              // 미션4 (농작물 미션)으로 이동
+              console.log("→→→ 미션4(농작물)으로 이동합니다:", `/harvest-quest?scenario=${sId}&quest=4`);
+              navigate(`/harvest-quest?scenario=${sId}&quest=4`);
+              break;
+            case '5':
+              // 미션5 (경로 선택 미션)으로 이동
+              console.log("→→→ 미션5(경로 선택)으로 이동합니다:", `/path-choice-quest?scenario=${sId}&quest=5`);
+              navigate(`/path-choice-quest?scenario=${sId}&quest=5`);
+              break;
+            default:
+              // 기본값: 홈으로 이동
+              console.log("→→→ 알 수 없는 미션입니다. 홈으로 이동합니다.");
+              navigate('/');
           }
         }, 2000);
         
@@ -75,7 +98,7 @@ const DrivingBaseScreen = () => {
   );
 
   return (
-    <div className="relative w-full h-screen overflow-hidden">
+    <div className="relative w-full h-full">
       {/* 배경 */}
       <img
         src={basicRoad}

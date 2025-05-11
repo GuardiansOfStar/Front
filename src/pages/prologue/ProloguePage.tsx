@@ -55,6 +55,7 @@ const ProloguePage = () => {
   };
 
   const handleDepartClick = () => {
+    console.log("ProloguePage - 출발하기 버튼 클릭: 주행 준비 페이지로 이동", { scenarioId });
     navigate(`/driving-prep?scenario=${scenarioId}&nextQuest=1`);
   };
 
@@ -169,7 +170,7 @@ const ProloguePage = () => {
   );
 
   return (
-    <div className="relative w-full h-screen overflow-hidden">
+    <div className="relative w-full h-full">
       <NavigationButtons />
       
       {/* 단계별 컴포넌트 조건부 렌더링 */}

@@ -199,7 +199,7 @@ const MemoryCardQuest = () => {
   };
 
   return (
-    <div className="relative w-full h-screen overflow-hidden">
+    <div className="relative w-full h-full">
       {/* 배경 */}
       <img
         src={gameBackground}
@@ -409,13 +409,11 @@ const MemoryCardQuest = () => {
             />
             {/* 그 위에 헬멧 쓴 할아버지 이미지 */}
             <div className="absolute inset-0 flex items-center justify-center z-20">
-              (
                 <img 
                   src="/assets/images/character_with_helmet.png"  
                   alt="헬멧 쓴 캐릭터" 
                   className="w-[400px] h-auto"
                 />
-              )
             </div>
           </div>
         </div>

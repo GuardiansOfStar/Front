@@ -8,7 +8,7 @@ const StarSurvey = () => {
 
   return (
     <div
-      className="relative w-full h-screen overflow-hidden flex flex-col items-center justify-center gap-6"
+      className="relative w-full h-full flex flex-col items-center justify-center gap-6"
     >
       <Background />
 

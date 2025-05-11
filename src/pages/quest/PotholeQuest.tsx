@@ -111,7 +111,7 @@ const PotholeQuest = () => {
   );
 
   return (
-    <div className="relative w-full h-screen overflow-hidden">
+    <div className="relative w-full h-full">
       {/* 게임 단계에 따라 다른 배경 표시 */}
       {gamePhase === 'driving' ? (
         // Phaser 게임 렌더링 - 전체 화면으로 조정

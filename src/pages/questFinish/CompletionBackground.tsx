@@ -12,24 +12,27 @@ const CompletionBackground = () => {
     const [showConfetti, setShowConfetti] = useState(true);
     const [startAnimation, setStartAnimation] = useState(false);
 
+    // CompletionBackground.tsx의 useEffect 부분 수정
     useEffect(() => {
-        // 컨페티 8초 후 중단
-        const confettiTimer = setTimeout(() => {
-            setShowConfetti(false);
-        }, 10000);
+    // 컨페티 8초 후 중단
+    const confettiTimer = setTimeout(() => {
+        setShowConfetti(false);
+    }, 10000);
 
-        // 컴포넌트 마운트 시 애니메이션 시작
-        setStartAnimation(true);
+// 컴포넌트 마운트 시 애니메이션 시작
+    setStartAnimation(true);
+    console.log("CompletionBackground - 애니메이션 시작");
 
-        // 8초 후 결과 화면으로 자동 이동
-        const navigationTimer = setTimeout(() => {
-            navigate('/result');
-        }, 8000);
+    // 8초 후 결과 화면으로 자동 이동
+    const navigationTimer = setTimeout(() => {
+        console.log("CompletionBackground - 결과 화면으로 이동");
+        navigate('/result');
+    }, 8000);
 
-        return () => {
-            clearTimeout(confettiTimer);
-            clearTimeout(navigationTimer);
-        };
+    return () => {
+        clearTimeout(confettiTimer);
+        clearTimeout(navigationTimer);
+    };
     }, [navigate]);
 
     return (

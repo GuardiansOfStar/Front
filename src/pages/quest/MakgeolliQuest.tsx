@@ -142,6 +142,9 @@ const MakgeolliQuest = () => {
         setGamePhase('missionIntro');
       }, 5000);
     }
+    else if (gamePhase === 'missionIntro') {
+      setShowTrayBackground(false);
+    }
     else if (gamePhase === 'gamePlay') {
       // 타이머 시작 (UI에는 표시하지 않지만 내부적으로 카운팅)
       setGameStartTime(Date.now());
@@ -180,12 +183,16 @@ const MakgeolliQuest = () => {
         else score = 8;
         
         setGameScore(score);
+        console.log("MakgeolliQuest - 게임 성공, 점수 계산:", { elapsedTime, score });
       }
       
-      // 5초 후 점수 화면으로
-      timer = setTimeout(() => {
+      // 5초 후 점수 화면으로 이동 (여기에 로그 추가)
+      const timer = setTimeout(() => {
+        console.log("MakgeolliQuest - 점수 화면으로 이동:", { scenarioId, questId: "3", gameScore });
         navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=${gameScore}&correct=true`);
       }, 5000);
+      
+      return () => clearTimeout(timer);
     }
     
     return () => {
@@ -299,8 +306,20 @@ const MakgeolliQuest = () => {
 
   // 옵션 선택 핸들러
   const handleOptionSelect = (option: 'A' | 'B') => {
+    // 이벤트 작동 확인용 콘솔 로그
+    console.log(`선택된 옵션: ${option}`);
+    
+    // 상태 업데이트
     setSelectedOption(option);
-    setTimeout(() => setGamePhase('gameInstruction'), 1000);
+    
+    // 의도치 않은 배경 변경 방지
+    setShowTrayBackground(false);
+    
+    // 작은 딜레이 후 다음 단계로 전환
+    setTimeout(() => {
+      console.log(`게임 단계 변경: gameInstruction`);
+      setGamePhase('gameInstruction');
+    }, 300); // 더 빠른 전환을 위해 시간 단축
   };
   
   // 아이템 클릭 핸들러
@@ -370,7 +389,7 @@ const MakgeolliQuest = () => {
   );
 
   return (
-    <div className="relative w-full h-screen overflow-hidden">
+    <div className="relative w-full h-full">
       {/* 배경 */}
       <img
         src={getBackground()}
@@ -380,7 +399,7 @@ const MakgeolliQuest = () => {
       
       {/* 배경 오버레이 레이어 - 미션 인트로 단계와 게임 관련 단계에서만 적용 */}
       {(gamePhase === 'missionIntro' || gamePhase === 'gameInstruction' || gamePhase === 'gamePlay') && (
-        <div className="absolute inset-0 bg-white bg-opacity-20 z-10"></div>
+        <div className="absolute inset-0 bg-white bg-opacity-20 z-5"></div> // z-10에서 z-5로 낮춤
       )}
       
       {/* 은쟁반 배경 레이어 - 활성화 되면 계속 표시됨, 단 성공/실패 화면에서는 제외 */}
@@ -586,10 +605,10 @@ const MakgeolliQuest = () => {
       {gamePhase === 'missionIntro' && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           {/* 상단 타이틀 */}
-          <h2 className="text-3xl font-bold text-green-600 px-8 py-2 rounded-full mb-6 z-20">새참을 먹어요</h2>
+          <h2 className="text-3xl font-bold text-green-600 px-8 py-2 rounded-full mb-6 z-40">새참을 먹어요</h2>
           
           {/* 중앙 대화 상자 */}
-          <div className="w-4/5 max-w-xl bg-white/90 border-8 border-green-600 rounded-xl p-6 mb-8 z-20">
+          <div className="w-4/5 max-w-xl bg-white/90 border-8 border-green-600 rounded-xl p-6 mb-8 z-40">
             <p className="text-2xl text-center">
               저런! 새참에 막걸리가 있어요.<br/>
               작업이 끝나면 운전해야 하는데…<br/>
@@ -597,19 +616,25 @@ const MakgeolliQuest = () => {
             </p>
           </div>
           
-          {/* 선택지 버튼 (별도 div로 분리) */}
-          <div className="w-4/5 max-w-xl flex justify-between gap-8 z-20">
+          {/* 선택지 버튼 (z-index 증가 및 이벤트 버블링 방지) */}
+          <div className="w-4/5 max-w-xl flex justify-between gap-8 z-50 relative pointer-events-auto">
             <button
-              className="w-1/2 bg-green-400 border-8 border-green-600 rounded-xl p-4 text-xl font-bold text-white transition-all duration-300 hover:bg-green-500"
-              onClick={() => handleOptionSelect('A')}
+              className="w-1/2 bg-green-400 border-8 border-green-600 rounded-xl p-4 text-xl font-bold text-white transition-all duration-300 hover:bg-green-500 relative z-50"
+              onClick={(e) => {
+                e.stopPropagation(); // 이벤트 버블링 방지
+                handleOptionSelect('A');
+              }}
             >
               작업중 막걸리는 보약!<br />
               적당히 마신다
             </button>
             
             <button
-              className="w-1/2 bg-green-400 border-8 border-green-600 rounded-xl p-4 text-xl font-bold text-white transition-all duration-300 hover:bg-green-500"
-              onClick={() => handleOptionSelect('B')}
+              className="w-1/2 bg-green-400 border-8 border-green-600 rounded-xl p-4 text-xl font-bold text-white transition-all duration-300 hover:bg-green-500 relative z-50"
+              onClick={(e) => {
+                e.stopPropagation(); // 이벤트 버블링 방지
+                handleOptionSelect('B');
+              }}
             >
               운전해야 하니<br />
               막걸리는<br />
