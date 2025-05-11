@@ -34,7 +34,7 @@ const PathChoiceQuest = () => {
   const [questId, setQuestId] = useState<string | null>(null);
   const [gamePhase, setGamePhase] = useState<GamePhase>('intro');
   const [selectedOption, setSelectedOption] = useState<'A' | 'B' | null>(null);
-  const [isAnimating, setIsAnimating] = useState(false);
+  //const [isAnimating, setIsAnimating] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [fallbackImage, setFallbackImage] = useState(false);
   
@@ -49,9 +49,8 @@ const PathChoiceQuest = () => {
     // 인트로 화면 후 자동으로 드라이빙 시작
     const timer = setTimeout(() => {
       setGamePhase('driving');
-      setIsAnimating(true);
       
-      // 운전 애니메이션 후 포트홀 발견 화면으로 전환
+      // 운전 애니메이션 후 갈림길 발견 화면으로 전환
       const drivingTimer = setTimeout(() => {
         setGamePhase('twoPathsNotice');
         
@@ -86,7 +85,7 @@ const PathChoiceQuest = () => {
           setTimeout(() => {
             navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=20&correct=true`);
           }, 5000);
-        }, 2000);
+        }, 4000); //성공 메시지가 나오기까지 5초 걸림=성공메시지표시전에 동그라미 나옴
       }, 1000);
     } else {
       // 오답 선택
