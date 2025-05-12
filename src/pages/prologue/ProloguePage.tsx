@@ -67,10 +67,10 @@ const ProloguePage = () => {
         alt="미션 배경"
         className="absolute inset-0 w-full h-full object-cover z-0" // 배경으로 깔리도록 스타일링
       />
-      <div className="w-full h-full flex flex-col items-center justify-center z-10 relative"> {/* 콘텐츠가 배경 위에 오도록 z-10 및 relative 추가 */}
-        <h1 className="text-4xl font-bold text-green-700 mb-12">[ 논밭 작업 하는 날 ]</h1>
-        <div className="relative bg-green-500 bg-opacity-90 border-8 border-green-600 rounded-2xl p-10 w-3/4 max-w-xl">
-          <p className="text-3xl text-center leading-relaxed">
+      <div className="w-full h-full flex flex-col items-center justify-center z-10 relative mt-40"> {/* 콘텐츠가 배경 위에 오도록 z-10 및 relative 추가 */}
+        <h1 className="text-6xl font-bold text-green-600 mb-12">[ 논밭 작업 하는 날 ]</h1>
+        <div className="relative bg-green-500 bg-opacity-90 border-8 border-green-600 rounded-2xl p-10 w-3/4 max-w-2xl h-1/2 mt-10">
+          <p className="text-4xl text-center text-white leading-relaxed font-bold">
             이륜차를 타고 논밭에 갔다가<br />
             집으로 안전하게 돌아오세요
           </p>
@@ -84,7 +84,7 @@ const ProloguePage = () => {
         </div>
         
         {/* 다음 버튼 추가 */}
-        <div className="mt-20">
+        <div>
           <img
             src={nextButton}
             alt="다음"
@@ -113,11 +113,11 @@ const ProloguePage = () => {
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center">
               <div className="relative">
                 {/* 말풍선 형태로 메시지 표시 - 흰색 배경, 녹색 테두리 */}
-                <div className="bg-white bg-opacity-90 border-8 border-green-600 rounded-xl p-6 max-w-xl">
+                <div className="bg-white bg-opacity-90 border-8 border-green-600 rounded-xl p-6 max-w-3xl">
                   <div className="flex items-center">
                     {/* 별별이 캐릭터 박스 모서리에 위치 */}
                     <div className="relative w-full">
-                      <p className="text-2xl text-black text-center">
+                      <p className="text-2xl text-black text-center font-bold leading-relaxed">
                         이륜차 운전 중 여러 상황이 벌어져요!<br />
                         안전 운전에 유의하여 문제를 해결해보아요
                       </p>
