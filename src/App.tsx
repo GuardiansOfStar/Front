@@ -1,5 +1,5 @@
 // src/App.tsx
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import AspectRatioContainer from './components/layout/AspectRatioContainer';
 
 import HomePage from './pages/home/HomePage';
@@ -23,6 +23,7 @@ import SuccessBackground from './pages/questFinish/SuccessBackground';
 import PathChoiceQuest from './pages/quest/PathChoiceQuest';
 import HarvestQuest from './pages/quest/HarvestQuest';
 import MakgeolliQuest from './pages/quest/MakgeolliQuest';
+import DevelopmentNotice from './pages/DevelopmentNotice';
 
 function App() {
   return (
@@ -49,10 +50,13 @@ function App() {
         <Route path="/completion" element={<CompletionBackground />} />
         
         {/* 결과 및 수료 관련 화면들 */}
-        <Route path="/result" element={<EduScreen />} />
-        <Route path="/certificate" element={<Certificate />} />
-        <Route path="/info" element={<PersonalInfo />} />
-        <Route path="/star" element={<StarSurvey />} />
+        <Route path="/result" element={<Navigate to="/development-notice" />} />
+        <Route path="/certificate" element={<Navigate to="/development-notice" />} />
+        <Route path="/info" element={<Navigate to="/development-notice" />} />
+        <Route path="/star" element={<Navigate to="/development-notice" />} />
+
+        {/* 추가: 개발 중 알림 페이지 */}
+        <Route path="/development-notice" element={<DevelopmentNotice />} />
       </Routes>
     </AspectRatioContainer>
   );
