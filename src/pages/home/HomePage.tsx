@@ -44,7 +44,7 @@ const HomePage = () => {
   }, [hasRegion]);
 
   return (
-    <div className="relative h-full aspect-[4/3] max-w-[100vw] max-h-[100vh] mx-auto overflow-hidden">
+    <div className="w-full h-full">
       {/* 화면 높이에 맞춰서 비율을 유지 */}
       <Background />
       <Setting />
