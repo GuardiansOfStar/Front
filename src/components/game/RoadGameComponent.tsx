@@ -16,15 +16,22 @@ const RoadGameComponent = ({ onPotholeCollision }: RoadGameComponentProps) => {
       return;
     }
     
+    // 게임 컨테이너 요소 가져오기
+    const container = document.getElementById('game-container');
+    if (!container) return;
+    
+    // 컨테이너 크기 계산
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
+    
     // 게임 인스턴스 생성
     gameRef.current = new Phaser.Game({
       type: Phaser.AUTO,
+      width: containerWidth,
+      height: containerHeight,
+      parent: 'game-container',
       scale: {
-        mode: Phaser.Scale.RESIZE,
-        parent: 'game-container',
-        width: '100%',
-        height: '100%',
-        autoCenter: Phaser.Scale.CENTER_BOTH
+        mode: Phaser.Scale.NONE, // 스케일 모드를 NONE으로 설정 (비율 유지하지 않고 항상 컨테이너 크기에 맞춤)
       },
       physics: {
         default: 'arcade',
@@ -34,7 +41,6 @@ const RoadGameComponent = ({ onPotholeCollision }: RoadGameComponentProps) => {
         }
       },
       scene: [RoadScene],
-      transparent: false,
       backgroundColor: '#000000', // 검은색 배경
     });
     
@@ -61,18 +67,22 @@ const RoadGameComponent = ({ onPotholeCollision }: RoadGameComponentProps) => {
     
     // 화면 크기 변경 시 게임 크기 조정
     const handleResize = () => {
-      if (gameRef.current && sceneRef.current) {
-        gameRef.current.scale.resize(window.innerWidth, window.innerHeight);
-        
-        // RoadScene의 resize 메서드 호출
-        if (typeof sceneRef.current.resize === 'function') {
-          sceneRef.current.resize(window.innerWidth, window.innerHeight);
-        }
+      if (!gameRef.current || !container) return;
+      
+      // 새 컨테이너 크기 계산
+      const newWidth = container.clientWidth;
+      const newHeight = container.clientHeight;
+      
+      // 게임 크기 재설정
+      gameRef.current.scale.resize(newWidth, newHeight);
+      
+      // RoadScene의 resize 메서드 호출
+      if (sceneRef.current && typeof sceneRef.current.resize === 'function') {
+        sceneRef.current.resize(newWidth, newHeight);
       }
     };
     
-    // 초기 리사이즈 및 이벤트 리스너 등록
-    handleResize();
+    // 리사이즈 이벤트 리스너 등록
     window.addEventListener('resize', handleResize);
     
     // 컴포넌트 언마운트 시 게임 인스턴스 제거
@@ -93,9 +103,7 @@ const RoadGameComponent = ({ onPotholeCollision }: RoadGameComponentProps) => {
   }, [onPotholeCollision]);
   
   return (
-    <div id="game-container" className="w-full h-full">
-      {/* 게임 컨테이너 스타일 - 전체 화면 */}
-    </div>
+    <div id="game-container" className="w-full h-full" />
   );
 };
 

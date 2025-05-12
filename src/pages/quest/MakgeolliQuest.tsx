@@ -229,18 +229,18 @@ const MakgeolliQuest = () => {
     // scale: 크기 배율 (2.0은 2배 크기)
     const fixedPositions = [
       // 국수 3개 - 첫번째 이미지처럼 배치
-      { type: 'noodles', x: centerX - 140, y: centerY - 70, rotation: -5, scale: 2.5 },  // 왼쪽 국수
-      { type: 'noodles', x: centerX - 30, y: centerY - 130, rotation: 10, scale: 2.5 },  // 중앙 위 국수
-      { type: 'noodles', x: centerX + 150, y: centerY - 80, rotation: -8, scale: 2.5 },  // 오른쪽 국수
+      { type: 'noodles', x: centerX - 210, y: centerY - 70, rotation: -5, scale: 2.5 },  // 왼쪽 국수
+      { type: 'noodles', x: centerX - 40, y: centerY - 130, rotation: 10, scale: 2.5 },  // 중앙 위 국수
+      { type: 'noodles', x: centerX + 130, y: centerY - 80, rotation: -8, scale: 2.5 },  // 오른쪽 국수
       
       // 김치 2개
-      { type: 'kimchi', x: centerX + 140, y: centerY + 90, rotation: 5, scale: 2.2 },    // 오른쪽 김치
-      { type: 'kimchi', x: centerX - 120, y: centerY + 100, rotation: -10, scale: 2.2 }, // 왼쪽 김치
+      { type: 'kimchi', x: centerX + 110, y: centerY + 90, rotation: 5, scale: 2.2 },    // 오른쪽 김치
+      { type: 'kimchi', x: centerX - 90, y: centerY + 100, rotation: -10, scale: 2.2 }, // 왼쪽 김치
       
       // 막걸리 병과 잔
-      { type: 'bottle', x: centerX + 120, y: centerY - 20, rotation: 0, scale: 3.0 },    // 막걸리 병
+      { type: 'bottle', x: centerX + 140, y: centerY - 30, rotation: 0, scale: 3.0 },    // 막걸리 병
       { type: 'cup', x: centerX + 160, y: centerY + 30, rotation: 0, scale: 2.0 },       // 오른쪽 잔
-      { type: 'cup', x: centerX - 60, y: centerY + 40, rotation: 0, scale: 2.0 }         // 왼쪽 잔
+      // { type: 'cup', x: centerX - 60, y: centerY + 40, rotation: 0, scale: 2.0 }         // 왼쪽 잔
     ];
     
     // 고정 위치를 기반으로 아이템 생성
@@ -262,43 +262,65 @@ const MakgeolliQuest = () => {
     const screenW = window.innerWidth, screenH = window.innerHeight;
     const centerX = screenW / 2;
     const centerY = screenH / 2;
-    const trayRadius = Math.min(screenW, screenH) * 0.3;
-
-    const items: MakgeolliItem[] = [];
     
-    // 아이템을 트레이 근처에 배치하는 함수
-    const createItems = (type: 'makgeolli' | 'noodles' | 'kimchi', count: number, zBaseline: number) => {
-      const result: MakgeolliItem[] = [];
-      
-      for (let i = 0; i < count; i++) {
-        // 원 주변의 랜덤 위치 계산
-        const angle = Math.random() * Math.PI * 2;
-        const radius = trayRadius * (0.5 + Math.random() * 0.5); // 반지름의 50~100% 위치
-        
-        const x = centerX + Math.cos(angle) * radius;
-        const y = centerY + Math.sin(angle) * radius;
-        
-        result.push({
-          id: items.length + i,
-          x,
-          y,
-          found: false,
-          type,
-          zIndex: zBaseline + Math.floor(Math.random() * 3),
-          rotation: Math.random() * 45 - 22.5,
-          scale: 3.0 + Math.random() * 0.5 // 크기 3배 증가
-        });
-      }
-      
-      return result;
-    };
+    // 고정된 막걸리 위치 지정 (다른 요소들 사이에 숨겨서 배치)
+    const hiddenMakgeolliPositions = [
+      // 1번: 왼쪽 국수 옆에 살짝 보이게
+      { 
+        x: centerX - 190, 
+        y: centerY - 75, 
+        rotation: -12, 
+        scale: 1.7,
+        zIndex: 2 
+      },
+      // 2번: 오른쪽 국수 뒤에 살짝 보이게
+      { 
+        x: centerX + 150, 
+        y: centerY - 95, 
+        rotation: 8, 
+        scale: 1.5,
+        zIndex: 2
+      },
+      // 3번: 김치 그릇 사이에 숨김
+      { 
+        x: centerX - 40, 
+        y: centerY + 95, 
+        rotation: 15, 
+        scale: 1.6,
+        zIndex: 2 
+      },
+      // 4번: 오른쪽 김치 뒤에 살짝 보이게
+      { 
+        x: centerX + 110, 
+        y: centerY + 105, 
+        rotation: -5, 
+        scale: 1.5,
+        zIndex: 2 
+      },
+      // 5번: 접시 오른쪽 하단 모서리 근처에 숨김
+      { 
+        x: centerX + 180, 
+        y: centerY + 130, 
+        rotation: 20, 
+        scale: 1.4,
+        zIndex: 2 
+      },
+    ];
     
-    // 각 타입별로 아이템 생성
-    items.push(...createItems('makgeolli', 5, 10));
-    items.push(...createItems('noodles', 10, 5));
-    items.push(...createItems('kimchi', 8, 5));
+    // 막걸리 아이템 생성
+    const makgeolliItems = hiddenMakgeolliPositions.map((pos, index) => ({
+      id: index,
+      x: pos.x,
+      y: pos.y,
+      found: false,
+      type: 'makgeolli' as 'makgeolli',
+      zIndex: pos.zIndex,
+      rotation: pos.rotation,
+      scale: pos.scale
+    }));
     
-    setMakgeolliItems(items);
+    // 최종 아이템 배열 설정 - 추가 아이템 없이 막걸리만 포함
+    setMakgeolliItems(makgeolliItems);
     setFoundCount(0);
     setTimeRemaining(300);
     setGameScore(0);
@@ -378,7 +400,7 @@ const MakgeolliQuest = () => {
   // 식사 시간 타이틀 렌더링 함수 - 색상 반전
   const renderMealTimeTitle = () => (
     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
-      <h2 className="text-8xl font-bold">
+      <h3 className="text-8xl font-bold whitespace-nowrap">
         <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">새</span>
         <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">참</span>
         {' '}
@@ -387,7 +409,7 @@ const MakgeolliQuest = () => {
         {' '}
         <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">시</span>
         <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">간</span>
-      </h2>
+      </h3>
     </div>
   );
 
@@ -816,7 +838,7 @@ const MakgeolliQuest = () => {
               막걸리 치우기 성공!
             </h2>
             
-            <div className="relative bg-green-500 border-8 border-green-600 rounded-xl p-8 max-w-lg mx-auto">
+            <div className="relative bg-green-600/80 border-8 border-green-700 rounded-xl p-8 max-w-lg mx-auto">
               <p className="text-2xl text-white font-bold">
                 음주운전을 예방한 당신이<br />
                 마을의 영웅이에요
@@ -842,7 +864,7 @@ const MakgeolliQuest = () => {
               노력해주셔서 감사해요!
             </h2>
             
-            <div className="relative bg-green-500 border-8 border-green-600 rounded-xl p-8 max-w-lg mx-auto">
+            <div className="relative bg-green-600/80 border-8 border-green-700 rounded-xl p-8 max-w-lg mx-auto">
               <p className="text-2xl text-white font-bold">
                 음주운전을 예방한 당신이<br />
                 마을의 영웅이에요

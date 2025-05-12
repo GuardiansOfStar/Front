@@ -384,7 +384,7 @@ const MemoryCardQuest = () => {
                 src={NextButton}
                 alt="다음"
                 onClick={handleNextPhase}
-                className="w-1/3 h-auto cursor-pointer hover:scale-105 transition-transform"
+                className="w-1/2 h-auto cursor-pointer hover:scale-105 transition-transform"
               />
             </div>
           </div>

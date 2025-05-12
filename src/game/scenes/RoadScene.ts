@@ -79,6 +79,9 @@ export default class RoadScene extends Phaser.Scene {
     
     // 초기 위치 설정 - 추가됨
     this.positionY = 0;
+    
+    // 시작 시 포트홀 미리 생성 (화면 밖에 배치)
+    this.createPothole();
   }
 
   update(time: number, delta: number) {
@@ -93,12 +96,6 @@ export default class RoadScene extends Phaser.Scene {
     // 도로가 화면을 벗어나지 않도록 제한 - 변경됨
     const newY = Math.max(this.roadTargetY, this.positionY);
     this.roadContainer.y = newY;
-    
-    // 포트홀 생성 시점인지 확인
-    if (this.simulationTime >= this.potholeAppearTime && !this.potholeAppeared) {
-      this.createPothole();
-      this.potholeAppeared = true;
-    }
     
     // 포트홀 충돌 감지 시점인지 확인
     if (this.simulationTime >= this.potholeDetectionTime && !this.potholeDetectionEnabled) {
@@ -122,13 +119,15 @@ export default class RoadScene extends Phaser.Scene {
     ];
     const x = Phaser.Math.RND.pick(positions);
     
-    // 포트홀 y 위치 계산 (도로 상단 근처에 위치) - 변경됨
-    const y = this.roadHeight * 0.3; // 도로 전체 높이의 30% 지점에 위치
+    // 포트홀 y 위치 계산 (도로 중앙부에서 하단부 사이 위치) - 변경됨
+    // 도로 높이의 40%~70% 사이에 배치 (값이 클수록 하단에 가까워짐)
+    const yPercentage = Phaser.Math.FloatBetween(0.4, 0.7);
+    const y = this.roadHeight * yPercentage;
     
     // 포트홀 생성
     this.pothole = this.add.sprite(
       x,                // 랜덤 x 위치
-      y,                // y 위치
+      -y,               // 화면 밖의 위치 (스크롤되어 나타남)
       'pothole'
     );
     
@@ -137,6 +136,7 @@ export default class RoadScene extends Phaser.Scene {
     
     // 포트홀을 컨테이너에 추가
     this.roadContainer.add(this.pothole);
+    this.potholeAppeared = true;
   }
 
   // 충돌 처리 함수

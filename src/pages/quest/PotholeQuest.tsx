@@ -115,7 +115,7 @@ const PotholeQuest = () => {
       {/* 게임 단계에 따라 다른 배경 표시 */}
       {gamePhase === 'driving' ? (
         // Phaser 게임 렌더링 - 전체 화면으로 조정
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 w-full h-full">
           <RoadGameComponent onPotholeCollision={handlePotholeCollision} />
         </div>
       ) : (
@@ -221,7 +221,7 @@ const PotholeQuest = () => {
                 <img 
                   src="/assets/images/mission2_success(grandfa).png"  
                   alt="오토바이 운전하는 할아버지" 
-                  className="w-1/5 h-auto object-contain z-40"
+                  className="w-1/2 h-auto object-contain z-40"
                   onError={handleImageError}
                 />
               ) : (
