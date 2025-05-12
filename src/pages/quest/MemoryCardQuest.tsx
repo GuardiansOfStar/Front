@@ -291,7 +291,7 @@ const MemoryCardQuest = () => {
           <div className="relative z-10">
 
           {/* 타이틀 */}
-          <h2 className="text-4xl font-bold text-green-600 mb-8">
+          <h2 className="text-4xl font-bold text-center text-green-600 mb-8">
             손주가 준비한 선물 찾기
           </h2>
           
@@ -322,8 +322,8 @@ const MemoryCardQuest = () => {
       {/* 카드 미리보기 단계 */}
       {gamePhase === 'showCards' && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <h2 className="text-3xl font-bold mb-8 bg-green-600 text-white py-4 px-12 rounded-full">
-            힌트: 머리를 보호하는 안전모를 찾아보세요
+          <h2 className="text-3xl font-bold text-green-600 py-4 px-12 rounded-full">
+            힌트: 머리를 보호해주는 선물은 무엇일까요?
           </h2>
           
           {/* 카드 그리드 - 카드 크기 키움 */}
@@ -344,8 +344,8 @@ const MemoryCardQuest = () => {
       {/* 카드 게임 화면 */}
       {gamePhase === 'game' && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <h2 className="text-3xl font-bold mb-8 bg-green-600 text-white py-4 px-12 rounded-full">
-            힌트: 머리를 보호하는 안전모를 찾아보세요
+          <h2 className="text-3xl font-bold  text-green-600 py-4 px-12 rounded-full">
+            힌트: 머리를 보호해주는 선물은 무엇일까요?
           </h2>
           
           {/* 카드 그리드 - 카드 크기 키움 */}
@@ -391,7 +391,7 @@ const MemoryCardQuest = () => {
           </div>
           
           {/* 시도 횟수 */}
-          <div className="mt-4 bg-green-600 px-10 py-3 rounded-full">
+          <div className="px-10 py-3 rounded-full">
             <p className="text-2xl font-bold text-white">시도 횟수: {attempts}</p>
           </div>
         </div>
@@ -450,30 +450,33 @@ const MemoryCardQuest = () => {
 
       {/* 헬멧 착용 화면 */}
       {gamePhase === 'helmetEquipped' && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <div className="bg-green-600 text-white text-4xl font-bold rounded-full py-4 px-16 mb-8">
-            안전모를 착용했어요
+        <div 
+          className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer"
+          onClick={handleNextPhase}
+        >
+          <div className="mt-24 text-center">
+            <h2 className="text-8xl font-bold">
+              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">안</span>
+              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">전</span>
+              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">모</span>
+              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">를</span>
+
+              {' '} {/* Space */}
+              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">착</span>
+              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">용</span>
+              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">했</span>
+              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">어</span>
+              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">요</span>
+            </h2>
           </div>
           
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-          {/* 중앙에 큰 success_circle 이미지 */}
-          <div className="relative w-[800px] h-[800px]">
-            <img
-              src={successCircle} 
-              alt="성공 원" 
-              className="w-full h-full absolute top-0 left-0 z-10"
-            />
-            {/* 그 위에 헬멧 쓴 할아버지 이미지 */}
-            <div className="absolute inset-0 flex items-center justify-center z-20">
-                <img 
-                  src="/assets/images/character_with_helmet.png"  
-                  alt="헬멧 쓴 캐릭터" 
-                  className="w-[400px] h-auto"
-                />
-            </div>
-          </div>
+          <img
+            src={characterWithHelmet}
+            alt="캐릭터"
+            className="w-80 h-auto mt-6" /* Added mt-8 to move character down */
+          />
         </div>
-        </div>
+      
       )}
     </div>
   );

@@ -47,7 +47,7 @@ const PotholeQuest = () => {
   // 포트홀 충돌 핸들러 (Phaser 게임에서 호출됨)
   const handlePotholeCollision = () => {
     // 포트홀 발견 후 선택지 화면으로 전환
-    setGamePhase('potholeAlert');
+    setGamePhase('selection');
     
     setTimeout(() => {
       setGamePhase('selection');
