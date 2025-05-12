@@ -26,11 +26,11 @@ import MakgeolliQuest from './pages/quest/MakgeolliQuest';
 
 function App() {
   return (
-    <AspectRatioContainer targetRatio={4/3} fillMode="fill">
+    <AspectRatioContainer fillMode="fit">
       <Routes>
         {/* 기본 화면들 */}
         <Route path="/" element={<HomePage />} />
-        <Route path="/scenarios" element={<ScenarioSelectPage />} />
+        <Route path="/scenarios" element={<PotholeQuest />} />
         <Route path="/map" element={<MapPage />} />
         <Route path="/prologue" element={<ProloguePage />} />
 

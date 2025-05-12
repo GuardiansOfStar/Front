@@ -158,9 +158,9 @@ const PotholeQuest = () => {
           
           <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
             {/* 선택지 제목 및 설명 */}
-            <div className="bg-white border-8 border-green-600 rounded-xl p-6 mb-8 w-4/5 max-w-3xl">
-              <h2 className="text-3xl font-bold text-green-700 text-center mb-4">구덩이 조심</h2>
-              <p className="text-2xl text-black text-center">
+            <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-3xl p-6 mb-8 w-[85%]">
+              <h2 className="text-5xl font-extrabold text-green-600 text-center mb-4">구덩이 조심</h2>
+              <p className="text-4xl font-bold text-black text-center">
                 앞에 큰 구덩이가 있어요!<br/>
                 구덩이를 지날 때는 핸들 통제가 어려워져요.<br/>
                 어떻게 운전할까요?
@@ -168,29 +168,36 @@ const PotholeQuest = () => {
             </div>
             
             {/* 선택지 버튼 */}
-            <div className="flex justify-center space-x-6 w-4/5">
+            <div className="flex justify-center space-x-10 w-[90%]">
               <button
-                className={`w-1/2 bg-green-100 border-8 border-green-600 rounded-xl p-4 text-xl font-bold text-green-800 transition-all duration-300 focus:outline-none focus:ring-0
+                className={`w-[40%] bg-green-600 bg-opacity-70
+                border-8 border-green-600 rounded-xl p-4
+                text-3xl font-bold text-white 
+                transition duration-300 focus:outline-none focus:ring-0
 
                 ${selectedOption === 'A' 
-                  ? 'bg-green-200 scale-105' 
-                  : 'hover:bg-green-300'}`}
+                  ? 'bg-green-600 scale-105 bg-opacity-95' 
+                  : 'hover:bg-green-600'}`}
                 onClick={() => handleOptionSelect('A')}
                 disabled={!!selectedOption}
               >
-                속도를 줄이고 구덩이를 피해 조심히 지나간다
+                속도를 줄이고 <br/>구덩이를 피해 <br/>조심히 지나간다
               </button>
               
               <button
-                className={`w-1/2 bg-green-100 border-8 border-green-600 rounded-xl p-4 text-xl font-bold text-green-800 transition-all duration-300 focus:outline-none focus:ring-0
+                className={`w-[40%] bg-green-600 bg-opacity-70
+                border-8 border-green-600 rounded-xl p-4
+                text-3xl font-bold text-white
+                transition duration-300
+                focus:outline-none focus:ring-0
 
                 ${selectedOption === 'B' 
-                  ? 'bg-green-200 scale-105' 
-                  : 'hover:bg-green-300'}`}
+                ? 
+                'bg-green-600 scale-105 bg-opacity-95' : 'hover:bg-green-600'}`}
                 onClick={() => handleOptionSelect('B')}
                 disabled={!!selectedOption}
               >
-                빨리 지나가면 덜 흔들릴 것 같아 속도를 높여 지나간다
+                빨리 지나가면 <br/>덜 흔들릴 것 같아 <br/>속도를 높여 지나간다
               </button>
             </div>
           </div>
@@ -201,7 +208,7 @@ const PotholeQuest = () => {
       {gamePhase === 'successResult' && !showSuccessMessage && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           {/* 중앙에 큰 success_circle 이미지 */}
-          <div className="relative w-[80vw] h-[80vh] flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center">
             <img
               src={successCircle} 
               alt="성공 원" 
@@ -214,14 +221,14 @@ const PotholeQuest = () => {
                 <img 
                   src="/assets/images/mission2_success.png"  
                   alt="오토바이 운전하는 할아버지" 
-                  className="w-4/5 h-auto object-contain"
+                  className="w-1/5 h-auto object-contain z-40"
                   onError={handleImageError}
                 />
               ) : (
                 <img 
                   src="/assets/images/character_with_helmet.png"  
                   alt="헬멧 쓴 캐릭터" 
-                  className="w-4/5 h-auto object-contain"
+                  className="w-1/5 h-auto object-contain"
                 />
               )}
             </div>
@@ -231,32 +238,35 @@ const PotholeQuest = () => {
       
       {/* 정답 후 성공 메시지 화면 - 오토바이 제거 */}
       {gamePhase === 'successResult' && showSuccessMessage && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <div className="absolute inset-0 bg-white bg-opacity-30 flex flex-col items-center justify-center z-10">
           {/* 중앙 상단에 정답입니다! */}
-          <div className="absolute top-[15%] left-1/2 transform -translate-x-1/2">
-            {renderTitleText('정답입니다!', 'text-6xl', 'text-green-600')}
+          <div className="absolute top-[20%] text-6xl font-extrabold text-green-700 left-1/2 transform -translate-x-1/2 z-20">
+          정답입니다!
           </div>
           
           {/* 중앙에 녹색 박스에 메시지 */}
-          <div className="bg-green-600 rounded-2xl p-8 max-w-xl w-4/5 mx-auto text-center relative">
-            <p className="text-3xl text-white font-bold">
+          <div className="mt-10 bg-green-600 bg-opacity-60 border-green-700 border-8  rounded-3xl p-10 w-[75%] mx-auto text-center relative">
+              <p className="text-4xl font-extrabold text-white">
               휴, 속도를 줄인 덕분에<br />
               구덩이를 잘 피했어요
             </p>
-            
+            </div>
             {/* 좌측 하단 별별이 캐릭터 */}
             <img 
-              src={starCharacter} 
-              alt="별별이" 
-              className="absolute bottom-2 left-2 w-16 h-16"
-            />
+            src={starCharacter} 
+            alt="별별이" 
+            className="absolute bottom-[10%] left-[5%] w-[27%] z-30"
+          />
           </div>
-        </div>
       )}
       
       {/* 페이드아웃 화면 */}
       {gamePhase === 'fadeOut' && (
-        <div className="absolute inset-0 bg-black z-50 transition-opacity duration-1500 opacity-100"></div>
+        <img
+        src="/assets/images/accident_fadeout.png"
+        alt="전환 이미지"
+        className="absolute inset-0 w-full h-full object-cover z-50 opacity-0 animate-fadein"
+        />
       )}
       
       {/* 오답 결과 화면 */}
@@ -269,16 +279,16 @@ const PotholeQuest = () => {
           />
           
           <div className="absolute inset-0 bg-white bg-opacity-30 flex flex-col items-center justify-end pb-32 z-10">
-            <div className="relative bg-white border-4 border-red-600 rounded-xl p-6 max-w-lg text-center mb-4">
-              <img 
+            <img 
               src={dangerWarning} 
-                alt="위험 경고" 
-                className="absolute -top-12 left-1/2 transform -translate-x-1/2 w-16 h-16"
-              />
-              
-              <h2 className="text-3xl font-bold text-red-600 mb-4">이륜차가 기우뚱!</h2>
-              <p className="text-2xl text-black">
-                구덩이는 도로 위 함정과 같아요.<br/>
+              alt="위험 경고" 
+              className="w-[16%] mb-1" //간격 조절 여기서
+            />
+            
+            <div className="w-[80%] bg-white bg-opacity-80 border-red-600 border-8 rounded-xl p-8 text-center">
+              <h2 className="text-6xl font-extrabold text-red-600 mb-4">이륜차가 기우뚱!</h2>
+              <p className="text-4xl font-extrabold text-black">
+                구덩이는 도로 위 함정과 같아요.<br />
                 속도를 줄이고 지나가야 안전해요.
               </p>
             </div>
