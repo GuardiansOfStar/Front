@@ -76,31 +76,41 @@ const MemoryCardQuest = () => {
 
   // 자동 전환 설정 - 다음 버튼이 없는 단계들
   useEffect(() => {
-    // 이전 타이머 클리어
     if (autoTransitionTimerRef.current) {
       clearTimeout(autoTransitionTimerRef.current);
       autoTransitionTimerRef.current = null;
     }
-    
-    // 자동 전환이 필요한 단계들
-    if (gamePhase === 'intro1' || gamePhase === 'foundMatch' || gamePhase === 'showGift' || gamePhase === 'openGift' || gamePhase === 'helmetEquipped') {
+
+    if (
+      gamePhase === 'intro1' ||
+      gamePhase === 'foundMatch' ||
+      gamePhase === 'showGift' ||
+      gamePhase === 'openGift' ||
+      gamePhase === 'helmetEquipped'
+    ) {
       autoTransitionTimerRef.current = setTimeout(() => {
-        if (gamePhase === 'intro1') {
-          setGamePhase('intro2');
-        } else if (gamePhase === 'foundMatch') {
-          setGamePhase('showGift');
-        } else if (gamePhase === 'showGift') {
-          setGamePhase('openGift');
-        } else if (gamePhase === 'openGift') {
-          setGamePhase('helmetEquipped');
-        } else if (gamePhase === 'helmetEquipped') {
-          // 마지막 단계는 점수 화면으로 이동
-          navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=${finalScore}&correct=true`);
+        switch (gamePhase) {
+          case 'intro1':
+            setGamePhase('intro2');
+            break;
+          case 'foundMatch':
+            setGamePhase('showGift');
+            break;
+          case 'showGift':
+            setGamePhase('openGift');
+            break;
+          case 'openGift':
+            setGamePhase('helmetEquipped');
+            break;
+          case 'helmetEquipped':
+            navigate(
+              `/score?scenario=${scenarioId}&quest=${questId}&score=${finalScore}&correct=true`,
+            );
+            break;
         }
-      }, 3000); // 3초 간격으로 자동 전환
+      }, 3000);
     }
-    
-    // 컴포넌트 언마운트 시 타이머 정리
+
     return () => {
       if (autoTransitionTimerRef.current) {
         clearTimeout(autoTransitionTimerRef.current);
@@ -150,137 +160,92 @@ const MemoryCardQuest = () => {
 
   // 카드 초기화 함수 - 카드를 섞지 않고 고정된 순서로 배치
   const initializeCards = () => {
-    // 카드 배열 생성 (2쌍씩 총 6장) - 고정된 순서
     const cardTypes = [
       { type: 'helmet', image: helmetCard },
       { type: 'straw-hat', image: strawHatCard },
-      { type: 'cap', image: capHatCard }
+      { type: 'cap', image: capHatCard },
     ];
-    
-    // 각 카드 타입별로 2장씩 생성 (순서 고정)
+
     const initialCards: Card[] = [];
-    cardTypes.forEach((cardType) => {
+    cardTypes.forEach(({ type, image }) => {
       for (let i = 0; i < 2; i++) {
         initialCards.push({
           id: initialCards.length,
-          type: cardType.type as 'helmet' | 'straw-hat' | 'cap',
-          image: cardType.image,
-          isFlipped: gamePhase === 'showCards', // 카드 미리보기 단계에서는 모두 앞면
-          isMatched: false
+          type: type as Card['type'],
+          image,
+          isFlipped: gamePhase === 'showCards',
+          isMatched: false,
         });
       }
     });
-    
-    // 카드 섞지 않고 그대로 사용
     setCards(initialCards);
-    
-    // 카드 미리보기 단계에서 3초 후 게임 시작
+
     if (gamePhase === 'showCards') {
       setTimeout(() => {
         setGamePhase('game');
-        setCards(initialCards.map(card => ({...card, isFlipped: false})));
+        setCards(prev => prev.map(card => ({ ...card, isFlipped: false })));
       }, 3000);
     }
   };
 
   // 단계 진행 핸들러
   const handleNextPhase = () => {
-    if (gamePhase === 'intro1') {
-      setGamePhase('intro2');
-    } else if (gamePhase === 'intro2') {
-      setGamePhase('intro3');
-    } else if (gamePhase === 'intro3') {
-      setGamePhase('showCards');
-    }
-    // 나머지 단계는 자동 전환으로 처리됨
+    if (gamePhase === 'intro1') setGamePhase('intro2');
+    else if (gamePhase === 'intro2') setGamePhase('intro3');
+    else if (gamePhase === 'intro3') setGamePhase('showCards');
   };
+
   
   // 카드 뒤집기 핸들러
   const handleCardClick = (cardId: number) => {
-    // 이미 뒤집혀 있거나 매치된 카드면 무시
-    const clickedCard = cards.find(card => card.id === cardId);
-    if (!clickedCard || clickedCard.isFlipped || clickedCard.isMatched) {
+    const clicked = cards.find(c => c.id === cardId);
+    if (!clicked || clicked.isFlipped || clicked.isMatched || flippedCards.length === 2) return;
+
+    setCards(prev => prev.map(c => (c.id === cardId ? { ...c, isFlipped: true } : c)));
+    const newFlipped = [...flippedCards, cardId];
+    setFlippedCards(newFlipped);
+
+    if (newFlipped.length !== 2) return;
+
+    setAttempts(a => a + 1);
+    const [firstId, secondId] = newFlipped;
+    const [first, second] = newFlipped.map(id => cards.find(c => c.id === id)!);
+
+    /* ---- 정답 (헬멧/헬멧) ---- */
+    if (first.type === 'helmet' && second.type === 'helmet') {
+      setTimeout(() => {
+        setCards(prev =>
+          prev.map(c => (c.id === firstId || c.id === secondId ? { ...c, isMatched: true } : c)),
+        );
+        setFlippedCards([]);
+        setTimeout(() => setGamePhase('foundMatch'), 800);
+      }, 800);
       return;
     }
-    
-    // 이미 2장 뒤집혀 있으면 무시
-    if (flippedCards.length === 2) {
-      return;
-    }
-    
-    // 카드 뒤집기
-    const newCards = cards.map(card => 
-      card.id === cardId ? { ...card, isFlipped: true } : card
-    );
-    setCards(newCards);
-    
-    // 뒤집힌 카드 추가
-    const newFlippedCards = [...flippedCards, cardId];
-    setFlippedCards(newFlippedCards);
-    
-    // 카드 2장 뒤집혔을 경우 검사
-    if (newFlippedCards.length === 2) {
-      setAttempts(prev => prev + 1);
-      
-      const firstCard = cards.find(card => card.id === newFlippedCards[0]);
-      const secondCard = cards.find(card => card.id === newFlippedCards[1]);
-      
-      if (firstCard && secondCard && firstCard.type === secondCard.type) {
-        // 매치 성공
-        setTimeout(() => {
-          const updatedCards = cards.map(card => 
-            card.id === firstCard.id || card.id === secondCard.id 
-              ? { ...card, isMatched: true, isFlipped: true } // isFlipped를 true로 유지해서 뒤집어지지 않게 함
-              : card
-          );
-          setCards(updatedCards);
-          setFlippedCards([]);
-          
-          // 헬멧 카드 쌍을 찾았는지 확인
-          if (firstCard.type === 'helmet') {
-            setMatchedPairs([...matchedPairs, 'helmet']);
-            setTimeout(() => {
-              setGamePhase('foundMatch');
-            }, 800);
-          } else {
-            // 다른 카드 쌍(밀짚모자, 캡모자)은 매치만 표시하고 게임 계속 진행
-            setMatchedPairs([...matchedPairs, firstCard.type]);
-          }
-        }, 800);
-      } else {
-        // 매치 실패
-        setTimeout(() => {
-          if (firstCard && secondCard) {
-            setIsWrongPair(true);
-            setTimeout(() => {
-              setIsWrongPair(false);
-              const updatedCards = cards.map(card => 
-                (card.id === firstCard.id || card.id === secondCard.id) && !card.isMatched
-                  ? { ...card, isFlipped: false } 
-                  : card
-              );
-              setCards(updatedCards);
-              setFlippedCards([]);
-            }, 1500);
-          }
-        }, 800);
-      }
-    }
+
+    /* ---- 오답 모든 경우 ---- */
+    setTimeout(() => {
+      setIsWrongPair(true);
+      setTimeout(() => {
+        setIsWrongPair(false);
+        setCards(prev =>
+          prev.map(c =>
+            c.id === firstId || c.id === secondId ? { ...c, isFlipped: false } : c,
+          ),
+        );
+        setFlippedCards([]);
+      }, 1500);
+    }, 800);
   };
+  
 
   // 홈으로 이동 핸들러
-  const handleGoHome = () => {
-    navigate('/');
-  };
+  const handleGoHome = () => navigate('/');
 
   // 배경 효과 렌더링 함수 (intro2부터 helmetEquipped 전까지)
   const renderBackdropEffect = () => {
-    if (gamePhase !== 'intro1' && gamePhase !== 'helmetEquipped') {
-      return (
-        <div className="absolute inset-0 bg-white bg-opacity-30 backdrop-blur-sm z-0"></div>
-      );
-    }
-    return null;
+    if (gamePhase === 'intro1' || gamePhase === 'helmetEquipped') return null;
+    return <div className="absolute inset-0 bg-white bg-opacity-30 backdrop-blur-sm z-0" />;
   };
 
   return (
