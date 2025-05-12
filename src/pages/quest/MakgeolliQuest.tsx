@@ -378,13 +378,16 @@ const MakgeolliQuest = () => {
   // 식사 시간 타이틀 렌더링 함수 - 색상 반전
   const renderMealTimeTitle = () => (
     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
-      <h1 className="text-8xl font-bold text-green-600" 
-          style={{
-            textShadow: '4px 4px 0 #FFF, -4px -4px 0 #FFF, 4px -4px 0 #FFF, -4px 4px 0 #FFF',
-            WebkitTextStroke: '2px #FFF'
-          }}>
-        새참 먹는 시간
-      </h1>
+      <h2 className="text-8xl font-bold">
+        <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">새</span>
+        <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">참</span>
+        {' '}
+        <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">먹</span>
+        <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">는</span>
+        {' '}
+        <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">시</span>
+        <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">간</span>
+      </h2>
     </div>
   );
 
@@ -470,15 +473,21 @@ const MakgeolliQuest = () => {
       {/* 논밭 도착 화면 */}
       {gamePhase === 'fieldArrival' && (
         <div className="absolute inset-0 flex items-center justify-center">
-          {renderTitleText('논밭 도착', 'text-6xl', 'text-green-600')}
+          <h2 className="text-8xl font-bold">
+            <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">논</span>
+            <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">밭</span>
+            {' '}
+            <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">도</span>
+            <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">착</span>
+          </h2>
         </div>
       )}
       
       {/* 작업 중 화면 */}
       {gamePhase === 'working' && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="bg-green-600 rounded-xl px-12 py-4">
-            <h2 className="text-4xl font-bold text-white">작업중</h2>
+          <div className="bg-green-500 border-8 border-green-600 rounded-2xl px-12 py-4">
+            <h1 className="text-4xl font-bold text-white">작업 중</h1>
           </div>
           
           {/* 참새 애니메이션 */}
@@ -605,11 +614,11 @@ const MakgeolliQuest = () => {
       {gamePhase === 'missionIntro' && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           {/* 상단 타이틀 */}
-          <h2 className="text-3xl font-bold text-green-600 px-8 py-2 rounded-full mb-6 z-40">새참을 먹어요</h2>
+          <h1 className="text-3xl font-extrabold text-green-500 px-8 py-2 rounded-full mb-6 z-40">새참을 먹어요</h1>
           
           {/* 중앙 대화 상자 */}
           <div className="w-4/5 max-w-xl bg-white/90 border-8 border-green-600 rounded-xl p-6 mb-8 z-40">
-            <p className="text-2xl text-center">
+            <p className="text-2xl text-center font-bold">
               저런! 새참에 막걸리가 있어요.<br/>
               작업이 끝나면 운전해야 하는데…<br/>
               어떡하죠?
@@ -619,7 +628,7 @@ const MakgeolliQuest = () => {
           {/* 선택지 버튼 (z-index 증가 및 이벤트 버블링 방지) */}
           <div className="w-4/5 max-w-xl flex justify-between gap-8 z-50 relative pointer-events-auto">
             <button
-              className="w-1/2 bg-green-400 border-8 border-green-600 rounded-xl p-4 text-xl font-bold text-white transition-all duration-300 hover:bg-green-500 relative z-50"
+              className="w-1/2 bg-green-500 border-8 border-green-600 rounded-xl p-4 text-xl font-bold text-white transition-all duration-300 hover:bg-green-500 relative z-50"
               onClick={(e) => {
                 e.stopPropagation(); // 이벤트 버블링 방지
                 handleOptionSelect('A');
@@ -630,7 +639,7 @@ const MakgeolliQuest = () => {
             </button>
             
             <button
-              className="w-1/2 bg-green-400 border-8 border-green-600 rounded-xl p-4 text-xl font-bold text-white transition-all duration-300 hover:bg-green-500 relative z-50"
+              className="w-1/2 bg-green-500 border-8 border-green-600 rounded-xl p-4 text-xl font-bold text-white transition-all duration-300 hover:bg-green-500 relative z-50"
               onClick={(e) => {
                 e.stopPropagation(); // 이벤트 버블링 방지
                 handleOptionSelect('B');
@@ -648,9 +657,9 @@ const MakgeolliQuest = () => {
       {gamePhase === 'gameInstruction' && (
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4/5 max-w-xl z-20">
-            <h2 className="text-3xl font-bold text-white bg-green-600 px-12 py-3 rounded-full mb-6 text-center mx-auto w-fit">
+            <h1 className="text-3xl font-extrabold text-green-600 px-12 py-3 rounded-full mb-6 text-center mx-auto w-fit">
               새참 속 막걸리 치우기
-            </h2>
+            </h1>
             
             <div className="bg-white border-4 border-green-600 rounded-xl p-6 mb-8">
               <p className="text-2xl text-center">
@@ -807,7 +816,7 @@ const MakgeolliQuest = () => {
               막걸리 치우기 성공!
             </h2>
             
-            <div className="relative bg-green-400 border-8 border-green-600 rounded-xl p-8 max-w-lg mx-auto">
+            <div className="relative bg-green-500 border-8 border-green-600 rounded-xl p-8 max-w-lg mx-auto">
               <p className="text-2xl text-white font-bold">
                 음주운전을 예방한 당신이<br />
                 마을의 영웅이에요
@@ -833,7 +842,7 @@ const MakgeolliQuest = () => {
               노력해주셔서 감사해요!
             </h2>
             
-            <div className="relative bg-green-400 border-8 border-green-600 rounded-xl p-8 max-w-lg mx-auto">
+            <div className="relative bg-green-500 border-8 border-green-600 rounded-xl p-8 max-w-lg mx-auto">
               <p className="text-2xl text-white font-bold">
                 음주운전을 예방한 당신이<br />
                 마을의 영웅이에요

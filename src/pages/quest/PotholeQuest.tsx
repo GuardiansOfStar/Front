@@ -219,7 +219,7 @@ const PotholeQuest = () => {
             <div className="absolute inset-0 flex items-center justify-center z-20">
               {!fallbackImage ? (
                 <img 
-                  src="/assets/images/mission2_success.png"  
+                  src="/assets/images/mission2_success(grandfa).png"  
                   alt="오토바이 운전하는 할아버지" 
                   className="w-1/5 h-auto object-contain z-40"
                   onError={handleImageError}
