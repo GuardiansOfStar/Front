@@ -125,7 +125,7 @@ const ScenarioList = () => {
                                         
                                         {/* 잠금 표시 - 잠금된 시나리오만 */}
                                         {scenario.locked && (
-                                            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-80">
+                                            <div className="absolute inset-0 flex items-center justify-center">
                                                 <div className="rounded-full p-3">
                                                     <svg 
                                                         xmlns="http://www.w3.org/2000/svg" 
