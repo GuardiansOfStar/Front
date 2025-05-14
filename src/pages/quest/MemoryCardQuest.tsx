@@ -18,6 +18,52 @@ const grandchildren = '/assets/images/grandchildren.png';
 const helmet = '/assets/images/helmet.png';
 const nextButton = '/assets/images/next_button.png';
 
+// MemoryCardQuest.tsx 상단에 variants만 교체합니다.
+
+const giftBoxVariants = {
+  hidden:   { scale: 0.5, rotate: -30, opacity: 0 },
+  visible:  {
+    scale: [1, 1.2, 0.9, 1],      // 4단계 키프레임
+    rotate: [-15, 15, -5, 0],     // 4단계 키프레임
+    opacity: 1,
+    transition: {
+      duration: 1,                // 전체 1초
+      times: [0, 0.3, 0.6, 1],    // 키프레임 시점
+      ease: ["easeOut", "easeIn", "easeOut"]  // 구간별 easing
+    }
+  }
+}
+
+const openBoxVariants = {
+  hidden:  { scale: 0.8, opacity: 0 },
+  visible: {
+    scale: 1,
+    opacity: 1,
+    transition: {
+      type: "spring",            // 간단한 spring
+      stiffness: 200,
+      damping: 20,
+      duration: 0.8
+    }
+  }
+}
+
+const helmetVariants = {
+  hidden:  { y: 30, opacity: 0, scale: 0.5, rotate: -10 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    scale: 1,
+    rotate: 0,
+    transition: {
+      type: "spring",            // 헬멧은 부드러운 spring
+      stiffness: 180,
+      damping: 15,
+      delay: 0.3,
+    }
+  }
+}
+
 // 카드 타입 정의
 interface Card {
   id: number;
@@ -744,45 +790,48 @@ const MemoryCardQuest: React.FC = () => {
         </div>
       )}
 
-      {/* showGift */}
       {gamePhase === 'showGift' && (
         <motion.div
           className="absolute inset-0 flex items-center justify-center z-10"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
+          initial="hidden"
+          animate="visible"
+          variants={giftBoxVariants}
         >
           <motion.img
             src={giftBox}
             alt="선물 상자"
-            className="w-80"
-            initial={{ rotate: -15 }}
-            animate={{ rotate: 0 }}
-            transition={{ duration: 0.8 }}
+            className="w-[640px] h-[640px]"
+            variants={giftBoxVariants}
           />
         </motion.div>
       )}
 
-      {/* openGift */}
       {gamePhase === 'openGift' && (
-        <div className="absolute inset-0 flex items-center justify-center z-10">
-          <div className="relative w-80 h-80">
-            <img
+        <motion.div
+          className="absolute inset-0 flex items-center justify-center z-10"
+          initial="hidden"
+          animate="visible"
+          variants={openBoxVariants}
+        >
+          <div className="relative w-[800px] h-[800px]">
+            <motion.img
               src={giftOpenHelmet}
-              alt="열린 선물 상자"
-              className="w-full absolute animate-[fadeIn_800ms_ease-out]"
+              alt="열린 상자"
+              className="absolute inset-0 w-full h-full object-contain"
+              variants={openBoxVariants}
             />
             <motion.img
               src={helmet}
               alt="헬멧"
-              className="w-40 absolute"
-              initial={{ y: 20, opacity: 0, scale: 0.5 }}
-              animate={{ y: 0, opacity: 1, scale: 1 }}
-              transition={{ delay: 0.5, duration: 0.8, ease: "backOut" }} // 'bounceOut'을 'backOut'으로 변경
+              className="absolute left-1/2 transform -translate-x-1/2 w-[320px] h-[320px]"
+              initial="hidden"
+              animate="visible"
+              variants={helmetVariants}
             />
           </div>
-        </div>
+        </motion.div>
       )}
+
 
       {/* helmetEquipped */}
       {gamePhase === 'helmetEquipped' && (
