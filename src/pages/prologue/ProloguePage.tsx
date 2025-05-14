@@ -53,10 +53,8 @@ const ProloguePage = () => {
         
         if (progress >= 1) {
           clearInterval(animationTimer);
-          // 애니메이션 완료 후 encouragement 단계로 전환
-          setTimeout(() => {
-            setStep('encouragement');
-          }, 500);
+          // 애니메이션 완료 후 encouragement 단계로 즉시 전환
+          setStep('encouragement');
         }
       }, 16);
       
@@ -168,7 +166,7 @@ const ProloguePage = () => {
         className="absolute inset-0" 
         style={{ 
           backgroundColor: '#FFFDE7', 
-          opacity: animationProgress * 0.8, // 최대 80% 불투명도까지
+          opacity: animationProgress * 0.8, // 최대 80% 불투명도까지 
           transition: 'opacity 1.5s ease-in-out' 
         }}
       />
@@ -178,14 +176,14 @@ const ProloguePage = () => {
         className="relative w-4/5 max-w-4xl z-10"
         style={{ 
           opacity: Math.max(0, (animationProgress - 0.3) * 1.5), // 30% 진행 후 나타나기 시작
-          transform: `translateY(${(1 - Math.min(1, animationProgress * 1.2)) * 30}px)`, // 함께 움직임
+          transform: `translateY(${(1 - Math.min(1, animationProgress * 1.2)) * 20}px)`, // 위치 이동 효과 감소
         }}
       >
         {/* 손자손녀 이미지 - 메시지 박스 위에 위치 */}
         <img 
           src={grandchildren} 
           alt="손자손녀" 
-          className="absolute -top-48 left-1/2 transform -translate-x-1/2 w-64 h-auto z-20"
+          className="absolute -top-36 left-1/2 transform -translate-x-1/2 w-72 h-auto z-20"
         />
         
         {/* 메시지 박스 */}
@@ -211,13 +209,13 @@ const ProloguePage = () => {
         />
       </div>
       
-      {/* 메시지 컨테이너와 손자손녀 이미지를 함께 그룹화하여 애니메이션 적용 */}
-      <div className="relative w-4/5 max-w-4xl z-10 animate-[fadeIn_800ms_ease-out]">
+      {/* 애니메이션 제거: animate-[fadeIn_800ms_ease-out] 클래스 삭제 */}
+      <div className="relative w-4/5 max-w-4xl z-10">
         {/* 손자손녀 이미지 - 메시지 박스 위에 위치 */}
         <img 
           src={grandchildren} 
           alt="손자손녀" 
-          className="absolute -top-48 left-1/2 transform -translate-x-1/2 w-64 h-auto z-20"
+          className="absolute -top-36 left-1/2 transform -translate-x-1/2 w-72 h-auto z-20"
         />
         
         {/* 메시지 박스 */}
