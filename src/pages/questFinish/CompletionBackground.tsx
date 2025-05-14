@@ -39,9 +39,9 @@ const CompletionBackground = () => {
         <div className="relative w-full h-full overflow-hidden">
             {/* 배경 이미지 애니메이션 컨테이너 - 수정됨 */}
             <div
-                className="transition-transform duration-[5000ms] ease-out w-full h-full"
+                className="transition-transform duration-[6000ms] ease-out w-full h-full"
                 style={{
-                    transform: startAnimation ? 'translateY(-15%)' : 'translateY(-35%)'
+                    transform: startAnimation ? 'translateY(-2%)' : 'translateY(-30%)'
                 }}
             >
                 <img
@@ -52,23 +52,24 @@ const CompletionBackground = () => {
             </div>
             
             {/* 오토바이 이미지 - 위치 조정됨 */}
-            <div className="absolute bottom-[5%] left-1/2 transform -translate-x-1/2">
-                <img 
-                    src={motorcycle} 
-                    alt="이륜차" 
-                    className="w-[70%] max-h-[40vh] mx-auto object-contain"
-                />
-            </div>
+            <img
+                src={motorcycle} 
+                alt="이륜차" 
+                className="absolute bottom-0 left-1/2 transform -translate-x-1/2
+                w-[70%] max-h-[40%] mx-auto object-contain"
+            />
             
             {/* 컨페티 이펙트 */}
             {showConfetti && (
-                <Confetti
+                <div className="absolute top-0 left-0 w-screen z-50 pointer-events-none">
+                    <Confetti
                     width={width}
                     height={height}
                     numberOfPieces={700}
                     gravity={0.1}
                     recycle={false}
-                />
+                    />
+                </div>
             )}
         </div>
     );
