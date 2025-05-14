@@ -158,7 +158,7 @@ const PotholeQuest = () => {
           
           <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
             {/* 선택지 제목 및 설명 */}
-            <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-3xl p-6 mb-8 w-[85%]">
+            <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-3xl p-6 mb-8 w-[75%]">
               <h2 className="text-5xl font-extrabold text-green-600 text-center mb-4">구덩이 조심</h2>
               <p className="text-4xl font-bold text-black text-center">
                 앞에 큰 구덩이가 있어요!<br/>
@@ -168,7 +168,7 @@ const PotholeQuest = () => {
             </div>
             
             {/* 선택지 버튼 */}
-            <div className="flex justify-center space-x-10 w-[90%]">
+            <div className="flex justify-center space-x-10 w-4/5">
               <button
                 className={`w-[40%] bg-green-600 bg-opacity-70
                 border-8 border-green-600 rounded-xl p-4

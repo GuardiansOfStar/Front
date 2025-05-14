@@ -1,4 +1,3 @@
-// src/pages/scenarioSelect/ScenarioList.tsx
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,149 +14,172 @@ const allScenarios = [
         title: '시내 이륜차 점검 센터 가기', 
         subtitle: '시내 이륜차 점검 센터 가기',
         image: '/assets/images/scenario2.png',
-        locked: true,
-        position: 'left'
+        locked: true
     },
     { 
         id: 2, 
         title: '논밭 작업가는 날', 
         subtitle: '논밭 작업가는 날',
         image: '/assets/images/scenario1.png',
-        locked: false,
-        position: 'center'
+        locked: false
     },
     { 
         id: 3, 
         title: '시장가서 장 보는 날', 
         subtitle: '시장가서 장 보는 날',
         image: '/assets/images/scenario3.png',
-        locked: true,
-        position: 'right'
+        locked: true
     },
 ];
 
 const ScenarioList = () => {
     const navigate = useNavigate();
-    const [selectedScenarioIndex, setSelectedScenarioIndex] = useState(1); // 초기 선택: 논밭 작업가는 날(인덱스 1)
-    const [visibleScenarios, setVisibleScenarios] = useState<Array<typeof allScenarios[0]>>([]);
+    const [selectedScenarioIndex, setSelectedScenarioIndex] = useState(0);
+    const [frameColor, setFrameColor] = useState('bg-green-600'); // 초기 녹색 프레임
     
-    // 초기화 및 현재 선택에 따라 표시할 시나리오 설정
+    // 시나리오 잠금 여부에 따라 프레임 색상 업데이트
     useEffect(() => {
-        // 현재 선택된 시나리오 인덱스에 따라 표시될 시나리오 결정
-        if (selectedScenarioIndex === 0) {
-            // 왼쪽 시나리오 선택 시 (시내 이륜차 점검 센터)
-            setVisibleScenarios([
-                { ...allScenarios[0], position: 'center' },  // 시내 이륜차 점검 -> 중앙으로
-                { ...allScenarios[1], position: 'right' }    // 논밭 작업 -> 오른쪽으로
-            ]);
-        } else if (selectedScenarioIndex === 1) {
-            // 중앙 시나리오 선택 시 (논밭 작업가는 날) - 기본값
-            setVisibleScenarios([
-                { ...allScenarios[0], position: 'left' },    // 시내 이륜차 점검 -> 왼쪽으로
-                { ...allScenarios[1], position: 'center' },  // 논밭 작업 -> 중앙으로
-                { ...allScenarios[2], position: 'right' }    // 시장가서 장보는 날 -> 오른쪽으로
-            ]);
-        } else if (selectedScenarioIndex === 2) {
-            // 오른쪽 시나리오 선택 시 (시장가서 장 보는 날)
-            setVisibleScenarios([
-                { ...allScenarios[1], position: 'left' },    // 논밭 작업 -> 왼쪽으로
-                { ...allScenarios[2], position: 'center' }   // 시장가서 장보는 날 -> 중앙으로
-            ]);
-        }
+        setFrameColor(allScenarios[selectedScenarioIndex].locked ? '#718096' : '#48BB78');
     }, [selectedScenarioIndex]);
     
     // 왼쪽 버튼 클릭 핸들러
     const handleLeftClick = () => {
         if (selectedScenarioIndex > 0) {
-            setSelectedScenarioIndex(selectedScenarioIndex - 1);
+            setSelectedScenarioIndex(prev => prev - 1);
         }
     };
 
     // 오른쪽 버튼 클릭 핸들러
     const handleRightClick = () => {
         if (selectedScenarioIndex < allScenarios.length - 1) {
-            setSelectedScenarioIndex(selectedScenarioIndex + 1);
+            setSelectedScenarioIndex(prev => prev + 1);
         }
     };
 
-    // 시나리오 클릭 핸들러
-    const handleScenarioClick = (scenario: typeof allScenarios[0]) => {
-        if (!scenario.locked && scenario.position === 'center') {
-            // 중앙에 있는 잠금 해제된 시나리오만 클릭 가능
-            setTimeout(() => {
-                navigate(`/prologue?scenario=${scenario.id}`);
-            }, 300);
-        }
+    // 시나리오 선택 핸들러
+    const handleScenarioSelect = () => {
+        const scenario = allScenarios[selectedScenarioIndex];
+        if (scenario.locked) return;
+        
+        setTimeout(() => {
+            navigate(`/prologue?scenario=${scenario.id}`);
+        }, 300);
     };
+
+    // 시나리오 이미지 고정 너비 - 제목 박스 너비와 일치시키기 위해 사용
+    const SELECTED_SCALE = 1.2;
+    const SCENARIO_WIDTH = 320;
 
     return (
-        <div className="flex flex-col items-center w-full">
-            {/* 시나리오 카드 영역 */}
-            <div className="flex justify-center items-center space-x-8 mb-10">
-                {visibleScenarios.map((scenario) => (
-                    <div 
-                        key={scenario.id} 
-                        className={`relative
-                            transition-all duration-300
-                        `}
-                        onClick={() => handleScenarioClick(scenario)}
-                    >
-                        <div 
-                            className={`w-80 h-56 rounded-lg overflow-hidden 
-                                ${scenario.position === 'center' 
-                                    ? 'border-8 border-green-600' 
-                                    : 'border-2 border-gray-300'
-                                }
-                                ${scenario.locked ? 'grayscale' : ''}
-                                transition-all duration-300
-                                ${scenario.position === 'center' && !scenario.locked ? 'cursor-pointer' : ''}
-                            `}
-                        >
-                            <img
-                                src={scenario.image}
-                                alt={scenario.title}
-                                className="w-full h-full object-cover"
-                            />
-                        </div>
+        <div className="flex flex-col items-center justify-between h-full px-4 py-4 space-y-0">
+            {/* 타이틀 - 패딩 최소화하고 상단 여백 적절히 조정 */}
+            <div className="bg-green-600 border-8 border-green-700 rounded-xl px-24 py-8 w-full max-w-5xl mb-0">
+                <h1 className="text-4xl font-extrabold text-white text-center">
+                    원하는 안전 교육 게임을 선택하세요
+                </h1>
+            </div>
+            
+            {/* 메인 컨텐츠 영역 - 시나리오 선택 (간격 축소) */}
+            <div className="flex-grow flex flex-col items-center justify-center w-full mt-0 mb-0">
+                {/* 시나리오 표시 영역 */}
+                <div className="relative flex justify-center items-center w-full h-[230px] mb-0">
+                    {/* 시나리오 이미지들 */}
+                    <div className="relative flex justify-center items-center w-full h-[230px]">
+                        {allScenarios.map((scenario, index) => {
+                            // 선택된 시나리오 여부 확인
+                            const isSelected = selectedScenarioIndex === index;
+                            
+                            // 시나리오 위치 계산 (간격 축소)
+                            let translateX = (index - selectedScenarioIndex) * 350;
+                            let scale = isSelected ? SELECTED_SCALE : 0.9;
+                            let opacity = isSelected ? 1 : 0.6;
+                            
+                            return (
+                                <div
+                                    key={scenario.id}
+                                    className="absolute transition-all duration-500 ease-in-out"
+                                    style={{
+                                        transform: `translateX(${translateX}px) scale(${scale})`,
+                                        zIndex: isSelected ? 15 : 5,
+                                        opacity,
+                                    }}
+                                    onClick={() => isSelected && !scenario.locked && handleScenarioSelect()}
+                                > 
+                                    <div 
+                                        className="overflow-hidden rounded-xl transition-all duration-300"
+                                        style={{
+                                            width: `${SCENARIO_WIDTH}px`,
+                                            height: '200px',
+                                            filter: scenario.locked ? 'grayscale(1) brightness(0.75)' : 'none',
+                                            border: isSelected ? `12px solid ${frameColor}` : 'none',
+                                            boxSizing: 'border-box',
+                                            boxShadow: isSelected ? '0 4px 6px -1px rgba(0, 0, 0, 0.1)' : 'none',
+                                            cursor: isSelected && !scenario.locked ? 'pointer' : 'default'
+                                        }}
+                                    >
+                                        <img
+                                            src={scenario.image}
+                                            alt={scenario.title}
+                                            className="w-full h-full object-cover"
+                                        />
+                                        
+                                        {/* 잠금 표시 - 잠금된 시나리오만 */}
+                                        {scenario.locked && (
+                                            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-80">
+                                                <div className="rounded-full p-3">
+                                                    <svg 
+                                                        xmlns="http://www.w3.org/2000/svg" 
+                                                        className="h-14 w-14 text-white" 
+                                                        fill="none" 
+                                                        viewBox="0 0 24 24" 
+                                                        stroke="currentColor"
+                                                    >
+                                                        <path 
+                                                            strokeLinecap="round" 
+                                                            strokeLinejoin="round" 
+                                                            strokeWidth={2} 
+                                                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" 
+                                                        />
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
-                ))}
+                </div>
+                
+                {/* subtitle 박스 - 선택된 시나리오에 맞춰 스케일 동기화 */}
+                <div 
+                    className="rounded-full text-center overflow-hidden mt-4 mb-0 px-6 py-2 pointer-events-none text-white font-extrabold whitespace-nowrap"
+                    style={{ 
+                        width: `${SCENARIO_WIDTH}px`,
+                        backgroundColor: allScenarios[selectedScenarioIndex].locked ? '#718096' : '#48BB78',
+                        transformOrigin: 'top',
+                        boxSizing: 'border-box',
+                    }}
+                >
+                    <p className="text-xl truncate">
+                        {allScenarios[selectedScenarioIndex].subtitle}
+                    </p>
+                </div>
             </div>
             
-            {/* 시나리오 텍스트 버튼 */}
-            <div className="flex justify-center items-center space-x-8 mb-12">
-                {visibleScenarios.map((scenario) => (
-                    <button 
-                        key={`btn-${scenario.id}`}
-                        disabled={scenario.position !== 'center' || scenario.locked}
-                        className={`px-8 py-3 rounded-full text-center text-xl font-bold w-80
-                            ${scenario.position === 'center'
-                                ? scenario.locked
-                                  ? 'bg-gray-600 text-gray-200'
-                                  : 'bg-green-700 text-white cursor-pointer' 
-                                : 'bg-gray-700 text-gray-200'
-                            }
-                            transition-all duration-300
-                        `}
-                        onClick={() => handleScenarioClick(scenario)}
-                    >
-                        {scenario.subtitle}
-                    </button>
-                ))}
-            </div>
-            
-            {/* 하단 방향 버튼 */}
-            <div className="flex justify-center space-x-16 mt-6">
+            {/* 하단 방향 버튼 - 간격 최소화 */}
+            <div className="flex justify-center space-x-4">
                 <img
                     src={selectedScenarioIndex > 0 ? leftArrowDark : leftArrowLight}
                     alt="왼쪽으로"
-                    className={`w-32 h-32 ${selectedScenarioIndex > 0 ? 'cursor-pointer' : 'opacity-50 cursor-not-allowed'}`}
+                    className={`w-28 h-28 ${selectedScenarioIndex > 0 ? 'cursor-pointer hover:scale-105 transition-transform' : 'opacity-50 cursor-not-allowed'}`}
                     onClick={handleLeftClick}
                 />
                 
                 <img
                     src={selectedScenarioIndex < allScenarios.length - 1 ? rightArrowDark : rightArrowLight}
                     alt="오른쪽으로"
-                    className={`w-32 h-32 ${selectedScenarioIndex < allScenarios.length - 1 ? 'cursor-pointer' : 'opacity-50 cursor-not-allowed'}`}
+                    className={`w-28 h-28 ${allScenarios.length - 1 > selectedScenarioIndex ? 'cursor-pointer hover:scale-105 transition-transform' : 'opacity-50 cursor-not-allowed'}`}
                     onClick={handleRightClick}
                 />
             </div>

@@ -634,43 +634,52 @@ const MakgeolliQuest = () => {
       
       {/* 미션 소개 화면 - 선택지 버튼을 텍스트 박스 밖으로 분리 */}
       {gamePhase === 'missionIntro' && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          {/* 상단 타이틀 */}
-          <h1 className="text-3xl font-extrabold text-green-500 px-8 py-2 rounded-full mb-6 z-40">새참을 먹어요</h1>
+        <div className="absolute inset-0">
+          {/* 배경 불투명도 효과 */}
+          <div className="absolute inset-0 bg-white bg-opacity-50 z-0"></div>
           
-          {/* 중앙 대화 상자 */}
-          <div className="w-4/5 max-w-xl bg-white/90 border-8 border-green-600 rounded-xl p-6 mb-8 z-40">
-            <p className="text-2xl text-center font-bold">
-              저런! 새참에 막걸리가 있어요.<br/>
-              작업이 끝나면 운전해야 하는데…<br/>
-              어떡하죠?
-            </p>
-          </div>
-          
-          {/* 선택지 버튼 (z-index 증가 및 이벤트 버블링 방지) */}
-          <div className="w-4/5 max-w-xl flex justify-between gap-8 z-50 relative pointer-events-auto">
-            <button
-              className="w-1/2 bg-green-500 border-8 border-green-600 rounded-xl p-4 text-xl font-bold text-white transition-all duration-300 hover:bg-green-500 relative z-50"
-              onClick={(e) => {
-                e.stopPropagation(); // 이벤트 버블링 방지
-                handleOptionSelect('A');
-              }}
-            >
-              작업중 막걸리는 보약!<br />
-              적당히 마신다
-            </button>
+          <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+            {/* 선택지 제목 및 설명 */}
+            <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-3xl p-6 mb-8 w-[75%]">
+              <h2 className="text-5xl font-extrabold text-green-600 text-center mb-4">새참을 먹어요</h2>
+              <p className="text-4xl font-bold text-black text-center">
+                저런! 새참에 막걸리가 있어요.<br/>
+                작업이 끝나면 운전해야 하는데…<br/>
+                어떡하죠?
+              </p>
+            </div>
             
-            <button
-              className="w-1/2 bg-green-500 border-8 border-green-600 rounded-xl p-4 text-xl font-bold text-white transition-all duration-300 hover:bg-green-500 relative z-50"
-              onClick={(e) => {
-                e.stopPropagation(); // 이벤트 버블링 방지
-                handleOptionSelect('B');
-              }}
-            >
-              운전해야 하니<br />
-              막걸리는<br />
-              마시지 않는다
-            </button>
+            {/* 선택지 버튼 */}
+            <div className="flex justify-center space-x-10 w-4/5">
+              <button
+                className={`w-[40%] bg-green-600 bg-opacity-70
+                border-8 border-green-600 rounded-xl p-4
+                text-3xl font-bold text-white 
+                transition duration-300 
+                ${selectedOption === 'A' ? 
+                'bg-green-600 scale-105 bg-opacity-95' : 'hover:bg-green-600'}`}
+                onClick={() => handleOptionSelect('A')}
+                disabled={!!selectedOption}
+              >
+                작업중 막걸리는 보약!<br />
+                적당히 마신다
+              </button>
+              
+              <button
+                className={`w-[40%] bg-green-600 bg-opacity-70
+                border-8 border-green-600 rounded-xl p-4
+                text-3xl font-bold text-white
+                transition duration-300 
+                ${selectedOption === 'B' ? 
+                'bg-green-600 scale-105 bg-opacity-95' : 'hover:bg-green-600'}`}
+                onClick={() => handleOptionSelect('B')}
+                disabled={!!selectedOption}
+              >
+                운전해야 하니<br />
+                막걸리는<br />
+                마시지 않는다
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -683,17 +692,17 @@ const MakgeolliQuest = () => {
               새참 속 막걸리 치우기
             </h1>
             
-            <div className="bg-white border-4 border-green-600 rounded-xl p-6 mb-8">
-              <p className="text-2xl text-center">
+            <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-xl p-8 mb-8 w-[80%] text-center">
+              <p className="text-4xl font-extrabold">
                 {selectedOption === 'A' ? (
                   <span>
-                    <span className="text-green-600 font-bold">잠깐!</span><br />
+                    <span className="text-green-600">잠깐!</span><br />
                     막걸리의 유혹을 이겨내볼까요?<br />
                     새참 속 막걸리를 치우러 가요.
                   </span>
                 ) : (
                   <span>
-                    <span className="text-green-600 font-bold">유혹을 참아내다니 멋져요!</span><br />
+                    <span className="text-green-600">유혹을 참아내다니 멋져요!</span><br />
                     다른 작업자들도 먹지 않도록<br />
                     막걸리를 모두 치워보아요.
                   </span>
@@ -838,8 +847,8 @@ const MakgeolliQuest = () => {
               막걸리 치우기 성공!
             </h2>
             
-            <div className="relative bg-green-600/80 border-8 border-green-700 rounded-xl p-8 max-w-lg mx-auto">
-              <p className="text-2xl text-white font-bold">
+            <div className="relative bg-green-600/80 border-8 border-green-700 rounded-xl p-8 w-[80%] mx-auto text-center">
+              <p className="text-4xl text-white font-extrabold">
                 음주운전을 예방한 당신이<br />
                 마을의 영웅이에요
               </p>

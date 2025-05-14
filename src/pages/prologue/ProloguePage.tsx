@@ -69,8 +69,8 @@ const ProloguePage = () => {
       />
       <div className="w-full h-full flex flex-col items-center justify-center z-10 relative mt-40"> {/* 콘텐츠가 배경 위에 오도록 z-10 및 relative 추가 */}
         <h1 className="text-6xl font-bold text-green-600 mb-12">[ 논밭 작업 하는 날 ]</h1>
-        <div className="relative bg-green-500 bg-opacity-90 border-8 border-green-600 rounded-2xl p-10 w-3/4 max-w-2xl h-1/2 mt-10">
-          <p className="text-4xl text-center text-white leading-relaxed font-bold">
+        <div className="relative bg-green-500 bg-opacity-80 border-8 border-green-600 rounded-xl p-8 w-[80%] mt-10">
+          <p className="text-4xl text-center text-white font-extrabold">
             이륜차를 타고 논밭에 갔다가<br />
             집으로 안전하게 돌아오세요
           </p>
@@ -113,11 +113,11 @@ const ProloguePage = () => {
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center">
               <div className="relative">
                 {/* 말풍선 형태로 메시지 표시 - 흰색 배경, 녹색 테두리 */}
-                <div className="bg-white bg-opacity-90 border-8 border-green-600 rounded-xl p-6 max-w-3xl">
+                <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-xl p-8 w-[80%] text-center">
                   <div className="flex items-center">
                     {/* 별별이 캐릭터 박스 모서리에 위치 */}
                     <div className="relative w-full">
-                      <p className="text-2xl text-black text-center font-bold leading-relaxed">
+                      <p className="text-4xl text-black font-extrabold">
                         이륜차 운전 중 여러 상황이 벌어져요!<br />
                         안전 운전에 유의하여 문제를 해결해보아요
                       </p>
@@ -167,8 +167,8 @@ const ProloguePage = () => {
           </div>
           
           {/* 메시지 박스 - 흰색 배경, 녹색 테두리 */}
-          <div className="bg-white border-8 border-green-600 rounded-2xl p-5 max-w-lg mb-8">
-            <p className="text-2xl font-bold text-center text-green-700">
+          <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-xl p-8 w-[80%] mb-8 text-center">
+            <p className="text-4xl font-extrabold text-green-700">
               무엇보다 할아버지가 제일 소중해요!<br />
               조심히 다녀오세요!
             </p>

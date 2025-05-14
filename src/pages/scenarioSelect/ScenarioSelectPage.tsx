@@ -7,15 +7,11 @@ const ScenarioSelectPage = () => {
     return (
         <div className="relative w-full h-full">
             <Background />
-            <BackButton />
-            
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <div className="bg-green-600 border-4 border-green-700 rounded-full px-12 py-4 mb-10">
-                    <h1 className="text-3xl font-bold text-white text-center">
-                        원하는 안전 교육 게임을 선택하세요
-                    </h1>
-                </div>
-                
+            <div className="absolute top-0 left-0 right-0 p-4 z-10">
+                <BackButton />
+            </div>
+
+            <div className="absolute inset-x-0 top-32 bottom-0 flex flex-col items-center justify-center">
                 <ScenarioList />
             </div>
         </div>

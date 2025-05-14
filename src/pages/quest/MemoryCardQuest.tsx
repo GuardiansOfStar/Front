@@ -296,12 +296,12 @@ const MemoryCardQuest = () => {
         </div>
       )}
 
-      {/* intro2 - 전체 클릭 이벤트 제거 */}
+      {/* intro2 */}
       {gamePhase === 'intro2' && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="relative z-10 max-w-xl mx-auto mt-64">
-            <div className="bg-white border-4 border-green-600 rounded-xl p-6 shadow-lg">
-              <p className="text-2xl font-bold text-black text-center mb-4">
+          <div className="relative z-10 max-w-4xl mx-auto mt-64">
+            <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-xl py-20 px-8 w-full max-w-3xl mx-auto text-center min-h-[100px]">
+              <p className="text-4xl font-extrabold text-black mb-6">
                 할아버지,<br />
                 운전하시기 전에 중요한 선물이 있어요!
               </p>
@@ -333,13 +333,13 @@ const MemoryCardQuest = () => {
             </h2>
             
             {/* 설명 텍스트 */}
-            <div className="bg-white bg-opacity-90 border-4 border-green-600 rounded-xl p-8 max-w-3xl mx-auto">
-              <p className="text-3xl font-bold text-black text-center mb-6">
+            <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-xl p-8 w-full max-x-3xl mx-auto text-center">
+              <p className="text-4xl font-extrabold text-black mb-6">
                 선물은 과연 무엇일까요?<br />
                 같은 그림의 카드 두 개를 찾아주세요!
               </p>
               
-              <p className="text-2xl text-center text-green-600 font-bold">
+              <p className="text-4xl font-extrabold text-green-600">
                 힌트: 이 선물은 머리를 보호해줘요
               </p>
             </div>
@@ -408,8 +408,8 @@ const MemoryCardQuest = () => {
             {/* 오답 피드백 팝업 */}
             {isWrongPair && (
               <div className="absolute inset-0 flex items-center justify-center z-30">
-                <div className="bg-white bg-opacity-95 border-4 border-green-600 rounded-xl p-6 text-center w-full max-w-xl shadow-lg">
-                  <p className="text-3xl text-green-800 font-bold">
+                <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-xl p-8 text-center w-[80%] shadow-lg">
+                  <p className="text-4xl text-green-800 font-extrabold">
                     앗, 서로 다른 그림이에요!<br />
                     안전모가 그려진 카드 쌍을 찾아주세요
                   </p>
@@ -436,10 +436,12 @@ const MemoryCardQuest = () => {
               className="w-56 h-auto mb-2"
             />
             
-            <div className="bg-green-600 text-white text-3xl font-bold rounded-3xl p-8 max-w-xl text-center border-8 border-green-700">
+            <div className="bg-green-600 bg-opacity-80 border-8 border-green-700 rounded-xl p-8 w-[80%] text-center">
+            <p className="text-4xl text-white font-extrabold">
               선물을 찾았어요!<br/>
               안전모는 당신을 보호해줄<br/>
               소중한 선물이에요
+            </p>
             </div>
           </div>
         </div>
