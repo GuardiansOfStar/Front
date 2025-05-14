@@ -1,6 +1,6 @@
-// src/pages/quest/MemoryCardQuest.tsx
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import BackButton from '../../components/ui/BackButton';
 
 // 이미지 임포트
@@ -11,14 +11,12 @@ const strawHatCard = '/assets/images/straw_hat_card.png';
 const capHatCard = '/assets/images/cap_hat_card.png';
 const cardBack = '/assets/images/card_back.png';
 const characterWithHelmet = '/assets/images/character_with_helmet.png';
-const successCircle = '/assets/images/success_circle.png';
-const failX = '/assets/images/fail_x.png';
 const homeButton = '/assets/images/home_button.png';
 const giftBox = '/assets/images/gift.png';
 const giftOpenHelmet = '/assets/images/gift_open.png';
 const grandchildren = '/assets/images/grandchildren.png';
 const helmet = '/assets/images/helmet.png';
-const NextButton = '/assets/images/next_button.png';
+const nextButton = '/assets/images/next_button.png';
 
 // 카드 타입 정의
 interface Card {
@@ -27,487 +25,793 @@ interface Card {
   image: string;
   isFlipped: boolean;
   isMatched: boolean;
+  isRevealed: boolean; // 정답이 아닌 같은 쌍은 공개된 상태로 유지
 }
 
 // 게임 단계 정의
-type GamePhase = 
-  | 'intro1'             // 시작 화면
-  | 'intro2'             // 손자손녀 메시지 - 선물 소개
-  | 'intro3'             // 게임 설명
-  | 'showCards'          // 카드 미리보기
-  | 'game'               // 카드 게임 진행
-  | 'foundMatch'         // 카드 쌍 찾음
-  | 'showGift'           // 선물 보여주기
-  | 'openGift'           // 선물 열기
-  | 'helmetEquipped'     // 헬멧 착용
-  | 'score';             // 점수 화면
+type GamePhase =
+  | 'intro1'
+  | 'intro2'
+  | 'intro3'
+  | 'showCards'
+  | 'game'
+  | 'wrongPairFeedback'
+  | 'wrongMatchFeedback'
+  | 'tooManyAttempts'
+  | 'showAnswer'
+  | 'foundMatch'
+  | 'showGift'
+  | 'openGift'
+  | 'helmetEquipped'
+  | 'score';
 
-const MemoryCardQuest = () => {
+const MemoryCardQuest: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  // state
   const [scenarioId, setScenarioId] = useState<string | null>(null);
   const [questId, setQuestId] = useState<string | null>(null);
   const [cards, setCards] = useState<Card[]>([]);
+  const [initialCardOrder, setInitialCardOrder] = useState<Card[]>([]); // 초기 카드 순서 저장
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [matchedPairs, setMatchedPairs] = useState<string[]>([]);
+  const [revealedPairs, setRevealedPairs] = useState<string[]>([]);
   const [attempts, setAttempts] = useState(0);
   const [gamePhase, setGamePhase] = useState<GamePhase>('intro1');
-  const [isWrongPair, setIsWrongPair] = useState(false);
+  const [feedbackMessage, setFeedbackMessage] = useState<string>('');
   const [giftAnimationStage, setGiftAnimationStage] = useState(0);
-  const [finalScore, setFinalScore] = useState(20); // 최고 점수로 초기화
-  const giftAnimationRef = useRef<NodeJS.Timeout | null>(null);
-  const autoTransitionTimerRef = useRef<NodeJS.Timeout | null>(null);
-  
-  // URL 쿼리 파라미터에서 시나리오 ID와 퀘스트 ID 가져오기
+  const [finalScore, setFinalScore] = useState(20);
+  const [showMessage, setShowMessage] = useState(false);
+  const [showHintTitle, setShowHintTitle] = useState(true);
+  const [isInitialized, setIsInitialized] = useState(false); // 게임 초기화 상태 관리
+  const [shouldShowHintMessage, setShouldShowHintMessage] = useState(false); // 힌트 메시지 표시 여부
+
+  // 타이머 refs
+  const giftAnimationRef = useRef<number | null>(null);
+  const autoTransitionTimerRef = useRef<number | null>(null);
+  const feedbackTimerRef = useRef<number | null>(null);
+
+  // URL 쿼리 파라미터
   useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    const sId = searchParams.get('scenario');
-    const qId = searchParams.get('quest');
-    setScenarioId(sId);
-    setQuestId(qId || '1');
+    const params = new URLSearchParams(location.search);
+    setScenarioId(params.get('scenario'));
+    setQuestId(params.get('quest') || '1');
   }, [location]);
 
-  // 카드 초기화 - 섞지 않고 고정된 순서로 생성
+  // 시도 횟수에 따른 힌트 메시지 표시 여부 결정
+  // useEffect(() => {
+  //   // 5번 이상 시도했을 때 힌트 메시지 표시
+  //   if (attempts >= 5 && gamePhase === 'game') {
+  //     setShouldShowHintMessage(true);
+  //     setFeedbackMessage("찾기 어려우신가요?\n정답을 알려드릴게요");
+      
+  //     // 힌트 메시지 표시 후 3초 후 정답 보여주기
+  //     const timer = window.setTimeout(() => {
+  //       setGamePhase('tooManyAttempts');
+  //     }, 3000);
+      
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [attempts, gamePhase]);
+
+  // 최초 게임 시작 시에만 카드 초기화
   useEffect(() => {
-    if (gamePhase === 'showCards' || gamePhase === 'game') {
+    if (gamePhase === 'showCards' && !isInitialized) {
       initializeCards();
+      setIsInitialized(true);
+    } else if (gamePhase === 'showCards' && isInitialized) {
+      // 이미 초기화된 경우 저장된 카드 순서 사용
+      setCards(initialCardOrder.map(card => ({
+        ...card,
+        isFlipped: true, // showCards 단계에서는 모든 카드 앞면 표시
+        isRevealed: revealedPairs.includes(card.type) // 이미 공개된 쌍은 유지
+      })));
+
+      // 힌트 메시지 숨기기 (카드 다시 보여줄 때)
+      setShouldShowHintMessage(false);
+
+      // showCards 후 자동으로 game 단계로 전환
+      window.setTimeout(() => {
+        setGamePhase('game');
+        setCards(prev => prev.map(c => ({
+          ...c,
+          isFlipped: revealedPairs.includes(c.type) // 이미 공개된 쌍만 앞면 유지
+        })));
+      }, 3000);
+    }
+
+    if (gamePhase === 'intro2') {
+      const timer = window.setTimeout(() => setShowMessage(true), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [gamePhase, isInitialized, initialCardOrder, revealedPairs]);
+
+  // 힌트 타이틀 표시 관리
+  useEffect(() => {
+    // 피드백 화면에서는 힌트 타이틀 숨기기
+    if (gamePhase === 'wrongPairFeedback' || gamePhase === 'wrongMatchFeedback' || gamePhase === 'tooManyAttempts') {
+      setShowHintTitle(false);
+    } else if (gamePhase === 'game') {
+      setShowHintTitle(true);
     }
   }, [gamePhase]);
 
-  // 자동 전환 설정 - 다음 버튼이 없는 단계들
+  // 자동 전환
   useEffect(() => {
-    if (autoTransitionTimerRef.current) {
+    if (autoTransitionTimerRef.current != null) {
       clearTimeout(autoTransitionTimerRef.current);
-      autoTransitionTimerRef.current = null;
     }
 
-    if (
-      gamePhase === 'intro1' ||
+    if (gamePhase === 'intro1') {
+      autoTransitionTimerRef.current = window.setTimeout(() => {
+        setGamePhase('intro2');
+      }, 3000);
+    } 
+    else if (gamePhase === 'wrongMatchFeedback') {
+      // 잘못된 같은 쌍 피드백 표시 후, 카드 다시 보여주고 게임 계속
+      autoTransitionTimerRef.current = window.setTimeout(() => {
+        if (attempts >= 5) {
+          setShouldShowHintMessage(true);
+          setFeedbackMessage("찾기 어려우신가요?\n정답을 알려드릴게요");
+          setGamePhase('tooManyAttempts');
+        } else {
+        setGamePhase('showCards');
+        }
+      }, 2500);
+      
+    }
+    else if (
       gamePhase === 'foundMatch' ||
       gamePhase === 'showGift' ||
       gamePhase === 'openGift' ||
       gamePhase === 'helmetEquipped'
     ) {
-      autoTransitionTimerRef.current = setTimeout(() => {
+      autoTransitionTimerRef.current = window.setTimeout(() => {
         switch (gamePhase) {
-          case 'intro1':
-            setGamePhase('intro2');
-            break;
-          case 'foundMatch':
-            setGamePhase('showGift');
-            break;
-          case 'showGift':
-            setGamePhase('openGift');
-            break;
-          case 'openGift':
-            setGamePhase('helmetEquipped');
-            break;
+          case 'foundMatch':   setGamePhase('showGift');       break;
+          case 'showGift':     setGamePhase('openGift');       break;
+          case 'openGift':     setGamePhase('helmetEquipped'); break;
           case 'helmetEquipped':
             navigate(
-              `/score?scenario=${scenarioId}&quest=${questId}&score=${finalScore}&correct=true`,
+              `/score?scenario=${scenarioId}&quest=${questId}&score=${finalScore}&correct=true`
             );
             break;
         }
+      }, 3000); // helmetEquipped 단계는 6초로 연장
+    }
+    else if (gamePhase === 'wrongPairFeedback') {
+     // 피드백 표시 후 다시 게임으로 전환
+      autoTransitionTimerRef.current = window.setTimeout(() => {
+        if (attempts < 5) {
+          setGamePhase('game');
+          setShowHintTitle(true);
+          setCards(prev =>
+            prev.map(c =>
+              flippedCards.includes(c.id)
+              ? { ...c, isFlipped: false }
+              : c
+            )
+          );
+          setFlippedCards([]);
+          // Remove the nested setTimeout that shows a redundant message
+        } else {
+          setShouldShowHintMessage(true);
+          setFeedbackMessage("찾기 어려우신가요?\n정답을 알려드릴게요");
+          setGamePhase('tooManyAttempts');
+        }
+      }, 1500);
+    }
+    // tooManyAttempts 단계 처리 부분 수정
+    else if (gamePhase === 'tooManyAttempts') {
+      // 시도 횟수 초과 시 정답 보여주기
+      autoTransitionTimerRef.current = window.setTimeout(() => {
+        // 메시지 표시 후 일정 시간 후에 메시지 숨기고 카드 뒤집기 시작
+        setShouldShowHintMessage(false);
+        
+        // 메시지 박스가 사라진 후 약간의 딜레이를 두고 카드 뒤집기 시작
+        autoTransitionTimerRef.current = window.setTimeout(() => {
+          // 헬멧 카드만 뒤집어 공개
+          setCards(prev =>
+            prev.map(c =>
+              c.type === 'helmet'
+                ? { ...c, isFlipped: true, isRevealed: true }
+                : { ...c, isFlipped: false }
+            )
+          );
+          
+          // 카드 공개 후 showAnswer 단계로
+          autoTransitionTimerRef.current = window.setTimeout(() => {
+            setGamePhase('showAnswer');
+          }, 1500);
+        }, 500); // 메시지 박스가 사라진 후 0.5초 후 카드 뒤집기
+      }, 3000); // 힌트 메시지 표시 후 3초 후 처리
+    } 
+    else if (gamePhase === 'showAnswer') {
+      // 무미건조한 반응 후 헬멧 착용 단계로 바로 이동
+      autoTransitionTimerRef.current = window.setTimeout(() => {
+        setGamePhase('helmetEquipped');
       }, 3000);
     }
 
     return () => {
-      if (autoTransitionTimerRef.current) {
+      if (autoTransitionTimerRef.current != null) {
         clearTimeout(autoTransitionTimerRef.current);
       }
     };
-  }, [gamePhase, navigate, scenarioId, questId, finalScore]);
+  }, [gamePhase, navigate, scenarioId, questId, finalScore, flippedCards]);
 
-  // 시도 횟수에 따른 점수 계산
   useEffect(() => {
-    let newScore = 20; // 기본 최고 점수
-    
-    // 시도 횟수에 따른 점수 감소
-    if (attempts === 2) newScore = 16;
-    else if (attempts === 3) newScore = 12;
-    else if (attempts === 4) newScore = 8;
-    else if (attempts >= 5) newScore = 4;
-    
-    setFinalScore(newScore);
+    console.log("Current gamePhase:", gamePhase);
+  }, [gamePhase]);
+
+  // 게임 페이즈 변경 시 힌트 메시지 상태 관리 - 이 부분을 추가하거나 수정
+  useEffect(() => {
+    // tooManyAttempts 페이즈에서는 힌트 메시지 표시, 다른 페이즈로 전환될 때는 숨김
+    if (gamePhase === 'tooManyAttempts') {
+      setShouldShowHintMessage(true);
+    } else if (gamePhase === 'showAnswer') {
+      // showAnswer 단계에서는 확실히 메시지 박스 숨김
+      setShouldShowHintMessage(false);
+    }
+  }, [gamePhase]);
+
+  // 점수 계산
+  useEffect(() => {
+    let score = 20;
+    if (attempts === 2) score = 16;
+    else if (attempts === 3) score = 12;
+    else if (attempts === 4) score = 8;
+    else if (attempts >= 5) score = 4;
+    setFinalScore(score);
   }, [attempts]);
 
-  // 선물 애니메이션 효과
+  // 선물 애니메이션
   useEffect(() => {
     if (gamePhase === 'openGift') {
-      // 이전 타이머 클리어
-      if (giftAnimationRef.current) {
-        clearTimeout(giftAnimationRef.current);
-      }
-      
-      // 애니메이션 단계별 진행
-      setGiftAnimationStage(1); // 시작 상태
-      
-      giftAnimationRef.current = setTimeout(() => {
-        setGiftAnimationStage(2); // 헬멧 등장 중
-        
-        giftAnimationRef.current = setTimeout(() => {
-          setGiftAnimationStage(3); // 헬멧 완전히 보임
-        }, 1000);
+      if (giftAnimationRef.current != null) clearTimeout(giftAnimationRef.current);
+      setGiftAnimationStage(1);
+      giftAnimationRef.current = window.setTimeout(() => {
+        setGiftAnimationStage(2);
+        giftAnimationRef.current = window.setTimeout(() => setGiftAnimationStage(3), 1000);
       }, 500);
     }
-    
     return () => {
-      if (giftAnimationRef.current) {
-        clearTimeout(giftAnimationRef.current);
-      }
+      if (giftAnimationRef.current != null) clearTimeout(giftAnimationRef.current);
     };
   }, [gamePhase]);
 
-  // 카드 초기화 함수 - 카드를 섞지 않고 고정된 순서로 배치
+  // 카드 초기화 함수 - 게임 시작 시 한 번만 호출됨
   const initializeCards = () => {
-    const cardTypes = [
+    const types = [
       { type: 'helmet', image: helmetCard },
       { type: 'straw-hat', image: strawHatCard },
       { type: 'cap', image: capHatCard },
-    ];
-
-    const initialCards: Card[] = [];
-    cardTypes.forEach(({ type, image }) => {
+    ] as const;
+    
+    // 카드 생성
+    const list: Card[] = [];
+    types.forEach(({ type, image }) => {
       for (let i = 0; i < 2; i++) {
-        initialCards.push({
-          id: initialCards.length,
-          type: type as Card['type'],
-          image,
-          isFlipped: gamePhase === 'showCards',
+        list.push({ 
+          id: list.length, 
+          type, 
+          image, 
+          isFlipped: true, // showCards 단계에서는 모든 카드 앞면 표시
           isMatched: false,
+          isRevealed: false
         });
       }
     });
-    setCards(initialCards);
+    
+    // 최초 한 번만 카드 섞기
+    const shuffled = shuffleCards(list);
+    setCards(shuffled);
+    setInitialCardOrder(shuffled); // 섞인 카드 순서 저장
 
-    if (gamePhase === 'showCards') {
-      setTimeout(() => {
-        setGamePhase('game');
-        setCards(prev => prev.map(card => ({ ...card, isFlipped: false })));
-      }, 3000);
+    // showCards 후 자동으로 game 단계로 전환
+    window.setTimeout(() => {
+      setGamePhase('game');
+      setCards(prev => prev.map(c => ({ ...c, isFlipped: false })));
+    }, 3000);
+  };
+
+  // 카드 섞기 함수 - 게임 시작시 한 번만 호출됨
+  const shuffleCards = (cards: Card[]): Card[] => {
+    const shuffled = [...cards];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  };
+
+  // 카드 클릭 핸들러
+  const handleCardClick = (id: number) => {
+    if (gamePhase !== 'game') return;
+    const card = cards.find(c => c.id === id);
+    if (!card || card.isFlipped || card.isMatched || card.isRevealed) return;
+
+    // 카드 뒤집기
+    setCards(prev =>
+      prev.map(c =>
+        c.id === id ? { ...c, isFlipped: true } : c
+      )
+    );
+    
+    const flipped = [...flippedCards, id];
+    setFlippedCards(flipped);
+
+    if (flipped.length === 2) {
+      // 시도 횟수 증가
+      setAttempts(a => a + 1);
+      
+      const [aId, bId] = flipped;
+      const [aCard, bCard] = [aId, bId].map(i =>
+        cards.find(c => c.id === i)!
+      );
+
+      // 카드 쌍 확인
+      if (aCard.type === bCard.type) {
+        if (aCard.type === 'helmet') {
+          // 정답 쌍(헬멧-헬멧) 발견
+          window.setTimeout(() => {
+            setCards(prev =>
+              prev.map(c =>
+                c.id === aId || c.id === bId
+                  ? { ...c, isMatched: true }
+                  : c
+              )
+            );
+            setFlippedCards([]);
+            window.setTimeout(() => setGamePhase('foundMatch'), 800);
+          }, 800);
+        } else {
+          // 정답이 아닌 같은 쌍 선택(캡모자-캡모자, 밀짚모자-밀짚모자)
+          setFeedbackMessage("앗, 준비한 선물이 아니에요!\n안전모가 그려진 카드 쌍을 찾아주세요!");
+          
+          // 공개된 쌍으로 기록
+          setRevealedPairs(prev => [...prev, aCard.type]);
+          
+          // 클릭된 카드는 공개 상태로 유지
+          window.setTimeout(() => {
+            setCards(prev =>
+              prev.map(c =>
+                c.type === aCard.type
+                  ? { ...c, isRevealed: true, isFlipped: true }
+                  : c
+              )
+            );
+            setFlippedCards([]);
+            
+            // 피드백 표시 후 카드 다시 보여주기
+            setGamePhase('wrongMatchFeedback');
+          }, 1000);
+        }
+      } else {
+        // 서로 다른 쌍 선택(헬멧-캡모자, 캡모자-밀짚모자 등)
+        setFeedbackMessage("앗, 서로 다른 그림이에요!\n안전모가 그려진 카드 쌍을 찾아주세요");
+        setShowHintTitle(false);
+        window.setTimeout(() => {
+          setGamePhase('wrongPairFeedback');
+        }, 800);
+      }
     }
   };
-
-  // 단계 진행 핸들러
-  const handleNextPhase = () => {
-    if (gamePhase === 'intro1') setGamePhase('intro2');
-    else if (gamePhase === 'intro2') setGamePhase('intro3');
-    else if (gamePhase === 'intro3') setGamePhase('showCards');
-  };
-
-  
-  // 카드 뒤집기 핸들러
-  const handleCardClick = (cardId: number) => {
-    const clicked = cards.find(c => c.id === cardId);
-    if (!clicked || clicked.isFlipped || clicked.isMatched || flippedCards.length === 2) return;
-
-    setCards(prev => prev.map(c => (c.id === cardId ? { ...c, isFlipped: true } : c)));
-    const newFlipped = [...flippedCards, cardId];
-    setFlippedCards(newFlipped);
-
-    if (newFlipped.length !== 2) return;
-
-    setAttempts(a => a + 1);
-    const [firstId, secondId] = newFlipped;
-    const [first, second] = newFlipped.map(id => cards.find(c => c.id === id)!);
-
-    /* ---- 정답 (헬멧/헬멧) ---- */
-    if (first.type === 'helmet' && second.type === 'helmet') {
-      setTimeout(() => {
-        setCards(prev =>
-          prev.map(c => (c.id === firstId || c.id === secondId ? { ...c, isMatched: true } : c)),
-        );
-        setFlippedCards([]);
-        setTimeout(() => setGamePhase('foundMatch'), 800);
-      }, 800);
-      return;
-    }
-
-    /* ---- 오답 모든 경우 ---- */
-    setTimeout(() => {
-      setIsWrongPair(true);
-      setTimeout(() => {
-        setIsWrongPair(false);
-        setCards(prev =>
-          prev.map(c =>
-            c.id === firstId || c.id === secondId ? { ...c, isFlipped: false } : c,
-          ),
-        );
-        setFlippedCards([]);
-      }, 1500);
-    }, 800);
-  };
-  
 
   // 홈으로 이동 핸들러
   const handleGoHome = () => navigate('/');
 
-  // 배경 효과 렌더링 함수 (intro2부터 helmetEquipped 전까지)
-  const renderBackdropEffect = () => {
+  // 다음 단계로 이동 핸들러
+  const handleNextPhase = () => {
+    if (gamePhase === 'intro2' && !showMessage) return;
+    setShowMessage(false);
+    if (gamePhase === 'intro1')      setGamePhase('intro2');
+    else if (gamePhase === 'intro2') setGamePhase('intro3');
+    else if (gamePhase === 'intro3') setGamePhase('showCards');
+  };
+
+  // 배경 흐림 효과 렌더링 함수
+  const renderBackdrop = () => {
     if (gamePhase === 'intro1' || gamePhase === 'helmetEquipped') return null;
     return <div className="absolute inset-0 bg-white bg-opacity-30 backdrop-blur-sm z-0" />;
   };
 
+  // 타이틀 텍스트 렌더링 함수
+  const renderTitleText = (text: string) => (
+    <h2 className="text-7xl font-extrabold whitespace-nowrap">
+      {text.split('').map((ch, i) => (
+        ch === ' ' ? ' ' :
+        <span key={i} className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:12px_white] [text-stroke:2px_white]">{ch}</span>
+      ))}
+    </h2>
+  );
+
+  // 단계별 버튼 표시 조건
+  const showNextButton =
+    (gamePhase === 'intro2' && showMessage) ||
+    gamePhase === 'intro3';
+
+  // 카드 컨테이너 패딩 조건부 설정
+  const gameContentVisible = 
+    gamePhase === 'showCards' || 
+    gamePhase === 'game' || 
+    gamePhase === 'wrongPairFeedback' ||
+    gamePhase === 'wrongMatchFeedback'||
+    gamePhase === 'tooManyAttempts';
+
   return (
     <div className="relative w-full h-full">
       {/* 배경 */}
-      <img
-        src={gameBackground}
-        alt="게임 배경"
-        className="absolute w-full h-full object-cover"
-      />
+      <img src={gameBackground} alt="게임 배경" className="absolute w-full h-full object-cover" />
+      {renderBackdrop()}
 
-      {/* 공통 배경 효과 적용 */}
-      {renderBackdropEffect()}
+      {/* 서서히 페이드인되는 백드롭 */}
+      {gamePhase !== 'intro1' && gamePhase !== 'helmetEquipped' && (
+        <motion.div
+          className="absolute inset-0 bg-white bg-opacity-30 backdrop-blur-sm z-0"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+        />
+      )}
 
-      {/* 헤더 영역 - 뒤로가기, 홈 버튼 */}
-      <div className="absolute top-4 right-4 z-10">
-        <img
-          src={homeButton}
-          alt="홈으로"
-          className="w-16 h-16 cursor-pointer"
-          onClick={handleGoHome}
+      {/* 헤더 */}
+      <div className="absolute top-4 right-4 z-50">
+        <motion.img 
+          src={homeButton} 
+          alt="홈" 
+          className="w-16 h-16 cursor-pointer" 
+          onClick={handleGoHome} 
+          whileTap={{scale: 0.9}}
         />
       </div>
-      <div className="absolute top-4 left-4 z-10">
+      <div className="absolute top-4 left-4 z-50">
         <BackButton />
       </div>
 
-      {/* 초기 화면 - 제목과 캐릭터 */}
+      {/* intro1 */}
       {gamePhase === 'intro1' && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer">
-          <div className="mt-24 text-center">
-            <h1 className="text-8xl font-bold">
-              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">주</span>
-              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">행</span>
-              {' '} {/* Space */}
-              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">준</span>
-              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">비</span>
-              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">하</span>
-              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">기</span>
-            </h1>
-          </div>
-          
-          <img
+        <motion.div className="absolute inset-0 flex flex-col items-center justify-center z-10"
+        initial={{opacity: 0}}
+        animate={{opacity: 1}}
+        transition={{duration: 0.8}}
+        >
+          <motion.div
+            className="mt-24 text-center"
+            initial={{y: -20}}
+            animate={{y: 0}}
+            transition={{duration: 0.8}}
+            >{renderTitleText('주행 준비하기')}
+          </motion.div>
+          <motion.img
             src={gameCharacter}
             alt="캐릭터"
-            className="w-80 h-auto mt-6" /* Added mt-8 to move character down */
-          />
-        </div>
-      )}
-
-      {/* intro2 */}
-      {gamePhase === 'intro2' && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="relative z-10 max-w-4xl mx-auto mt-64">
-            <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-xl py-20 px-8 w-full max-w-3xl mx-auto text-center min-h-[100px]">
-              <p className="text-4xl font-extrabold text-black mb-6">
-                할아버지,<br />
-                운전하시기 전에 중요한 선물이 있어요!
-              </p>
-            </div>
-            <img
-              src={grandchildren}
-              alt="손자손녀"
-              className="absolute -top-36 left-1/2 transform -translate-x-1/2 w-48 h-auto z-20"
+            className="w-80 h-auto mt-2 "
+            initial={{scale: 0.8, opacity: 0}}
+            animate={{scale: 1, opacity: 1}}
+            transition={{duration: 0.8, ease: 'easeOut'}}
             />
-            <div className="flex justify-center">
-              <img
-                src={NextButton}
-                alt="다음"
-                onClick={handleNextPhase}
-                className="w-1/2 h-auto cursor-pointer hover:scale-105 transition-transform"
-              />
-            </div>
-          </div>
-        </div>
+        </motion.div>
       )}
 
-      {/* 두 번째 단계 - 게임 설명 화면 (전체 클릭 이벤트 제거) */}
+      {gamePhase === 'intro2' && (
+        <motion.div
+          // 이 wrapper 자체를 위로 올리고 싶다면 여기 mt/-mt를 건드리세요
+          className="absolute inset-0 flex flex-col items-center justify-center z-10 -mt-28"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+        >
+          {/* 이제 image/box는 wrapper 안에서 고정된 간격 유지 */}
+          <motion.img
+            src={grandchildren}
+            alt="손자손녀"
+            className="w-100 h-auto -mb-16 z-20"
+            initial={{ y: -30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          />
+
+          <motion.div
+            className="bg-white bg-opacity-90 border-8 border-green-600 rounded-xl px-8 py-12 w-full max-w-[43rem] text-center"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.8 }}
+          >
+            <p className="text-4xl font-extrabold text-black">
+              할아버지,<br />
+              운전하시기 전에 중요한 선물이 있어요!
+            </p>
+          </motion.div>
+        </motion.div>
+      )}
+
+
+
+      {/* intro3 */}
       {gamePhase === 'intro3' && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <div className="relative z-10">
-            {/* 타이틀 */}
-            <h2 className="text-4xl font-bold text-center text-green-600 mb-8">
+        <motion.div
+          className="absolute inset-0 flex flex-col items-center justify-start pt-20"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+        >
+          <motion.div
+            className="relative z-10 w-4/5 max-w-4xl"
+            initial={{ y: -20 }}
+            animate={{ y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <h2 className="text-5xl font-extrabold text-center text-green-600 mb-8">
               손주가 준비한 선물 찾기
             </h2>
-            
-            {/* 설명 텍스트 */}
-            <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-xl p-8 w-full max-x-3xl mx-auto text-center">
+            <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-xl p-12 text-center">
               <p className="text-4xl font-extrabold text-black mb-6">
-                선물은 과연 무엇일까요?<br />
-                같은 그림의 카드 두 개를 찾아주세요!
+                선물은 과연 무엇일까요?<br />같은 그림의 카드 두 개를 찾아주세요!
               </p>
-              
               <p className="text-4xl font-extrabold text-green-600">
                 힌트: 이 선물은 머리를 보호해줘요
               </p>
             </div>
+          </motion.div>
+        </motion.div>
+      )}
 
-            <div className="flex justify-center">
-              <img
-                src={NextButton}
-                alt="다음"
-                onClick={handleNextPhase}
-                className="w-1/2 h-auto cursor-pointer hover:scale-105 transition-transform"
-              />
+      {/* 게임 화면 영역 - 절대 위치로 고정 */}
+      {gameContentVisible && (
+        <div className="absolute inset-0 z-10 p-4">
+          <div className="w-full h-full flex flex-col items-center justify-center">
+            {/* 타이틀 영역 - 높이 고정 */}
+            <div className="h-24 flex items-center justify-center mb-4">
+              <h1 className={`text-4xl font-extrabold text-green-600 ${showHintTitle ? '' : 'invisible'}`}>
+                힌트: 머리를 보호해주는 선물은 무엇일까요?
+              </h1>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* 카드 미리보기 단계 */}
-      {gamePhase === 'showCards' && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
-          <h2 className="text-3xl font-bold text-green-600 py-4 px-12 rounded-full">
-            힌트: 머리를 보호해주는 선물은 무엇일까요?
-          </h2>
-          
-          {/* 카드 그리드 - 카드 크기 키움 */}
-          <div className="grid grid-cols-3 grid-rows-2 gap-10 mb-10">
-            {cards.map((card) => (
-              <div key={card.id} className="relative w-48 h-64">
-                <img
-                  src={card.image}
-                  alt="카드"
-                  className="w-full h-full object-contain"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* 카드 게임 화면 */}
-      {gamePhase === 'game' && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
-          <h2 className="text-3xl font-bold text-green-600 py-4 px-12 rounded-full">
-            힌트: 머리를 보호해주는 선물은 무엇일까요?
-          </h2>
-          
-          {/* 카드 그리드 - 카드 크기 키움 */}
-          <div className="grid grid-cols-3 grid-rows-2 gap-10 mb-10 relative">
-            {cards.map((card) => (
-              <div 
-                key={card.id} 
-                className={`relative w-48 h-64 cursor-pointer ${
-                  (isWrongPair && flippedCards.includes(card.id) && !card.isMatched) ? 'animate-shake' : ''
-                } ${!card.isFlipped && !card.isMatched ? 'hover:scale-105' : ''} transition-transform duration-200`}
-                onClick={() => handleCardClick(card.id)}
-              >
-                <img
-                  src={card.isFlipped || card.isMatched ? card.image : cardBack}
-                  alt="카드"
-                  className="w-full h-full object-contain"
-                />
-                
-                {/* 매치된 카드에 체크 표시 제거 */}
-              </div>
-            ))}
             
-            {/* 오답 피드백 팝업 */}
-            {isWrongPair && (
-              <div className="absolute inset-0 flex items-center justify-center z-30">
-                <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-xl p-8 text-center w-[80%] shadow-lg">
-                  <p className="text-4xl text-green-800 font-extrabold">
-                    앗, 서로 다른 그림이에요!<br />
-                    안전모가 그려진 카드 쌍을 찾아주세요
+            {/* 카드 그리드 - 절대 위치로 고정 */}
+            <div className="grid grid-cols-3 gap-0 mb-12">
+              {cards.map(card => {
+                // 카드 크기 파악 (서로 다른 해상도 적용)
+                let cardInfo = { width: 210, height: 265 }; // 기본값: 안전모 카드
+                
+                if (card.type === 'straw-hat') {
+                  cardInfo = { width: 210, height: 269 }; // 밀짚모자 카드
+                } else if (card.type === 'cap') {
+                  cardInfo = { width: 210, height: 265 }; // 캡모자 카드
+                }
+                
+                // 카드 뒷면 크기
+                const backCardInfo = { width: 210, height: 269 };
+                
+                // 가장 큰 크기를 컨테이너 크기로 사용 (모든 카드 크기 통일)
+                const containerSize = {
+                  width: Math.max(cardInfo.width, backCardInfo.width) + 10, // 여유 공간 추가
+                  height: Math.max(cardInfo.height, backCardInfo.height) + 10 // 여유 공간 추가
+                };
+                
+                return (
+                  <div
+                    key={card.id}
+                    className={`relative cursor-pointer transition-transform duration-300`}
+                    onClick={() => handleCardClick(card.id)}
+                    style={{
+                      width: `${containerSize.width}px`,
+                      height: `${containerSize.height}px`,
+                      transform: card.isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+                      transformStyle: 'preserve-3d',
+                    }}
+                  >
+                    {/* 카드 앞면 */}
+                    <div 
+                      className="absolute inset-0 backface-hidden transform-style-preserve-3d" 
+                      style={{
+                        backfaceVisibility: 'hidden',
+                        transform: 'rotateY(180deg)',
+                      }}
+                    >
+                      <img
+                        src={card.image}
+                        alt={card.type}
+                        className="w-full h-full object-contain"
+                        style={{
+                          width: `${cardInfo.width}px`,
+                          height: `${cardInfo.height}px`,
+                          position: 'absolute',
+                          left: '50%',
+                          top: '50%',
+                          transform: 'translate(-50%, -50%)',
+                        }}
+                      />
+                    </div>
+                    
+                    {/* 카드 뒷면 */}
+                    <div 
+                      className="absolute inset-0 backface-hidden transform-style-preserve-3d" 
+                      style={{
+                        backfaceVisibility: 'hidden',
+                      }}
+                    >
+                      <img
+                        src={cardBack}
+                        alt="카드 뒷면"
+                        className="w-full h-full object-contain"
+                        style={{
+                          width: `${backCardInfo.width}px`,
+                          height: `${backCardInfo.height}px`,
+                          position: 'absolute',
+                          left: '50%',
+                          top: '50%',
+                          transform: 'translate(-50%, -50%)',
+                        }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            
+            {/* 시도 횟수 - 하단에 고정 */}
+            {gamePhase === 'game' && (
+              <div className="absolute bottom-4 w-full flex justify-center">
+                <div className="bg-green-600 border-4 border-green-700 px-6 py-2 rounded-lg">
+                  <p className="text-2xl font-extrabold text-white">
+                    시도 횟수: {attempts}
                   </p>
                 </div>
               </div>
             )}
           </div>
-          
-          {/* 시도 횟수 */}
-          <div className="bg-green-600 px-10 py-3 rounded-full">
-            <p className="text-2xl font-bold text-white">시도 횟수: {attempts}</p>
+        </div>
+      )}
+
+      {/* 잘못된 쌍 피드백 - 게임 화면 위에 오버레이 */}
+      {gamePhase === 'wrongPairFeedback' && (
+        <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+          <div className="bg-white border-8 border-green-600 rounded-xl p-8 max-w-xl w-full mx-auto text-center shadow-lg">
+            <p className="text-3xl font-extrabold text-green-600 whitespace-pre-line">
+              {feedbackMessage}
+            </p>
           </div>
         </div>
       )}
 
-      {/* 카드 쌍 찾음 - 손자손녀 메시지 (자동 전환, 클릭 이벤트 제거) */}
-      {gamePhase === 'foundMatch' && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
-          {/* 손자손녀 이미지와 메시지 */}
-          <div className="flex flex-col items-center">
-            <img 
-              src={grandchildren} 
-              alt="손자손녀" 
-              className="w-56 h-auto mb-2"
-            />
-            
-            <div className="bg-green-600 bg-opacity-80 border-8 border-green-700 rounded-xl p-8 w-[80%] text-center">
-            <p className="text-4xl text-white font-extrabold">
-              선물을 찾았어요!<br/>
-              안전모는 당신을 보호해줄<br/>
-              소중한 선물이에요
+      {/* 정답이 아닌 같은 쌍 피드백 - 게임 화면 위에 오버레이 */}
+      {gamePhase === 'wrongMatchFeedback' && (
+        <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+          <div className="bg-white border-8 border-green-600 rounded-xl p-8 max-w-xl w-full mx-auto text-center shadow-lg">
+            <p className="text-3xl font-extrabold text-green-600 whitespace-pre-line">
+              {feedbackMessage}
             </p>
+          </div>
+        </div>
+      )}
+
+      {/* 시도 횟수 초과 피드백 (힌트 플래그 있을 때만) */}
+      {gamePhase === 'tooManyAttempts' && shouldShowHintMessage && (
+        <div className="absolute inset-0 flex items-center justify-center z-20">
+          <div className="bg-white border-8 border-green-600 rounded-xl p-8 max-w-xl w-full mx-auto text-center shadow-lg">
+            <p className="text-3xl font-extrabold text-green-600 whitespace-pre-line">
+              {feedbackMessage}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* 정답 보여주기 */}
+      {gamePhase === 'showAnswer' && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center z-10 mt-24">
+          <div className="relative w-4/5 max-w-4xl z-10">
+            {/* 손자손녀 이미지 */}
+            <img
+              src={grandchildren}
+              alt="손자손녀"
+              className="absolute -top-40 left-1/2 transform -translate-x-1/2 w-76 h-auto z-20"
+            />
+            {/* 메시지 박스 */}
+            <div className="bg-white bg-opacity-90 border-8 border-green-600 rounded-xl p-10 pt-12 w-full max-w-2xl mx-auto text-center">
+              <p className="text-4xl font-extrabold text-green-600 mb-6">
+                선물을 공개합니다
+              </p>
+              <p className="text-4xl font-extrabold text-black">
+                안전모는 당신을 보호해줄 <br/>소중한 선물이에요.
+              </p>
             </div>
           </div>
         </div>
       )}
 
-      {/* 선물 보여주기 (자동 전환, 클릭 이벤트 제거) */}
-      {gamePhase === 'showGift' && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
-          <img 
-            src={giftBox} 
-            alt="선물 상자" 
-            className="w-80 h-auto animate-pulse"
-          />
+      {/* foundMatch */}
+      {gamePhase === 'foundMatch' && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center z-10 mt-24">
+          <div className="relative w-4/5 max-w-4xl z-10">
+            {/* 손자손녀 이미지 */}
+            <img
+              src={grandchildren}
+              alt="손자손녀"
+              className="absolute -top-40 left-1/2 transform -translate-x-1/2 w-76 h-auto z-20"
+            />
+            {/* 메시지 박스 */}
+            <div className="bg-white bg-opacity-90 border-8 border-green-600 rounded-xl p-10 pt-12 w-full max-w-2xl mx-auto text-center">
+              <p className="text-4xl font-extrabold text-green-600 mb-6">
+                선물을 찾았어요!
+              </p>
+              <p className="text-4xl font-extrabold text-black">
+                안전모는 당신을 보호해줄 <br/>소중한 선물이에요.
+              </p>
+            </div>
+          </div>
         </div>
       )}
 
-      {/* 선물 열기 (자동 전환, 클릭 이벤트 제거) */}
+      {/* showGift */}
+      {gamePhase === 'showGift' && (
+        <motion.div
+          className="absolute inset-0 flex items-center justify-center z-10"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+        >
+          <motion.img
+            src={giftBox}
+            alt="선물 상자"
+            className="w-80"
+            initial={{ rotate: -15 }}
+            animate={{ rotate: 0 }}
+            transition={{ duration: 0.8 }}
+          />
+        </motion.div>
+      )}
+
+      {/* openGift */}
       {gamePhase === 'openGift' && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
-          {/* 애니메이션 단계에 따른 표시 */}
-          <div className="relative w-80 h-80 flex items-center justify-center">
-            {/* 선물 상자 (항상 표시) */}
-            <img 
-              src={giftOpenHelmet} 
-              alt="열린 선물 상자" 
-              className="w-full h-auto absolute"
+        <div className="absolute inset-0 flex items-center justify-center z-10">
+          <div className="relative w-80 h-80">
+            <img
+              src={giftOpenHelmet}
+              alt="열린 선물 상자"
+              className="w-full absolute animate-[fadeIn_800ms_ease-out]"
             />
-            
-            {/* 헬멧 (서서히 나타남) */}
-            <img 
+            <motion.img
               src={helmet}
               alt="헬멧"
-              className="w-40 h-auto absolute transition-opacity duration-1000 ease-in-out"
-              style={{ 
-                opacity: giftAnimationStage >= 2 ? (giftAnimationStage === 3 ? 1 : 0.7) : 0,
-                transform: `translateY(${giftAnimationStage >= 2 ? '0' : '20px'})`,
-                transition: 'opacity 1s ease-in-out, transform 1s ease-in-out'
-              }}
+              className="w-40 absolute"
+              initial={{ y: 20, opacity: 0, scale: 0.5 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5, duration: 0.8, ease: "backOut" }} // 'bounceOut'을 'backOut'으로 변경
             />
           </div>
         </div>
       )}
 
-      {/* 헬멧 착용 화면 (자동 전환, 클릭 이벤트 제거) */}
+      {/* helmetEquipped */}
       {gamePhase === 'helmetEquipped' && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
-          <div className="mt-24 text-center">
-            <h2 className="text-8xl font-bold">
-              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">안</span>
-              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">전</span>
-              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">모</span>
-              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">를</span>
-
-              {' '} {/* Space */}
-              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">착</span>
-              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">용</span>
-              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">했</span>
-              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">어</span>
-              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">요</span>
-            </h2>
-          </div>
-          
-          <img
+        <motion.div
+          className="absolute inset-0 flex flex-col items-center justify-center z-10"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+        >
+          <div className="mt-24 text-center">{renderTitleText('안전모를 착용했어요')}</div>
+          <motion.img
             src={characterWithHelmet}
             alt="캐릭터"
-            className="w-80 h-auto mt-6" /* Added mt-8 to move character down */
+            className="w-80 h-auto mt-6"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.8 }}
+          />
+        </motion.div>
+      )}
+
+      {/* 중앙 Next 버튼 */}
+      {showNextButton && (
+        <div className="absolute bottom-0 left-0 right-0 flex justify-center z-10">
+          <img
+            src={nextButton}
+            alt="다음"
+            onClick={handleNextPhase}
+            className="w-52 h-auto cursor-pointer hover:scale-105 transition-transform"
           />
         </div>
       )}
