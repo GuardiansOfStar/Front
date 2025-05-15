@@ -460,7 +460,7 @@ const MemoryCardQuest: React.FC = () => {
   // 배경 흐림 효과 렌더링 함수
   const renderBackdrop = () => {
     if (gamePhase === 'intro1' || gamePhase === 'helmetEquipped') return null;
-    return <div className="absolute inset-0 bg-white bg-opacity-30 backdrop-blur-sm z-0" />;
+    return <div className="absolute inset-0 bg-[#FFF9C4]/10 backdrop-blur-sm z-0" />;
   };
 
   // 타이틀 텍스트 렌더링 함수
@@ -495,7 +495,7 @@ const MemoryCardQuest: React.FC = () => {
       {/* 서서히 페이드인되는 백드롭 */}
       {gamePhase !== 'intro1' && gamePhase !== 'helmetEquipped' && (
         <motion.div
-          className="absolute inset-0 bg-white bg-opacity-30 backdrop-blur-sm z-0"
+          className="absolute inset-0 bg-[#FFF9C4]/70 backdrop-blur-sm z-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
@@ -560,7 +560,7 @@ const MemoryCardQuest: React.FC = () => {
           />
 
           <motion.div
-            className="bg-white bg-opacity-90 border-8 border-green-600 rounded-xl px-8 py-12 w-full max-w-[43rem] text-center"
+            className="bg-white/80 border-8 border-green-600 rounded-xl px-8 py-12 w-full max-w-[43rem] text-center"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.8 }}
@@ -592,7 +592,7 @@ const MemoryCardQuest: React.FC = () => {
             <h2 className="text-5xl font-extrabold text-center text-green-600 mb-8">
               손주가 준비한 선물 찾기
             </h2>
-            <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-xl p-12 text-center">
+            <div className="bg-white/80 border-8 border-green-600 rounded-xl p-12 text-center">
               <p className="text-4xl font-extrabold text-black mb-6">
                 선물은 과연 무엇일까요?<br />같은 그림의 카드 두 개를 찾아주세요!
               </p>
