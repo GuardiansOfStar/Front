@@ -92,7 +92,7 @@ const PotholeQuest = () => {
           setTimeout(() => {
             navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=20&correct=true`);
           }, 5000);
-        }, 20000000);
+        }, 2000);
       }, 1000);
     } else {
       // 오답 선택
@@ -230,7 +230,7 @@ const PotholeQuest = () => {
             <img
               src={successCircle} 
               alt="성공 원" 
-              className="absolute w-[70vw] h-[70vw] object-contain z-10"
+              className="absolute w-[100vw] h-[100vw] object-contain z-10"
             />
             {/* 그 위에 오토바이 운전하는 할아버지 이미지 */}
             <div className="absolute inset-0 flex items-center justify-center z-20">

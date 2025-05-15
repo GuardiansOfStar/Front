@@ -163,10 +163,9 @@ const ProloguePage = () => {
       
       {/* 페이드 인 되는 노란색 배경 오버레이 */}
       <div 
-        className="absolute inset-0" 
+        className="absolute inset-0 bg-[#FFF9C4]" 
         style={{ 
-          backgroundColor: '#FFFDE7', 
-          opacity: animationProgress * 0.8, // 최대 80% 불투명도까지 
+          opacity: animationProgress * 0.6, // 최대 80% 불투명도까지 
           transition: 'opacity 1.5s ease-in-out' 
         }}
       />
@@ -211,7 +210,6 @@ const ProloguePage = () => {
       
       {/* 애니메이션 제거: animate-[fadeIn_800ms_ease-out] 클래스 삭제 */}
       <div className="relative w-4/5 max-w-4xl z-10">
-        {/* 손자손녀 이미지 - 메시지 박스 위에 위치 */}
         <img 
           src={grandchildren} 
           alt="손자손녀" 
