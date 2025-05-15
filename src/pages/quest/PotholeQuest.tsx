@@ -1,7 +1,6 @@
 // src/pages/quest/PotholeQuest.tsx
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import BackButton from '../../components/ui/BackButton';
 import RoadGameComponent from '../../components/game/RoadGameComponent';
 
 // 이미지 임포트
@@ -43,15 +42,22 @@ const PotholeQuest = () => {
     setScenarioId(sId);
     setQuestId(qId || '2');
   }, [location]);
-  
+
   // 포트홀 충돌 핸들러 (Phaser 게임에서 호출됨)
   const handlePotholeCollision = () => {
+    console.log('PotholeQuest: 포트홀 충돌 핸들러 호출됨');
+    
+    // 게임 단계가 이미 selection 또는 이후 단계인 경우 중복 전환 방지
+    if (gamePhase !== 'driving') {
+      console.log('이미 다른 단계로 전환됨, 무시합니다:', gamePhase);
+      return;
+    }
+    
     // 포트홀 발견 후 선택지 화면으로 전환
     setGamePhase('selection');
     
-    setTimeout(() => {
-      setGamePhase('selection');
-    }, 2000);
+    // 콘솔 로그 추가
+    console.log('포트홀 충돌 감지: 선택지 화면으로 전환됨');
   };
   
   // 선택지 선택 핸들러
@@ -138,41 +144,30 @@ const PotholeQuest = () => {
           />
         </div>
       )}
-      {(gamePhase !== 'fadeOut' && gamePhase !== 'failResult') && <BackButton />}
-      
-      {/* 포트홀 경고 화면 */}
-      {gamePhase === 'potholeAlert' && (
-        <div className="absolute inset-0">
-          {/* 경고 텍스트만 상단에 표시 */}
-          <div className="absolute top-20 left-1/2 transform -translate-x-1/2">
-            {renderTitleText('앞에 구덩이가 있어요!')}
-          </div>
-        </div>
-      )}
+      {(gamePhase !== 'fadeOut' && gamePhase !== 'failResult')}
       
       {/* 선택지 화면 - 오토바이 제거 */}
       {gamePhase === 'selection' && (
         <div className="absolute inset-0">
           {/* 배경 불투명도 효과 */}
-          <div className="absolute inset-0 bg-white bg-opacity-50 z-0"></div>
+          <div className="absolute inset-0 bg-[#FFF9C4]/70 backdrop-blur-sm z-0"></div>
           
-          <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+          <div className="absolute inset-x-0 top-20 bottom-0 flex flex-col items-center justify-center z-10">
             {/* 선택지 제목 및 설명 */}
-            <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-3xl p-6 mb-8 w-[75%]">
+            <div className="bg-white bg-opacity-90 border-8 border-green-600 rounded-3xl p-6 mb-8 w-[75%]">
               <h2 className="text-5xl font-extrabold text-green-600 text-center mb-4">구덩이 조심</h2>
-              <p className="text-4xl font-bold text-black text-center">
+              <p className="text-[2.2rem] font-extrabold text-black text-center">
                 앞에 큰 구덩이가 있어요!<br/>
                 구덩이를 지날 때는 핸들 통제가 어려워져요.<br/>
                 어떻게 운전할까요?
               </p>
             </div>
-            
             {/* 선택지 버튼 */}
-            <div className="flex justify-center space-x-10 w-4/5">
+            <div className="flex justify-between w-[75%]">
               <button
-                className={`w-[40%] bg-green-600 bg-opacity-70
+                className={`w-[48%] bg-green-600 bg-opacity-80
                 border-8 border-green-600 rounded-xl p-4
-                text-3xl font-bold text-white 
+                text-3xl font-extrabold text-white 
                 transition duration-300 focus:outline-none focus:ring-0
 
                 ${selectedOption === 'A' 
@@ -185,9 +180,9 @@ const PotholeQuest = () => {
               </button>
               
               <button
-                className={`w-[40%] bg-green-600 bg-opacity-70
+                className={`w-[48%] bg-green-600 bg-opacity-80
                 border-8 border-green-600 rounded-xl p-4
-                text-3xl font-bold text-white
+                text-3xl font-extrabold text-white
                 transition duration-300
                 focus:outline-none focus:ring-0
 
@@ -207,30 +202,22 @@ const PotholeQuest = () => {
       {/* 정답 결과 화면 - 오토바이 제거 */}
       {gamePhase === 'successResult' && !showSuccessMessage && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <div className="absolute inset-0 bg-[#FFF9C70 backdrop-blur-sm z-0"></div>
           {/* 중앙에 큰 success_circle 이미지 */}
           <div className="absolute inset-0 flex items-center justify-center">
             <img
               src={successCircle} 
               alt="성공 원" 
-              className="absolute w-full h-full object-contain z-10"
+              className="absolute w-[70vw] h-[70vw] object-contain z-10"
             />
-            
             {/* 그 위에 오토바이 운전하는 할아버지 이미지 */}
             <div className="absolute inset-0 flex items-center justify-center z-20">
-              {!fallbackImage ? (
-                <img 
-                  src="/assets/images/mission2_success(grandfa).png"  
-                  alt="오토바이 운전하는 할아버지" 
-                  className="w-1/2 h-auto object-contain z-40"
-                  onError={handleImageError}
-                />
-              ) : (
-                <img 
-                  src="/assets/images/character_with_helmet.png"  
-                  alt="헬멧 쓴 캐릭터" 
-                  className="w-1/5 h-auto object-contain"
-                />
-              )}
+              <img 
+                src="/assets/images/mission2_success_grandfather.png"  
+                alt="오토바이 운전하는 할아버지" 
+                className="object-contain z-40"
+                onError={handleImageError}
+              />
             </div>
           </div>
         </div>
@@ -238,15 +225,16 @@ const PotholeQuest = () => {
       
       {/* 정답 후 성공 메시지 화면 - 오토바이 제거 */}
       {gamePhase === 'successResult' && showSuccessMessage && (
-        <div className="absolute inset-0 bg-white bg-opacity-30 flex flex-col items-center justify-center z-10">
+        <div className="absolute inset-0 flex flex-col items-center justify-center z-0">
+          <div className="absolute inset-0 bg-[#FFF9C4]/70 backdrop-blur-sm z-0"></div>
           {/* 중앙 상단에 정답입니다! */}
           <div className="absolute top-[20%] text-6xl font-extrabold text-green-700 left-1/2 transform -translate-x-1/2 z-20">
           정답입니다!
           </div>
           
           {/* 중앙에 녹색 박스에 메시지 */}
-          <div className="mt-10 bg-green-600 bg-opacity-60 border-green-700 border-8  rounded-3xl p-10 w-[75%] mx-auto text-center relative">
-              <p className="text-4xl font-extrabold text-white">
+          <div className="mt-10 bg-green-600 bg-opacity-90 border-green-700 border-8  rounded-3xl p-10 w-[73%] mx-auto text-center relative">
+              <p className="text-5xl font-extrabold text-white ">
               휴, 속도를 줄인 덕분에<br />
               구덩이를 잘 피했어요
             </p>
@@ -255,7 +243,7 @@ const PotholeQuest = () => {
             <img 
             src={starCharacter} 
             alt="별별이" 
-            className="absolute bottom-[10%] left-[5%] w-[27%] z-30"
+            className="absolute bottom-[15%] left-[3%] w-[23%] z-30"
           />
           </div>
       )}
@@ -271,23 +259,29 @@ const PotholeQuest = () => {
       
       {/* 오답 결과 화면 */}
       {gamePhase === 'failResult' && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <div className="absolute inset-0 flex items-center justify-center">
+            <div className="absolute inset-0 bg-[#FFF9C4]/70 z-10"></div>
+
+          {/* 사고 배경 */}
           <img
             src={potholeAccident}
             alt="사고 장면"
             className="absolute inset-0 w-full h-full object-cover"
           />
-          
-          <div className="absolute inset-0 bg-white bg-opacity-30 flex flex-col items-center justify-end pb-32 z-10">
-            <img 
-              src={dangerWarning} 
-              alt="위험 경고" 
-              className="w-[16%] mb-1" //간격 조절 여기서
+
+          {/* 메시지 박스를 화면 정중앙에 고정 */}
+          <div className="relative z-10 w-[80%] max-w-[800px]">
+            {/* 경고 아이콘 - 메시지 박스 위에 덮어쓰기 */}
+            <img
+              src={dangerWarning}
+              alt="위험 경고"
+              className="absolute -top-36 left-1/2 transform -translate-x-1/2 w-[20%]"
             />
-            
-            <div className="w-[80%] bg-white bg-opacity-80 border-red-600 border-8 rounded-xl p-8 text-center">
+
+            {/* 메시지 박스 본체 */}
+            <div className="bg-white bg-opacity-80 border-red-600 border-8 rounded-xl p-8 text-center">
               <h2 className="text-6xl font-extrabold text-red-600 mb-4">이륜차가 기우뚱!</h2>
-              <p className="text-4xl font-extrabold text-black">
+              <p className="text-4xl font-extrabold text-black leading-relaxed tracking-wider">
                 구덩이는 도로 위 함정과 같아요.<br />
                 속도를 줄이고 지나가야 안전해요.
               </p>
@@ -295,6 +289,7 @@ const PotholeQuest = () => {
           </div>
         </div>
       )}
+
     </div>
   );
 };

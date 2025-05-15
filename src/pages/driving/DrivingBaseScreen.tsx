@@ -25,22 +25,20 @@ const DrivingBaseScreen = () => {
     setScenarioId(sId);
     setNextQuestId(nqId);
     
-    // 미션 1→미션 2 전환일 때만 "주행 시작" 텍스트 표시
+    // 미션 1→미션 2 전환일 때만 "주행 시작" 텍스트 표시 (수정: 바로 표시하도록 변경)
     if (nqId === '2') {
-      // 3초 후 텍스트 표시
+      // 즉시 텍스트 표시 (3초 대기 제거)
+      console.log("주행 시작 텍스트 표시");
+      setShowStartText(true);
+      
+      // 3초 후 텍스트 숨김
       setTimeout(() => {
-        console.log("주행 시작 텍스트 표시");
-        setShowStartText(true);
+        setShowStartText(false);
         
-        // 3초 후 텍스트 숨김
+        // 2초 후 다음 미션으로 이동
         setTimeout(() => {
-          setShowStartText(false);
-          
-          // 2초 후 다음 미션으로 이동
-          setTimeout(() => {
-            handleNextMission(sId, nqId);
-          }, 2000);
-        }, 3000);
+          handleNextMission(sId, nqId);
+        }, 2000);
       }, 3000);
     } else {
       // 다른 미션에서는 5초 후 바로 다음 미션으로 이동
@@ -80,6 +78,16 @@ const DrivingBaseScreen = () => {
     navigate('/');
   };
 
+  // 타이틀 텍스트 렌더링 함수 - MemoryCardQuest와 동일한 패턴 사용
+  const renderTitleText = (text: string) => (
+    <h2 className="text-[5.5rem] font-extrabold whitespace-nowrap">
+      {text.split('').map((ch, i) => (
+        ch === ' ' ? ' ' :
+        <span key={i} className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:12px_white] [text-stroke:2px_white]">{ch}</span>
+      ))}
+    </h2>
+  );
+
   return (
     <div className="relative w-full h-full">
       {/* 배경 */}
@@ -102,23 +110,18 @@ const DrivingBaseScreen = () => {
       {/* 주행 시작 텍스트 - 미션 2로 이동할 때만 표시 */}
       {showStartText && (
         <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
-          <h2 className="text-8xl font-bold">
-              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">주</span>
-              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">행</span>
-              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">시</span>
-              <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">작</span>
-            </h2>
+          {renderTitleText('주행 시작')}
         </div>
       )}
       
-      {/* 오토바이 */}
+      {/* 오토바이 - 크기 확대 */}
       <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-10 w-full flex justify-center">
         <img
           src={motorcycle}
           alt="이륜차"
           style={{
-            width: '60%',
-            maxHeight: '50vh',
+            width: '80%', // 60%에서 80%로 확대
+            maxHeight: '60vh', // 50vh에서 60vh로 확대
             objectFit: 'contain',
             objectPosition: 'bottom'
           }}

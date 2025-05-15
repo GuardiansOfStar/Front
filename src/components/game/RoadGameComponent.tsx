@@ -1,3 +1,5 @@
+// src/components/game/RoadGameComponent.tsx 수정
+
 import { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
 import RoadScene, { POTHOLE_COLLISION } from '../../game/scenes/RoadScene';
@@ -9,8 +11,11 @@ interface RoadGameComponentProps {
 const RoadGameComponent = ({ onPotholeCollision }: RoadGameComponentProps) => {
   const gameRef = useRef<Phaser.Game | null>(null);
   const sceneRef = useRef<RoadScene | null>(null);
+  const collisionHandledRef = useRef<boolean>(false);
   
   useEffect(() => {
+    console.log('RoadGameComponent 마운트됨');
+    
     // 게임이 이미 생성되었으면 새로 생성하지 않음
     if (gameRef.current) {
       return;
@@ -18,11 +23,16 @@ const RoadGameComponent = ({ onPotholeCollision }: RoadGameComponentProps) => {
     
     // 게임 컨테이너 요소 가져오기
     const container = document.getElementById('game-container');
-    if (!container) return;
+    if (!container) {
+      console.error('게임 컨테이너를 찾을 수 없습니다.');
+      return;
+    }
     
     // 컨테이너 크기 계산
     const containerWidth = container.clientWidth;
     const containerHeight = container.clientHeight;
+    
+    console.log('게임 컨테이너 크기:', containerWidth, containerHeight);
     
     // 게임 인스턴스 생성
     gameRef.current = new Phaser.Game({
@@ -31,7 +41,7 @@ const RoadGameComponent = ({ onPotholeCollision }: RoadGameComponentProps) => {
       height: containerHeight,
       parent: 'game-container',
       scale: {
-        mode: Phaser.Scale.NONE, // 스케일 모드를 NONE으로 설정 (비율 유지하지 않고 항상 컨테이너 크기에 맞춤)
+        mode: Phaser.Scale.NONE,
       },
       physics: {
         default: 'arcade',
@@ -41,7 +51,7 @@ const RoadGameComponent = ({ onPotholeCollision }: RoadGameComponentProps) => {
         }
       },
       scene: [RoadScene],
-      backgroundColor: '#000000', // 검은색 배경
+      transparent: true, // 배경색 대신 투명하게 설정
     });
     
     // 게임 인스턴스가 생성된 후 씬에 접근
@@ -56,14 +66,23 @@ const RoadGameComponent = ({ onPotholeCollision }: RoadGameComponentProps) => {
         
         // 포트홀 충돌 이벤트 리스너 추가
         scene.events.on(POTHOLE_COLLISION, () => {
+          // 중복 호출 방지
+          if (collisionHandledRef.current) return;
+          collisionHandledRef.current = true;
+          
+          console.log('RoadGameComponent: 포트홀 충돌 이벤트 수신됨');
           // React 컴포넌트에 충돌 이벤트 전달
           onPotholeCollision();
         });
+        
+        console.log('씬 이벤트 리스너 등록됨');
+      } else {
+        console.error('RoadScene을 찾을 수 없습니다.');
       }
     };
     
     // 씬이 생성된 후 이벤트 설정을 위해 약간의 딜레이를 줌
-    const timer = setTimeout(setupSceneEvents, 500);
+    const timer = setTimeout(setupSceneEvents, 300); // 500ms에서 300ms로 변경
     
     // 화면 크기 변경 시 게임 크기 조정
     const handleResize = () => {
@@ -98,7 +117,10 @@ const RoadGameComponent = ({ onPotholeCollision }: RoadGameComponentProps) => {
         
         gameRef.current.destroy(true);
         gameRef.current = null;
+        collisionHandledRef.current = false;
       }
+      
+      console.log('RoadGameComponent 언마운트됨');
     };
   }, [onPotholeCollision]);
   
