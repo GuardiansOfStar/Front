@@ -20,13 +20,13 @@ const motorcycle = '/assets/images/mission4_motorcycle.png'
 
 // 게임 단계 정의
 type GamePhase = 
-  | 'intro'         // 시작 화면
-  | 'driving'       // 오토바이 주행
+  | 'intro'         // 시작 화면 뚜
+  | 'driving'       // 오토바이 주행 뚜
   | 'harvestDone'   // 수확물 싣기
   | 'selection'     // 선택지 제공
   | 'successResult' // 정답 선택 결과
   | 'fadeOut'       // 오답 페이드아웃
-  | 'failResult'    // 오답 선택 결과
+  | 'failResult'    // 오답 선택 결과 뚜
   | 'score';        // 점수 화면
 
 const HarvestQuest = () => {
@@ -58,7 +58,7 @@ const HarvestQuest = () => {
       const drivingTimer = setTimeout(() => {
         setGamePhase('harvestDone');
         
-        // 포트홀 발견 후 선택지 화면으로 전환
+        // 수확 후 선택지 화면으로 전환
         const alertTimer = setTimeout(() => {
           setGamePhase('selection');
         }, 2000);
@@ -150,7 +150,7 @@ const HarvestQuest = () => {
         />
       )}
       {/*배경 흐리게 처리*/}
-      {(gamePhase !== 'intro' && gamePhase !== 'driving' && gamePhase !== 'failResult' ) && (
+      {(gamePhase !== 'intro' && gamePhase !== 'driving' && gamePhase !== 'harvestDone' && gamePhase !== 'failResult' ) && (
       <div className="absolute inset-0 bg-[#FFF9C4]/60 z-10"></div>
       )}
 
@@ -178,21 +178,21 @@ const HarvestQuest = () => {
         <div className="absolute inset-0">
           <HarvestBox2 />
           {/* 텍스트 상단에 표시 */}
-          <div className="absolute top-20 left-1/2 transform -translate-x-1/2">
+          
             {renderTitleText('작업 완료')}
-          </div>
+          
         </div>
       )}
       
-      {/* 수확 완료 화면 
+      {/* 수확 완료 화면 */}
       {gamePhase === 'harvestDone' && (
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-1/2 transform -translate-x-1/2">
+          
           {renderTitleText('작업 완료')}
-          </div>
+          
         </div>
       )}
-      */}
+      
 
       {/* 선택지 화면 - 오토바이 제거 */}
       {gamePhase === 'selection' && (
