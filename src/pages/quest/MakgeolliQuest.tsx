@@ -20,6 +20,10 @@ const mission3Success = '/assets/images/mission3_success.png';
 const starCharacter = '/assets/images/star_character.png';
 const nextButton = '/assets/images/next_button.png';
 
+// 파일 상단에 기준 해상도 상수 추가
+const BASE_WIDTH = 1024;
+const BASE_HEIGHT = 768;
+
 // 게임 단계 정의
 type GamePhase = 
   | 'roadToField' | 'fieldArrival' | 'working' | 'mealLadyArrival' | 'mealLadyIntro'
@@ -53,33 +57,32 @@ interface TrayItem {
 // 상수 - 트레이 아이템 위치 정의 (상대적 비율)
 const TRAY_ITEM_POSITIONS: { type: TrayItem['type'], xRatio: number, yRatio: number, rotation: number, scale: number, zIndex: number }[] = [
   // 국수 3개 - 이미지 참고하여 배치
-  { type: 'noodles', xRatio: 0.20, yRatio: 0.35, rotation: -5, scale: 1.8, zIndex: 3 },  // 왼쪽 국수
-  { type: 'noodles', xRatio: 0.50, yRatio: 0.30, rotation: 10, scale: 1.8, zIndex: 3 },  // 중앙 국수
-  { type: 'noodles', xRatio: 0.80, yRatio: 0.35, rotation: -8, scale: 1.8, zIndex: 3 },  // 오른쪽 국수
+  { type: 'noodles', xRatio: 0.23, yRatio: 0.71, rotation: 0, scale: 2.4, zIndex: 6 },  // 왼쪽 국수
+  { type: 'noodles', xRatio: 0.40, yRatio: 0.56, rotation: 0, scale: 2.4, zIndex: 5 },  // 중앙 국수
+  { type: 'noodles', xRatio: 0.42, yRatio: 0.80, rotation: 0, scale: 2.4, zIndex: 8 },  // 아래 국수
   
   // 김치 2개
-  { type: 'kimchi', xRatio: 0.70, yRatio: 0.65, rotation: 5, scale: 1.6, zIndex: 4 },    // 오른쪽 김치
-  { type: 'kimchi', xRatio: 0.30, yRatio: 0.65, rotation: -10, scale: 1.6, zIndex: 4 },  // 왼쪽 김치
+  { type: 'kimchi', xRatio: 0.61, yRatio: 0.66, rotation: 0, scale: 1.4, zIndex: 4 },    // 오른쪽 김치
+  { type: 'kimchi', xRatio: 0.66, yRatio: 0.75, rotation: 0, scale: 1.4, zIndex: 4 },  // 왼쪽 김치
   
   // 막걸리 병과 잔
-  { type: 'bottle', xRatio: 0.75, yRatio: 0.45, rotation: 0, scale: 2.0, zIndex: 5 },    // 막걸리 병
-  { type: 'cup', xRatio: 0.85, yRatio: 0.55, rotation: 0, scale: 1.5, zIndex: 4 },       // 오른쪽 잔
+  { type: 'bottle', xRatio: 0.8, yRatio: 0.51, rotation: 0, scale: 2.4, zIndex: 5 },    // 막걸리 병
+  { type: 'cup', xRatio: 0.82, yRatio: 0.73, rotation: 0, scale: 1.6, zIndex: 6 },       // 오른쪽 잔
 ];
 
 // 상수 - 숨겨진 막걸리 위치 정의 (상대적 비율)
 const HIDDEN_MAKGEOLLI_POSITIONS: { xRatio: number, yRatio: number, rotation: number, scale: number, zIndex: number }[] = [
-  // 이미지 참고하여 적절히 은쟁반 위 다른 음식 사이에 숨김
-  { xRatio: 0.20, yRatio: 0.40, rotation: -12, scale: 1.2, zIndex: 2 },  // 왼쪽 국수 옆
-  { xRatio: 0.80, yRatio: 0.40, rotation: 8, scale: 1.2, zIndex: 2 },    // 오른쪽 국수 뒤
-  { xRatio: 0.35, yRatio: 0.70, rotation: 15, scale: 1.2, zIndex: 2 },   // 왼쪽 김치 근처
-  { xRatio: 0.65, yRatio: 0.70, rotation: -5, scale: 1.2, zIndex: 2 },   // 오른쪽 김치 뒤
-  { xRatio: 0.50, yRatio: 0.60, rotation: 20, scale: 1.2, zIndex: 2 },   // 중앙 하단
+  { xRatio: 0.8, yRatio: 0.51, rotation: 5, scale: 2.4, zIndex: 5 },  // 재사용
+  { xRatio: 0.40, yRatio: 0.56, rotation: 0, scale: 2.4, zIndex: 7 },    // 오른쪽 국수 뒤
+  { xRatio: 0.23, yRatio: 0.71, rotation: -10, scale: 1.8, zIndex: 2 },   // 왼쪽 김치 근처
+  { xRatio: 0.66, yRatio: 0.75, rotation: 15, scale: 2.0, zIndex: 3 },   // 오른쪽 김치 뒤
+  { xRatio: 0.85, yRatio: 0.30, rotation: 0, scale: 3.0, zIndex: 4 },   // 중앙 하단
 ];
 
 const MakgeolliQuest = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const windowSize = useRef({ width: window.innerWidth, height: window.innerHeight });
+  const trayContainerRef = useRef<HTMLDivElement>(null);
 
   const [scenarioId, setScenarioId] = useState<string | null>(null);
   const [questId, setQuestId] = useState<string | null>(null);
@@ -95,26 +98,6 @@ const MakgeolliQuest = () => {
   const [showTrayBackground, setShowTrayBackground] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   
-  // 화면 크기 변경 감지 이벤트 리스너
-  useEffect(() => {
-    const handleResize = () => {
-      windowSize.current = {
-        width: window.innerWidth,
-        height: window.innerHeight
-      };
-      // 화면 크기 변경 시 트레이 아이템 위치 갱신
-      if (gamePhase === 'mealTray' || gamePhase === 'gamePlay') {
-        initTrayItems();
-        if (gamePhase === 'gamePlay') {
-          initializeGame();
-        }
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [gamePhase]);
-
   // URL 쿼리 파라미터 처리
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -163,6 +146,11 @@ const MakgeolliQuest = () => {
     else if (gamePhase === 'mealTray') {
       setShowTrayBackground(true);
       
+      // 초기화가 아직 안 되었으면 초기화
+      if (trayItems.length === 0) {
+        initTrayItems();
+      }
+      
       timer = setTimeout(() => {
         setGamePhase('missionIntro');
       }, 5000);
@@ -208,25 +196,22 @@ const MakgeolliQuest = () => {
       
       timer = setTimeout(() => {
         navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=${gameScore}&correct=true`);
-      }, 5000);
+      }, 3000);
     }
     
     return () => {
       if (timer) clearTimeout(timer);
     };
-  }, [gamePhase, navigate, scenarioId, questId, gameScore, gameStartTime]);
+  }, [gamePhase, navigate, scenarioId, questId, gameScore, gameStartTime, trayItems.length]);
 
-  // 상대적 비율을 실제 픽셀 좌표로 변환하는 함수
-  const getRealPosition = (position: ItemPosition) => {
-    const { width, height } = windowSize.current;
-    return {
-      x: width * position.xRatio,
-      y: height * position.yRatio,
-      rotation: position.rotation,
-      scale: position.scale,
-      zIndex: position.zIndex
-    };
-  };
+  // gamePhase가 mealTray일 때 trayItems 자동 초기화
+  useEffect(() => {
+    if (gamePhase === 'mealTray' && trayItems.length === 0) {
+      console.log('mealTray 단계 자동 초기화');
+      initTrayItems();
+      setShowTrayBackground(true);
+    }
+  }, [gamePhase, trayItems.length]);
 
   // 트레이 아이템 초기화 함수 - 상대적 비율 사용
   const initTrayItems = () => {
@@ -341,27 +326,30 @@ const MakgeolliQuest = () => {
     <h2 className={`${fontSize} font-extrabold whitespace-nowrap`}>
       {text.split('').map((ch, i) => (
         ch === ' ' ? ' ' :
-        <span key={i} className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">{ch}</span>
+        <span key={i} className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:14px_white] [text-stroke:2px_white]">{ch}</span>
       ))}
     </h2>
   );
   
-  // 식사 시간 타이틀 렌더링 함수
-  const renderMealTimeTitle = () => (
-    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
-      <h3 className="text-8xl font-bold whitespace-nowrap">
-        <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">새</span>
-        <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">참</span>
-        {' '}
-        <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">먹</span>
-        <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">는</span>
-        {' '}
-        <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">시</span>
-        <span className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:10px_white] [text-stroke:2px_white]">간</span>
-      </h3>
+  // 트레이 컨테이너 렌더링 함수 - 새로 추가
+  const renderTrayContainer = (children: React.ReactNode, additionalClassNames = "") => (
+    <div 
+      ref={trayContainerRef}
+      className={`relative w-full max-w-5xl mx-auto ${additionalClassNames}`}
+      style={{ 
+        aspectRatio: `${BASE_WIDTH}/${BASE_HEIGHT}`,
+        overflow: 'hidden'
+      }}
+    >
+      <img 
+        src={makgeolliGameTray} 
+        alt="트레이" 
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+      {children}
     </div>
   );
-
+  
   return (
     <div className="relative w-full h-full">
       {/* 배경 */}
@@ -378,47 +366,6 @@ const MakgeolliQuest = () => {
       {/* 배경 오버레이 레이어 */}
       {(gamePhase === 'missionIntro' || gamePhase === 'gameInstruction' || gamePhase === 'gamePlay') && (
         <div className="absolute inset-0 bg-white bg-opacity-20 z-5"></div>
-      )}
-      
-      {/* 은쟁반 배경 레이어 */}
-      {showTrayBackground && gamePhase !== 'mealTray' && gamePhase !== 'success' && gamePhase !== 'timeOver' && (
-        <div className="absolute inset-0 z-5">
-          {/* 트레이 아이템들 */}
-          {trayItems.map(item => {
-            let itemSrc = '';
-            switch (item.type) {
-              case 'noodles': itemSrc = noodles; break;
-              case 'kimchi': itemSrc = kimchi; break;
-              case 'bottle': itemSrc = makgeolli; break;
-              case 'cup': itemSrc = makgeolliCup; break;
-            }
-            
-            const realPos = getRealPosition(item.position);
-            const baseSize = item.type === 'bottle' ? 120 : item.type === 'cup' ? 70 : 100;
-            const finalSize = baseSize * realPos.scale;
-            
-            return (
-              <div
-                key={item.id}
-                className="absolute pointer-events-none"
-                style={{
-                  left: `${realPos.x}px`,
-                  top: `${realPos.y}px`,
-                  width: `${finalSize}px`,
-                  height: `${finalSize}px`,
-                  zIndex: realPos.zIndex,
-                  transform: `translate(-50%, -50%) rotate(${realPos.rotation}deg)`, // 중심 기준 배치
-                }}
-              >
-                <img 
-                  src={itemSrc}
-                  alt={item.type}
-                  className="w-full h-full object-contain"
-                />
-              </div>
-            );
-          })}
-        </div>
       )}
       
       {/* 헤더 영역 */}
@@ -467,19 +414,21 @@ const MakgeolliQuest = () => {
 
       {/* 새참 아주머니 등장 화면 */}
       {gamePhase === 'mealLadyArrival' && (
-        <div className="absolute inset-x-0 flex justify-center items-end">
-          <img
-            src={mealLady}
-            alt="새참 아주머니"
-            className="h-[80vh] object-contain animate-[slideUp_1s_ease-out_forwards]"
-          />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="absolute inset-x-0 bottom-0 flex justify-center">
+            <img
+              src={mealLady}
+              alt="새참 아주머니"
+              className="h-[80vh] object-contain animate-[slideUp_1s_ease-out_forwards]"
+            />
+          </div>
         </div>
       )}
 
       {/* 새참 아주머니 소개 화면 */}
       {gamePhase === 'mealLadyIntro' && (
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute w-full flex justify-center">
+          <div className="absolute inset-x-0 bottom-0 flex justify-center">
             <img
               src={mealLady}
               alt="새참 아주머니"
@@ -509,45 +458,48 @@ const MakgeolliQuest = () => {
 
       {/* 식사 트레이 표시 화면 */}
       {gamePhase === 'mealTray' && (
-        <div className="absolute inset-0">
-          {renderMealTimeTitle()}
-          
-          <div className="absolute inset-0 z-10">
-            {trayItems.map(item => {
-              let itemSrc = '';
-              switch (item.type) {
-                case 'noodles': itemSrc = noodles; break;
-                case 'kimchi': itemSrc = kimchi; break;
-                case 'bottle': itemSrc = makgeolli; break;
-                case 'cup': itemSrc = makgeolliCup; break;
-              }
-              
-              const realPos = getRealPosition(item.position);
-              const baseSize = item.type === 'bottle' ? 120 : item.type === 'cup' ? 70 : 100;
-              const finalSize = baseSize * realPos.scale;
-              
-              return (
-                <div
-                  key={item.id}
-                  className="absolute"
-                  style={{
-                    left: `${realPos.x}px`,
-                    top: `${realPos.y}px`,
-                    width: `${finalSize}px`,
-                    height: `${finalSize}px`,
-                    zIndex: realPos.zIndex,
-                    transform: `translate(-50%, -50%) rotate(${realPos.rotation}deg)`,
-                  }}
-                >
-                  <img 
+        <div className="absolute inset-0 flex items-center justify-center">
+          {renderTrayContainer(
+            <>
+              {/* 트레이 아이템들 */}
+              {trayItems.map(item => {
+                let itemSrc = '';
+                switch (item.type) {
+                  case 'noodles': itemSrc = noodles; break;
+                  case 'kimchi': itemSrc = kimchi; break;
+                  case 'bottle': itemSrc = makgeolli; break;
+                  case 'cup': itemSrc = makgeolliCup; break;
+                }
+                
+                // 아이템 위치와 크기를 퍼센트로 계산
+                const leftPercent = item.position.xRatio * 100;
+                const topPercent = item.position.yRatio * 100;
+                const sizePercent = item.position.scale * 15; // 0.6 scale이면 약 9% 크기
+                
+                return (
+                  <img
+                    key={item.id}
                     src={itemSrc}
                     alt={item.type}
-                    className="w-full h-full object-contain"
+                    className="absolute"
+                    style={{
+                      left: `${leftPercent}%`, 
+                      top: `${topPercent}%`,
+                      width: `${sizePercent}%`,
+                      height: 'auto',
+                      transform: `translate(-50%, -50%) rotate(${item.position.rotation}deg)`,
+                      zIndex: item.position.zIndex
+                    }}
                   />
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+              
+              {/* 텍스트 레이어 */}
+              <div className="absolute inset-0 flex items-center justify-center z-50">
+                {renderTitleText("새참 먹는 시간", "text-8xl")}
+              </div>
+            </>
+          )}
         </div>
       )}
       
@@ -626,14 +578,18 @@ const MakgeolliQuest = () => {
                   {selectedOption === 'A' ? (
                     <>
                       <span className="text-green-600">잠깐!</span><br />
-                      막걸리의 유혹을 이겨내볼까요?<br />
-                      새참 속 막걸리를 치우러 가요.
+                      <span className="text-black"> 
+                        막걸리의 유혹을 이겨내볼까요?<br />
+                        새참 속 막걸리를 치우러 가요.
+                      </span>
                     </>
                   ) : (
                     <>
                       <span className="text-green-600">유혹을 참아내다니 멋져요!</span><br />
-                      다른 작업자들도 먹지 않도록<br />
-                      막걸리를 모두 치워보아요.
+                      <span className="text-black">
+                        다른 작업자들도 먹지 않도록<br />
+                        막걸리를 모두 치워보아요.
+                      </span>
                     </>
                   )}
                 </p>
@@ -653,9 +609,9 @@ const MakgeolliQuest = () => {
         </div>
       )}
       
-      {/* 게임 진행 화면 */}
+      {/* 게임 진행 화면 - 컨테이너 기반으로 변경 */}
       {gamePhase === 'gamePlay' && (
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 flex items-center justify-center">
           {/* 남은 막걸리 카운터 */}
           <div className="absolute top-24 right-16 bg-green-600 rounded-xl p-4 flex items-center z-50 shadow-lg">
             <span className="text-3xl font-bold text-white mr-3">남은 막걸리</span>
@@ -667,84 +623,78 @@ const MakgeolliQuest = () => {
             <span className="text-4xl font-bold text-white">{5-foundCount}/5</span>
           </div>
           
-          {/* 아이템들 */}
-          <div className="absolute inset-0 z-30">
-            {makgeolliItems.map(item => {
-              if (item.type === 'makgeolli' && item.found) return null;
-              
-              const itemSrc = item.type === 'makgeolli' ? makgeolli :
-                              item.type === 'noodles' ? noodles : kimchi;
-              
-              const realPos = getRealPosition(item.position);
-              const baseSize = item.type === 'makgeolli' ? 120 : 100;
-              const finalSize = baseSize * realPos.scale;
-              
-              return (
-                <div
-                  key={item.id}
-                  className={`absolute cursor-pointer transition-transform duration-200 ${item.type === 'makgeolli' ? 'hover:scale-110' : ''}`}
-                  style={{
-                    left: `${realPos.x}px`,
-                    top: `${realPos.y}px`,
-                    width: `${finalSize}px`,
-                    height: `${finalSize}px`,
-                    zIndex: realPos.zIndex,
-                    transform: `translate(-50%, -50%) rotate(${realPos.rotation}deg)`,
-                  }}
-                  onClick={() => handleItemClick(item.id)}
-                >
-                  <img 
+          {renderTrayContainer(
+            <>
+              {/* 트레이 아이템들 - 공통 컨테이너 내부에 상대적 위치로 배치 */}
+              {trayItems.map(item => {
+                // 게임 플레이 중에는 bottle 타입 아이템을 렌더링하지 않음
+                if (item.type === 'bottle') return null;
+                
+                let itemSrc = '';
+                switch (item.type) {
+                  case 'noodles': itemSrc = noodles; break;
+                  case 'kimchi': itemSrc = kimchi; break;
+                  case 'cup': itemSrc = makgeolliCup; break;
+                  default: return null;
+                }
+                
+                // 아이템 위치와 크기를 퍼센트로 계산
+                const leftPercent = item.position.xRatio * 100;
+                const topPercent = item.position.yRatio * 100;
+                const sizePercent = item.position.scale * 15; // 0.6 scale이면 약 9% 크기
+                
+                return (
+                  <img
+                    key={item.id}
                     src={itemSrc}
                     alt={item.type}
-                    className="w-full h-full object-contain"
+                    className="absolute pointer-events-none"
+                    style={{
+                      left: `${leftPercent}%`,
+                      top: `${topPercent}%`,
+                      width: `${sizePercent}%`,
+                      height: 'auto',
+                      transform: `translate(-50%, -50%) rotate(${item.position.rotation}deg)`,
+                      zIndex: item.position.zIndex
+                    }}
                   />
-                </div>
-              );
-            })}
-          </div>
-          
-          {/* 트레이 아이템들 - mealTray와 동일한 위치 */}
-          <div className="absolute inset-0 z-10">
-            {trayItems.map(item => {
-              let itemSrc = '';
-              switch (item.type) {
-                case 'noodles': itemSrc = noodles; break;
-                case 'kimchi': itemSrc = kimchi; break;
-                case 'bottle': itemSrc = makgeolli; break;
-                case 'cup': itemSrc = makgeolliCup; break;
-              }
+                );
+              })}
               
-              const realPos = getRealPosition(item.position);
-              const baseSize = item.type === 'bottle' ? 120 : 
-                               item.type === 'cup' ? 70 : 100;
-              const finalSize = baseSize * realPos.scale;
-              
-              return (
-                <div
-                  key={item.id}
-                  className="absolute pointer-events-none"
-                  style={{
-                    left: `${realPos.x}px`,
-                    top: `${realPos.y}px`,
-                    width: `${finalSize}px`,
-                    height: `${finalSize}px`,
-                    zIndex: realPos.zIndex,
-                    transform: `translate(-50%, -50%) rotate(${realPos.rotation}deg)`,
-                  }}
-                >
-                  <img 
-                    src={itemSrc}
-                    alt={item.type}
-                    className="w-full h-full object-contain"
+              {/* 숨겨진 막걸리 아이템들 */}
+              {makgeolliItems.map(item => {
+                if (item.found) return null;
+                
+                // 아이템 위치와 크기를 퍼센트로 계산
+                const leftPercent = item.position.xRatio * 100;
+                const topPercent = item.position.yRatio * 100;
+                const sizePercent = item.position.scale * 15; // 0.4 scale이면 약 6% 크기
+                
+                return (
+                  <img
+                    key={item.id}
+                    src={makgeolli}
+                    alt="숨겨진 막걸리"
+                    className="absolute cursor-pointer hover:scale-110 transition-transform duration-200"
+                    style={{
+                      left: `${leftPercent}%`,
+                      top: `${topPercent}%`,
+                      width: `${sizePercent}%`,
+                      height: 'auto',
+                      transform: `translate(-50%, -50%) rotate(${item.position.rotation}deg)`,
+                      zIndex: item.position.zIndex
+                    }}
+                    onClick={() => handleItemClick(item.id)}
                   />
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </>,
+            "z-30"
+          )}
           
           {/* 게임 안내 텍스트 */}
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-white bg-opacity-90 border-4 border-green-600 rounded-xl p-4 max-w-2xl shadow-lg z-50">
-            <p className="text-2xl text-green-700 font-bold text-center">
+          <div className="absolute top-4 left-4 bg-white bg-opacity-90 border-4 border-green-600 rounded-xl p-4 max-w-2xl shadow-lg z-50">
+            <p className="text-xl text-green-700 font-bold text-center">
               {foundCount === 0 
                 ? "화면에서 막걸리 5개를 모두 찾아 치워주세요!" 
                 : foundCount === 4
@@ -758,15 +708,15 @@ const MakgeolliQuest = () => {
       {/* 성공 화면 */}
       {gamePhase === 'success' && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="absolute inset-0 bg-white bg-opacity-30 z-0"></div>
+          <div className="absolute inset-0 bg-[#FFF9C4]/60 z-10"></div>
           
           <div className="relative z-20 text-center">
-            <h2 className="text-5xl font-bold text-green-600 mb-8">
+            <h1 className="text-6xl font-extrabold text-green-700 mb-8">
               막걸리 치우기 성공!
-            </h2>
+            </h1>
             
-            <div className="relative bg-green-600/80 border-8 border-green-700 rounded-xl p-8 w-[600px] mx-auto text-center">
-              <p className="text-4xl text-white font-extrabold">
+            <div className="relative bg-green-600/90 border-[0.6rem] border-green-700 rounded-[2.2rem] p-12 w-[700px] mx-auto text-center">
+              <p className="text-5xl text-white font-extrabold leading-loose">
                 음주운전을 예방한 당신이<br />
                 마을의 영웅이에요
               </p>
@@ -774,7 +724,7 @@ const MakgeolliQuest = () => {
               <img
                 src={starCharacter}
                 alt="별별이 캐릭터"
-                className="absolute -bottom-8 -left-8 w-32 h-32"
+                className="absolute -bottom-28 -left-24 w-56 h-56"
               />
             </div>
           </div>
@@ -784,15 +734,15 @@ const MakgeolliQuest = () => {
       {/* 시간 초과 화면 */}
       {gamePhase === 'timeOver' && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="absolute inset-0 bg-white bg-opacity-30 z-0"></div>
+          <div className="absolute inset-0 bg-[#FFF9C4]/60 z-10"></div>
           
           <div className="relative z-20 text-center">
-            <h2 className="text-5xl font-bold text-green-600 mb-8">
+            <h1 className="text-6xl font-extrabold text-green-700 mb-8">
               노력해주셔서 감사해요!
-            </h2>
+            </h1>
             
-            <div className="relative bg-green-600/80 border-8 border-green-700 rounded-xl p-8 w-[600px] mx-auto">
-              <p className="text-4xl text-white font-extrabold">
+            <div className="relative bg-green-600/90 border-[0.6rem] border-green-700 rounded-[2.2rem] p-12 w-[700px] mx-auto text-center">
+              <p className="text-4xl text-white font-extrabold leading-loose">
                 음주운전을 예방한 당신이<br />
                 마을의 영웅이에요
               </p>
@@ -800,7 +750,7 @@ const MakgeolliQuest = () => {
               <img
                 src={starCharacter}
                 alt="별별이 캐릭터"
-                className="absolute -bottom-8 -left-8 w-32 h-32"
+                className="absolute -bottom-28 -left-24 w-56 h-56"
               />
             </div>
           </div>
