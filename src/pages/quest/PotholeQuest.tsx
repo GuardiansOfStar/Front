@@ -1,9 +1,10 @@
 // src/pages/quest/PotholeQuest.tsx
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion'; // framer-motion 추가
 import RoadGameComponent from '../../components/game/RoadGameComponent';
 
-// 이미지 임포트
+// 이미지 임포트 (기존과 동일)
 const basicRoad = '/assets/images/basic_road.png';
 const roadWithPotholes = '/assets/images/road_with_small_pothole.png';
 const motorcycle = '/assets/images/motorcycle.png';
@@ -14,7 +15,7 @@ const successCircle = '/assets/images/success_circle.png';
 const homeButton = '/assets/images/home_button.png';
 const starCharacter = '/assets/images/star_character.png';
 
-// 게임 단계 정의
+// 게임 단계 정의 (기존과 동일)
 type GamePhase = 
   | 'driving'       // 오토바이 주행 (Phaser 게임)
   | 'potholeAlert'  // 포트홀 발견
@@ -34,8 +35,12 @@ const PotholeQuest = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [fallbackImage, setFallbackImage] = useState(false);
   
+  // 추가: 경고 메시지 표시 여부
+  const [showWarning, setShowWarning] = useState(false);
+
   // URL 쿼리 파라미터에서 시나리오 ID와 퀘스트 ID 가져오기
   useEffect(() => {
+    // 기존 코드 유지
     const searchParams = new URLSearchParams(location.search);
     const sId = searchParams.get('scenario');
     const qId = searchParams.get('quest');
@@ -43,24 +48,34 @@ const PotholeQuest = () => {
     setQuestId(qId || '2');
   }, [location]);
 
-  // 포트홀 충돌 핸들러 (Phaser 게임에서 호출됨)
+  // 새로 추가: failResult 단계에서 시간차를 두고 경고 메시지 표시
+  useEffect(() => {
+    if (gamePhase === 'failResult') {
+      const timer = setTimeout(() => {
+        setShowWarning(true);
+      }, 2000); // 2초 후 경고 메시지 표시
+
+      return () => clearTimeout(timer); // 클린업
+    } else {
+      setShowWarning(false); // 다시 숨기기
+    }
+  }, [gamePhase]);
+
+  // 포트홀 충돌 핸들러 (기존과 동일)
   const handlePotholeCollision = () => {
+    // 기존 코드 유지
     console.log('PotholeQuest: 포트홀 충돌 핸들러 호출됨');
     
-    // 게임 단계가 이미 selection 또는 이후 단계인 경우 중복 전환 방지
     if (gamePhase !== 'driving') {
       console.log('이미 다른 단계로 전환됨, 무시합니다:', gamePhase);
       return;
     }
     
-    // 포트홀 발견 후 선택지 화면으로 전환
     setGamePhase('selection');
-    
-    // 콘솔 로그 추가
     console.log('포트홀 충돌 감지: 선택지 화면으로 전환됨');
   };
   
-  // 선택지 선택 핸들러
+  // 선택지 선택 핸들러 (기존과 동일)
   const handleOptionSelect = (option: 'A' | 'B') => {
     setSelectedOption(option);
     
@@ -77,7 +92,7 @@ const PotholeQuest = () => {
           setTimeout(() => {
             navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=20&correct=true`);
           }, 5000);
-        }, 2000);
+        }, 20000000);
       }, 1000);
     } else {
       // 오답 선택
@@ -87,23 +102,21 @@ const PotholeQuest = () => {
           setGamePhase('failResult');
           setTimeout(() => {
             navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=10&correct=false`);
-          }, 3000);
+          }, 10000); // 오답 결과 유지 시간
         }, 1500);
       }, 1000);
     }
   };
   
-  // 홈으로 이동 핸들러
+  // 나머지 함수 (기존과 동일)
   const handleGoHome = () => {
     navigate('/');
   };
 
-  // 이미지 오류 핸들러
   const handleImageError = () => {
     setFallbackImage(true);
   };
 
-  // 타이틀 텍스트 렌더링 함수 - 고대비 스타일 적용
   const renderTitleText = (text: string, fontSize = "text-5xl", color = "text-green-600") => (
     <div className="relative inline-block">
       <h1 className={`${fontSize} font-extrabold ${color} px-8 py-3`}
@@ -117,8 +130,8 @@ const PotholeQuest = () => {
   );
 
   return (
-    <div className="relative w-full h-full">
-      {/* 게임 단계에 따라 다른 배경 표시 */}
+    <div className="w-full h-full">
+      {/* 배경 - 게임 단계에 따라 다른 배경 표시 */}
       {gamePhase === 'driving' ? (
         // Phaser 게임 렌더링 - 전체 화면으로 조정
         <div className="absolute inset-0 w-full h-full">
@@ -146,6 +159,16 @@ const PotholeQuest = () => {
       )}
       {(gamePhase !== 'fadeOut' && gamePhase !== 'failResult')}
       
+      {/* 포트홀 경고 화면 */}
+      {gamePhase === 'potholeAlert' && (
+        <div className="absolute inset-0">
+          {/* 경고 텍스트만 상단에 표시 */}
+          <div className="absolute top-20 left-1/2 transform -translate-x-1/2">
+            {renderTitleText('앞에 구덩이가 있어요!')}
+          </div>
+        </div>
+      )}
+      
       {/* 선택지 화면 - 오토바이 제거 */}
       {gamePhase === 'selection' && (
         <div className="absolute inset-0">
@@ -169,6 +192,7 @@ const PotholeQuest = () => {
                 border-8 border-green-600 rounded-xl p-4
                 text-3xl font-extrabold text-white 
                 transition duration-300 focus:outline-none focus:ring-0
+
                 ${selectedOption === 'A' 
                   ? 'bg-green-600 scale-105 bg-opacity-95' 
                   : 'hover:bg-green-600'}`}
@@ -201,7 +225,6 @@ const PotholeQuest = () => {
       {/* 정답 결과 화면 - 오토바이 제거 */}
       {gamePhase === 'successResult' && !showSuccessMessage && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <div className="absolute inset-0 bg-[#FFF9C70 backdrop-blur-sm z-0"></div>
           {/* 중앙에 큰 success_circle 이미지 */}
           <div className="absolute inset-0 flex items-center justify-center">
             <img
@@ -224,8 +247,7 @@ const PotholeQuest = () => {
       
       {/* 정답 후 성공 메시지 화면 - 오토바이 제거 */}
       {gamePhase === 'successResult' && showSuccessMessage && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center z-0">
-          <div className="absolute inset-0 bg-[#FFF9C4]/60 z-0"></div>
+        <div className="absolute inset-0 bg-white bg-opacity-30 flex flex-col items-center justify-center z-10">
           {/* 중앙 상단에 정답입니다! */}
           <div className="absolute top-[20%] text-6xl font-extrabold text-green-700 left-1/2 transform -translate-x-1/2 z-20">
           정답입니다!
@@ -256,39 +278,49 @@ const PotholeQuest = () => {
         />
       )}
       
-      {/* 오답 결과 화면 */}
+      {/* 오답 결과 화면 - 수정된 부분 */}
       {gamePhase === 'failResult' && (
-        <div className="absolute inset-0 flex items-center justify-center">
-            <div className="absolute inset-0 bg-[#FFF9C4]/60 z-10"></div>
-
-          {/* 사고 배경 */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          {/* 배경 이미지 - 즉시 표시 */}
           <img
             src={potholeAccident}
             alt="사고 장면"
             className="absolute inset-0 w-full h-full object-cover"
           />
-
-          {/* 메시지 박스를 화면 정중앙에 고정 */}
-          <div className="relative z-10 w-[80%] max-w-[800px]">
-            {/* 경고 아이콘 - 메시지 박스 위에 덮어쓰기 */}
-            <img
-              src={dangerWarning}
-              alt="위험 경고"
-              className="absolute -top-36 left-1/2 transform -translate-x-1/2 w-[20%]"
-            />
-
-            {/* 메시지 박스 본체 */}
-            <div className="bg-white bg-opacity-80 border-red-600 border-8 rounded-xl p-8 text-center">
-              <h2 className="text-6xl font-extrabold text-red-600 mb-4">이륜차가 기우뚱!</h2>
-              <p className="text-4xl font-extrabold text-black leading-relaxed tracking-wider">
-                구덩이는 도로 위 함정과 같아요.<br />
-                속도를 줄이고 지나가야 안전해요.
-              </p>
-            </div>
-          </div>
+          
+          {/* 애니메이션 컨테이너 - showWarning 상태에 따라 표시 */}
+          {showWarning && (
+            <motion.div 
+              className="absolute inset-0 bg-[#FFF9C4]/60 flex flex-col items-center justify-end pb-32 z-10"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8 }}
+            >
+              <motion.img 
+                src={dangerWarning} 
+                alt="위험 경고" 
+                className="w-[16%] mb-1" //간격 조절 여기서
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              />
+              
+              <motion.div 
+                className="w-[80%] bg-white bg-opacity-80 border-red-600 border-8 rounded-xl p-8 text-center"
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+              >
+                <h2 className="text-6xl font-extrabold text-red-600 mb-4">이륜차가 기우뚱!</h2>
+                <p className="text-4xl font-extrabold text-black">
+                  구덩이는 도로 위 함정과 같아요.<br />
+                  속도를 줄이고 지나가야 안전해요.
+                </p>
+              </motion.div>
+            </motion.div>
+          )}
         </div>
       )}
-
     </div>
   );
 };
