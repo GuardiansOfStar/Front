@@ -2,9 +2,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import BackButton from '../../components/ui/BackButton';
 import HarvestBox from './HarvestBox';
 import HarvestBox2 from './HarvestBox2';
+import HomeButton from '../../components/ui/HomeButton';
 
 // 이미지 임포트
 const fieldRoad = '/assets/images/field_road.png';
@@ -156,19 +156,8 @@ const HarvestQuest = () => {
 
       {/* 헤더 영역 */}
       {(gamePhase !== 'fadeOut' && gamePhase !== 'failResult') && (
-        <div className="absolute top-4 right-4 z-10">
-          <img
-            src={homeButton}
-            alt="홈으로"
-            className="w-16 h-16 cursor-pointer"
-            onClick={handleGoHome}
-          />
-        </div>
+        <HomeButton />
       )}
-
-      {/*
-      {(gamePhase !== 'fadeOut' && gamePhase !== 'failResult') && <BackButton />}
-      */}
 
       {/* 인트로 화면 */}
       {gamePhase === 'intro' && <HarvestBox />}

@@ -1,22 +1,22 @@
 import { useNavigate } from 'react-router-dom';
 
-const setting = '/assets/images/setting.png'
+const homeButton = '/assets/images/home_button.png'; 
 
-const Setting = () => {
+function HomeButton () {
     const navigate = useNavigate();
 
     return (
         <img
-            src={setting}
-            alt="setting"
+            src={homeButton}
+            alt="홈으로"
             className="absolute top-5 right-10 
             w-[9%] h-auto
             cursor-pointer
             z-50
             active:scale-90 transition-transform duration-150"
-            onClick={() => navigate('/success')} // '/result' 대신 '/success'로 변경
+            onClick={() => navigate('/')}
         />
     );
-};
+}
 
-export default Setting;
+export default HomeButton;

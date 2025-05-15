@@ -1,9 +1,9 @@
 // src/pages/quest/PotholeQuest.tsx
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
- import { motion } from "framer-motion";
- import BackButton from '../../components/ui/BackButton';
+import { motion } from "framer-motion";
 import RoadSliding from './RoadSliding';
+import HomeButton from '../../components/ui/HomeButton';
 
 // 이미지 임포트
 const basicRoad = '/assets/images/basic_road.png';
@@ -15,7 +15,8 @@ const successCircle = '/assets/images/success_circle.png';
 const homeButton = '/assets/images/home_button.png';
 const starCharacter = '/assets/images/star_character.png';
 const grandfaRushing = '/assets/images/mission5_success_gfa.png';
-const successRoad = '/assets/images/success_road.png'
+const successRoad = '/assets/images/success_road.png';
+const successBackground = '/assets/images/success_road_background.png';
 
 
 // 게임 단계 정의
@@ -144,7 +145,7 @@ const PathChoiceQuest = () => {
       {/* 배경 - 게임 단계에 따라 다른 배경 표시 */}
       {(gamePhase !== 'driving' && gamePhase !== 'fadeOut') && (
         <img
-          src={gamePhase === 'twoPathsNotice' || gamePhase === 'selection' || gamePhase === 'successResult' ? twoPathScene : basicRoad}
+          src={gamePhase === 'twoPathsNotice' || gamePhase === 'selection' ? twoPathScene : gamePhase === 'successResult' ? successBackground : basicRoad}
           alt="갈림길 배경"
           className="absolute w-full h-full object-cover"
         />
@@ -156,16 +157,8 @@ const PathChoiceQuest = () => {
 
       {/* 헤더 영역 */}
       {(gamePhase !== 'fadeOut' && gamePhase !== 'failResult') && (
-        <div className="absolute top-4 right-4 z-10">
-          <img
-            src={homeButton}
-            alt="홈으로"
-            className="w-16 h-16 cursor-pointer"
-            onClick={handleGoHome}
-          />
-        </div>
+        <HomeButton />
       )}
-      {(gamePhase !== 'fadeOut' && gamePhase !== 'failResult') && <BackButton />}
       
       {/* 인트로 화면 */}
       {gamePhase === 'intro' && (
