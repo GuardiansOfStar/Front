@@ -1,7 +1,8 @@
 // src/pages/quest/PotholeQuest.tsx
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import BackButton from '../../components/ui/BackButton';
+ import { motion } from "framer-motion";
+ import BackButton from '../../components/ui/BackButton';
 import RoadSliding from './RoadSliding';
 
 // 이미지 임포트
@@ -266,11 +267,17 @@ const PathChoiceQuest = () => {
             <div className="absolute inset-0 flex items-center justify-center z-20">
               {!fallbackImage ? (
                 <>
-                <img 
+                <motion.img 
                   src={grandfaRushing}
                   alt="오토바이 질주하는 할아버지" 
                   className="absolute w-[38%] h-auto object-contain z-50"
                   onError={handleImageError}
+                  animate={{ x: [5, 55, 5] }} //X축:0→65px
+                  transition={{ 
+                  duration: 2, // 한 사이클(0→20→0)에 2초 
+                  repeat: Infinity, // 무한 반복
+                  ease: "easeInOut"  // 부드러운 가속·감속
+                }}
                 />
                 <img 
                   src={successRoad}
