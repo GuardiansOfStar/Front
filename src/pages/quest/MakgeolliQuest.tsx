@@ -414,13 +414,26 @@ const MakgeolliQuest = () => {
 
       {/* 새참 아주머니 등장 화면 */}
       {gamePhase === 'mealLadyArrival' && (
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className="absolute inset-0">
           <div className="absolute inset-x-0 bottom-0 flex justify-center">
-            <img
-              src={mealLady}
-              alt="새참 아주머니"
-              className="h-[80vh] object-contain animate-[slideUp_1s_ease-out_forwards]"
-            />
+            <div 
+              className="relative"
+              style={{
+                transform: 'scale(1.7)',
+                transformOrigin: 'center bottom',
+                height: '100vh', 
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'flex-end'
+              }}
+            >
+              <img
+                src={mealLady}
+                alt="새참 아주머니"
+                className="w-auto h-auto max-h-[120vh] object-contain object-bottom animate-[slideUp_1s_ease-out_forwards]"
+                style={{ marginBottom: '0' }}
+              />
+            </div>
           </div>
         </div>
       )}
@@ -429,14 +442,25 @@ const MakgeolliQuest = () => {
       {gamePhase === 'mealLadyIntro' && (
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute inset-x-0 bottom-0 flex justify-center">
-            <img
-              src={mealLady}
-              alt="새참 아주머니"
-              className="h-[80vh] object-contain"
-            />
+            <div 
+              style={{
+                transform: 'scale(1.7)',
+                transformOrigin: 'center bottom',
+                height: '100vh', 
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'flex-end'
+              }}
+            >
+              <img
+                src={mealLady}
+                alt="새참 아주머니"
+                className="w-auto h-auto max-h-[120vh] object-contain object-bottom"
+              />
+            </div>
           </div>
 
-          <div className="absolute top-[65%] left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <div className="absolute top-[65%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
             <div className="w-[110vw] max-w-2xl bg-white/90 border-8 border-green-600 rounded-[2.2rem] p-10 text-center shadow-lg">
               <p className="text-[2.7rem] font-extrabold text-black leading-tight tracking-wider">
                 새참 가져왔어요<br />
