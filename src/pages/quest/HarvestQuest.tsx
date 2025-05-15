@@ -142,15 +142,18 @@ const HarvestQuest = () => {
   return (
     <div className="w-full h-full">
       {/* 배경 - 게임 단계에 따라 다른 배경 표시 */}
-      {(gamePhase !== 'fadeOut') && (
+      {(gamePhase !== 'fadeOut' ) && (
         <img
           src={gamePhase === 'harvestDone' || gamePhase === 'selection' ? fieldHarvestBoxes : fieldRoad}
           alt="갈림길 배경"
           className="absolute w-full h-full object-cover"
         />
       )}
+      {/*배경 흐리게 처리*/}
+      {(gamePhase !== 'intro' && gamePhase !== 'driving' && gamePhase !== 'failResult' ) && (
+      <div className="absolute inset-0 bg-[#FFF9C4]/60 z-10"></div>
+      )}
 
-      
       {/* 헤더 영역 */}
       {(gamePhase !== 'fadeOut' && gamePhase !== 'failResult') && (
         <div className="absolute top-4 right-4 z-10">
@@ -162,8 +165,11 @@ const HarvestQuest = () => {
           />
         </div>
       )}
+
+      {/*
       {(gamePhase !== 'fadeOut' && gamePhase !== 'failResult') && <BackButton />}
-      
+      */}
+
       {/* 인트로 화면 */}
       {gamePhase === 'intro' && <HarvestBox />}
 
@@ -191,10 +197,7 @@ const HarvestQuest = () => {
       {/* 선택지 화면 - 오토바이 제거 */}
       {gamePhase === 'selection' && (
         <div className="absolute inset-0">
-          {/* 배경 불투명도 효과 */}
-          <div className="absolute inset-0 bg-white bg-opacity-50 z-0"></div>
-          
-          <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+          <div className="absolute inset-0 flex flex-col items-center justify-center z-30">
             {/* 선택지 제목 및 설명 */}
             <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-3xl p-6 mb-8 w-[75%]">
               <h2 className="text-5xl font-extrabold text-green-600 text-center mb-4">무거운 짐 싣기</h2>
@@ -245,11 +248,11 @@ const HarvestQuest = () => {
             <img
               src={successCircle} 
               alt="성공 원" 
-              className="absolute w-full h-full object-contain z-10"
+              className="absolute w-full h-full object-contain z-20"
             />
             
             {/* 그 위에 오토바이 운전하는 할아버지 이미지 */}
-            <div className="absolute inset-0 flex items-center justify-center z-20">
+            <div className="absolute inset-0 flex items-center justify-center z-30">
               {!fallbackImage ? (
                 <>
                 <motion.img
@@ -260,13 +263,13 @@ const HarvestQuest = () => {
                 animate={{ x: [5, 65] }} //X축: 0→65px
                 transition={{ 
                   duration: 5, // 한 사이클(0→20→0)에 2초 
-                  repeat: 1, // 무한 반복
+                  repeat: 1, // 반복
                   //ease: "easeInOut"  // 부드러운 가속·감속
                 }}
                 />
                 <img 
                   src={motorcycle}
-                  alt="오토바이" 
+                  alt="오토바이"
                   className="absolute right-[26%] w-[25%] object-contain z-50"
                   onError={handleImageError}
                 />
@@ -285,7 +288,7 @@ const HarvestQuest = () => {
       
       {/* 정답 후 성공 메시지 화면 - 오토바이 제거 */}
       {gamePhase === 'successResult' && showSuccessMessage && (
-        <div className="absolute inset-0 bg-white bg-opacity-30 flex flex-col items-center justify-center z-10">
+        <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
           {/* 중앙 상단에 정답입니다! */}
           <div className="absolute top-[20%] text-6xl font-extrabold text-green-700 left-1/2 transform -translate-x-1/2 z-20">
             정답입니다!
@@ -325,7 +328,7 @@ const HarvestQuest = () => {
           />
           {/* 3초 후에 등장 */}
           {showWarning && (
-          <div className="absolute inset-0 bg-white bg-opacity-30 flex flex-col items-center justify-end pb-32 z-10">
+          <div className="absolute inset-0 flex flex-col items-center justify-end pb-32 z-10">
             <img 
               src={dangerWarning} 
               alt="위험 경고" 

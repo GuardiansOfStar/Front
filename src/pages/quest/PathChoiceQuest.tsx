@@ -129,7 +129,7 @@ const PathChoiceQuest = () => {
 
   // 타이틀 텍스트 렌더링 함수 - 고대비 스타일 적용
   const renderTitleText = (text: string, fontSize = "500%", color = "text-green-600") => (
-      <h1 className={`absolute top-[23%] left-1/2 transform -translate-x-1/2 font-extrabold ${color} px-8 py-3 whitespace-nowrap`}
+      <h1 className={`absolute top-[23%] left-1/2 transform -translate-x-1/2 font-extrabold ${color} px-8 py-3 whitespace-nowrap z-20`}
           style={{ 
             fontSize,
             textShadow: '2px 2px 0 #FFF, -2px -2px 0 #FFF, 2px -2px 0 #FFF, -2px 2px 0 #FFF',
@@ -149,7 +149,11 @@ const PathChoiceQuest = () => {
           className="absolute w-full h-full object-cover"
         />
       )}
-      
+      {/*배경 흐리게 처리*/}
+      {(gamePhase !== 'intro' && gamePhase !== 'driving' && gamePhase !== 'failResult' ) && (
+      <div className="absolute inset-0 bg-[#FFF9C4]/60 z-10"></div>
+      )}
+
       {/* 헤더 영역 */}
       {(gamePhase !== 'fadeOut' && gamePhase !== 'failResult') && (
         <div className="absolute top-4 right-4 z-10">
@@ -197,18 +201,13 @@ const PathChoiceQuest = () => {
           </div>
           
           {/* 경고 텍스트 상단에 표시 */}
-          <div className="absolute top-20 left-1/2 transform -translate-x-1/2">
-            {renderTitleText('앞에 갈림길이 있어요!')}
-          </div>
+          {renderTitleText('앞에 갈림길이 있어요!')}
         </div>
       )}
       
       {/* 선택지 화면 - 오토바이 제거 */}
       {gamePhase === 'selection' && (
         <div className="absolute inset-0">
-          {/* 배경 불투명도 효과 */}
-          <div className="absolute inset-0 bg-white bg-opacity-50 z-0"></div>
-          
           <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
             {/* 선택지 제목 및 설명 */}
             <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-3xl p-6 mb-8 w-[75%]">
@@ -300,7 +299,7 @@ const PathChoiceQuest = () => {
       
       {/* 정답 후 성공 메시지 화면 - 오토바이 제거 */}
       {gamePhase === 'successResult' && showSuccessMessage && (
-        <div className="absolute inset-0 bg-white bg-opacity-30 flex flex-col items-center justify-center z-10">
+        <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
           {/* 중앙 상단에 정답입니다! */}
           <div className="absolute top-[20%] text-6xl font-extrabold text-green-700 left-1/2 transform -translate-x-1/2 z-20">
             정답입니다!
@@ -340,7 +339,8 @@ const PathChoiceQuest = () => {
           />
           {/* 3초 후에 등장 */}
           {showWarning && (
-          <div className="absolute inset-0 bg-white bg-opacity-30 flex flex-col items-center justify-end pb-32 z-10">
+          <div className="absolute inset-0 flex flex-col items-center justify-end pb-32  bg-[#FFF9C4]/60 z-10">
+            
             <img 
               src={dangerWarning} 
               alt="위험 경고" 
