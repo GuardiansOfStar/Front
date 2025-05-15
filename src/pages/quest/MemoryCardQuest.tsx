@@ -147,6 +147,9 @@ const MemoryCardQuest: React.FC = () => {
       initializeCards();
       setIsInitialized(true);
     } else if (gamePhase === 'showCards' && isInitialized) {
+
+      setFlippedCards([]);
+      
       // 이미 초기화된 경우 저장된 카드 순서 사용
       setCards(initialCardOrder.map(card => ({
         ...card,
@@ -230,16 +233,17 @@ const MemoryCardQuest: React.FC = () => {
      // 피드백 표시 후 다시 게임으로 전환
       autoTransitionTimerRef.current = window.setTimeout(() => {
         if (attempts < 5) {
-          setGamePhase('game');
-          setShowHintTitle(true);
-          setCards(prev =>
-            prev.map(c =>
-              flippedCards.includes(c.id)
-              ? { ...c, isFlipped: false }
-              : c
-            )
-          );
+          // setGamePhase('game');
+          // setShowHintTitle(true);
+          // setCards(prev =>
+          //   prev.map(c =>
+          //     flippedCards.includes(c.id)
+          //     ? { ...c, isFlipped: false }
+          //     : c
+          //   )
+          // );
           setFlippedCards([]);
+          setGamePhase('showCards');
           // Remove the nested setTimeout that shows a redundant message
         } else {
           setShouldShowHintMessage(true);
@@ -460,7 +464,7 @@ const MemoryCardQuest: React.FC = () => {
   // 배경 흐림 효과 렌더링 함수
   const renderBackdrop = () => {
     if (gamePhase === 'intro1' || gamePhase === 'helmetEquipped') return null;
-    return <div className="absolute inset-0 bg-[#FFF9C4]/10 backdrop-blur-sm z-0" />;
+    return <div className="absolute inset-0 bg-[#FFF9C4]/50  z-0" />;
   };
 
   // 타이틀 텍스트 렌더링 함수
@@ -495,7 +499,7 @@ const MemoryCardQuest: React.FC = () => {
       {/* 서서히 페이드인되는 백드롭 */}
       {gamePhase !== 'intro1' && gamePhase !== 'helmetEquipped' && (
         <motion.div
-          className="absolute inset-0 bg-[#FFF9C4]/70 backdrop-blur-sm z-0"
+          className="absolute inset-0 bg-[#FFF9C4]/50 z-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
