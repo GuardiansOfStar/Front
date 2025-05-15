@@ -150,7 +150,7 @@ const PotholeQuest = () => {
       {gamePhase === 'selection' && (
         <div className="absolute inset-0">
           {/* 배경 불투명도 효과 */}
-          <div className="absolute inset-0 bg-[#FFF9C4]/70 backdrop-blur-sm z-0"></div>
+          <div className="absolute inset-0 bg-[#FFF9C4]/60 z-0"></div>
           
           <div className="absolute inset-x-0 top-20 bottom-0 flex flex-col items-center justify-center z-10">
             {/* 선택지 제목 및 설명 */}
@@ -169,7 +169,6 @@ const PotholeQuest = () => {
                 border-8 border-green-600 rounded-xl p-4
                 text-3xl font-extrabold text-white 
                 transition duration-300 focus:outline-none focus:ring-0
-
                 ${selectedOption === 'A' 
                   ? 'bg-green-600 scale-105 bg-opacity-95' 
                   : 'hover:bg-green-600'}`}
@@ -226,7 +225,7 @@ const PotholeQuest = () => {
       {/* 정답 후 성공 메시지 화면 - 오토바이 제거 */}
       {gamePhase === 'successResult' && showSuccessMessage && (
         <div className="absolute inset-0 flex flex-col items-center justify-center z-0">
-          <div className="absolute inset-0 bg-[#FFF9C4]/70 backdrop-blur-sm z-0"></div>
+          <div className="absolute inset-0 bg-[#FFF9C4]/60 z-0"></div>
           {/* 중앙 상단에 정답입니다! */}
           <div className="absolute top-[20%] text-6xl font-extrabold text-green-700 left-1/2 transform -translate-x-1/2 z-20">
           정답입니다!
@@ -260,7 +259,7 @@ const PotholeQuest = () => {
       {/* 오답 결과 화면 */}
       {gamePhase === 'failResult' && (
         <div className="absolute inset-0 flex items-center justify-center">
-            <div className="absolute inset-0 bg-[#FFF9C4]/70 z-10"></div>
+            <div className="absolute inset-0 bg-[#FFF9C4]/60 z-10"></div>
 
           {/* 사고 배경 */}
           <img

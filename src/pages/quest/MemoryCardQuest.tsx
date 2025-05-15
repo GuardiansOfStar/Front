@@ -460,7 +460,7 @@ const MemoryCardQuest: React.FC = () => {
   // 배경 흐림 효과 렌더링 함수
   const renderBackdrop = () => {
     if (gamePhase === 'intro1' || gamePhase === 'helmetEquipped') return null;
-    return <div className="absolute inset-0 bg-[#FFF9C4]/10 backdrop-blur-sm z-0" />;
+    return <div className="absolute inset-0 bg-[#FFF9C4]/60  z-0" />;
   };
 
   // 타이틀 텍스트 렌더링 함수
@@ -495,7 +495,7 @@ const MemoryCardQuest: React.FC = () => {
       {/* 서서히 페이드인되는 백드롭 */}
       {gamePhase !== 'intro1' && gamePhase !== 'helmetEquipped' && (
         <motion.div
-          className="absolute inset-0 bg-[#FFF9C4]/70 backdrop-blur-sm z-0"
+          className="absolute inset-0 bg-[#FFF9C4]/60 z-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}

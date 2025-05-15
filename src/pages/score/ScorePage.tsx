@@ -1,4 +1,4 @@
-// src/pages/score/ScorePage.tsx
+// src/pages/score/ScorePage.tsx 수정
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Background from '../../components/ui/Background';
@@ -43,19 +43,19 @@ const ScorePage = () => {
           navigate(`/driving-base?scenario=${sId}&nextQuest=2`);
           break;
         case '2':
-          // 미션2 완료 → 미션3 준비로 이동
-          console.log("미션2 완료 → 미션3 준비로 이동");
-          navigate(`/driving-base?scenario=${sId}&nextQuest=3`);
+          // 미션2 완료 → 미션3으로 직접 이동 (수정)
+          console.log("미션2 완료 → 미션3으로 직접 이동");
+          navigate(`/makgeolli-quest?scenario=${sId}&quest=3`);
           break;
         case '3':
-          // 미션3 완료 → 미션4 준비로 이동
-          console.log("미션3 완료 → 미션4 준비로 이동");
-          navigate(`/driving-base?scenario=${sId}&nextQuest=4`);
+          // 미션3 완료 → 미션4로 직접 이동 (수정)
+          console.log("미션3 완료 → 미션4로 직접 이동");
+          navigate(`/harvest-quest?scenario=${sId}&quest=4`);
           break;
         case '4':
-          // 미션4 완료 → 미션5 준비로 이동
-          console.log("미션4 완료 → 미션5 준비로 이동");
-          navigate(`/driving-base?scenario=${sId}&nextQuest=5`);
+          // 미션4 완료 → 미션5로 직접 이동 (수정)
+          console.log("미션4 완료 → 미션5로 직접 이동");
+          navigate(`/path-choice-quest?scenario=${sId}&quest=5`);
           break;
         case '5':
           // 미션5 완료 → 성공 화면으로 이동
