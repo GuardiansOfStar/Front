@@ -128,15 +128,13 @@ const HarvestQuest = () => {
   };
 
   // 타이틀 텍스트 렌더링 함수 - 고대비 스타일 적용
-  const renderTitleText = (text: string, fontSize = "6rem", color = "text-green-600") => (
-      <h1 className={`absolute top-[23%] left-1/2 transform -translate-x-1/2 font-extrabold ${color} px-8 py-3 whitespace-nowrap`}
-          style={{ 
-            fontSize,
-            textShadow: '2px 2px 0 #FFF, -2px -2px 0 #FFF, 2px -2px 0 #FFF, -2px 2px 0 #FFF',
-            WebkitTextStroke: '1px white'
-          }}>
-        {text}
-      </h1>
+  const renderTitleText = (text: string) => (
+    <h2 className="text-[5.25rem] font-extrabold whitespace-nowrap">
+      {text.split('').map((ch, i) => (
+        ch === ' ' ? ' ' :
+        <span key={i} className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:12px_white] [text-stroke:2px_white]">{ch}</span>
+      ))}
+    </h2>
   );
 
   return (
@@ -164,33 +162,33 @@ const HarvestQuest = () => {
 
       {/* 주행 화면 */}
       {gamePhase === 'driving' && (
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 flex items-center justify-center z-10">
           <HarvestBox2 />
-          {/* 텍스트 상단에 표시 */}
-          
+          <div className="absolute z-20">
             {renderTitleText('작업 완료')}
-          
+          </div>
         </div>
       )}
       
       {/* 수확 완료 화면 */}
       {gamePhase === 'harvestDone' && (
-        <div className="absolute inset-0">
-          
-          {renderTitleText('작업 완료')}
-          
+        <div className="absolute inset-0 flex items-center justify-center z-10">
+          <div className="absolute z-20">
+            {renderTitleText('작업 완료')}
+          </div>
         </div>
       )}
+
       
 
       {/* 선택지 화면 - 오토바이 제거 */}
       {gamePhase === 'selection' && (
         <div className="absolute inset-0">
-          <div className="absolute inset-0 flex flex-col items-center justify-center z-30">
+          <div className="absolute inset-0 top-20 flex flex-col items-center justify-center z-30">
             {/* 선택지 제목 및 설명 */}
-            <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-3xl p-6 mb-8 w-[75%]">
+            <div className="bg-white bg-opacity-90 border-8 border-green-600 rounded-3xl p-6 mb-8 w-[75%]">
               <h2 className="text-5xl font-extrabold text-green-600 text-center mb-4">무거운 짐 싣기</h2>
-              <p className="text-4xl font-bold text-black text-center">
+              <p className="text-[2.2rem] font-extrabold text-black text-center">
                 드디어 작업이 끝났어요<br/>
                 수확한 농작물을 이륜차에 싣고 싶어요<br/>
                 어떻게 옮길까요?
@@ -198,11 +196,11 @@ const HarvestQuest = () => {
             </div>
             
             {/* 선택지 버튼 */}
-            <div className="flex justify-center space-x-10 w-4/5">
+            <div className="flex justify-between w-[75%]">
               <button
-                className={`w-[40%] bg-green-600 bg-opacity-70
+                className={`w-[48%] bg-green-600 bg-opacity-80
                 border-8 border-green-600 rounded-xl p-4
-                text-3xl font-bold text-white 
+                text-3xl font-extrabold text-white 
                 transition duration-300 
                 ${selectedOption === 'A' ? 
                 'bg-green-600 scale-105 bg-opacity-95' : 'hover:bg-green-600'}`}
@@ -213,9 +211,9 @@ const HarvestQuest = () => {
               </button>
               
               <button
-                className={`w-[40%] bg-green-600 bg-opacity-70
+                className={`w-[48%] bg-green-600 bg-opacity-80
                 border-8 border-green-600 rounded-xl p-4
-                text-3xl font-bold text-white
+                text-3xl font-extrabold text-white
                 transition duration-300 
                 ${selectedOption === 'B' ? 
                 'bg-green-600 scale-105 bg-opacity-95' : 'hover:bg-green-600'}`}
@@ -283,8 +281,8 @@ const HarvestQuest = () => {
             정답입니다!
             </div>
             {/* 중앙에 녹색 박스에 메시지 */}
-            <div className="mt-10 bg-green-600 bg-opacity-60 border-green-700 border-8  rounded-3xl p-10 w-[75%] mx-auto text-center relative">
-              <p className="text-4xl font-extrabold text-white">
+            <div className="mt-10 bg-green-600 bg-opacity-80 border-green-700 border-8  rounded-3xl p-4 w-[75%] mx-auto text-center relative">
+              <p className="text-5xl font-extrabold text-white leading-relaxed">
                 어르신의 안전과<br/>
                 소중한 자산을 보호하는 <br/> 현명한 선택이에요
               </p>
@@ -315,24 +313,37 @@ const HarvestQuest = () => {
             alt="사고 장면"
             className="absolute inset-0 w-full h-full object-cover"
           />
-          {/* 3초 후에 등장 */}
+          {/* 애니메이션 컨테이너 - showWarning 상태에 따라 표시 */}
           {showWarning && (
-          <div className="absolute inset-0 flex flex-col items-center justify-end pb-32 z-10">
-            <img 
-              src={dangerWarning} 
-              alt="위험 경고" 
-              className="w-[16%] mb-1" //간격 조절 여기서
-            />
-            
-            <div className="w-[80%] bg-white bg-opacity-80 border-red-600 border-8 rounded-xl p-8 text-center">
-              <h2 className="text-6xl font-extrabold text-red-600 mb-4">이륜차에 깔렸어요!</h2>
-              <p className="text-4xl font-extrabold text-black">
-                논밭에서 이륜차는 전복되기 쉬워요<br />
-                도로에 두고 짐을 옮겨야 안전해요
-              </p>
-            </div>
-          </div>
-        )}
+            <motion.div 
+              className="absolute inset-0 bg-[#FFF9C4]/60 flex flex-col items-center justify-end pb-32 z-10"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8 }}
+            >
+              <motion.img 
+                src={dangerWarning} 
+                alt="위험 경고" 
+                className="w-[16%] mb-1" //간격 조절 여기서
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              />
+              
+              <motion.div 
+                className="w-[80%] bg-white bg-opacity-80 border-red-600 border-8 rounded-xl p-8 text-center"
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+              >
+                <h2 className="text-6xl font-extrabold text-red-600 mb-4">이륜차에 깔렸어요!</h2>
+                <p className="text-4xl font-extrabold text-black">
+                  논밭에서 이륜차는 전복되기 쉬워요<br />
+                  도로에 두고 짐을 옮겨야 안전해요
+                </p>
+              </motion.div>
+            </motion.div>
+          )}
         </div>
       )}
     </div>

@@ -247,7 +247,7 @@ const PotholeQuest = () => {
       
       {/* 정답 후 성공 메시지 화면 - 오토바이 제거 */}
       {gamePhase === 'successResult' && showSuccessMessage && (
-        <div className="absolute inset-0 bg-white bg-opacity-30 flex flex-col items-center justify-center z-10">
+        <div className="absolute inset-0 bg-[#FFF9C4]/60 flex flex-col items-center justify-center z-10">
           {/* 중앙 상단에 정답입니다! */}
           <div className="absolute top-[20%] text-6xl font-extrabold text-green-700 left-1/2 transform -translate-x-1/2 z-20">
           정답입니다!

@@ -129,15 +129,13 @@ const PathChoiceQuest = () => {
   };
 
   // 타이틀 텍스트 렌더링 함수 - 고대비 스타일 적용
-  const renderTitleText = (text: string, fontSize = "500%", color = "text-green-600") => (
-      <h1 className={`absolute top-[23%] left-1/2 transform -translate-x-1/2 font-extrabold ${color} px-8 py-3 whitespace-nowrap z-20`}
-          style={{ 
-            fontSize,
-            textShadow: '2px 2px 0 #FFF, -2px -2px 0 #FFF, 2px -2px 0 #FFF, -2px 2px 0 #FFF',
-            WebkitTextStroke: '1px white'
-          }}>
-        {text}
-      </h1>
+  const renderTitleText = (text: string) => (
+    <h2 className="text-[5.25rem] font-extrabold whitespace-nowrap">
+      {text.split('').map((ch, i) => (
+        ch === ' ' ? ' ' :
+        <span key={i} className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:12px_white] [text-stroke:2px_white]">{ch}</span>
+      ))}
+    </h2>
   );
 
   return (
@@ -162,16 +160,23 @@ const PathChoiceQuest = () => {
       
       {/* 인트로 화면 */}
       {gamePhase === 'intro' && (
-        <div className="absolute inset-0 w-full h-full flex flex-col items-center justify-center">
+        <div className="absolute inset-0 w-full h-full flex flex-col items-center">
+          {/* 상단 마진 추가하고 justify-center 제거 */}
+          <div className="mt-24">
+            {renderTitleText('집 가는 길')}
+          </div>
           
-          {renderTitleText('집 가는 길')}
-          
-          {/* 오토바이 중앙 하단에 크게 표시 */}
+          {/* 오토바이 중앙 하단에 크게 표시 - 변경 없음 */}
           <div className="absolute bottom-0 w-full flex justify-center">
             <img 
               src={motorcycle} 
               alt="이륜차" 
-              className="w-4/5 max-h-[50vh] object-contain object-bottom"
+              style={{
+                width: '80%', // 60%에서 80%로 확대
+                maxHeight: '60vh', // 50vh에서 60vh로 확대
+                objectFit: 'contain',
+                objectPosition: 'bottom'
+              }}
             />
           </div>
         </div>
@@ -184,7 +189,12 @@ const PathChoiceQuest = () => {
       {/* 갈림길 등장 화면 */}
       {gamePhase === 'twoPathsNotice' && (
         <div className="absolute inset-0">
-          {/* 오토바이 화면 하단에 크게 배치 */}
+          {/* 갈림길 텍스트를 z-index 높게 설정해 배경보다 앞에 보이도록 함 */}
+          <div className="absolute top-24 left-0 right-0 flex justify-center z-20">
+            {renderTitleText('앞에 갈림길이 있어요!')}
+          </div>
+          
+          {/* 오토바이 화면 하단에 크게 배치 - 변경 없음 */}
           <div className="absolute bottom-0 w-full flex justify-center">
             <img
               src={motorcycle}
@@ -192,20 +202,17 @@ const PathChoiceQuest = () => {
               className="w-4/5 max-h-[50vh] object-contain object-bottom z-10"
             />
           </div>
-          
-          {/* 경고 텍스트 상단에 표시 */}
-          {renderTitleText('앞에 갈림길이 있어요!')}
         </div>
       )}
       
       {/* 선택지 화면 - 오토바이 제거 */}
       {gamePhase === 'selection' && (
         <div className="absolute inset-0">
-          <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+          <div className="absolute inset-0 top-14 flex flex-col items-center justify-center z-10">
             {/* 선택지 제목 및 설명 */}
-            <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-3xl p-6 mb-8 w-[75%]">
+            <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-3xl p-4 mb-8 w-[75%]">
               <h2 className="text-5xl font-extrabold text-green-600 text-center mb-4">집 가는 길 선택하기</h2>
-              <p className="text-4xl font-bold text-black text-center">
+              <p className="text-4xl font-extrabold text-black text-center leading-relaxed">
                 집에 갈 수 있는 두 개의 길이 있어요<br/>
                 지름길과 깔끔한 도로 중<br/>
                 어느 쪽으로 갈까요?
@@ -213,9 +220,9 @@ const PathChoiceQuest = () => {
             </div>
             
             {/* 선택지 버튼 */}
-            <div className="flex justify-center space-x-10 w-4/5">
+            <div className="flex justify-between w-[75%]">
               <button
-                className={`w-[45%] bg-green-600 bg-opacity-70
+                className={`w-[48%] bg-green-600 bg-opacity-70
                 border-8 border-green-600 rounded-xl p-4
                 text-3xl font-bold text-white 
                 transition duration-300
@@ -228,7 +235,7 @@ const PathChoiceQuest = () => {
               </button>
               
               <button
-                className={`w-[45%] bg-green-600 bg-opacity-70
+                className={`w-[48%] bg-green-600 bg-opacity-70
                 border-8 border-green-600 rounded-xl p-4
                 text-3xl font-bold text-white
                 transition duration-300 
@@ -330,24 +337,35 @@ const PathChoiceQuest = () => {
             alt="사고 장면"
             className="absolute inset-0 w-full h-full object-cover"
           />
-          {/* 3초 후에 등장 */}
           {showWarning && (
-          <div className="absolute inset-0 flex flex-col items-center justify-end pb-32  bg-[#FFF9C4]/60 z-10">
-            
-            <img 
-              src={dangerWarning} 
-              alt="위험 경고" 
-              className="w-[16%] mb-1" //간격 조절 여기서
-            />
-
-            <div className="w-[80%] bg-white bg-opacity-80 border-red-600 border-8 rounded-xl p-8 text-center">
-              <h2 className="text-6xl font-extrabold text-red-600 mb-4">이륜차와 넘어졌어요!</h2>
-              <p className="text-4xl font-extrabold text-black">
-                5분 아끼려다가 평생 상처가 남아요<br/>
-                평탄한 도로로 안전하게 귀가해요
-              </p>
-            </div>
-          </div>
+            <motion.div 
+              className="absolute inset-0 bg-[#FFF9C4]/60 flex flex-col items-center justify-end pb-32 z-10"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8 }}
+            >
+              <motion.img 
+                src={dangerWarning} 
+                alt="위험 경고" 
+                className="w-[16%] mb-1" //간격 조절 여기서
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              />
+              
+              <motion.div 
+                className="w-[80%] bg-white bg-opacity-80 border-red-600 border-8 rounded-xl p-8 text-center"
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+              >
+                <h2 className="text-6xl font-extrabold text-red-600 mb-4">이륜차와 넘어졌어요!</h2>
+                <p className="text-4xl font-extrabold text-black">
+                  5분 아끼려다가 평생 상처가 남아요<br />
+                  평탄한 도로로 안전하게 귀가해요
+                </p>
+              </motion.div>
+            </motion.div>
           )}
         </div>
       )}
