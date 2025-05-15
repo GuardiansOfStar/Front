@@ -31,7 +31,7 @@ function App() {
       <Routes>
         {/* 기본 화면들 */}
         <Route path="/" element={<HomePage />} />
-        <Route path="/scenarios" element={<PathChoiceQuest />} />
+        <Route path="/scenarios" element={<HarvestQuest />} />
         <Route path="/map" element={<MapPage />} />
         <Route path="/prologue" element={<ProloguePage />} />
 

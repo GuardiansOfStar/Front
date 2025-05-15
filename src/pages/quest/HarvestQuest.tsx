@@ -1,6 +1,7 @@
 // src/pages/quest/HarvestQuest.tsx
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import BackButton from '../../components/ui/BackButton';
 import HarvestBox from './HarvestBox';
 import HarvestBox2 from './HarvestBox2';
@@ -251,11 +252,17 @@ const HarvestQuest = () => {
             <div className="absolute inset-0 flex items-center justify-center z-20">
               {!fallbackImage ? (
                 <>
-                <img 
-                  src={grandfaSuccess}
-                  alt="수레 끄시는 할아버지" 
-                  className="absolute left-[20%] w-[35%] h-auto object-contain z-40"
-                  onError={handleImageError}
+                <motion.img
+                src={grandfaSuccess}
+                alt="수레 끄시는 할아버지" 
+                className="absolute left-[20%] w-[35%] h-auto object-contain z-40"
+                onError={handleImageError}
+                animate={{ x: [5, 65] }} //X축: 0→65px
+                transition={{ 
+                  duration: 5, // 한 사이클(0→20→0)에 2초 
+                  repeat: 1, // 무한 반복
+                  //ease: "easeInOut"  // 부드러운 가속·감속
+                }}
                 />
                 <img 
                   src={motorcycle}
