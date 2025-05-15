@@ -21,11 +21,11 @@ const DancingStar = () => {
     }, []);
 
     return (
-        <div className="flex justify-center items-center">
+        <div className="w-full h-full flex justify-center items-center">
             <img
                 src={starImages[currentImageIndex]}
                 alt={`Dancing Star ${currentImageIndex}`}
-                className="absolute bottom-[10%] w-[22%] object-contain z-40"
+                className="absolute bottom-[5%] w-[22%] object-contain z-40"
             />
         </div>
     );

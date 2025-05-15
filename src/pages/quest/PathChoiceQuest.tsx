@@ -127,7 +127,7 @@ const PathChoiceQuest = () => {
   };
 
   // 타이틀 텍스트 렌더링 함수 - 고대비 스타일 적용
-  const renderTitleText = (text: string, fontSize = "7vw", color = "text-green-600") => (
+  const renderTitleText = (text: string, fontSize = "500%", color = "text-green-600") => (
       <h1 className={`absolute top-[23%] left-1/2 transform -translate-x-1/2 font-extrabold ${color} px-8 py-3 whitespace-nowrap`}
           style={{ 
             fontSize,
@@ -143,12 +143,11 @@ const PathChoiceQuest = () => {
       {/* 배경 - 게임 단계에 따라 다른 배경 표시 */}
       {(gamePhase !== 'driving' && gamePhase !== 'fadeOut') && (
         <img
-          src={gamePhase === 'twoPathsNotice' || gamePhase === 'selection' ? twoPathScene : basicRoad}
+          src={gamePhase === 'twoPathsNotice' || gamePhase === 'selection' || gamePhase === 'successResult' ? twoPathScene : basicRoad}
           alt="갈림길 배경"
           className="absolute w-full h-full object-cover"
         />
       )}
-
       
       {/* 헤더 영역 */}
       {(gamePhase !== 'fadeOut' && gamePhase !== 'failResult') && (
@@ -165,10 +164,9 @@ const PathChoiceQuest = () => {
       
       {/* 인트로 화면 */}
       {gamePhase === 'intro' && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <div className="mb-12">
-            {renderTitleText('집 가는 길')}
-          </div>
+        <div className="absolute inset-0 w-full h-full flex flex-col items-center justify-center">
+          
+          {renderTitleText('집 가는 길')}
           
           {/* 오토바이 중앙 하단에 크게 표시 */}
           <div className="absolute bottom-0 w-full flex justify-center">
@@ -271,13 +269,13 @@ const PathChoiceQuest = () => {
                 <img 
                   src={grandfaRushing}
                   alt="오토바이 질주하는 할아버지" 
-                  className="absolute w-[22%] h-auto object-contain z-50"
+                  className="absolute w-[38%] h-auto object-contain z-50"
                   onError={handleImageError}
                 />
                 <img 
                   src={successRoad}
                   alt="오토바이 질주할 도로" 
-                  className="absolute bottom-[22%] w-[25%] object-contain z-40"
+                  className="absolute bottom-[17%] w-[43%] object-contain z-40"
                   onError={handleImageError}
                 />
                 </>

@@ -10,15 +10,10 @@ const motorcycle = '/assets/images/motorcycle.png';
 const CompletionBackground = () => {
     const navigate = useNavigate();
     const { width, height } = useWindowSize();
-    const [showConfetti, setShowConfetti] = useState(true);
+    const [showConfetti] = useState(true);
     const [startAnimation, setStartAnimation] = useState(false);
 
     useEffect(() => {
-        // 컨페티 8초 후 중단
-        const confettiTimer = setTimeout(() => {
-            setShowConfetti(false);
-        }, 10000);
-
         // 컴포넌트 마운트 시 애니메이션 시작
         setStartAnimation(true);
         console.log("CompletionBackground - 애니메이션 시작");
@@ -30,7 +25,6 @@ const CompletionBackground = () => {
         }, 8000);
 
         return () => {
-            clearTimeout(confettiTimer);
             clearTimeout(navigationTimer);
         };
     }, [navigate]);
@@ -56,7 +50,7 @@ const CompletionBackground = () => {
                 src={motorcycle} 
                 alt="이륜차" 
                 className="absolute bottom-0 left-1/2 transform -translate-x-1/2
-                w-[70%] max-h-[40%] mx-auto object-contain"
+                w-[75%] max-h-[60%] mx-auto object-contain"
             />
             
             {/* 컨페티 이펙트 */}
@@ -65,9 +59,9 @@ const CompletionBackground = () => {
                     <Confetti
                     width={width}
                     height={height}
-                    numberOfPieces={700}
+                    numberOfPieces={650}
                     gravity={0.1}
-                    recycle={false}
+                    recycle={true}
                     />
                 </div>
             )}

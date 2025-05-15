@@ -16,12 +16,12 @@ const RoadSliding = () => {
         <div className="w-full h-full">
             {/* 배경 이미지 애니메이션 컨테이너 */}
             <div
-                className={`transition-transform duration-[5000ms] ease-out`}
-                style={{
-                    transform: startAnimation ? 'translateY(-20%)' : 'translateY(-35%)',
-                    maxWidth: '90vw',
-                    willChange: 'transform',
-                }}
+            className={`transition-transform duration-[5000ms] ease-out`}
+            style={{
+                transform: startAnimation ? 'translateY(-20%)' : 'translateY(-35%)',
+                maxWidth: '100%',
+                willChange: 'transform',
+            }}
             >
                 <img
                     src={background}
