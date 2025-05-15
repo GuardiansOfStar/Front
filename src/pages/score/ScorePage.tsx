@@ -83,12 +83,12 @@ const ScorePage = () => {
           <img
             src={isCorrect ? grandchildrenHappy : grandchildrenSad}
             alt={isCorrect ? "기쁜 손자손녀" : "슬픈 손자손녀"}
-            className="w-44 h-auto mb-[-15px] z-10" // 크기 키우고 마이너스 마진 적용, z-index 추가
+            className="w-72 h-auto mb-[-40px] z-10" // 크기 키우고 마이너스 마진 적용, z-index 추가
           />
           
           {/* 점수 표시 - 크기 키우고 스타일 조정 */}
-          <div className="bg-green-500 border-8 border-green-700 rounded-[100px] px-64 py-10 shadow-lg flex items-center justify-center">
-            <span className="text-8xl font-bold text-white">+{score}</span>
+          <div className="transition-transform duration-300 scale-105 bg-green-500/90 border-[16px] border-green-700 rounded-[80px] px-40 py-10 shadow-lg flex items-center justify-center">
+            <span className="text-9xl font-extrabold text-white">+{score}</span>
           </div>
         </div>
       </div>

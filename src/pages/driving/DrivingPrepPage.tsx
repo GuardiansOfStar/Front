@@ -65,8 +65,8 @@ const DrivingPrepPage = () => {
         style={{ 
           position: 'absolute',
           left: `${motorcyclePosition}px`,
-          bottom: '0%',
-          width: '820px',
+          bottom: '10%',
+          width: '860px',
           height: 'auto',
         }}
       />
