@@ -40,7 +40,7 @@ const HarvestQuest = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [fallbackImage, setFallbackImage] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
-
+  const [showIntroText, setShowIntroText] = useState(false);
 
   // URL 쿼리 파라미터에서 시나리오 ID와 퀘스트 ID 가져오기
   useEffect(() => {
@@ -61,7 +61,7 @@ const HarvestQuest = () => {
         // 수확 후 선택지 화면으로 전환
         const alertTimer = setTimeout(() => {
           setGamePhase('selection');
-        }, 2000);
+        }, 0);
         
         return () => clearTimeout(alertTimer);
       }, 5000);
@@ -117,15 +117,23 @@ const HarvestQuest = () => {
     }
   }, [gamePhase]);
 
-  // 홈으로 이동 핸들러
-  const handleGoHome = () => {
-    navigate('/');
-  };
-
   // 이미지 오류 핸들러
   const handleImageError = () => {
     setFallbackImage(true);
   };
+
+  //퀘스트 제목 랜더링
+  useEffect(() => {
+  if (gamePhase === 'intro') {
+    const timer = setTimeout(() => {
+      setShowIntroText(true);
+    }, 3000); // 3초 후에 텍스트 보이기
+
+    return () => clearTimeout(timer); // 언마운트 시 타이머 정리
+  } else {
+    setShowIntroText(false); // intro 상태 벗어나면 다시 숨기기
+  }
+}, [gamePhase]);
 
   // 타이틀 텍스트 렌더링 함수 - 고대비 스타일 적용
   const renderTitleText = (text: string) => (
@@ -158,7 +166,16 @@ const HarvestQuest = () => {
       )}
 
       {/* 인트로 화면 */}
-      {gamePhase === 'intro' && <HarvestBox />}
+      {gamePhase === 'intro' && (
+        <>
+          <HarvestBox />
+          {showIntroText && (
+            <div className="absolute inset-0 flex items-center justify-center z-20">
+              {renderTitleText('작업 완료')}
+            </div>
+          )}
+        </>
+      )}
 
       {/* 주행 화면 */}
       {gamePhase === 'driving' && (
@@ -170,14 +187,14 @@ const HarvestQuest = () => {
         </div>
       )}
       
-      {/* 수확 완료 화면 */}
-      {gamePhase === 'harvestDone' && (
+      {/* 수확 완료 화면 {gamePhase === 'harvestDone' && (
         <div className="absolute inset-0 flex items-center justify-center z-10">
           <div className="absolute z-20">
             {renderTitleText('작업 완료')}
           </div>
         </div>
-      )}
+      )} */}
+      
 
       
 

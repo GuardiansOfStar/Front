@@ -60,7 +60,7 @@ const ScorePage = () => {
         case '5':
           // 미션5 완료 → 성공 화면으로 이동
           console.log("미션5 완료 → 성공 화면으로 이동");
-          navigate(`/success?scenario=${sId}`);
+          navigate(`/completion?scenario=${sId}`);
           break;
         default:
           // 알 수 없는 미션 → 홈으로 이동

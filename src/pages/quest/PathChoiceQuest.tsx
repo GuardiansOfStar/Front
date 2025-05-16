@@ -118,11 +118,6 @@ const PathChoiceQuest = () => {
     }
   }, [gamePhase]);
 
-  // 홈으로 이동 핸들러
-  const handleGoHome = () => {
-    navigate('/');
-  };
-
   // 이미지 오류 핸들러
   const handleImageError = () => {
     setFallbackImage(true);
