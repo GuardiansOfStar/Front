@@ -99,7 +99,7 @@ const HarvestQuest = () => {
           setGamePhase('failResult');
           setTimeout(() => {
             navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=10&correct=false`);
-          }, 10000); //오답 결과 유지 시간
+          }, 5000); //오답 결과 유지 시간
         }, 2500);
       }, 1000);
     }
