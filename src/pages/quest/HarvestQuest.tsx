@@ -50,11 +50,11 @@ const HarvestQuest = () => {
     setScenarioId(sId);
     setQuestId(qId || '4');
     
-    // 인트로 화면 후 자동으로 드라이빙 시작
+    // 인트로 화면 3s후 드라이빙
     const timer = setTimeout(() => {
       setGamePhase('driving');
       
-      // 운전 애니메이션 후 갈림길 발견 화면으로 전환
+      // 드라이비 1s후 사과박스 쌓인 정지 화면으로 전환
       const drivingTimer = setTimeout(() => {
         setGamePhase('harvestDone');
         
@@ -64,7 +64,7 @@ const HarvestQuest = () => {
         }, 0);
         
         return () => clearTimeout(alertTimer);
-      }, 5000);
+      }, 1000);
       
       return () => clearTimeout(drivingTimer);
     }, 3000);
@@ -169,11 +169,11 @@ const HarvestQuest = () => {
       {gamePhase === 'intro' && (
         <>
           <HarvestBox />
-          {showIntroText && (
+          {/*showIntroText && (
             <div className="absolute inset-0 flex items-center justify-center z-20">
               {renderTitleText('작업 완료')}
             </div>
-          )}
+          )*/}
         </>
       )}
 
@@ -181,9 +181,9 @@ const HarvestQuest = () => {
       {gamePhase === 'driving' && (
         <div className="absolute inset-0 flex items-center justify-center z-10">
           <HarvestBox2 />
-          <div className="absolute z-20">
+          {/*<div className="absolute z-20">
             {renderTitleText('작업 완료')}
-          </div>
+          </div> */}
         </div>
       )}
       
