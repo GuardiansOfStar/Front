@@ -150,7 +150,7 @@ const HarvestQuest = () => {
       {/* 배경 - 게임 단계에 따라 다른 배경 표시 */}
       {(gamePhase !== 'fadeOut' ) && (
         <img
-          src={gamePhase === 'harvestDone' || gamePhase === 'selection' ? fieldHarvestBoxes : fieldRoad}
+          src={fieldHarvestBoxes}
           alt="갈림길 배경"
           className="absolute w-full h-full object-cover"
         />
@@ -206,8 +206,8 @@ const HarvestQuest = () => {
             <div className="bg-white bg-opacity-90 border-8 border-green-600 rounded-3xl p-6 mb-8 w-[75%]">
               <h2 className="text-5xl font-extrabold text-green-600 text-center mb-4">무거운 짐 싣기</h2>
               <p className="text-[2.2rem] font-extrabold text-black text-center">
-                드디어 작업이 끝났어요<br/>
-                수확한 농작물을 이륜차에 싣고 싶어요<br/>
+                작업하는 중에 수확한 농작물을<br/>
+                이륜차에 싣고 싶어요<br/>
                 어떻게 옮길까요?
               </p>
             </div>
@@ -224,7 +224,7 @@ const HarvestQuest = () => {
                 onClick={() => handleOptionSelect('A')}
                 disabled={!!selectedOption}
               >
-                이륜차를 논밭으로<br/> 끌고 내려가 <br/> 짐을 싣고 나온다
+                과수원으로<br/>이륜차를 운전하여 <br/> 짐을 싣는다
               </button>
               
               <button
@@ -353,10 +353,10 @@ const HarvestQuest = () => {
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
-                <h2 className="text-6xl font-extrabold text-red-600 mb-4">이륜차에 깔렸어요!</h2>
+                <h2 className="text-6xl font-extrabold text-red-600 mb-4">덜컹! 넘어졌어요</h2>
                 <p className="text-4xl font-extrabold text-black">
-                  논밭에서 이륜차는 전복되기 쉬워요<br />
-                  도로에 두고 짐을 옮겨야 안전해요
+                  뿌리에 걸려 낙상할 수 있어요<br />
+                  이륜차는 도로에 두고 짐을 옮겨요
                 </p>
               </motion.div>
             </motion.div>
