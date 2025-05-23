@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from "framer-motion";
 import RoadSliding from './RoadSliding';
 import HomeButton from '../../components/ui/HomeButton';
+import GameTitle from '../../components/ui/GameTitle';
 
 // 이미지 임포트
 const basicRoad = '/assets/images/basic_road.png';
@@ -123,16 +124,6 @@ const PathChoiceQuest = () => {
     setFallbackImage(true);
   };
 
-  // 타이틀 텍스트 렌더링 함수 - 고대비 스타일 적용
-  const renderTitleText = (text: string) => (
-    <h2 className="text-[5.25rem] font-extrabold whitespace-nowrap">
-      {text.split('').map((ch, i) => (
-        ch === ' ' ? ' ' :
-        <span key={i} className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:12px_white] [text-stroke:2px_white]">{ch}</span>
-      ))}
-    </h2>
-  );
-
   return (
     <div className="w-full h-full">
       {/* 배경 - 게임 단계에 따라 다른 배경 표시 */}
@@ -158,7 +149,7 @@ const PathChoiceQuest = () => {
         <div className="absolute inset-0 w-full h-full flex flex-col items-center">
           {/* 상단 마진 추가하고 justify-center 제거 */}
           <div className="mt-24">
-            {renderTitleText('집 가는 길')}
+            <GameTitle text="집 가는 길" fontSize="text-[5.25rem]" strokeWidth="12px" />
           </div>
           
           {/* 오토바이 중앙 하단에 크게 표시 - 변경 없음 */}
@@ -186,7 +177,7 @@ const PathChoiceQuest = () => {
         <div className="absolute inset-0">
           {/* 갈림길 텍스트를 z-index 높게 설정해 배경보다 앞에 보이도록 함 */}
           <div className="absolute top-24 left-0 right-0 flex justify-center z-20">
-            {renderTitleText('앞에 갈림길이 있어요!')}
+            <GameTitle text="앞에 갈림길이 있어요!" fontSize="text-[5.25rem]" strokeWidth="12px" />
           </div>
           
           {/* 오토바이 화면 하단에 크게 배치 - 변경 없음 */}

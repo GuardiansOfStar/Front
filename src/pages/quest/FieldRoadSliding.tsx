@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 
 // 필드로 가는 배경 이미지 사용
-const background = '/assets/images/driving_farmland.png';
+const background = '/assets/images/orchard_driving_road.png';
 const motorcycle = '/assets/images/motorcycle.png';
 
 const FieldRoadSliding = () => {

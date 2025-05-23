@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import BackButton from '../../components/ui/BackButton';
+import GameTitle from '../../components/ui/GameTitle';
 
 // 이미지 임포트
 const gameBackground = '/assets/images/pre_drive_background.png';
@@ -17,8 +18,6 @@ const giftOpenHelmet = '/assets/images/gift_open.png';
 const grandchildren = '/assets/images/grandchildren.png';
 const helmet = '/assets/images/helmet.png';
 const nextButton = '/assets/images/next_button.png';
-
-// MemoryCardQuest.tsx 상단에 variants만 교체합니다.
 
 const giftBoxVariants = {
   hidden:   { scale: 0.5, rotate: -30, opacity: 0 },
@@ -71,7 +70,6 @@ interface Card {
   image: string;
   isFlipped: boolean;
   isMatched: boolean;
-  isRevealed: boolean; // 정답이 아닌 같은 쌍은 공개된 상태로 유지
 }
 
 // 게임 단계 정의
@@ -99,10 +97,9 @@ const MemoryCardQuest: React.FC = () => {
   const [scenarioId, setScenarioId] = useState<string | null>(null);
   const [questId, setQuestId] = useState<string | null>(null);
   const [cards, setCards] = useState<Card[]>([]);
-  const [initialCardOrder, setInitialCardOrder] = useState<Card[]>([]); // 초기 카드 순서 저장
+  const [initialCardOrder, setInitialCardOrder] = useState<Card[]>([]);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [matchedPairs, setMatchedPairs] = useState<string[]>([]);
-  const [revealedPairs, setRevealedPairs] = useState<string[]>([]);
   const [attempts, setAttempts] = useState(0);
   const [gamePhase, setGamePhase] = useState<GamePhase>('intro1');
   const [feedbackMessage, setFeedbackMessage] = useState<string>('');
@@ -110,8 +107,8 @@ const MemoryCardQuest: React.FC = () => {
   const [finalScore, setFinalScore] = useState(20);
   const [showMessage, setShowMessage] = useState(false);
   const [showHintTitle, setShowHintTitle] = useState(true);
-  const [isInitialized, setIsInitialized] = useState(false); // 게임 초기화 상태 관리
-  const [shouldShowHintMessage, setShouldShowHintMessage] = useState(false); // 힌트 메시지 표시 여부
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [shouldShowHintMessage, setShouldShowHintMessage] = useState(false);
 
   // 타이머 refs
   const giftAnimationRef = useRef<number | null>(null);
@@ -125,39 +122,21 @@ const MemoryCardQuest: React.FC = () => {
     setQuestId(params.get('quest') || '1');
   }, [location]);
 
-  // 시도 횟수에 따른 힌트 메시지 표시 여부 결정
-  // useEffect(() => {
-  //   // 5번 이상 시도했을 때 힌트 메시지 표시
-  //   if (attempts >= 5 && gamePhase === 'game') {
-  //     setShouldShowHintMessage(true);
-  //     setFeedbackMessage("찾기 어려우신가요?\n정답을 알려드릴게요");
-      
-  //     // 힌트 메시지 표시 후 3초 후 정답 보여주기
-  //     const timer = window.setTimeout(() => {
-  //       setGamePhase('tooManyAttempts');
-  //     }, 3000);
-      
-  //     return () => clearTimeout(timer);
-  //   }
-  // }, [attempts, gamePhase]);
-
   // 최초 게임 시작 시에만 카드 초기화
   useEffect(() => {
     if (gamePhase === 'showCards' && !isInitialized) {
       initializeCards();
       setIsInitialized(true);
     } else if (gamePhase === 'showCards' && isInitialized) {
-
       setFlippedCards([]);
       
       // 이미 초기화된 경우 저장된 카드 순서 사용
       setCards(initialCardOrder.map(card => ({
         ...card,
-        isFlipped: true, // showCards 단계에서는 모든 카드 앞면 표시
-        isRevealed: revealedPairs.includes(card.type) // 이미 공개된 쌍은 유지
+        isFlipped: true,
       })));
 
-      // 힌트 메시지 숨기기 (카드 다시 보여줄 때)
+      // 힌트 메시지 숨기기
       setShouldShowHintMessage(false);
 
       // showCards 후 자동으로 game 단계로 전환
@@ -165,7 +144,7 @@ const MemoryCardQuest: React.FC = () => {
         setGamePhase('game');
         setCards(prev => prev.map(c => ({
           ...c,
-          isFlipped: revealedPairs.includes(c.type) // 이미 공개된 쌍만 앞면 유지
+          isFlipped: false
         })));
       }, 3000);
     }
@@ -174,11 +153,10 @@ const MemoryCardQuest: React.FC = () => {
       const timer = window.setTimeout(() => setShowMessage(true), 800);
       return () => clearTimeout(timer);
     }
-  }, [gamePhase, isInitialized, initialCardOrder, revealedPairs]);
+  }, [gamePhase, isInitialized, initialCardOrder]);
 
   // 힌트 타이틀 표시 관리
   useEffect(() => {
-    // 피드백 화면에서는 힌트 타이틀 숨기기
     if (gamePhase === 'wrongPairFeedback' || gamePhase === 'wrongMatchFeedback' || gamePhase === 'tooManyAttempts') {
       setShowHintTitle(false);
     } else if (gamePhase === 'game') {
@@ -198,17 +176,16 @@ const MemoryCardQuest: React.FC = () => {
       }, 3000);
     } 
     else if (gamePhase === 'wrongMatchFeedback') {
-      // 잘못된 같은 쌍 피드백 표시 후, 카드 다시 보여주고 게임 계속
+      // 정답이 아닌 같은 쌍 피드백 후 다시 카드 보여주기
       autoTransitionTimerRef.current = window.setTimeout(() => {
         if (attempts >= 5) {
           setShouldShowHintMessage(true);
           setFeedbackMessage("찾기 어려우신가요?\n정답을 알려드릴게요");
           setGamePhase('tooManyAttempts');
         } else {
-        setGamePhase('showCards');
+          setGamePhase('showCards');
         }
       }, 2500);
-      
     }
     else if (
       gamePhase === 'foundMatch' ||
@@ -227,24 +204,13 @@ const MemoryCardQuest: React.FC = () => {
             );
             break;
         }
-      }, 3000); // helmetEquipped 단계는 6초로 연장
+      }, 3000);
     }
     else if (gamePhase === 'wrongPairFeedback') {
-     // 피드백 표시 후 다시 게임으로 전환
       autoTransitionTimerRef.current = window.setTimeout(() => {
         if (attempts < 5) {
-          // setGamePhase('game');
-          // setShowHintTitle(true);
-          // setCards(prev =>
-          //   prev.map(c =>
-          //     flippedCards.includes(c.id)
-          //     ? { ...c, isFlipped: false }
-          //     : c
-          //   )
-          // );
           setFlippedCards([]);
           setGamePhase('showCards');
-          // Remove the nested setTimeout that shows a redundant message
         } else {
           setShouldShowHintMessage(true);
           setFeedbackMessage("찾기 어려우신가요?\n정답을 알려드릴게요");
@@ -252,33 +218,26 @@ const MemoryCardQuest: React.FC = () => {
         }
       }, 1500);
     }
-    // tooManyAttempts 단계 처리 부분 수정
     else if (gamePhase === 'tooManyAttempts') {
-      // 시도 횟수 초과 시 정답 보여주기
       autoTransitionTimerRef.current = window.setTimeout(() => {
-        // 메시지 표시 후 일정 시간 후에 메시지 숨기고 카드 뒤집기 시작
         setShouldShowHintMessage(false);
         
-        // 메시지 박스가 사라진 후 약간의 딜레이를 두고 카드 뒤집기 시작
         autoTransitionTimerRef.current = window.setTimeout(() => {
-          // 헬멧 카드만 뒤집어 공개
           setCards(prev =>
             prev.map(c =>
               c.type === 'helmet'
-                ? { ...c, isFlipped: true, isRevealed: true }
+                ? { ...c, isFlipped: true }
                 : { ...c, isFlipped: false }
             )
           );
           
-          // 카드 공개 후 showAnswer 단계로
           autoTransitionTimerRef.current = window.setTimeout(() => {
             setGamePhase('showAnswer');
           }, 1500);
-        }, 500); // 메시지 박스가 사라진 후 0.5초 후 카드 뒤집기
-      }, 3000); // 힌트 메시지 표시 후 3초 후 처리
+        }, 500);
+      }, 3000);
     } 
     else if (gamePhase === 'showAnswer') {
-      // 무미건조한 반응 후 헬멧 착용 단계로 바로 이동
       autoTransitionTimerRef.current = window.setTimeout(() => {
         setGamePhase('helmetEquipped');
       }, 3000);
@@ -292,16 +251,9 @@ const MemoryCardQuest: React.FC = () => {
   }, [gamePhase, navigate, scenarioId, questId, finalScore, flippedCards]);
 
   useEffect(() => {
-    console.log("Current gamePhase:", gamePhase);
-  }, [gamePhase]);
-
-  // 게임 페이즈 변경 시 힌트 메시지 상태 관리 - 이 부분을 추가하거나 수정
-  useEffect(() => {
-    // tooManyAttempts 페이즈에서는 힌트 메시지 표시, 다른 페이즈로 전환될 때는 숨김
     if (gamePhase === 'tooManyAttempts') {
       setShouldShowHintMessage(true);
     } else if (gamePhase === 'showAnswer') {
-      // showAnswer 단계에서는 확실히 메시지 박스 숨김
       setShouldShowHintMessage(false);
     }
   }, [gamePhase]);
@@ -331,7 +283,7 @@ const MemoryCardQuest: React.FC = () => {
     };
   }, [gamePhase]);
 
-  // 카드 초기화 함수 - 게임 시작 시 한 번만 호출됨
+  // 카드 초기화 함수
   const initializeCards = () => {
     const types = [
       { type: 'helmet', image: helmetCard },
@@ -339,7 +291,6 @@ const MemoryCardQuest: React.FC = () => {
       { type: 'cap', image: capHatCard },
     ] as const;
     
-    // 카드 생성
     const list: Card[] = [];
     types.forEach(({ type, image }) => {
       for (let i = 0; i < 2; i++) {
@@ -347,26 +298,23 @@ const MemoryCardQuest: React.FC = () => {
           id: list.length, 
           type, 
           image, 
-          isFlipped: true, // showCards 단계에서는 모든 카드 앞면 표시
-          isMatched: false,
-          isRevealed: false
+          isFlipped: true,
+          isMatched: false
         });
       }
     });
     
-    // 최초 한 번만 카드 섞기
     const shuffled = shuffleCards(list);
     setCards(shuffled);
-    setInitialCardOrder(shuffled); // 섞인 카드 순서 저장
+    setInitialCardOrder(shuffled);
 
-    // showCards 후 자동으로 game 단계로 전환
     window.setTimeout(() => {
       setGamePhase('game');
       setCards(prev => prev.map(c => ({ ...c, isFlipped: false })));
     }, 3000);
   };
 
-  // 카드 섞기 함수 - 게임 시작시 한 번만 호출됨
+  // 카드 섞기 함수
   const shuffleCards = (cards: Card[]): Card[] => {
     const shuffled = [...cards];
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -380,9 +328,8 @@ const MemoryCardQuest: React.FC = () => {
   const handleCardClick = (id: number) => {
     if (gamePhase !== 'game') return;
     const card = cards.find(c => c.id === id);
-    if (!card || card.isFlipped || card.isMatched || card.isRevealed) return;
+    if (!card || card.isFlipped || card.isMatched) return;
 
-    // 카드 뒤집기
     setCards(prev =>
       prev.map(c =>
         c.id === id ? { ...c, isFlipped: true } : c
@@ -393,7 +340,6 @@ const MemoryCardQuest: React.FC = () => {
     setFlippedCards(flipped);
 
     if (flipped.length === 2) {
-      // 시도 횟수 증가
       setAttempts(a => a + 1);
       
       const [aId, bId] = flipped;
@@ -401,7 +347,6 @@ const MemoryCardQuest: React.FC = () => {
         cards.find(c => c.id === i)!
       );
 
-      // 카드 쌍 확인
       if (aCard.type === bCard.type) {
         if (aCard.type === 'helmet') {
           // 정답 쌍(헬멧-헬멧) 발견
@@ -417,29 +362,23 @@ const MemoryCardQuest: React.FC = () => {
             window.setTimeout(() => setGamePhase('foundMatch'), 800);
           }, 800);
         } else {
-          // 정답이 아닌 같은 쌍 선택(캡모자-캡모자, 밀짚모자-밀짚모자)
+          // 정답이 아닌 같은 쌍 선택 - 카드 다시 뒤집기
           setFeedbackMessage("앗, 준비한 선물이 아니에요!\n안전모가 그려진 카드 쌍을 찾아주세요!");
           
-          // 공개된 쌍으로 기록
-          setRevealedPairs(prev => [...prev, aCard.type]);
-          
-          // 클릭된 카드는 공개 상태로 유지
           window.setTimeout(() => {
             setCards(prev =>
               prev.map(c =>
-                c.type === aCard.type
-                  ? { ...c, isRevealed: true, isFlipped: true }
+                c.id === aId || c.id === bId
+                  ? { ...c, isFlipped: false }
                   : c
               )
             );
             setFlippedCards([]);
-            
-            // 피드백 표시 후 카드 다시 보여주기
             setGamePhase('wrongMatchFeedback');
           }, 1000);
         }
       } else {
-        // 서로 다른 쌍 선택(헬멧-캡모자, 캡모자-밀짚모자 등)
+        // 서로 다른 쌍 선택
         setFeedbackMessage("앗, 서로 다른 그림이에요!\n안전모가 그려진 카드 쌍을 찾아주세요");
         setShowHintTitle(false);
         window.setTimeout(() => {
@@ -466,16 +405,6 @@ const MemoryCardQuest: React.FC = () => {
     if (gamePhase === 'intro1' || gamePhase === 'helmetEquipped') return null;
     return <div className="absolute inset-0 bg-[#FFF9C4]/50  z-0" />;
   };
-
-  // 타이틀 텍스트 렌더링 함수
-  const renderTitleText = (text: string) => (
-    <h2 className="text-7xl font-extrabold whitespace-nowrap">
-      {text.split('').map((ch, i) => (
-        ch === ' ' ? ' ' :
-        <span key={i} className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:12px_white] [text-stroke:2px_white]">{ch}</span>
-      ))}
-    </h2>
-  );
 
   // 단계별 버튼 표시 조건
   const showNextButton =
@@ -507,15 +436,17 @@ const MemoryCardQuest: React.FC = () => {
       )}
 
       {/* 헤더 */}
-      <div className="absolute top-4 right-4 z-50">
-        <motion.img 
-          src={homeButton} 
-          alt="홈" 
-          className="w-16 h-16 cursor-pointer" 
-          onClick={handleGoHome} 
-          whileTap={{scale: 0.9}}
-        />
-      </div>
+      {(gamePhase === 'intro1' || gamePhase === 'intro2' || gamePhase === 'intro3') && (
+        <div className="absolute top-4 right-4 z-50">
+          <motion.img 
+            src={homeButton} 
+            alt="홈" 
+            className="w-16 h-16 cursor-pointer" 
+            onClick={handleGoHome} 
+            whileTap={{scale: 0.9}}
+          />
+        </div>
+      )}
       <div className="absolute top-4 left-4 z-50">
         <BackButton />
       </div>
@@ -532,7 +463,7 @@ const MemoryCardQuest: React.FC = () => {
             initial={{y: -20}}
             animate={{y: 0}}
             transition={{duration: 0.8}}
-            >{renderTitleText('주행 준비하기')}
+            ><GameTitle text="주행 준비하기" fontSize="text-7xl" strokeWidth="12px" />
           </motion.div>
           <motion.img
             src={gameCharacter}
@@ -547,13 +478,11 @@ const MemoryCardQuest: React.FC = () => {
 
       {gamePhase === 'intro2' && (
         <motion.div
-          // 이 wrapper 자체를 위로 올리고 싶다면 여기 mt/-mt를 건드리세요
           className="absolute inset-0 flex flex-col items-center justify-center z-10 -mt-28"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
         >
-          {/* 이제 image/box는 wrapper 안에서 고정된 간격 유지 */}
           <motion.img
             src={grandchildren}
             alt="손자손녀"
@@ -576,8 +505,6 @@ const MemoryCardQuest: React.FC = () => {
           </motion.div>
         </motion.div>
       )}
-
-
 
       {/* intro3 */}
       {gamePhase === 'intro3' && (
@@ -610,40 +537,54 @@ const MemoryCardQuest: React.FC = () => {
 
       {/* 게임 화면 영역 - 절대 위치로 고정 */}
       {gameContentVisible && (
-        <div className="absolute inset-0 z-10 p-4">
-          <div className="w-full h-full flex flex-col items-center justify-center">
+        <div className="absolute inset-0 z-10 px-6 py-4">
+          <div className="w-full h-full flex flex-col items-center justify-start">
+            {/* 시도 횟수 - 좌측 상단에 고정 */}
+            {gamePhase === 'game' && (
+              <div className="absolute bottom-6 right-6 bg-green-600 border-4 border-green-700 px-4 py-2 rounded-lg z-50">
+                <p className="text-xl font-extrabold text-white">
+                  시도 횟수: {attempts}
+                </p>
+              </div>
+            )}
+            
             {/* 타이틀 영역 - 높이 고정 */}
-            <div className="h-24 flex items-center justify-center mb-4">
-              <h1 className={`text-4xl font-extrabold text-green-600 ${showHintTitle ? '' : 'invisible'}`}>
-                힌트: 머리를 보호해주는 선물은 무엇일까요?
-              </h1>
+            <div className="h-20 flex items-center justify-center mb-6 mt-4">
+              <div className={showHintTitle ? '' : 'invisible'}>
+                <GameTitle text="힌트: 머리를 보호해주는 선물은 무엇일까요?" fontSize="text-3xl" strokeWidth="8px" />
+              </div>
             </div>
             
-            {/* 카드 그리드 - 절대 위치로 고정 */}
-            <div className="grid grid-cols-3 gap-0 mb-12">
+            {/* 카드 그리드 - 넓은 간격으로 조정 */}
+            <div className="grid grid-cols-3 gap-x-16 gap-y-8 justify-items-center items-center flex-1 content-center">
               {cards.map(card => {
-                // 카드 크기 파악 (서로 다른 해상도 적용)
-                let cardInfo = { width: 210, height: 265 }; // 기본값: 안전모 카드
+                // 카드 크기 파악
+                let cardInfo = { width: 210, height: 265 };
                 
                 if (card.type === 'straw-hat') {
-                  cardInfo = { width: 210, height: 269 }; // 밀짚모자 카드
+                  cardInfo = { width: 210, height: 269 };
                 } else if (card.type === 'cap') {
-                  cardInfo = { width: 210, height: 265 }; // 캡모자 카드
+                  cardInfo = { width: 210, height: 265 };
                 }
                 
-                // 카드 뒷면 크기
                 const backCardInfo = { width: 210, height: 269 };
                 
-                // 가장 큰 크기를 컨테이너 크기로 사용 (모든 카드 크기 통일)
+                // 더 큰 카드 크기로 조정
+                const baseScale = Math.min(
+                  (window.innerWidth * 0.8) / (cardInfo.width * 3 + 128), // 가로 간격 증가
+                  (window.innerHeight * 0.55) / (cardInfo.height * 2 + 32), // 세로 활용도 증가
+                  1.2 // 최대 1.2배까지 확대 허용
+                );
+                
                 const containerSize = {
-                  width: Math.max(cardInfo.width, backCardInfo.width) + 10, // 여유 공간 추가
-                  height: Math.max(cardInfo.height, backCardInfo.height) + 10 // 여유 공간 추가
+                  width: Math.max(cardInfo.width, backCardInfo.width) * baseScale,
+                  height: Math.max(cardInfo.height, backCardInfo.height) * baseScale
                 };
                 
                 return (
                   <div
                     key={card.id}
-                    className={`relative cursor-pointer transition-transform duration-300`}
+                    className={`relative cursor-pointer transition-transform duration-300 hover:scale-105`}
                     onClick={() => handleCardClick(card.id)}
                     style={{
                       width: `${containerSize.width}px`,
@@ -665,8 +606,8 @@ const MemoryCardQuest: React.FC = () => {
                         alt={card.type}
                         className="w-full h-full object-contain"
                         style={{
-                          width: `${cardInfo.width}px`,
-                          height: `${cardInfo.height}px`,
+                          width: `${cardInfo.width * baseScale}px`,
+                          height: `${cardInfo.height * baseScale}px`,
                           position: 'absolute',
                           left: '50%',
                           top: '50%',
@@ -687,8 +628,8 @@ const MemoryCardQuest: React.FC = () => {
                         alt="카드 뒷면"
                         className="w-full h-full object-contain"
                         style={{
-                          width: `${backCardInfo.width}px`,
-                          height: `${backCardInfo.height}px`,
+                          width: `${backCardInfo.width * baseScale}px`,
+                          height: `${backCardInfo.height * baseScale}px`,
                           position: 'absolute',
                           left: '50%',
                           top: '50%',
@@ -700,17 +641,6 @@ const MemoryCardQuest: React.FC = () => {
                 );
               })}
             </div>
-            
-            {/* 시도 횟수 - 하단에 고정 */}
-            {gamePhase === 'game' && (
-              <div className="absolute bottom-4 w-full flex justify-center">
-                <div className="bg-green-600 border-4 border-green-700 px-6 py-2 rounded-lg">
-                  <p className="text-2xl font-extrabold text-white">
-                    시도 횟수: {attempts}
-                  </p>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       )}
@@ -737,7 +667,7 @@ const MemoryCardQuest: React.FC = () => {
         </div>
       )}
 
-      {/* 시도 횟수 초과 피드백 (힌트 플래그 있을 때만) */}
+      {/* 시도 횟수 초과 피드백 */}
       {gamePhase === 'tooManyAttempts' && shouldShowHintMessage && (
         <div className="absolute inset-0 flex items-center justify-center z-20">
           <div className="bg-white border-8 border-green-600 rounded-xl p-8 max-w-xl w-full mx-auto text-center shadow-lg">
@@ -752,13 +682,11 @@ const MemoryCardQuest: React.FC = () => {
       {gamePhase === 'showAnswer' && (
         <div className="absolute inset-0 flex flex-col items-center justify-center z-10 mt-24">
           <div className="relative w-4/5 max-w-4xl z-10">
-            {/* 손자손녀 이미지 */}
             <img
               src={grandchildren}
               alt="손자손녀"
               className="absolute -top-40 left-1/2 transform -translate-x-1/2 w-76 h-auto z-20"
             />
-            {/* 메시지 박스 */}
             <div className="bg-white bg-opacity-90 border-8 border-green-600 rounded-xl p-10 pt-12 w-full max-w-2xl mx-auto text-center">
               <p className="text-4xl font-extrabold text-green-600 mb-6">
                 선물을 공개합니다
@@ -775,13 +703,11 @@ const MemoryCardQuest: React.FC = () => {
       {gamePhase === 'foundMatch' && (
         <div className="absolute inset-0 flex flex-col items-center justify-center z-10 mt-24">
           <div className="relative w-4/5 max-w-4xl z-10">
-            {/* 손자손녀 이미지 */}
             <img
               src={grandchildren}
               alt="손자손녀"
               className="absolute -top-40 left-1/2 transform -translate-x-1/2 w-76 h-auto z-20"
             />
-            {/* 메시지 박스 */}
             <div className="bg-white bg-opacity-90 border-8 border-green-600 rounded-xl p-10 pt-12 w-full max-w-2xl mx-auto text-center">
               <p className="text-4xl font-extrabold text-green-600 mb-6">
                 선물을 찾았어요!
@@ -836,7 +762,6 @@ const MemoryCardQuest: React.FC = () => {
         </motion.div>
       )}
 
-
       {/* helmetEquipped */}
       {gamePhase === 'helmetEquipped' && (
         <motion.div
@@ -845,7 +770,7 @@ const MemoryCardQuest: React.FC = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
         >
-          <div className="mt-24 text-center">{renderTitleText('안전모를 착용했어요')}</div>
+          <div className="mt-24 text-center"><GameTitle text="안전모를 착용했어요" fontSize="text-7xl" strokeWidth="12px" /></div>
           <motion.img
             src={characterWithHelmet}
             alt="캐릭터"
