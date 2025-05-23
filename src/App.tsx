@@ -31,7 +31,7 @@ function App() {
       <Routes>
         {/* 기본 화면들 */}
         <Route path="/" element={<HomePage />} />
-        <Route path="/scenarios" element={<HarvestQuest />} />
+        <Route path="/scenarios" element={<Certificate />} />
         <Route path="/map" element={<MapPage />} />
         <Route path="/prologue" element={<ProloguePage />} />
 
@@ -49,10 +49,11 @@ function App() {
         <Route path="/success" element={<SuccessBackground />} />
         <Route path="/completion" element={<CompletionBackground />} />
         
-        {/* 결과 및 수료 관련 화면들  <Route path="/result" element={<Navigate to="/development-notice" />} />
-        <Route path="/certificate" element={<Navigate to="/development-notice" />} />
+        {/* 결과 및 수료 관련 화면들 */}
+        <Route path="/result" element={<EduScreen />} />
+        <Route path="/certificate" element={<Certificate />} />
         <Route path="/info" element={<Navigate to="/development-notice" />} />
-        <Route path="/star" element={<Navigate to="/development-notice" />} />*/}
+        <Route path="/star" element={<Navigate to="/development-notice" />} />
         
 
         {/* 추가: 개발 중 알림 페이지 */}
