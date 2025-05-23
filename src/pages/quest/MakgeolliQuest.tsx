@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import FieldRoadSliding from './FieldRoadSliding';
+import GameTitle from '../../components/ui/GameTitle';
 
 // 이미지 임포트
 const fieldWorkBackground = '/assets/images/field_work_background.png';
@@ -381,7 +382,7 @@ const MakgeolliQuest = () => {
       {/* 논밭 도착 화면 */}
       {gamePhase === 'fieldArrival' && (
         <div className="absolute inset-0 flex items-center justify-center">
-          {renderTitleText("논밭 도착", "text-8xl")}
+          <GameTitle text="논밭 도착" fontSize="text-8xl" />
         </div>
       )}
       
@@ -520,7 +521,7 @@ const MakgeolliQuest = () => {
               
               {/* 텍스트 레이어 */}
               <div className="absolute inset-0 flex items-center justify-center z-50">
-                {renderTitleText("새참 먹는 시간", "text-8xl")}
+                <GameTitle text="새참 먹는 시간" fontSize="text-8xl" />
               </div>
             </>
           )}
@@ -594,9 +595,7 @@ const MakgeolliQuest = () => {
               animate={{ y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <h2 className="text-6xl font-extrabold text-center text-green-600 mb-8">
-                새참 속 막걸리 치우기
-              </h2>
+              <GameTitle text="새참 속 막걸리 치우기" fontSize="text-6xl" />
               <div className="bg-white/80 border-8 border-green-600 rounded-3xl px-6 py-12 mb-4 w-full">
                 <p className="text-[2.8rem] font-extrabold text-center leading-relaxed">
                   {selectedOption === 'A' ? (

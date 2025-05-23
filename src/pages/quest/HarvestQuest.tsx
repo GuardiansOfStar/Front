@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import HarvestBox from './HarvestBox';
 import HarvestBox2 from './HarvestBox2';
 import HomeButton from '../../components/ui/HomeButton';
+import GameTitle from '../../components/ui/GameTitle';
 
 // 이미지 임포트
 const fieldRoad = '/assets/images/field_road.png';
@@ -135,16 +136,6 @@ const HarvestQuest = () => {
   }
 }, [gamePhase]);
 
-  // 타이틀 텍스트 렌더링 함수 - 고대비 스타일 적용
-  const renderTitleText = (text: string) => (
-    <h2 className="text-[5.25rem] font-extrabold whitespace-nowrap">
-      {text.split('').map((ch, i) => (
-        ch === ' ' ? ' ' :
-        <span key={i} className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:12px_white] [text-stroke:2px_white]">{ch}</span>
-      ))}
-    </h2>
-  );
-
   return (
     <div className="w-full h-full">
       {/* 배경 - 게임 단계에 따라 다른 배경 표시 */}
@@ -171,7 +162,7 @@ const HarvestQuest = () => {
           <HarvestBox />
           {showIntroText && (
             <div className="absolute inset-0 flex items-center justify-center z-20">
-              {renderTitleText('작업 완료')}
+              <GameTitle text="작업 완료" fontSize="text-[5.25rem]" strokeWidth="12px" />
             </div>
           )}
         </>
@@ -182,7 +173,7 @@ const HarvestQuest = () => {
         <div className="absolute inset-0 flex items-center justify-center z-10">
           <HarvestBox2 />
           <div className="absolute z-20">
-            {renderTitleText('작업 완료')}
+            <GameTitle text="작업 완료" fontSize="text-[5.25rem]" strokeWidth="12px" />
           </div>
         </div>
       )}

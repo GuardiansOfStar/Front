@@ -1,6 +1,7 @@
 // src/pages/driving/DrivingBaseScreen.tsx
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import GameTitle from '../../components/ui/GameTitle';
 
 // 이미지 임포트
 const basicRoad = '/assets/images/basic_road.png';
@@ -78,16 +79,6 @@ const DrivingBaseScreen = () => {
     navigate('/');
   };
 
-  // 타이틀 텍스트 렌더링 함수 - MemoryCardQuest와 동일한 패턴 사용
-  const renderTitleText = (text: string) => (
-    <h2 className="text-[5.5rem] font-extrabold whitespace-nowrap">
-      {text.split('').map((ch, i) => (
-        ch === ' ' ? ' ' :
-        <span key={i} className="inline-block text-green-600 px-1 rounded [paint-order:stroke] [-webkit-text-stroke:12px_white] [text-stroke:2px_white]">{ch}</span>
-      ))}
-    </h2>
-  );
-
   return (
     <div className="relative w-full h-full">
       {/* 배경 */}
@@ -110,7 +101,7 @@ const DrivingBaseScreen = () => {
       {/* 주행 시작 텍스트 - 미션 2로 이동할 때만 표시 */}
       {showStartText && (
         <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
-          {renderTitleText('주행 시작')}
+          <GameTitle text="주행 시작" fontSize="text-[5.5rem]" strokeWidth="12px" />
         </div>
       )}
       
