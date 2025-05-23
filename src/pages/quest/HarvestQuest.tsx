@@ -194,22 +194,19 @@ const HarvestQuest = () => {
         <div className="absolute inset-0">
           <div className="absolute inset-0 top-20 flex flex-col items-center justify-center z-30">
             {/* 선택지 제목 및 설명 */}
-            <div className="w-[735px] h-[339px] bg-[#FFFAFA] bg-opacity-75 
-  border-[10px] border-[#FFFAFA] rounded-[30px] p-6 mb-8 flex flex-col justify-center items-center text-center">
-  
-  <GameTitle 
-  text="무거운 짐 싣기" 
-  fontSize="text-[60px]" 
-  color="text-[#0DA429]" 
-  strokeWidth="10px"
-/>
-
-  <p className="text-[40px] font-extrabold text-black leading-snug">
-    작업하는 중에 수확한 농작물을<br/>
-    <span className="text-[#B91C1C]">이륜차에 싣고 싶어요</span><br/>
-    어떻게 옮길까요?
-  </p>
-</div>
+            <div className="w-[735px] h-[339px] bg-[#FFFAFA] bg-opacity-75 border-[10px] border-[#FFFAFA] rounded-[30px] p-6 mb-8 flex flex-col justify-center items-center text-center">
+              <GameTitle 
+              text="무거운 짐 싣기" 
+              fontSize="text-[60px]" 
+              color="text-[#0DA429]" 
+              strokeWidth="10px"
+              />
+              <p className="text-[40px] font-extrabold text-black leading-snug">
+                작업하는 중에 수확한 농작물을<br/>
+                <span className="text-[#B91C1C]">이륜차에 싣고 싶어요</span><br/>
+                어떻게 옮길까요?
+              </p>
+            </div>
             
             {/* 선택지 버튼 */}
             <div className="flex justify-between w-[750px]">
@@ -221,7 +218,7 @@ const HarvestQuest = () => {
                   text-3xl font-extrabold text-black 
                   transition duration-300 
                   ${selectedOption === 'A' ? 
-                    'scale-105 bg-opacity-90' : 
+                    'scale-105 bg-[#0DA429] bg-opacity-90' : 
                     'hover:bg-opacity-90'}`}
                 onClick={() => handleOptionSelect('A')}
                 disabled={!!selectedOption}
@@ -237,7 +234,7 @@ const HarvestQuest = () => {
                   text-3xl font-extrabold text-black 
                   transition duration-300 
                   ${selectedOption === 'B' ? 
-                    'scale-105 bg-opacity-90' : 
+                    'scale-105 bg-[#0DA429] bg-opacity-90' : 
                     'hover:bg-opacity-90'}`}
                 onClick={() => handleOptionSelect('B')}
                 disabled={!!selectedOption}
@@ -267,9 +264,9 @@ const HarvestQuest = () => {
                 <motion.img
                 src={grandfaSuccess}
                 alt="수레 끄시는 할아버지" 
-                className="absolute left-[20%] w-[35%] h-auto object-contain z-40"
+                className="absolute left-[20%] w-[439px] h-auto object-contain z-40"
                 onError={handleImageError}
-                animate={{ x: [5, 65] }} //X축: 0→65px
+                animate={{ x: [0, 55] }} //X축: 0→65px
                 transition={{ 
                   duration: 5, // 한 사이클(0→20→0)에 2초 
                   repeat: 1, // 반복
@@ -279,7 +276,7 @@ const HarvestQuest = () => {
                 <img 
                   src={motorcycle}
                   alt="오토바이"
-                  className="absolute right-[26%] w-[25%] object-contain z-50"
+                  className="absolute right-[26%] w-[323px] object-contain z-50"
                   onError={handleImageError}
                 />
                 </>
@@ -299,21 +296,30 @@ const HarvestQuest = () => {
       {gamePhase === 'successResult' && showSuccessMessage && (
         <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
           {/* 중앙 상단에 정답입니다! */}
-          <div className="absolute top-[20%] text-6xl font-extrabold text-green-700 left-1/2 transform -translate-x-1/2 z-20">
-            정답입니다!
-            </div>
+          <GameTitle 
+  text="정답입니다!" 
+  fontSize="text-[70px]" 
+  color="text-[#0E8E12]" 
+  strokeWidth="5px" 
+  className="text-center"
+/>
+
             {/* 중앙에 녹색 박스에 메시지 */}
-            <div className="mt-10 bg-green-600 bg-opacity-80 border-green-700 border-8  rounded-3xl p-4 w-[75%] mx-auto text-center relative">
-              <p className="text-5xl font-extrabold text-white leading-relaxed">
-                어르신의 안전과<br/>
-                소중한 자산을 보호하는 <br/> 현명한 선택이에요
-              </p>
+            <div className="w-[754px] h-[306px] 
+            bg-[#0DA429] bg-opacity-50 
+            border-[10px] border-[#0E8E12] border-opacity-80 
+            rounded-[30px] 
+            p-4 mx-auto mt-10 text-center relative">
+            <p className="text-[60px] text-[#FFFAFA]">
+              당신의 안전과<br/>
+              소중한 자산을 보호하는 <br/> 현명한 선택이에요
+            </p>
             </div>
           {/* 좌측 하단 별별이 캐릭터 */}
           <img 
             src={starCharacter} 
             alt="별별이" 
-            className="absolute bottom-[10%] left-[5%] w-[27%] z-30"
+            className="absolute bottom-[10%] left-[5%] w-[250px] z-30"
           />
         </div>
       )}

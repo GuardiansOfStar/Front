@@ -10,10 +10,13 @@ const PersonalInfo = () => {
       className="absolute w-full h-full"
     >
       <Background />
-
-      <div className="absolute top-[25%] left-1/2 transform -translate-x-1/2
-                w-[70%] bg-green-500 border-4 border-green-700 
-                rounded-lg p-6 z-50">
+      <div className="absolute top-[25%] left-1/2 transform -translate-x-1/2 
+        w-[718px] h-[100px] 
+        bg-[#0DA429] bg-opacity-75 
+        border-[10px] border-[#0E8E12] border-opacity-80 
+        rounded-[30px] 
+        p-6 z-50 flex items-center justify-center 
+        text-[55px] text-[#FFFAFA] font-extrabold">
         아래의 내용을 입력해주세요
       </div>
 

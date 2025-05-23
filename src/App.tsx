@@ -24,6 +24,9 @@ import PathChoiceQuest from './pages/quest/PathChoiceQuest';
 import HarvestQuest from './pages/quest/HarvestQuest';
 import MakgeolliQuest from './pages/quest/MakgeolliQuest';
 import DevelopmentNotice from './pages/DevelopmentNotice';
+import Memory from './pages/ResultScreen/Memory';
+import MyVillageRank from './pages/ResultScreen/MyVillageRank';
+import VillageRankList from './pages/ResultScreen/VillageRankList';
 
 function App() {
   return (
@@ -31,7 +34,7 @@ function App() {
       <Routes>
         {/* 기본 화면들 */}
         <Route path="/" element={<HomePage />} />
-        <Route path="/scenarios" element={<HarvestQuest />} />
+        <Route path="/scenarios" element={<VillageRankList />} />
         <Route path="/map" element={<MapPage />} />
         <Route path="/prologue" element={<ProloguePage />} />
 
