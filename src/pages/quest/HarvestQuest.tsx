@@ -99,7 +99,7 @@ const HarvestQuest = () => {
           setGamePhase('failResult');
           setTimeout(() => {
             navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=10&correct=false`);
-          }, 5000); //오답 결과 유지 시간
+          }, 15000); //오답 결과 유지 시간
         }, 2500);
       }, 1000);
     }
@@ -109,7 +109,7 @@ const HarvestQuest = () => {
     if (gamePhase === 'failResult') {
       const timer = setTimeout(() => {
         setShowWarning(true);
-      }, 4000); // 2초 후 쓰러진 할부지 이미지
+      }, 4000); // 초 후 경고문구
 
       return () => clearTimeout(timer); // 클린업
     } else {
@@ -168,8 +168,9 @@ const HarvestQuest = () => {
       {/* 인트로 화면 */}
       {gamePhase === 'intro' && (
         <>
-          <HarvestBox />
-          {/*showIntroText && (
+          
+          {/*<HarvestBox /> 
+          showIntroText && (
             <div className="absolute inset-0 flex items-center justify-center z-20">
               {renderTitleText('작업 완료')}
             </div>
@@ -180,8 +181,7 @@ const HarvestQuest = () => {
       {/* 주행 화면 */}
       {gamePhase === 'driving' && (
         <div className="absolute inset-0 flex items-center justify-center z-10">
-          <HarvestBox2 />
-          {/*<div className="absolute z-20">
+          {/*<HarvestBox2 /> <div className="absolute z-20">
             {renderTitleText('작업 완료')}
           </div> */}
         </div>
@@ -207,7 +207,7 @@ const HarvestQuest = () => {
               <h2 className="text-5xl font-extrabold text-green-600 text-center mb-4">무거운 짐 싣기</h2>
               <p className="text-[2.2rem] font-extrabold text-black text-center">
                 작업하는 중에 수확한 농작물을<br/>
-                이륜차에 싣고 싶어요<br/>
+                <span style={{ color: '#B91C1C' }}>이륜차에 싣고 싶어요</span><br/>
                 어떻게 옮길까요?
               </p>
             </div>
@@ -224,7 +224,7 @@ const HarvestQuest = () => {
                 onClick={() => handleOptionSelect('A')}
                 disabled={!!selectedOption}
               >
-                과수원으로<br/>이륜차를 운전하여 <br/> 짐을 싣는다
+                과수원으로<br/><span style={{ color: '#B91C1C' }}>이륜차를 운전</span>하여 <br/> 짐을 싣는다
               </button>
               
               <button
@@ -237,7 +237,7 @@ const HarvestQuest = () => {
                 onClick={() => handleOptionSelect('B')}
                 disabled={!!selectedOption}
               >
-                손수레를 이용해<br/> 이륜차까지<br/> 짐을 옮겨 싣는다
+                <span style={{ color: '#B91C1C' }}>손수레를 이용해</span><br/> 이륜차까지<br/> 짐을 옮겨 싣는다
               </button>
             </div>
           </div>
