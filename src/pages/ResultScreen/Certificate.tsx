@@ -1,6 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-import Background from '../../components/ui/Background';
-
 // import smiling_grandchildren from 'assets/images/smiling_grandchildren.png'
 // import get_certificate from 'assets/images/get_certificate.png'
 

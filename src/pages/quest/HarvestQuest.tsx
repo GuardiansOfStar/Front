@@ -203,24 +203,30 @@ const HarvestQuest = () => {
         <div className="absolute inset-0">
           <div className="absolute inset-0 top-20 flex flex-col items-center justify-center z-30">
             {/* 선택지 제목 및 설명 */}
-            <div className="bg-white bg-opacity-90 border-8 border-green-600 rounded-3xl p-6 mb-8 w-[75%]">
-              <h2 className="text-5xl font-extrabold text-green-600 text-center mb-4">무거운 짐 싣기</h2>
-              <p className="text-[2.2rem] font-extrabold text-black text-center">
-                작업하는 중에 수확한 농작물을<br/>
-                <span style={{ color: '#B91C1C' }}>이륜차에 싣고 싶어요</span><br/>
-                어떻게 옮길까요?
-              </p>
-            </div>
+            <div className="w-[735px] h-[339px] bg-[#FFFAFA] bg-opacity-75 
+  border-[10px] border-[#FFFAFA] rounded-[30px] p-6 mb-8 flex flex-col justify-center items-center text-center">
+  
+  <h2 className="text-[60px] font-extrabold text-[#0DA429] mb-4">무거운 짐 싣기</h2>
+
+  <p className="text-[40px] font-extrabold text-black leading-snug">
+    작업하는 중에 수확한 농작물을<br/>
+    <span className="text-[#B91C1C]">이륜차에 싣고 싶어요</span><br/>
+    어떻게 옮길까요?
+  </p>
+</div>
             
             {/* 선택지 버튼 */}
-            <div className="flex justify-between w-[75%]">
+            <div className="flex justify-between w-[750px]">
               <button
-                className={`w-[48%] bg-green-600 bg-opacity-80
-                border-8 border-green-600 rounded-xl p-4
-                text-3xl font-extrabold text-white 
-                transition duration-300 
-                ${selectedOption === 'A' ? 
-                'bg-green-600 scale-105 bg-opacity-95' : 'hover:bg-green-600'}`}
+                className={`w-[355px] h-[208px] 
+                  bg-[#FFFAFA] bg-opacity-70 
+                  border-[7px] border-[#0DA429] 
+                  rounded-[20px] 
+                  text-3xl font-extrabold text-black 
+                  transition duration-300 
+                  ${selectedOption === 'A' ? 
+                    'scale-105 bg-opacity-90' : 
+                    'hover:bg-opacity-90'}`}
                 onClick={() => handleOptionSelect('A')}
                 disabled={!!selectedOption}
               >
@@ -228,12 +234,15 @@ const HarvestQuest = () => {
               </button>
               
               <button
-                className={`w-[48%] bg-green-600 bg-opacity-80
-                border-8 border-green-600 rounded-xl p-4
-                text-3xl font-extrabold text-white
-                transition duration-300 
-                ${selectedOption === 'B' ? 
-                'bg-green-600 scale-105 bg-opacity-95' : 'hover:bg-green-600'}`}
+                className={`w-[355px] h-[208px] 
+                  bg-[#FFFAFA] bg-opacity-70 
+                  border-[7px] border-[#0DA429] 
+                  rounded-[20px] 
+                  text-3xl font-extrabold text-black 
+                  transition duration-300 
+                  ${selectedOption === 'B' ? 
+                    'scale-105 bg-opacity-90' : 
+                    'hover:bg-opacity-90'}`}
                 onClick={() => handleOptionSelect('B')}
                 disabled={!!selectedOption}
               >

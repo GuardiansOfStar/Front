@@ -4,11 +4,9 @@ import NextButton from './NextButton';
 import Star from './Star';
 
 const StarSurvey = () => {
-  const navigate = useNavigate();
-
   return (
     <div
-      className="relative w-full h-screen overflow-hidden flex flex-col items-center justify-center gap-6"
+      className="relative w-full h-full overflow-hidden flex flex-col items-center justify-center gap-6"
     >
       <Background />
 
@@ -25,7 +23,7 @@ const StarSurvey = () => {
         <Star/>
         </div>
       </div>
-      <NextButton/>
+      <NextButton to='/'/>
     </div>
   );
 };
