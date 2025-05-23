@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import FieldRoadSliding from './FieldRoadSliding';
+import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attempts';
 
 // 이미지 임포트
 const fieldWorkBackground = '/assets/images/field_work_background.png';
@@ -193,7 +194,7 @@ const MakgeolliQuest = () => {
         
         setGameScore(score);
       }
-      
+
       timer = setTimeout(() => {
         navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=${gameScore}&correct=true`);
       }, 3000);
@@ -212,6 +213,38 @@ const MakgeolliQuest = () => {
       setShowTrayBackground(true);
     }
   }, [gamePhase, trayItems.length]);
+
+  useEffect(() => {
+  if (gamePhase !== 'success' && gamePhase !== 'timeOver') return;
+
+  const sessionId = localStorage.getItem('session_id')!;
+  const elapsedTime = Math.floor((Date.now() - (gameStartTime ?? Date.now())) / 1000);
+
+  let finalScore = 0;
+  if (gamePhase === 'success' && gameStartTime) {
+    const elapsed = (Date.now() - gameStartTime) / 1000;
+    if (elapsed <= 30) finalScore = 20;
+    else if (elapsed <= 60) finalScore = 18;
+    else if (elapsed <= 120) finalScore = 15;
+    else if (elapsed <= 180) finalScore = 12;
+    else if (elapsed <= 240) finalScore = 10;
+    else finalScore = 5;
+  } else {
+    finalScore = 5; // 실패 시 기본 점수
+  }
+
+  const payload: AttemptPayload = {
+    attempt_number: 1,
+    score_awarded: finalScore,
+    selected_option: '',
+    is_correct: gamePhase === 'success',
+    response_time: elapsedTime,
+  };
+
+  postQuestAttempt(sessionId, "Makgeolli", payload)
+    .then(res => console.log("✅ 시도 기록 완료:", res.data.attempt_id))
+    .catch(err => console.error("❌ 시도 기록 실패", err));
+}, [gamePhase]);
 
   // 트레이 아이템 초기화 함수 - 상대적 비율 사용
   const initTrayItems = () => {

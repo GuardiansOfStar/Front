@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion'; // framer-motion 추가
 import RoadGameComponent from '../../components/game/RoadGameComponent';
+import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attempts';
 
 // 이미지 임포트 (기존과 동일)
 const basicRoad = '/assets/images/basic_road.png';
@@ -79,6 +80,24 @@ const PotholeQuest = () => {
   const handleOptionSelect = (option: 'A' | 'B') => {
     setSelectedOption(option);
     
+    // 정재 : 퀘스트 시도 & 점수 반영 API
+    const isCorrect = option === 'A';
+    const scoreAwarded = isCorrect ? 20 : 10;
+
+    const sessionId = localStorage.getItem('session_id')!;
+    const qId = "pothole";
+    const payload: AttemptPayload = {
+      attempt_number: 1,
+      score_awarded: scoreAwarded,
+      selected_option: option,
+      is_correct: isCorrect,
+      response_time: 0,
+    };
+
+    postQuestAttempt(sessionId, qId, payload)
+      .then((res) => {console.log('✅ 시도 기록 완료:', res.data.attempt_id);})
+      .catch((err) => {console.error('❌ 시도 기록 실패', err);});
+
     if (option === 'A') {
       // 정답 선택
       setTimeout(() => {

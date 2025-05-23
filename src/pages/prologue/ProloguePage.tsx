@@ -2,6 +2,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+import { createGuestUser } from '../../services/endpoints/user';
+import { createSession } from '../../services/endpoints/session';
+
 // 이미지 임포트
 const scenario1FullMap = '/assets/images/scenario1_full_map.png';
 const starCharacter = '/assets/images/star_character.png';
@@ -27,7 +30,40 @@ const ProloguePage = () => {
     const searchParams = new URLSearchParams(location.search);
     const id = searchParams.get('scenario');
     setScenarioId(id);
+    console.log("id : ", id);
+
+    // 정재 : User id, Session id 생성 + 관리 위해 localStorage에 저장
+   
+    //임시
+    /*if (import.meta.env.DEV) {
+    localStorage.removeItem("user_id");
+    localStorage.removeItem("session_id");
+    }*/
+    const alreadyHasUser = localStorage.getItem("user_id");
+    // console.log("alreadyHasUser : ", alreadyHasUser);
+    const alreadyHasSession = localStorage.getItem("session_id");
+    // console.log("alreadyHasSession : ", alreadyHasSession);
     
+    // 한 번만 생성
+    if (id && !alreadyHasUser && !alreadyHasSession) {
+      createGuestUser("0") // 예산군 villageId : 0
+        .then((userRes) => {
+          const userId = userRes.data.user_id;
+          console.log("!!!", userRes.data);
+          console.log( "user_id : ", userId);
+          localStorage.setItem("user_id", userId);
+          return createSession(userId);
+        })
+        .then((sessionRes) => {
+          const sessionId = sessionRes.data.session_id;
+          localStorage.setItem("session_id", sessionId);
+          console.log("✅ 사용자 및 세션 생성 완료", { sessionId });
+        })
+        .catch((err) => {
+          console.error("❌ 사용자 또는 세션 생성 실패", err);
+        });
+    }
+
     // 각 단계별로 2초 후 메시지 표시
     if (step === 'map') {
       const timer = setTimeout(() => {
