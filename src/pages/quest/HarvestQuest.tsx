@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import HarvestBox from './HarvestBox';
 import HarvestBox2 from './HarvestBox2';
 import HomeButton from '../../components/ui/HomeButton';
+import 
 
 // 이미지 임포트
 const fieldRoad = '/assets/images/field_road.png';
@@ -206,7 +207,12 @@ const HarvestQuest = () => {
             <div className="w-[735px] h-[339px] bg-[#FFFAFA] bg-opacity-75 
   border-[10px] border-[#FFFAFA] rounded-[30px] p-6 mb-8 flex flex-col justify-center items-center text-center">
   
-  <h2 className="text-[60px] font-extrabold text-[#0DA429] mb-4">무거운 짐 싣기</h2>
+  <GameTitle 
+  text="무거운 짐 싣기" 
+  fontSize="text-[60px]" 
+  color="text-[#0DA429]" 
+  strokeWidth="10px"
+/>
 
   <p className="text-[40px] font-extrabold text-black leading-snug">
     작업하는 중에 수확한 농작물을<br/>
