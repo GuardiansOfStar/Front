@@ -23,6 +23,7 @@ import SuccessBackground from './pages/questFinish/SuccessBackground';
 import PathChoiceQuest from './pages/quest/PathChoiceQuest';
 import HarvestQuest from './pages/quest/HarvestQuest';
 import MakgeolliQuest from './pages/quest/MakgeolliQuest';
+import ReturnQuest from './pages/quest/ReturnQuest';
 import DevelopmentNotice from './pages/DevelopmentNotice';
 
 function App() {
@@ -42,8 +43,10 @@ function App() {
         <Route path="/makgeolli-quest" element={<MakgeolliQuest/>} />
         <Route path="/harvest-quest" element={<HarvestQuest />} />
         <Route path="/path-choice-quest" element={<PathChoiceQuest />} />
+        <Route path="return-qeust" element={<ReturnQuest/>}/>
         <Route path="/driving-base" element={<DrivingBaseScreen/>} />
         <Route path="/score" element={<ScorePage />} />
+        
         
         {/* 주행 완료 관련 화면들 */}
         <Route path="/success" element={<SuccessBackground />} />
