@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import HarvestBox from './HarvestBox';
 import HarvestBox2 from './HarvestBox2';
 import HomeButton from '../../components/ui/HomeButton';
+import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attempts';
 import GameTitle from '../../components/ui/GameTitle';
 
 // 이미지 임포트
@@ -77,6 +78,24 @@ const HarvestQuest = () => {
   const handleOptionSelect = (option: 'A' | 'B') => {
     setSelectedOption(option);
     
+    // 정재 : 퀘스트 시도 & 점수 반영 API
+    const isCorrect = option === 'B';
+    const scoreAwarded = isCorrect ? 20 : 10;
+
+    const sessionId = localStorage.getItem('session_id')!;
+    const qId = "Harvest";
+    const payload: AttemptPayload = {
+      attempt_number: 1,
+      score_awarded: scoreAwarded,
+      selected_option: option,
+      is_correct: isCorrect,
+      response_time: 0,
+    };
+
+    postQuestAttempt(sessionId, qId, payload)
+      .then((res) => {console.log('✅ 시도 기록 완료:', res.data.attempt_id);})
+      .catch((err) => {console.error('❌ 시도 기록 실패', err);});
+
     if (option === 'B') {
       // 정답 선택
       setTimeout(() => {
