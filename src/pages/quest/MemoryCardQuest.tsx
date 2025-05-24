@@ -22,12 +22,12 @@ const nextButton = '/assets/images/next_button.png';
 const giftBoxVariants = {
   hidden:   { scale: 0.5, rotate: -30, opacity: 0 },
   visible:  {
-    scale: [1, 1.2, 0.9, 1],      // 4단계 키프레임
-    rotate: [-15, 15, -5, 0],     // 4단계 키프레임
+    scale: [1, 1.2, 0.9, 1],                  // 4단계 키프레임
+    rotate: [-15, 15, -5, 0],                 // 4단계 키프레임
     opacity: 1,
     transition: {
-      duration: 1,                // 전체 1초
-      times: [0, 0.3, 0.6, 1],    // 키프레임 시점
+      duration: 1,                            // 전체 1초
+      times: [0, 0.3, 0.6, 1],                // 키프레임 시점
       ease: ["easeOut", "easeIn", "easeOut"]  // 구간별 easing
     }
   }
@@ -39,7 +39,7 @@ const openBoxVariants = {
     scale: 1,
     opacity: 1,
     transition: {
-      type: "spring",            // 간단한 spring
+      type: "spring",                          // 간단한 spring
       stiffness: 200,
       damping: 20,
       duration: 0.8
@@ -55,7 +55,7 @@ const helmetVariants = {
     scale: 1,
     rotate: 0,
     transition: {
-      type: "spring",            // 헬멧은 부드러운 spring
+      type: "spring",                         // 헬멧은 부드러운 spring
       stiffness: 180,
       damping: 15,
       delay: 0.3,
@@ -744,23 +744,29 @@ const MemoryCardQuest: React.FC = () => {
           variants={openBoxVariants}
         >
           <div className="relative w-[800px] h-[800px]">
+            {/* 열린 상자 */}
             <motion.img
               src={giftOpenHelmet}
               alt="열린 상자"
               className="absolute inset-0 w-full h-full object-contain"
               variants={openBoxVariants}
             />
-            <motion.img
-              src={helmet}
-              alt="헬멧"
-              className="absolute left-1/2 transform -translate-x-1/2 w-[320px] h-[320px]"
-              initial="hidden"
-              animate="visible"
-              variants={helmetVariants}
-            />
+
+            {/* 헬멧을 flex로 완전 중앙에 */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <motion.img
+                src={helmet}
+                alt="헬멧"
+                className="w-[320px] h-[320px] object-contain"
+                initial="hidden"
+                animate="visible"
+                variants={helmetVariants}
+              />
+            </div>
           </div>
         </motion.div>
       )}
+
 
       {/* helmetEquipped */}
       {gamePhase === 'helmetEquipped' && (
