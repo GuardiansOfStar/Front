@@ -38,15 +38,15 @@ type GamePhase =
 
 // 시간별 배경색 정의
 const getBackgroundColor = (hour: number): string => {
-  switch(hour) {
-    case 5: return 'linear-gradient(to bottom, #87CEEB 0%, #B0E0E6 100%)'; // 밝은 하늘색
-    case 6: return 'linear-gradient(to bottom, #FFE4B5 0%, #FFA07A 100%)'; // 연한 노을색
-    case 7: return 'linear-gradient(to bottom, #FF6347 0%, #FF4500 100%)'; // 노을색
-    case 8: return 'linear-gradient(to bottom, #4B0082 0%, #2F4F4F 100%)'; // 어둑한 색
-    case 9: return 'linear-gradient(to bottom, #191970 0%, #000000 100%)'; // 어두운 색
-    default: return 'linear-gradient(to bottom, #FF6347 0%, #FF4500 100%)';
-  }
-};
+    switch(hour) {
+      case 5: return 'linear-gradient(to bottom, #87CEEB 0%, #B0E0E6 50%, #FFF8DC 100%)'; // 밝은 하늘색
+      case 6: return 'linear-gradient(to bottom, #FFE4B5 0%, #FFA07A 40%, #FF8C69 100%)'; // 연한 노을색
+      case 7: return 'linear-gradient(to bottom, #FF6347 0%, #FF4500 40%, #8B0000 100%)'; // 노을색
+      case 8: return 'linear-gradient(to bottom, #4B0082 0%, #2F4F4F 40%, #000080 100%)'; // 어둑한 색
+      case 9: return 'linear-gradient(to bottom, #191970 0%, #000000 50%, #0D0D0D 100%)'; // 어두운 색
+      default: return 'linear-gradient(to bottom, #FF6347 0%, #FF4500 40%, #8B0000 100%)';
+    }
+  };
 
 const ReturnQuest = () => {
   const navigate = useNavigate();
@@ -69,6 +69,8 @@ const ReturnQuest = () => {
   const [dragStartX, setDragStartX] = useState(0);
   const [dragButtonPosition, setDragButtonPosition] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [currentExactHour, setCurrentExactHour] = useState(7);
+
 
   // URL 쿼리 파라미터 처리
   useEffect(() => {
@@ -102,6 +104,7 @@ const ReturnQuest = () => {
     const position = sideMargin + (availableWidth * hourIndex / 4);
     
     setDragButtonPosition(position);
+    setCurrentExactHour(hour); // 추가
   }, []);
 
   // 위치로부터 시간 계산 함수
@@ -122,6 +125,94 @@ const ReturnQuest = () => {
     return Math.round(exactHour);
   }, []);
 
+  // 시간별 배경색을 부드럽게 보간하는 함수 추가
+  const getInterpolatedBackgroundColor = (exactHour: number): string => {
+    const hour = Math.floor(exactHour);
+    const fraction = exactHour - hour;
+    
+    // 5시 미만이면 5시 색상, 9시 초과면 9시 색상
+    if (exactHour <= 5) return getBackgroundColor(5);
+    if (exactHour >= 9) return getBackgroundColor(9);
+    
+    // 정확한 시간이면 해당 색상 반환
+    if (fraction === 0) return getBackgroundColor(hour);
+    
+    // 두 시간 사이의 색상을 보간
+    const currentColors = getHourColors(hour);
+    const nextColors = getHourColors(hour + 1);
+    
+    const interpolatedColors = currentColors.map((color, index) => 
+      interpolateColor(color, nextColors[index], fraction)
+    );
+    
+    return `linear-gradient(to bottom, ${interpolatedColors[0]} 0%, ${interpolatedColors[1]} 40%, ${interpolatedColors[2]} 100%)`;
+  };
+
+  const getHourColors = (hour: number): string[] => {
+    const colorMap: { [key: number]: string[] } = {
+      5: ['#87CEEB', '#B0E0E6', '#FFF8DC'],
+      6: ['#FFE4B5', '#FFA07A', '#FF8C69'],
+      7: ['#FF6347', '#FF4500', '#8B0000'],
+      8: ['#4B0082', '#2F4F4F', '#000080'],
+      9: ['#191970', '#000000', '#0D0D0D']
+    };
+    return colorMap[hour] || colorMap[7];
+  };
+
+  // 색상 보간 함수
+  const interpolateColor = (color1: string, color2: string, factor: number): string => {
+    const hex1 = color1.replace('#', '');
+    const hex2 = color2.replace('#', '');
+    
+    const r1 = parseInt(hex1.substr(0, 2), 16);
+    const g1 = parseInt(hex1.substr(2, 2), 16);
+    const b1 = parseInt(hex1.substr(4, 2), 16);
+    
+    const r2 = parseInt(hex2.substr(0, 2), 16);
+    const g2 = parseInt(hex2.substr(2, 2), 16);
+    const b2 = parseInt(hex2.substr(4, 2), 16);
+    
+    const r = Math.round(r1 + (r2 - r1) * factor);
+    const g = Math.round(g1 + (g2 - g1) * factor);
+    const b = Math.round(b1 + (b2 - b1) * factor);
+    
+    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+  };
+
+  const calculateExactHourFromPosition = useCallback((position: number): number => {
+    if (!clocksRef.current) return 7;
+    
+    const clocksWidth = clocksRef.current.offsetWidth;
+    const sideMargin = clocksWidth * 0.1;
+    const availableWidth = clocksWidth - (sideMargin * 2);
+    
+    const ratio = Math.max(0, Math.min(1, (position - sideMargin) / availableWidth));
+    return 5 + (ratio * 4); // 5~9시 범위의 실시간 값
+  }, []);
+
+  const handleClockClick = useCallback((e: React.MouseEvent) => {
+    if (isDragging || isAnimating) return;
+    
+    const clocksElement = clocksRef.current;
+    if (!clocksElement) return;
+    
+    const rect = clocksElement.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    
+    // 클릭 위치에서 시간 계산
+    const targetHour = calculateHourFromPosition(clickX);
+    
+    // 애니메이션과 함께 해당 시간으로 이동
+    setIsAnimating(true);
+    setSelectedHour(targetHour);
+    setCurrentExactHour(targetHour); // 추가
+    
+    setTimeout(() => {
+      updateDragButtonPosition(targetHour);
+      setTimeout(() => setIsAnimating(false), 300);
+    }, 50);
+  }, [isDragging, isAnimating, calculateHourFromPosition, updateDragButtonPosition]);
+
   // 드래그 시작 핸들러
   const handleDragStart = useCallback((clientX: number) => {
     if (isAnimating) return;
@@ -135,23 +226,25 @@ const ReturnQuest = () => {
     if (!isDragging || !clocksRef.current) return;
     
     const clocksWidth = clocksRef.current.offsetWidth;
-    const sideMargin = clocksWidth * 0.1; // 좌우 여백
+    const sideMargin = clocksWidth * 0.1;
     
     let newPosition = clientX - dragStartX;
-    
-    // 드래그 범위 제한 - 여백을 고려한 범위로 제한
     newPosition = Math.max(sideMargin, Math.min(clocksWidth - sideMargin, newPosition));
     
     setDragButtonPosition(newPosition);
     
-    // 실시간으로 시간 업데이트 (스냅 없이)
-    const newHour = calculateHourFromPosition(newPosition);
+    // 실시간으로 정확한 시간 계산 (소수점 포함)
+    const exactHour = calculateExactHourFromPosition(newPosition);
+    setCurrentExactHour(exactHour);
+    
+    // 정수 시간 업데이트
+    const newHour = Math.round(exactHour);
     if (newHour !== selectedHour) {
       setSelectedHour(newHour);
     }
-  }, [isDragging, dragStartX, selectedHour, calculateHourFromPosition]);
+  }, [isDragging, dragStartX, selectedHour, calculateExactHourFromPosition]);
 
-  // 드래그 종료 핸들러
+  // handleDragEnd 함수 수정
   const handleDragEnd = useCallback(() => {
     if (!isDragging) return;
     
@@ -161,6 +254,9 @@ const ReturnQuest = () => {
     // 가장 가까운 시간으로 스냅
     const targetHour = calculateHourFromPosition(dragButtonPosition);
     setSelectedHour(targetHour);
+    
+    // currentExactHour도 정수 시간으로 업데이트 (추가)
+    setCurrentExactHour(targetHour);
     
     // 애니메이션과 함께 정확한 위치로 이동
     setTimeout(() => {
@@ -324,12 +420,13 @@ const ReturnQuest = () => {
 
   return (
     <div className="relative w-full h-full overflow-hidden">
-      {/* 동적 배경색 */}
+      {/* 동적 배경색 - 실시간 보간된 색상 적용 */}
       <div 
-        className="absolute inset-0 transition-all duration-1000 ease-in-out"
+        className="absolute inset-0 transition-all duration-200 ease-out"
         style={{ 
-          background: gamePhase === 'gamePlay' ? getBackgroundColor(selectedHour) : 
+          background: gamePhase === 'gamePlay' ? getInterpolatedBackgroundColor(currentExactHour) : 
                      gamePhase === 'successResult' ? getBackgroundColor(selectedHour) :
+                     gamePhase === 'failSequence3' ? '#000000' : // 고라니 등장 시 검정 배경
                      'linear-gradient(to bottom, #FFE4B5 0%, #FFA07A 100%)'
         }}
       />
@@ -440,7 +537,7 @@ const ReturnQuest = () => {
         </div>
       )}
 
-      {/* 게임 플레이 화면 - 드래그 기능 개선 */}
+      {/* 게임 플레이 화면 - 클릭 및 드래그 기능 수정 */}
       {gamePhase === 'gamePlay' && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           {/* 배경 이미지 */}
@@ -461,20 +558,73 @@ const ReturnQuest = () => {
             </button>
           </div>
           
-          {/* 시계 드래그 영역 - 하단 중앙 고정 */}
+          {/* 시계 드래그 영역 */}
           <div className="absolute bottom-0 left-0 right-0 w-full z-10">
-            {/* 시계 컨테이너 */}
             <div 
               ref={clocksRef}
               className="relative w-full"
             >
-              {/* 시계 배경 이미지 - 반응형 */}
+              {/* 시계 배경 이미지 */}
               <img
                 src={homecomingTimeClocks}
                 alt="시계들"
-                className="w-full h-auto object-cover"
+                className="w-full h-auto object-cover pointer-events-none"
                 style={{ 
                   aspectRatio: '976/215'
+                }}
+              />
+              
+              {/* 통합된 클릭/드래그 영역 - 가장 위에 배치 */}
+              <div
+                className="absolute inset-0 cursor-grab active:cursor-grabbing"
+                style={{ zIndex: 25 }}
+                onMouseDown={(e) => {
+                  // 드래그 버튼 영역인지 확인
+                  const rect = clocksRef.current?.getBoundingClientRect();
+                  if (!rect) return;
+                  
+                  const clickX = e.clientX - rect.left;
+                  const buttonRect = dragButtonRef.current?.getBoundingClientRect();
+                  
+                  if (buttonRect) {
+                    const buttonCenterX = buttonRect.left + buttonRect.width / 2 - rect.left;
+                    const buttonRadius = 50; // 드래그 버튼 주변 영역
+                    
+                    if (Math.abs(clickX - buttonCenterX) < buttonRadius) {
+                      // 드래그 버튼 근처 클릭 - 드래그 시작
+                      handleMouseDown(e);
+                    } else {
+                      // 다른 영역 클릭 - 클릭으로 이동
+                      handleClockClick(e);
+                    }
+                  } else {
+                    // 버튼이 없으면 클릭으로 처리
+                    handleClockClick(e);
+                  }
+                }}
+                onTouchStart={(e) => {
+                  const rect = clocksRef.current?.getBoundingClientRect();
+                  if (!rect) return;
+                  
+                  const touch = e.touches[0];
+                  const touchX = touch.clientX - rect.left;
+                  const buttonRect = dragButtonRef.current?.getBoundingClientRect();
+                  
+                  if (buttonRect) {
+                    const buttonCenterX = buttonRect.left + buttonRect.width / 2 - rect.left;
+                    const buttonRadius = 50;
+                    
+                    if (Math.abs(touchX - buttonCenterX) < buttonRadius) {
+                      handleTouchStart(e);
+                    } else {
+                      // 터치로 클릭 효과
+                      const syntheticEvent = {
+                        clientX: touch.clientX,
+                        preventDefault: () => {},
+                      } as React.MouseEvent;
+                      handleClockClick(syntheticEvent);
+                    }
+                  }
                 }}
               />
               
@@ -483,8 +633,8 @@ const ReturnQuest = () => {
                 ref={dragButtonRef}
                 src={dragButton}
                 alt="드래그 버튼"
-                className={`absolute cursor-grab transition-all duration-300 select-none
-                  ${isDragging ? 'cursor-grabbing scale-110' : 'hover:scale-105'}
+                className={`absolute transition-all duration-300 select-none pointer-events-none
+                  ${isDragging ? 'scale-110' : 'hover:scale-105'}
                   ${isAnimating ? 'transition-all duration-300 ease-out' : ''}`}
                 style={{
                   width: '81px',
@@ -495,17 +645,7 @@ const ReturnQuest = () => {
                   zIndex: 30,
                   filter: isDragging ? 'drop-shadow(0 8px 16px rgba(0,0,0,0.3))' : 'none'
                 }}
-                onMouseDown={handleMouseDown}
-                onTouchStart={handleTouchStart}
                 draggable={false}
-              />
-              
-              {/* 투명 드래그 영역 - 전체 시계 영역에서 드래그 가능 */}
-              <div
-                className="absolute inset-0 cursor-grab active:cursor-grabbing"
-                style={{ zIndex: 20 }}
-                onMouseDown={handleMouseDown}
-                onTouchStart={handleTouchStart}
               />
             </div>
           </div>
@@ -563,7 +703,7 @@ const ReturnQuest = () => {
           
           <div className="absolute inset-0 flex flex-col items-center justify-center z-30">
             <motion.div 
-              className="absolute top-[20%] left-1/2 transform -translate-x-1/2"
+              className="absolute top-[20%] left-0 right-0 flex justify-center items-center transform -translate-x-1/2"
               initial={{ opacity: 0, y: -30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
@@ -572,12 +712,12 @@ const ReturnQuest = () => {
             </motion.div>
             
             <motion.div 
-              className="mt-10 bg-green-600 bg-opacity-90 border-green-700 border-8 rounded-3xl p-8 w-[70%] mx-auto text-center relative"
+              className="mt-10 bg-green-600 bg-opacity-70 border-green-700 border-8 rounded-3xl p-12 w-[75%] mx-auto text-center relative"
               initial={{ opacity: 0, scale: 0.8, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
             >
-              <p className="text-4xl font-extrabold text-white leading-relaxed">
+              <p className="text-5xl font-extrabold text-white leading-relaxed">
                 해가 지기 전이<br/>
                 집 가기 딱 좋은 시간이에요
               </p>
@@ -632,8 +772,8 @@ const ReturnQuest = () => {
           <motion.img
             src={goraniFace}
             alt="고라니"
-            className="absolute bottom-4 right-4 z-20"
-            style={{ width: '500px', height: '500px' }}
+            className="absolute bottom-0 right-0 z-0"
+            style={{ width: '700px', height: '700px' }}
             initial={{ opacity: 0, x: 100 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
