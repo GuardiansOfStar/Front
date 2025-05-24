@@ -50,7 +50,7 @@ const EduScreen = () => {
           </p>
         </div>
       </div>
-      <NextButton to='certificate' />
+      <NextButton to='/certificate' />
     </div>
   );
 };

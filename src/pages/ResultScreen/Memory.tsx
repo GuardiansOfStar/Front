@@ -1,16 +1,26 @@
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Background from "../../components/ui/Background";
-import React, { useState } from "react";
 import GameContext from "../../components/ui/GameContext";
 import GameTitle from "../../components/ui/GameTitle";
 
 const Memory = () => {
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
+  const navigate = useNavigate();
+
+  // 하나 선택-> 3초 후 자동 이동
+  useEffect(() => {
+    if (selectedIndexes.length === 1) {
+      const timer = setTimeout(() => {
+        navigate("/survey");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [selectedIndexes, navigate]);
 
   const toggleSelection = (index: number) => {
     setSelectedIndexes((prev) =>
-      prev.includes(index)
-        ? prev.filter((i) => i !== index)
-        : [...prev, index]
+      prev.includes(index) ? prev.filter((i) => i !== index) : [index] // 하나만 선택 가능
     );
   };
 
@@ -35,17 +45,16 @@ const Memory = () => {
         className="flex flex-col items-center cursor-pointer transition z-30"
       >
         <img
-        src={option.img}
-        alt={option.label}
-        className={`w-[280px] h-[210px] object-cover rounded-[30px] transition 
-        border-[10px] ${isSelected ? "border-red-500" : "border-transparent"}
-        mb-1`}
+          src={option.img}
+          alt={option.label}
+          className={`w-[280px] h-[210px] object-cover rounded-[30px] transition 
+          border-[10px] ${isSelected ? "border-red-500" : "border-transparent"} mb-1`}
         />
         <GameContext
-            text={option.label}
-            fontSize="text-[35px]"
-            color="text-black"
-            strokeWidth="5px"
+          text={option.label}
+          fontSize="text-[35px]"
+          color="text-black"
+          strokeWidth="5px"
         />
       </div>
     );
@@ -56,13 +65,12 @@ const Memory = () => {
       <div className="absolute inset-0 bg-[#FFF9C4]/70 z-10" />
       <Background />
 
-      {/* 내용 */}
       <div className="relative z-30 flex flex-col items-center justify-start py-5 px-4">
         <GameTitle
-        text="가장 기억에 남는 장면을 골라주세요"
-        fontSize="text-[48px]"
-        color="text-[#0E8E12]"
-        className="mt-7 mb-10"
+          text="가장 기억에 남는 장면을 골라주세요"
+          fontSize="text-[48px]"
+          color="text-[#0E8E12]"
+          className="mt-7 mb-10"
         />
 
         {/* 윗줄 2개 */}

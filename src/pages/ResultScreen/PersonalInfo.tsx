@@ -61,7 +61,7 @@ const PersonalInfo = () => {
           </div>
         </div>
       </div>
-      <NextButton to= '/' />
+      <NextButton to= '/memory' />
     </div>
   );
 };

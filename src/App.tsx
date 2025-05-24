@@ -33,7 +33,7 @@ function App() {
       <Routes>
         {/* 기본 화면들 */}
         <Route path="/" element={<HomePage />} />
-        <Route path="/scenarios" element={<VillageRankList />} />
+        <Route path="/scenarios" element={<Memory />} />
         <Route path="/map" element={<MapPage />} />
         <Route path="/prologue" element={<ProloguePage />} />
 
@@ -56,7 +56,7 @@ function App() {
         <Route path="/result" element={<EduScreen />} />
         <Route path="/certificate" element={<Certificate />} />
         <Route path="/info" element={<PersonalInfo/>} />
-        <Route path="/star" element={<StarSurvey />} />
+        <Route path="/survey" element={<StarSurvey />} />
         <Route path="/memory" element={<Memory />} />
         <Route path='/village' element={<MyVillageRank/>} />
         <Route path='/rank' element={<VillageRankList/>} />

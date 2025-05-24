@@ -48,7 +48,7 @@ const StarSurvey = () => {
       <img
         src="/assets/images/submit_button.png"
         alt="제출 버튼"
-        onClick={() => navigate('/village')} 
+        onClick={() => navigate('/rank')} 
         className="absolute bottom-[7%] left-1/2 transform -translate-x-1/2 
         w-[300px] h-auto z-40 cursor-pointer
         hover:scale-90 transition-transform duration-300"
