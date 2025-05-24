@@ -12,7 +12,6 @@ import StarSurvey from './pages/ResultScreen/StarSurvey';
 
 import ProloguePage from './pages/prologue/ProloguePage';
 import DrivingPrepPage from './pages/driving/DrivingPrepPage';
-import QuestPage from './pages/quest/QuestPage';
 import MemoryCardQuest from './pages/quest/MemoryCardQuest';
 import ScorePage from './pages/score/ScorePage';
 import PotholeQuest from './pages/quest/PotholeQuest';
@@ -20,7 +19,6 @@ import DrivingBaseScreen from './pages/driving/DrivingBaseScreen';
 
 import CompletionBackground from './pages/questFinish/CompletionBackground';
 import SuccessBackground from './pages/questFinish/SuccessBackground';
-import PathChoiceQuest from './pages/quest/PathChoiceQuest';
 import HarvestQuest from './pages/quest/HarvestQuest';
 import MakgeolliQuest from './pages/quest/MakgeolliQuest';
 import ReturnQuest from './pages/quest/ReturnQuest';
@@ -32,7 +30,7 @@ function App() {
       <Routes>
         {/* 기본 화면들 */}
         <Route path="/" element={<HomePage />} />
-        <Route path="/scenarios" element={<ScenarioSelectPage />} />
+        <Route path="/scenarios" element={<ReturnQuest />} />
         <Route path="/map" element={<MapPage />} />
         <Route path="/prologue" element={<ProloguePage />} />
 
@@ -42,8 +40,7 @@ function App() {
         <Route path="/pothole-quest" element={<PotholeQuest />} />
         <Route path="/makgeolli-quest" element={<MakgeolliQuest/>} />
         <Route path="/harvest-quest" element={<HarvestQuest />} />
-        <Route path="/path-choice-quest" element={<PathChoiceQuest />} />
-        <Route path="return-qeust" element={<ReturnQuest/>}/>
+        <Route path="/return-quest" element={<ReturnQuest/>}/>
         <Route path="/driving-base" element={<DrivingBaseScreen/>} />
         <Route path="/score" element={<ScorePage />} />
         

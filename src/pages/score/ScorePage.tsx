@@ -55,7 +55,7 @@ const ScorePage = () => {
         case '4':
           // 미션4 완료 → 미션5로 직접 이동 (수정)
           console.log("미션4 완료 → 미션5로 직접 이동");
-          navigate(`/path-choice-quest?scenario=${sId}&quest=5`);
+          navigate(`/return-quest?scenario=${sId}&quest=5`);
           break;
         case '5':
           // 미션5 완료 → 성공 화면으로 이동

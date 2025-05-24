@@ -67,7 +67,7 @@ const DrivingBaseScreen = () => {
         navigate(`/harvest-quest?scenario=${sId}&quest=4`);
         break;
       case '5':
-        navigate(`/path-choice-quest?scenario=${sId}&quest=5`);
+        navigate(`/return-quest?scenario=${sId}&quest=5`);
         break;
       default:
         navigate('/');

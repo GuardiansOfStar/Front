@@ -56,6 +56,7 @@ const ReturnQuest = () => {
   const [gamePhase, setGamePhase] = useState<GamePhase>('sunsetAnimation');
   const [selectedHour, setSelectedHour] = useState(7); // 기본값 7시
   const [showSun, setShowSun] = useState(false);
+  const [showTitle, setShowTitle] = useState(false); // 타이틀 표시 상태 추가
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [currentFailSequence, setCurrentFailSequence] = useState(1);
@@ -77,15 +78,21 @@ const ReturnQuest = () => {
       // 해 애니메이션 시작
       timer = setTimeout(() => {
         setShowSun(true);
-      }, 1000);
+      }, 100);
+      
+      // 해 애니메이션 완료 후 타이틀 표시
+      const titleTimer = setTimeout(() => {
+        setShowTitle(true);
+      }, 4000); // 해 애니메이션 완료 1초 후
       
       // 게임 안내로 전환
       const nextTimer = setTimeout(() => {
         setGamePhase('gameIntro');
-      }, 4000);
+      }, 6000); // 타이틀 표시 후 2초 뒤
       
       return () => {
         if (timer) clearTimeout(timer);
+        clearTimeout(titleTimer);
         clearTimeout(nextTimer);
       };
     }
@@ -180,9 +187,11 @@ const ReturnQuest = () => {
         }}
       />
 
-      {/* 헤더 영역 */}
-      {!gamePhase.includes('failSequence') && gamePhase !== 'failResult' && (
-        <HomeButton />
+      {gamePhase === 'gameIntro' && (
+        <div className="absolute top-6 right-6 z-[100] w-20 h-20">
+          <HomeButton />
+          {/* 임시 표시용 빨간 박스 */}
+        </div>
       )}
 
       {/* 해가 지는 애니메이션 */}
@@ -192,55 +201,95 @@ const ReturnQuest = () => {
           <img
             src={sunsetSceneMountain}
             alt="산"
-            className="absolute bottom-0 w-full h-auto"
+            className="absolute bottom-0 w-full h-auto z-10"
             style={{ objectFit: 'cover', objectPosition: 'bottom' }}
           />
           
-          {/* 해 이미지 - 애니메이션 */}
-          <motion.img
-            src={sunsetSceneSun}
-            alt="해"
-            className="absolute w-auto h-auto"
-            style={{ width: '632px', height: '627px' }}
-            initial={{ x: window.innerWidth, y: -200 }}
-            animate={showSun ? { 
-              x: window.innerWidth * 0.7 - 316, // 중앙보다 약간 오른쪽
-              y: window.innerHeight * 0.3 - 313 // 산 위쪽
-            } : {}}
-            transition={{ duration: 3, ease: 'easeOut' }}
-          />
-          
-          {/* 타이틀 */}
-          <div className="absolute top-20 left-1/2 transform -translate-x-1/2 z-20">
-            <GameTitle text="해가 지고 있어요" fontSize="text-6xl" strokeWidth="12px" />
+          {/* 해 이미지 - 중앙 기준 애니메이션 */}
+          <div className="absolute inset-0 flex items-center justify-center z-0">
+            <motion.img
+              src={sunsetSceneSun}
+              alt="해"
+              className="w-256 h-256"
+              initial={{ 
+                x: 400,  // 화면 오른쪽에서 시작 (픽셀 단위)
+                y: -100  // 화면 위쪽에서 시작
+              }}
+              animate={showSun ? { 
+                x: 0,   // 중앙에서 약간 오른쪽으로
+                y: 80   // 중앙에서 약간 위쪽으로
+              } : {}}
+              transition={{ duration: 3, ease: 'easeOut' }}
+            />
           </div>
+          
+          {/* 타이틀 - 해 애니메이션과 겹치지 않게 하단에 배치 */}
+          {showTitle && (
+            <motion.div 
+              className="absolute top-20 left-0 right-0 flex justify-center items-center z-20"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, ease: 'easeOut' }}
+            >
+              <GameTitle text="해가 지고 있어요" fontSize="text-[5.2rem]" strokeWidth="12px" />
+            </motion.div>
+          )}
         </div>
       )}
 
-      {/* 게임 안내 화면 */}
+      {/* 게임 안내 화면 - 배경에 해와 산이 그대로 남아있도록 수정 */}
       {gamePhase === 'gameIntro' && (
         <div className="absolute inset-0">
-          {/* 배경 오버레이 */}
-          <div className="absolute inset-0 bg-[#FFF9C4]/60 z-10"></div>
+          {/* 해와 산 배경 유지 */}
+          <img
+            src={sunsetSceneMountain}
+            alt="산"
+            className="absolute bottom-0 w-full h-auto z-10"
+            style={{ objectFit: 'cover', objectPosition: 'bottom' }}
+          />
           
-          <div className="absolute inset-0 flex flex-col items-center justify-center z-20">
+          <div className="absolute inset-0 flex items-center justify-center z-0">
+            <img
+              src={sunsetSceneSun}
+              alt="해"
+              className="w-256 h-256"
+              style={{
+                transform: 'translate(0px, 80px)'  // 애니메이션 끝 위치 고정
+              }}
+            />
+          </div>
+          
+          {/* 배경 오버레이 */}
+          <motion.div 
+            className="absolute inset-0 bg-[#FFF9C4]/60 z-20"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
+          />
+          
+          <motion.div 
+            className="absolute inset-0 flex flex-col items-center justify-center z-30"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.3 }}
+          >
             <div className="relative w-4/5 max-w-4xl">
-              <div className="mb-8">
-                <GameTitle text="귀가 시간 정하기" fontSize="text-5xl" strokeWidth="10px" />
+              <div className="mb-8 flex justify-center items-center">
+                <GameTitle text="귀가 시간 정하기" fontSize="text-6xl" strokeWidth="10px" />
               </div>
               
-              <div className="bg-white/90 border-8 border-green-600 rounded-xl p-8 text-center">
-                <p className="text-4xl font-extrabold text-black">
+              <div className="bg-white/90 border-8 border-green-600 rounded-xl p-10 mb-16 text-center">
+                <p className="text-4xl font-extrabold text-black leading-loose">
                   해가 지기 시작해요<br/>
                   <span className="text-red-600">언제쯤</span><br/>
                   작업을 마치고 집으로 출발할까요?
                 </p>
               </div>
             </div>
-          </div>
+          </motion.div>
           
           {/* 다음 버튼 */}
-          <div className="absolute bottom-0 left-0 right-0 flex justify-center z-50">
+          <div className="absolute -bottom-4 left-0 right-0 flex justify-center z-50">
             <img
               src={nextButton}
               alt="다음"
