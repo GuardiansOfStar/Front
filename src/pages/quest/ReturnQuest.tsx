@@ -552,9 +552,9 @@ const ReturnQuest = () => {
             <button
               onClick={handleStartGame}
               disabled={isDragging || isAnimating}
-              className="bg-green-600 hover:bg-green-700 text-white font-extrabold py-4 px-8 rounded-xl text-2xl transition-colors duration-300 border-4 border-green-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+              className="bg-green-600 hover:bg-green-700 text-white font-extrabold py-4 px-8 rounded-xl text-4xl transition-colors duration-300 border-4 border-white disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
             >
-              {selectedHour}시에 출발하기
+              {selectedHour}시에 귀가
             </button>
           </div>
           

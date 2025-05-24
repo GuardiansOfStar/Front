@@ -186,7 +186,7 @@ const MemoryCardQuest: React.FC = () => {
         } else {
           setGamePhase('showCards');
         }
-      }, 2500);
+      }, 3500);
     }
     else if (
       gamePhase === 'foundMatch' ||
@@ -217,7 +217,7 @@ const MemoryCardQuest: React.FC = () => {
           setFeedbackMessage("찾기 어려우신가요?\n정답을 알려드릴게요");
           setGamePhase('tooManyAttempts');
         }
-      }, 1500);
+      }, 5000);
     }
     else if (gamePhase === 'tooManyAttempts') {
       autoTransitionTimerRef.current = window.setTimeout(() => {
