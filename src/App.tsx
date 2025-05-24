@@ -26,6 +26,7 @@ import DevelopmentNotice from './pages/DevelopmentNotice';
 import Memory from './pages/ResultScreen/Memory';
 import MyVillageRank from './pages/ResultScreen/MyVillageRank';
 import VillageRankList from './pages/ResultScreen/VillageRankList';
+import PerfectScore from './pages/ResultScreen/PerfectScore';
 
 function App() {
   return (
@@ -33,7 +34,7 @@ function App() {
       <Routes>
         {/* 기본 화면들 */}
         <Route path="/" element={<HomePage />} />
-        <Route path="/scenarios" element={<ScenarioSelectPage />} />
+        <Route path="/scenarios" element={<PerfectScore />} />
         <Route path="/map" element={<MapPage />} />
         <Route path="/prologue" element={<ProloguePage />} />
 
@@ -51,6 +52,7 @@ function App() {
         {/* 주행 완료 관련 화면들 */}
         <Route path="/success" element={<SuccessBackground />} />
         <Route path="/completion" element={<CompletionBackground />} />
+        <Route path='/perfect' element={<PerfectScore/>} />
         
         {/* 결과 및 수료 관련 화면들 */}
         <Route path="/result" element={<EduScreen />} />
