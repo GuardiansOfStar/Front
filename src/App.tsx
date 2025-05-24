@@ -30,7 +30,7 @@ function App() {
     <AspectRatioContainer fillMode="fit">
       <Routes>
         {/* 기본 화면들 */}
-        <Route path="/" element={<MemoryCardQuest />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/scenarios" element={<ScenarioSelectPage />} />
         <Route path="/map" element={<MapPage />} />
         <Route path="/prologue" element={<ProloguePage />} />
