@@ -43,7 +43,7 @@ const Certificate = () => {
         className="absolute bottom-[9%] left-1/2 transform -translate-x-1/2
         w-[27%] 
         cursor-pointer z-30 
-        hover:scale-105 transition-transform duration-300"
+        hover:scale-90 transition-transform duration-300"
       />
     </div>
   );

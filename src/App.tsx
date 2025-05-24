@@ -33,7 +33,7 @@ function App() {
       <Routes>
         {/* 기본 화면들 */}
         <Route path="/" element={<HomePage />} />
-        <Route path="/scenarios" element={<Memory />} />
+        <Route path="/scenarios" element={<ScenarioSelectPage />} />
         <Route path="/map" element={<MapPage />} />
         <Route path="/prologue" element={<ProloguePage />} />
 
