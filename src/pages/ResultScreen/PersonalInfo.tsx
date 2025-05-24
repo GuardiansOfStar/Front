@@ -1,52 +1,52 @@
-import { useNavigate } from 'react-router-dom';
 import Background from '../../components/ui/Background';
 import NextButton from './NextButton';
 
 const PersonalInfo = () => {
-  const navigate = useNavigate();
-
   return (
     <div
       className="absolute w-full h-full"
     >
+      <div className="absolute inset-0 bg-[#FFF9C4]/70 z-20" />
       <Background />
-      <div className="absolute top-[25%] left-1/2 transform -translate-x-1/2 
-        w-[718px] h-[100px] 
-        bg-[#0DA429] bg-opacity-75 
+      <div className="absolute top-[19%] left-1/2 transform -translate-x-1/2 
+        w-[740px] h-[125px] 
+        bg-[#0DA429] bg-opacity-90
         border-[10px] border-[#0E8E12] border-opacity-80 
-        rounded-[30px] 
+        rounded-[40px] 
         p-6 z-50 flex items-center justify-center 
         text-[55px] text-[#FFFAFA] font-extrabold">
         아래의 내용을 입력해주세요
       </div>
 
-      <div className="absolute top-[35%] left-1/2 transform -translate-x-1/2
-      w-[70%] bg-green-500 border-4 border-green-700 rounded-lg p-6 z-50">
+      <div className="absolute top-[37%] left-1/2 transform -translate-x-1/2
+        flex items-center justify-center w-[70%] h-[45%]
+        bg-[#0DA429] bg-opacity-60 
+        border-[10px] border-[#0E8E12] border-opacity-80 
+        rounded-[25px] 
+        p-6 z-50 
+        text-[50px]  text-[#FFFAFA] font-extrabold">
         <div className="flex flex-col gap-6">
           <div className="flex items-center justify-between">
-            <label className="text-white text-2xl font-bold w-1/3 text-left">이름</label>
+            <label className="text-white font-bold w-1/3 text-left pe-1">이름</label>
             <input
               type="text"
-              className="absolute w-2/3 h-10 bg-white rounded-md px-3 text-gray-800"
-              placeholder="이름을 입력하세요"
+              className="w-[350px] h-[61px] bg-[#FFFAFA] rounded-[10px] px-3 text-gray-800"
             />
           </div>
 
           <div className="flex items-center justify-between">
-            <label className="text-white text-2xl font-bold w-1/3 text-left">나이</label>
+            <label className="text-white font-bold w-1/3 text-left">나이</label>
             <input
               type="text"
-              className="w-2/3 h-10 bg-white rounded-md px-3 text-gray-800"
-              placeholder="나이를 입력하세요"
+              className="w-[350px] h-[61px] bg-[#FFFAFA] rounded-[10px] px-3 text-gray-800"
             />
           </div>
 
           <div className="flex items-center justify-between">
-            <label className="text-white text-2xl font-bold w-1/3 text-left">연락처</label>
+            <label className="text-white font-bold w-1/3 text-left mr-5">연락처</label>
             <input
               type="text"
-              className="w-2/3 h-10 bg-white rounded-md px-3 text-gray-800"
-              placeholder="연락처를 입력하세요"
+              className="w-[350px] h-[61px] bg-[#FFFAFA] rounded-[10px] px-3 text-gray-800"
             />
           </div>
         </div>
