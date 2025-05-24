@@ -11,7 +11,7 @@ const GameContext = ({
   text, 
   fontSize = 'text-5xl', 
   color = 'text-black',
-  strokeWidth = '12px',
+  strokeWidth = '7px',
   className = ''
 }: GameTitleProps) => {
   return (

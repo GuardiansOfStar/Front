@@ -1,11 +1,9 @@
 import { useState } from 'react';
-// import filled_star from 'assets/images/filled_star.png';
-// import empty_star from 'assets/images/empty_star.png';
 
-const filled_star = '/assets/images/filled_star.png'
-const empty_star = '/assets/images/empty_star.png'
+const filled_star = '/assets/images/filled_star.png';
+const empty_star = '/assets/images/empty_star.png';
 
-const Star = ({ size = 100 }: { size?: number }) => {
+const Star = () => {  // ⬅ 더 이상 props 받지 않음
     const [isClicked, setIsClicked] = useState(true);
 
     const handleClick = () => {
@@ -18,8 +16,7 @@ const Star = ({ size = 100 }: { size?: number }) => {
         alt="별 이미지"
         onClick={handleClick}
         style={{
-            width: size,
-            height: size,
+            width: '120px',     // ⬅ 고정
             cursor: 'pointer',
             transition: 'all 0.3s ease',
         }}
