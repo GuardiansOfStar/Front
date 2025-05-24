@@ -9,11 +9,11 @@ function HomeButton () {
         <img
             src={homeButton}
             alt="홈으로"
-            className="absolute top-5 right-10 
-            w-[9%] h-auto
+            className="absolute top-5 right-5
+            w-[105px] h-auto
             cursor-pointer
             z-50
-            active:scale-90 transition-transform duration-150"
+            active: scale-90 transition-transform duration-150"
             onClick={() => navigate('/')}
         />
     );

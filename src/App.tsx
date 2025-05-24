@@ -23,6 +23,9 @@ import HarvestQuest from './pages/quest/HarvestQuest';
 import MakgeolliQuest from './pages/quest/MakgeolliQuest';
 import ReturnQuest from './pages/quest/ReturnQuest';
 import DevelopmentNotice from './pages/DevelopmentNotice';
+import Memory from './pages/ResultScreen/Memory';
+import MyVillageRank from './pages/ResultScreen/MyVillageRank';
+import VillageRankList from './pages/ResultScreen/VillageRankList';
 
 function App() {
   return (
@@ -50,10 +53,14 @@ function App() {
         <Route path="/completion" element={<CompletionBackground />} />
         
         {/* 결과 및 수료 관련 화면들 */}
-        <Route path="/result" element={<Navigate to="/development-notice" />} />
-        <Route path="/certificate" element={<Navigate to="/development-notice" />} />
-        <Route path="/info" element={<Navigate to="/development-notice" />} />
-        <Route path="/star" element={<Navigate to="/development-notice" />} />
+        <Route path="/result" element={<EduScreen />} />
+        <Route path="/certificate" element={<Certificate />} />
+        <Route path="/info" element={<PersonalInfo/>} />
+        <Route path="/survey" element={<StarSurvey />} />
+        <Route path="/memory" element={<Memory />} />
+        <Route path='/village' element={<MyVillageRank/>} />
+        <Route path='/rank' element={<VillageRankList/>} />
+
 
         {/* 추가: 개발 중 알림 페이지 */}
         <Route path="/development-notice" element={<DevelopmentNotice />} />

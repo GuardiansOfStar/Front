@@ -9,12 +9,10 @@ import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attem
 import GameTitle from '../../components/ui/GameTitle';
 
 // 이미지 임포트
-const fieldRoad = '/assets/images/field_road.png';
 const fieldHarvestBoxes = '/assets/images/field_harvest_boxes.png';
 const accident = '/assets/images/grandfather_field_accident.png';
 const dangerWarning = '/assets/images/danger_warning.png';
 const successCircle = '/assets/images/success_circle.png';
-const homeButton = '/assets/images/home_button.png';
 const starCharacter = '/assets/images/star_character.png';
 const grandfaSuccess = '/assets/images/mission4_success_grandfather_cart.png';
 const motorcycle = '/assets/images/mission4_motorcycle.png'
@@ -52,11 +50,11 @@ const HarvestQuest = () => {
     setScenarioId(sId);
     setQuestId(qId || '4');
     
-    // 인트로 화면 후 자동으로 드라이빙 시작
+    // 인트로 화면 3s후 드라이빙
     const timer = setTimeout(() => {
       setGamePhase('driving');
       
-      // 운전 애니메이션 후 갈림길 발견 화면으로 전환
+      // 드라이비 1s후 사과박스 쌓인 정지 화면으로 전환
       const drivingTimer = setTimeout(() => {
         setGamePhase('harvestDone');
         
@@ -66,7 +64,7 @@ const HarvestQuest = () => {
         }, 0);
         
         return () => clearTimeout(alertTimer);
-      }, 5000);
+      }, 1000);
       
       return () => clearTimeout(drivingTimer);
     }, 3000);
@@ -119,7 +117,7 @@ const HarvestQuest = () => {
           setGamePhase('failResult');
           setTimeout(() => {
             navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=10&correct=false`);
-          }, 5000); //오답 결과 유지 시간
+          }, 15000); //오답 결과 유지 시간
         }, 2500);
       }, 1000);
     }
@@ -129,7 +127,7 @@ const HarvestQuest = () => {
     if (gamePhase === 'failResult') {
       const timer = setTimeout(() => {
         setShowWarning(true);
-      }, 4000); // 2초 후 쓰러진 할부지 이미지
+      }, 4000); // 초 후 경고문구
 
       return () => clearTimeout(timer); // 클린업
     } else {
@@ -160,7 +158,7 @@ const HarvestQuest = () => {
       {/* 배경 - 게임 단계에 따라 다른 배경 표시 */}
       {(gamePhase !== 'fadeOut' ) && (
         <img
-          src={gamePhase === 'harvestDone' || gamePhase === 'selection' ? fieldHarvestBoxes : fieldRoad}
+          src={fieldHarvestBoxes}
           alt="갈림길 배경"
           className="absolute w-full h-full object-cover"
         />
@@ -178,22 +176,22 @@ const HarvestQuest = () => {
       {/* 인트로 화면 */}
       {gamePhase === 'intro' && (
         <>
-          <HarvestBox />
-          {showIntroText && (
+          
+          {/*<HarvestBox /> 
+          showIntroText && (
             <div className="absolute inset-0 flex items-center justify-center z-20">
               <GameTitle text="작업 완료" fontSize="text-[5.25rem]" strokeWidth="12px" />
             </div>
-          )}
+          )*/}
         </>
       )}
 
       {/* 주행 화면 */}
       {gamePhase === 'driving' && (
         <div className="absolute inset-0 flex items-center justify-center z-10">
-          <HarvestBox2 />
-          <div className="absolute z-20">
-            <GameTitle text="작업 완료" fontSize="text-[5.25rem]" strokeWidth="12px" />
-          </div>
+          {/*<HarvestBox2 /> <div className="absolute z-20">
+            {renderTitleText('작업 완료')}
+          </div> */}
         </div>
       )}
       
@@ -213,41 +211,47 @@ const HarvestQuest = () => {
         <div className="absolute inset-0">
           <div className="absolute inset-0 top-20 flex flex-col items-center justify-center z-30">
             {/* 선택지 제목 및 설명 */}
-            <div className="bg-white bg-opacity-90 border-8 border-green-600 rounded-3xl p-6 mb-8 w-[75%]">
-              <h2 className="text-5xl font-extrabold text-green-600 text-center mb-4">무거운 짐 싣기</h2>
-              <p className="text-[2.2rem] font-extrabold text-black text-center">
-                드디어 작업이 끝났어요<br/>
-                수확한 농작물을 이륜차에 싣고 싶어요<br/>
+            <div className="w-[735px] h-[339px] 
+            bg-[#FFFAFA] bg-opacity-75 border-[10px] border-[#0DA429] rounded-[30px] 
+            p-6 mb-8 
+            flex flex-col justify-center items-center text-center">
+              <GameTitle 
+              text="무거운 짐 싣기" 
+              fontSize="text-[60px]" 
+              color="text-[#0DA429]" 
+              strokeWidth="0px"
+              />
+              <p className="mt-2 text-[40px] font-extrabold text-black leading-snug">
+                작업하는 중에 수확한 농작물을<br/>
+                <span className="text-[#B91C1C]">이륜차에 싣고 싶어요</span><br/>
                 어떻게 옮길까요?
               </p>
             </div>
             
             {/* 선택지 버튼 */}
-            <div className="flex justify-between w-[75%]">
+            <div className="flex justify-between w-[750px] p-0">
               <button
-                className={`w-[48%] bg-green-600 bg-opacity-80
-                border-8 border-green-600 rounded-xl p-4
-                text-3xl font-extrabold text-white 
-                transition duration-300 
-                ${selectedOption === 'A' ? 
-                'bg-green-600 scale-105 bg-opacity-95' : 'hover:bg-green-600'}`}
+                className={`w-[355px] h-[208px] rounded-[20px] text-3xl font-extrabold text-black transition duration-300 border-[7px]
+                  ${selectedOption === 'A' ? 
+                    'bg-[#0DA429] bg-opacity-90 border-[#0DA429] scale-105' : 
+                    'bg-[#FFFAFA] bg-opacity-70 border-[#0DA429] hover:bg-opacity-90'}
+                `}
                 onClick={() => handleOptionSelect('A')}
                 disabled={!!selectedOption}
               >
-                이륜차를 논밭으로<br/> 끌고 내려가 <br/> 짐을 싣고 나온다
+                과수원으로<br/><span style={{ color: '#B91C1C' }}>이륜차를 운전해</span><br/> 짐을 싣는다
               </button>
               
               <button
-                className={`w-[48%] bg-green-600 bg-opacity-80
-                border-8 border-green-600 rounded-xl p-4
-                text-3xl font-extrabold text-white
-                transition duration-300 
-                ${selectedOption === 'B' ? 
-                'bg-green-600 scale-105 bg-opacity-95' : 'hover:bg-green-600'}`}
+                className={`w-[355px] h-[208px] rounded-[20px] text-3xl font-extrabold text-black transition duration-300 border-[7px]
+                  ${selectedOption === 'B' ? 
+                    'bg-[#0DA429] bg-opacity-90 border-[#0DA429] scale-105' : 
+                    'bg-[#FFFAFA] bg-opacity-70 border-[#0DA429] hover:bg-opacity-90'}
+                `}
                 onClick={() => handleOptionSelect('B')}
                 disabled={!!selectedOption}
               >
-                손수레를 이용해<br/> 이륜차까지<br/> 짐을 옮겨 싣는다
+                <span style={{ color: '#B91C1C' }}>손수레를 이용해</span><br/> 이륜차까지<br/> 짐을 옮겨 싣는다
               </button>
             </div>
           </div>
@@ -272,9 +276,9 @@ const HarvestQuest = () => {
                 <motion.img
                 src={grandfaSuccess}
                 alt="수레 끄시는 할아버지" 
-                className="absolute left-[20%] w-[35%] h-auto object-contain z-40"
+                className="absolute left-[20%] w-[400px] h-auto object-contain z-40"
                 onError={handleImageError}
-                animate={{ x: [5, 65] }} //X축: 0→65px
+                animate={{ x: [0, 45] }} //X축: 0→65px
                 transition={{ 
                   duration: 5, // 한 사이클(0→20→0)에 2초 
                   repeat: 1, // 반복
@@ -284,7 +288,7 @@ const HarvestQuest = () => {
                 <img 
                   src={motorcycle}
                   alt="오토바이"
-                  className="absolute right-[26%] w-[25%] object-contain z-50"
+                  className="absolute right-[26%] w-[323px] object-contain z-50"
                   onError={handleImageError}
                 />
                 </>
@@ -304,21 +308,32 @@ const HarvestQuest = () => {
       {gamePhase === 'successResult' && showSuccessMessage && (
         <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
           {/* 중앙 상단에 정답입니다! */}
-          <div className="absolute top-[20%] text-6xl font-extrabold text-green-700 left-1/2 transform -translate-x-1/2 z-20">
+          <div
+            className="text-[70px] font-extrabold text-[#0E8E12]"
+            style={{
+              WebkitTextStroke: '10px #FFFFFF',
+              paintOrder: 'stroke',
+            }}
+          >
             정답입니다!
-            </div>
+          </div>
+
             {/* 중앙에 녹색 박스에 메시지 */}
-            <div className="mt-10 bg-green-600 bg-opacity-80 border-green-700 border-8  rounded-3xl p-4 w-[75%] mx-auto text-center relative">
-              <p className="text-5xl font-extrabold text-white leading-relaxed">
-                어르신의 안전과<br/>
-                소중한 자산을 보호하는 <br/> 현명한 선택이에요
+            <div className="w-[754px] h-[306px] 
+            bg-[#0DA429] bg-opacity-50 
+            border-[10px] border-[#0E8E12] border-opacity-80 
+            rounded-[30px] 
+            p-4 mx-auto mt-10 
+            flex justify-center items-center text-center relative">
+              <p className="text-[55px] font-extrabold text-[#FFFAFA]">
+                당신의 안전과<br/> 소중한 자산을 보호하는 <br/> 현명한 선택이에요
               </p>
             </div>
           {/* 좌측 하단 별별이 캐릭터 */}
           <img 
             src={starCharacter} 
             alt="별별이" 
-            className="absolute bottom-[10%] left-[5%] w-[27%] z-30"
+            className="absolute bottom-[10%] left-[5%] w-[250px] z-30"
           />
         </div>
       )}
@@ -358,15 +373,16 @@ const HarvestQuest = () => {
               />
               
               <motion.div 
-                className="w-[80%] bg-white bg-opacity-80 border-red-600 border-8 rounded-xl p-8 text-center"
+                className="w-[850px] h-[353px] bg-[#FFFAFA]/75 border-[#EE404C] border-[10px] rounded-[30px] p-8 text-center flex flex-col justify-center items-center"
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
-                <h2 className="text-6xl font-extrabold text-red-600 mb-4">이륜차에 깔렸어요!</h2>
+
+                <h2 className="text-6xl font-extrabold text-red-600 mb-5">덜컹! 넘어졌어요</h2>
                 <p className="text-4xl font-extrabold text-black">
-                  논밭에서 이륜차는 전복되기 쉬워요<br />
-                  도로에 두고 짐을 옮겨야 안전해요
+                  뿌리에 걸려 낙상할 수 있어요<br />
+                  이륜차는 도로에 두고 짐을 옮겨요
                 </p>
               </motion.div>
             </motion.div>

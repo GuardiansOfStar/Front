@@ -2,7 +2,7 @@ const background_homepage = '/assets/images/background.png';
 
 const Background = () => {
     return (
-        <div className="w-full h-full">
+        <div className="absolute w-full h-full">
         <img
             src={background_homepage}
             alt="Background"
