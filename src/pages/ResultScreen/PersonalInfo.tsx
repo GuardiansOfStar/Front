@@ -1,13 +1,23 @@
 import Background from '../../components/ui/Background';
 import NextButton from './NextButton';
+import { useNavigate } from 'react-router-dom';
 
 const PersonalInfo = () => {
+  const navigate = useNavigate();
+
   return (
     <div
       className="absolute w-full h-full"
     >
       <div className="absolute inset-0 bg-[#FFF9C4]/70 z-20" />
       <Background />
+      <img
+        src="/assets/images/back_button.png"
+        alt="뒤로가기 버튼"
+        onClick={() => navigate('/certificate')}
+        className="absolute top-[3%] left-[3%] w-[110px] h-auto z-50 cursor-pointer hover:scale-90 transition-transform duration-300"
+      />
+
       <div className="absolute top-[19%] left-1/2 transform -translate-x-1/2 
         w-[740px] h-[125px] 
         bg-[#0DA429] bg-opacity-90
