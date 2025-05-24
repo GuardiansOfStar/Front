@@ -7,6 +7,7 @@ import HarvestBox2 from './HarvestBox2';
 import HomeButton from '../../components/ui/HomeButton';
 import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attempts';
 import GameTitle from '../../components/ui/GameTitle';
+import { useScale } from '../../hooks/useScale';
 
 // 이미지 임포트
 const fieldHarvestBoxes = '/assets/images/field_harvest_boxes.png';
@@ -17,16 +18,15 @@ const starCharacter = '/assets/images/star_character.png';
 const grandfaSuccess = '/assets/images/mission4_success_grandfather_cart.png';
 const motorcycle = '/assets/images/mission4_motorcycle.png'
 
-
 // 게임 단계 정의
 type GamePhase = 
-  | 'intro'         // 시작 화면 뚜
-  | 'driving'       // 오토바이 주행 뚜
+  | 'intro'         // 시작 화면
+  | 'driving'       // 오토바이 주행
   | 'harvestDone'   // 수확물 싣기
   | 'selection'     // 선택지 제공
   | 'successResult' // 정답 선택 결과
   | 'fadeOut'       // 오답 페이드아웃
-  | 'failResult'    // 오답 선택 결과 뚜
+  | 'failResult'    // 오답 선택 결과
   | 'score';        // 점수 화면
 
 const HarvestQuest = () => {
@@ -36,11 +36,12 @@ const HarvestQuest = () => {
   const [questId, setQuestId] = useState<string | null>(null);
   const [gamePhase, setGamePhase] = useState<GamePhase>('intro');
   const [selectedOption, setSelectedOption] = useState<'A' | 'B' | null>(null);
-  //const [isAnimating, setIsAnimating] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [fallbackImage, setFallbackImage] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [showIntroText, setShowIntroText] = useState(false);
+
+  const scale = useScale();
 
   // URL 쿼리 파라미터에서 시나리오 ID와 퀘스트 ID 가져오기
   useEffect(() => {
@@ -50,11 +51,11 @@ const HarvestQuest = () => {
     setScenarioId(sId);
     setQuestId(qId || '4');
     
-    // 인트로 화면 3s후 드라이빙
+    // 인트로 화면 3초 후 드라이빙
     const timer = setTimeout(() => {
       setGamePhase('driving');
       
-      // 드라이비 1s후 사과박스 쌓인 정지 화면으로 전환
+      // 드라이빙 1초 후 사과박스 쌓인 정지 화면으로 전환
       const drivingTimer = setTimeout(() => {
         setGamePhase('harvestDone');
         
@@ -76,7 +77,7 @@ const HarvestQuest = () => {
   const handleOptionSelect = (option: 'A' | 'B') => {
     setSelectedOption(option);
     
-    // 정재 : 퀘스트 시도 & 점수 반영 API
+    // API 호출
     const isCorrect = option === 'B';
     const scoreAwarded = isCorrect ? 20 : 10;
 
@@ -107,7 +108,7 @@ const HarvestQuest = () => {
           setTimeout(() => {
             navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=20&correct=true`);
           }, 5000);
-        }, 4000); //성공 메시지가 나오기까지 5초 걸림=성공메시지표시전에 동그라미 나옴
+        }, 4000);
       }, 1000);
     } else {
       // 오답 선택
@@ -117,7 +118,7 @@ const HarvestQuest = () => {
           setGamePhase('failResult');
           setTimeout(() => {
             navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=10&correct=false`);
-          }, 15000); //오답 결과 유지 시간
+          }, 15000);
         }, 2500);
       }, 1000);
     }
@@ -127,11 +128,11 @@ const HarvestQuest = () => {
     if (gamePhase === 'failResult') {
       const timer = setTimeout(() => {
         setShowWarning(true);
-      }, 4000); // 초 후 경고문구
+      }, 4000);
 
-      return () => clearTimeout(timer); // 클린업
+      return () => clearTimeout(timer);
     } else {
-      setShowWarning(false); // 다시 숨기기
+      setShowWarning(false);
     }
   }, [gamePhase]);
 
@@ -140,22 +141,22 @@ const HarvestQuest = () => {
     setFallbackImage(true);
   };
 
-  //퀘스트 제목 랜더링
+  // 퀘스트 제목 렌더링
   useEffect(() => {
-  if (gamePhase === 'intro') {
-    const timer = setTimeout(() => {
-      setShowIntroText(true);
-    }, 3000); // 3초 후에 텍스트 보이기
+    if (gamePhase === 'intro') {
+      const timer = setTimeout(() => {
+        setShowIntroText(true);
+      }, 3000);
 
-    return () => clearTimeout(timer); // 언마운트 시 타이머 정리
-  } else {
-    setShowIntroText(false); // intro 상태 벗어나면 다시 숨기기
-  }
-}, [gamePhase]);
+      return () => clearTimeout(timer);
+    } else {
+      setShowIntroText(false);
+    }
+  }, [gamePhase]);
 
   return (
     <div className="w-full h-full">
-      {/* 배경 - 게임 단계에 따라 다른 배경 표시 */}
+      {/* 배경 */}
       {(gamePhase !== 'fadeOut' ) && (
         <img
           src={fieldHarvestBoxes}
@@ -163,9 +164,10 @@ const HarvestQuest = () => {
           className="absolute w-full h-full object-cover"
         />
       )}
-      {/*배경 흐리게 처리*/}
+
+      {/* 배경 흐리게 처리 */}
       {(gamePhase !== 'intro' && gamePhase !== 'driving' && gamePhase !== 'harvestDone' && gamePhase !== 'failResult' ) && (
-      <div className="absolute inset-0 bg-[#FFF9C4]/60 z-10"></div>
+        <div className="absolute inset-0 bg-[#FFF9C4]/60 z-10"></div>
       )}
 
       {/* 헤더 영역 */}
@@ -176,52 +178,48 @@ const HarvestQuest = () => {
       {/* 인트로 화면 */}
       {gamePhase === 'intro' && (
         <>
-          
-          {/*<HarvestBox /> 
-          showIntroText && (
-            <div className="absolute inset-0 flex items-center justify-center z-20">
-              <GameTitle text="작업 완료" fontSize="text-[5.25rem]" strokeWidth="12px" />
-            </div>
-          )*/}
+          {/* HarvestBox와 showIntroText 관련 로직은 필요에 따라 활성화 */}
         </>
       )}
 
       {/* 주행 화면 */}
       {gamePhase === 'driving' && (
         <div className="absolute inset-0 flex items-center justify-center z-10">
-          {/*<HarvestBox2 /> <div className="absolute z-20">
-            {renderTitleText('작업 완료')}
-          </div> */}
+          {/* HarvestBox2와 타이틀 관련 로직은 필요에 따라 활성화 */}
         </div>
       )}
-      
-      {/* 수확 완료 화면 {gamePhase === 'harvestDone' && (
-        <div className="absolute inset-0 flex items-center justify-center z-10">
-          <div className="absolute z-20">
-            {renderTitleText('작업 완료')}
-          </div>
-        </div>
-      )} */}
-      
 
-      
-
-      {/* 선택지 화면 - 오토바이 제거 */}
+      {/* 선택지 화면 */}
       {gamePhase === 'selection' && (
         <div className="absolute inset-0">
-          <div className="absolute inset-0 top-20 flex flex-col items-center justify-center z-30">
+          <div 
+            className="absolute inset-0 flex flex-col items-center justify-center z-30"
+            style={{ top: `calc(80px * ${scale})` }}
+          >
             {/* 선택지 제목 및 설명 */}
-            <div className="w-[735px] h-[339px] 
-            bg-[#FFFAFA] bg-opacity-75 border-[10px] border-[#0DA429] rounded-[30px] 
-            p-6 mb-8 
-            flex flex-col justify-center items-center text-center">
+            <div 
+              className="bg-[#FFFAFA] bg-opacity-75 border-[#0DA429] rounded-[30px] flex flex-col justify-center items-center text-center"
+              style={{
+                width: `calc(735px * ${scale})`,
+                height: `calc(339px * ${scale})`,
+                borderWidth: `calc(10px * ${scale})`,
+                padding: `calc(24px * ${scale})`,
+                marginBottom: `calc(32px * ${scale})`
+              }}
+            >
               <GameTitle 
-              text="무거운 짐 싣기" 
-              fontSize="text-[60px]" 
-              color="text-[#0DA429]" 
-              strokeWidth="0px"
+                text="무거운 짐 싣기" 
+                fontSize="text-[60px]" 
+                color="text-[#0DA429]" 
+                strokeWidth="0px"
               />
-              <p className="mt-2 text-[40px] font-extrabold text-black leading-snug">
+              <p 
+                className="font-extrabold text-black leading-snug"
+                style={{ 
+                  fontSize: `calc(2.5rem * ${scale})`,
+                  marginTop: `calc(8px * ${scale})`
+                }}
+              >
                 작업하는 중에 수확한 농작물을<br/>
                 <span className="text-[#B91C1C]">이륜차에 싣고 싶어요</span><br/>
                 어떻게 옮길까요?
@@ -229,13 +227,25 @@ const HarvestQuest = () => {
             </div>
             
             {/* 선택지 버튼 */}
-            <div className="flex justify-between w-[750px] p-0">
+            <div 
+              className="flex justify-between"
+              style={{
+                width: `calc(750px * ${scale})`,
+                padding: 0
+              }}
+            >
               <button
-                className={`w-[355px] h-[208px] rounded-[20px] text-3xl font-extrabold text-black transition duration-300 border-[7px]
+                className={`rounded-[20px] font-extrabold text-black transition duration-300
                   ${selectedOption === 'A' ? 
                     'bg-[#0DA429] bg-opacity-90 border-[#0DA429] scale-105' : 
                     'bg-[#FFFAFA] bg-opacity-70 border-[#0DA429] hover:bg-opacity-90'}
                 `}
+                style={{
+                  width: `calc(355px * ${scale})`,
+                  height: `calc(208px * ${scale})`,
+                  fontSize: `calc(1.875rem * ${scale})`,
+                  borderWidth: `calc(7px * ${scale})`
+                }}
                 onClick={() => handleOptionSelect('A')}
                 disabled={!!selectedOption}
               >
@@ -243,11 +253,17 @@ const HarvestQuest = () => {
               </button>
               
               <button
-                className={`w-[355px] h-[208px] rounded-[20px] text-3xl font-extrabold text-black transition duration-300 border-[7px]
+                className={`rounded-[20px] font-extrabold text-black transition duration-300
                   ${selectedOption === 'B' ? 
                     'bg-[#0DA429] bg-opacity-90 border-[#0DA429] scale-105' : 
                     'bg-[#FFFAFA] bg-opacity-70 border-[#0DA429] hover:bg-opacity-90'}
                 `}
+                style={{
+                  width: `calc(355px * ${scale})`,
+                  height: `calc(208px * ${scale})`,
+                  fontSize: `calc(1.875rem * ${scale})`,
+                  borderWidth: `calc(7px * ${scale})`
+                }}
                 onClick={() => handleOptionSelect('B')}
                 disabled={!!selectedOption}
               >
@@ -258,7 +274,7 @@ const HarvestQuest = () => {
         </div>
       )}
       
-      {/* 정답 결과 화면 - 오토바이 제거 */}
+      {/* 정답 결과 화면 */}
       {gamePhase === 'successResult' && !showSuccessMessage && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           {/* 중앙에 큰 success_circle 이미지 */}
@@ -269,26 +285,34 @@ const HarvestQuest = () => {
               className="absolute w-full h-full object-contain z-20"
             />
             
-            {/* 그 위에 오토바이 운전하는 할아버지 이미지 */}
+            {/* 그 위에 할아버지와 오토바이 이미지 */}
             <div className="absolute inset-0 flex items-center justify-center z-30">
               {!fallbackImage ? (
                 <>
                 <motion.img
-                src={grandfaSuccess}
-                alt="수레 끄시는 할아버지" 
-                className="absolute left-[20%] w-[400px] h-auto object-contain z-40"
-                onError={handleImageError}
-                animate={{ x: [0, 45] }} //X축: 0→65px
-                transition={{ 
-                  duration: 5, // 한 사이클(0→20→0)에 2초 
-                  repeat: 1, // 반복
-                  //ease: "easeInOut"  // 부드러운 가속·감속
-                }}
+                  src={grandfaSuccess}
+                  alt="수레 끄시는 할아버지" 
+                  className="absolute object-contain z-40"
+                  style={{
+                    left: `calc(20% * ${scale})`,
+                    width: `calc(400px * ${scale})`,
+                    height: 'auto'
+                  }}
+                  onError={handleImageError}
+                  animate={{ x: [0, `calc(45px * ${scale})`] }}
+                  transition={{ 
+                    duration: 5,
+                    repeat: 1,
+                  }}
                 />
                 <img 
                   src={motorcycle}
                   alt="오토바이"
-                  className="absolute right-[26%] w-[323px] object-contain z-50"
+                  className="absolute object-contain z-50"
+                  style={{
+                    right: `calc(26% * ${scale})`,
+                    width: `calc(323px * ${scale})`
+                  }}
                   onError={handleImageError}
                 />
                 </>
@@ -304,36 +328,53 @@ const HarvestQuest = () => {
         </div>
       )}
       
-      {/* 정답 후 성공 메시지 화면 - 오토바이 제거 */}
+      {/* 정답 후 성공 메시지 화면 */}
       {gamePhase === 'successResult' && showSuccessMessage && (
         <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
           {/* 중앙 상단에 정답입니다! */}
           <div
-            className="text-[70px] font-extrabold text-[#0E8E12]"
+            className="text-[#0E8E12] font-extrabold"
             style={{
-              WebkitTextStroke: '10px #FFFFFF',
+              fontSize: `calc(4.375rem * ${scale})`,
+              WebkitTextStroke: `calc(10px * ${scale}) #FFFFFF`,
               paintOrder: 'stroke',
             }}
           >
             정답입니다!
           </div>
 
-            {/* 중앙에 녹색 박스에 메시지 */}
-            <div className="w-[754px] h-[306px] 
-            bg-[#0DA429] bg-opacity-50 
-            border-[10px] border-[#0E8E12] border-opacity-80 
-            rounded-[30px] 
-            p-4 mx-auto mt-10 
-            flex justify-center items-center text-center relative">
-              <p className="text-[55px] font-extrabold text-[#FFFAFA]">
-                당신의 안전과<br/> 소중한 자산을 보호하는 <br/> 현명한 선택이에요
-              </p>
-            </div>
+          {/* 중앙에 녹색 박스에 메시지 */}
+          <div 
+            className="bg-[#0DA429] bg-opacity-50 border-[#0E8E12] border-opacity-80 rounded-[30px] mx-auto text-center relative"
+            style={{
+              width: `calc(754px * ${scale})`,
+              height: `calc(306px * ${scale})`,
+              borderWidth: `calc(10px * ${scale})`,
+              padding: `calc(16px * ${scale})`,
+              marginTop: `calc(40px * ${scale})`,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          >
+            <p 
+              className="font-extrabold text-[#FFFAFA]"
+              style={{ fontSize: `calc(3.4375rem * ${scale})` }}
+            >
+              당신의 안전과<br/> 소중한 자산을 보호하는 <br/> 현명한 선택이에요
+            </p>
+          </div>
+
           {/* 좌측 하단 별별이 캐릭터 */}
           <img 
             src={starCharacter} 
             alt="별별이" 
-            className="absolute bottom-[10%] left-[5%] w-[250px] z-30"
+            className="absolute z-30"
+            style={{
+              bottom: `calc(10% * ${scale})`,
+              left: `calc(5% * ${scale})`,
+              width: `calc(250px * ${scale})`
+            }}
           />
         </div>
       )}
@@ -341,9 +382,9 @@ const HarvestQuest = () => {
       {/* 페이드아웃 화면 */}
       {gamePhase === 'fadeOut' && (
         <img
-        src="/assets/images/accident_fadeout.png"
-        alt="전환 이미지"
-        className="absolute inset-0 w-full h-full object-cover z-50 opacity-0 animate-fadein"
+          src="/assets/images/accident_fadeout.png"
+          alt="전환 이미지"
+          className="absolute inset-0 w-full h-full object-cover z-50 opacity-0 animate-fadein"
         />
       )}
       
@@ -355,10 +396,12 @@ const HarvestQuest = () => {
             alt="사고 장면"
             className="absolute inset-0 w-full h-full object-cover"
           />
-          {/* 애니메이션 컨테이너 - showWarning 상태에 따라 표시 */}
+
+          {/* 애니메이션 컨테이너 */}
           {showWarning && (
             <motion.div 
-              className="absolute inset-0 bg-[#FFF9C4]/60 flex flex-col items-center justify-end pb-32 z-10"
+              className="absolute inset-0 bg-[#FFF9C4]/60 flex flex-col items-center justify-end z-10"
+              style={{ paddingBottom: `calc(128px * ${scale})` }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8 }}
@@ -366,21 +409,40 @@ const HarvestQuest = () => {
               <motion.img 
                 src={dangerWarning} 
                 alt="위험 경고" 
-                className="w-[16%] mb-1" //간격 조절 여기서
-                initial={{ y: -20, opacity: 0 }}
+                style={{
+                  width: `calc(16% * ${scale})`,
+                  marginBottom: `calc(4px * ${scale})`
+                }}
+                initial={{ y: `calc(-20px * ${scale})`, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
               />
               
               <motion.div 
-                className="w-[850px] h-[353px] bg-[#FFFAFA]/75 border-[#EE404C] border-[10px] rounded-[30px] p-8 text-center flex flex-col justify-center items-center"
+                className="bg-[#FFFAFA]/75 border-[#EE404C] rounded-[30px] text-center flex flex-col justify-center items-center"
+                style={{
+                  width: `calc(850px * ${scale})`,
+                  height: `calc(353px * ${scale})`,
+                  borderWidth: `calc(10px * ${scale})`,
+                  padding: `calc(32px * ${scale})`
+                }}
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
-
-                <h2 className="text-6xl font-extrabold text-red-600 mb-5">덜컹! 넘어졌어요</h2>
-                <p className="text-4xl font-extrabold text-black">
+                <h2 
+                  className="font-extrabold text-red-600"
+                  style={{ 
+                    fontSize: `calc(3.75rem * ${scale})`,
+                    marginBottom: `calc(20px * ${scale})`
+                  }}
+                >
+                  덜컹! 넘어졌어요
+                </h2>
+                <p 
+                  className="font-extrabold text-black"
+                  style={{ fontSize: `calc(2.5rem * ${scale})` }}
+                >
                   뿌리에 걸려 낙상할 수 있어요<br />
                   이륜차는 도로에 두고 짐을 옮겨요
                 </p>

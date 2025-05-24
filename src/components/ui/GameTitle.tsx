@@ -1,4 +1,4 @@
-// Front/src/components/ui/GameTitle.tsx
+// src/components/ui/GameTitle.tsx
 interface GameTitleProps {
   text: string;
   fontSize?: string;
@@ -9,22 +9,26 @@ interface GameTitleProps {
 
 const GameTitle = ({ 
   text, 
-  fontSize = 'text-6xl', 
+  fontSize = 'text-responsive-6xl',
   color = 'text-green-600',
-  strokeWidth = '12px',
+  strokeWidth = 'calc(12px * var(--scale, 1))',
   className = ''
 }: GameTitleProps) => {
   return (
-    <h2 className={`${fontSize} font-extrabold whitespace-nowrap ${className}`}>
+    <h2 
+      className={`${fontSize} font-extrabold whitespace-nowrap ${className}`}
+      style={{
+        WebkitTextStroke: `${strokeWidth} white`,
+        // textStroke 제거 (표준이 아님)
+        paintOrder: 'stroke',
+        letterSpacing: '-16px',
+      } as React.CSSProperties}
+    >
       {text.split('').map((ch, i) => (
-        ch === ' ' ? ' ' :
+        ch === '' ? ' ' :
         <span 
           key={i} 
-          className={`inline-block ${color} px-1 rounded`}
-          style={{
-            WebkitTextStroke: `${strokeWidth} white`,
-            paintOrder: 'stroke'
-          } as React.CSSProperties}
+          className={`inline-block ${color} px-responsive-xs rounded`}
         >
           {ch}
         </span>

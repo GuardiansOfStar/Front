@@ -154,3 +154,27 @@ button:focus-visible {
 .flipped .flip-card-inner {
   transform: rotateY(180deg);
 }
+
+/* src/index.css에 추가 */
+
+/* 반응형 기본 스타일 */
+.responsive-container {
+  --base-scale: 1;
+}
+
+/* 반응형 이미지 클래스 */
+.responsive-image {
+  width: calc(var(--original-width, 100%) * var(--scale, 1));
+  height: calc(var(--original-height, auto) * var(--scale, 1));
+}
+
+/* 반응형 포지션 클래스 */
+.responsive-absolute {
+  position: absolute;
+  transform-origin: top left;
+}
+
+/* 반응형 패딩/마진 */
+.responsive-p-4 { padding: calc(1rem * var(--scale, 1)); }
+.responsive-m-4 { margin: calc(1rem * var(--scale, 1)); }
+.responsive-gap-4 { gap: calc(1rem * var(--scale, 1)); }

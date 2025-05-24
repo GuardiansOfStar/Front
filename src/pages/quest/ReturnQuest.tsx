@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import HomeButton from '../../components/ui/HomeButton';
 import GameTitle from '../../components/ui/GameTitle';
+import { useScale } from '../../hooks/useScale';
 
 // 이미지 임포트
 const homecomingTimeSettingBackground = '/assets/images/homecoming_time_setting_tree_road.png';
@@ -39,11 +40,11 @@ type GamePhase =
 // 시간별 배경색 정의
 const getBackgroundColor = (hour: number): string => {
     switch(hour) {
-      case 5: return 'linear-gradient(to bottom, #87CEEB 0%, #B0E0E6 50%, #FFF8DC 100%)'; // 밝은 하늘색
-      case 6: return 'linear-gradient(to bottom, #FFE4B5 0%, #FFA07A 40%, #FF8C69 100%)'; // 연한 노을색
+      case 5: return 'linear-gradient(to bottom, #87CEEB 0%, #B0E0E6 50%, #FFF8DC 100%)';
+      case 6: return 'linear-gradient(to bottom, #FFE4B5 0%, #FFA07A 40%, #FF8C69 100%)';
       case 7: return 'linear-gradient(to bottom, #FF8C69 0%, #FF6347 40%, #CD5C5C 100%)';
-      case 8: return 'linear-gradient(to bottom, #4B0082 0%, #2F4F4F 40%, #000080 100%)'; // 어둑한 색
-      case 9: return 'linear-gradient(to bottom, #191970 0%, #000000 50%, #0D0D0D 100%)'; // 어두운 색
+      case 8: return 'linear-gradient(to bottom, #4B0082 0%, #2F4F4F 40%, #000080 100%)';
+      case 9: return 'linear-gradient(to bottom, #191970 0%, #000000 50%, #0D0D0D 100%)';
       default: return 'linear-gradient(to bottom, #FF6347 0%, #FF4500 40%, #8B0000 100%)';
     }
   };
@@ -57,7 +58,7 @@ const ReturnQuest = () => {
   const [scenarioId, setScenarioId] = useState<string | null>(null);
   const [questId, setQuestId] = useState<string | null>(null);
   const [gamePhase, setGamePhase] = useState<GamePhase>('sunsetAnimation');
-  const [selectedHour, setSelectedHour] = useState(7); // 기본값 7시
+  const [selectedHour, setSelectedHour] = useState(7);
   const [showSun, setShowSun] = useState(false);
   const [showTitle, setShowTitle] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
@@ -71,6 +72,7 @@ const ReturnQuest = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [currentExactHour, setCurrentExactHour] = useState(7);
 
+  const scale = useScale();
 
   // URL 쿼리 파라미터 처리
   useEffect(() => {
@@ -93,51 +95,42 @@ const ReturnQuest = () => {
     if (!clocksRef.current) return;
     
     const clocksWidth = clocksRef.current.offsetWidth;
-    const buttonWidth = 81; // drag_button.png 너비
+    const buttonWidth = 81 * scale;
     
-    // 좌우 여백을 더 크게 설정하여 버튼이 화면 끝에 붙지 않도록 함
-    const sideMargin = clocksWidth * 0.1; // 전체 너비의 10%씩 좌우 여백
+    const sideMargin = clocksWidth * 0.1;
     const availableWidth = clocksWidth - (sideMargin * 2);
     
-    // 5시~9시까지 5개 구간으로 나누어 위치 계산
-    const hourIndex = hour - 5; // 0~4 인덱스
+    const hourIndex = hour - 5;
     const position = sideMargin + (availableWidth * hourIndex / 4);
     
     setDragButtonPosition(position);
-    setCurrentExactHour(hour); // 추가
-  }, []);
+    setCurrentExactHour(hour);
+  }, [scale]);
 
   // 위치로부터 시간 계산 함수
   const calculateHourFromPosition = useCallback((position: number): number => {
     if (!clocksRef.current) return 7;
     
     const clocksWidth = clocksRef.current.offsetWidth;
-    const sideMargin = clocksWidth * 0.1; // 좌우 여백
+    const sideMargin = clocksWidth * 0.1;
     const availableWidth = clocksWidth - (sideMargin * 2);
     
-    // 위치를 0~1 비율로 변환
     const ratio = Math.max(0, Math.min(1, (position - sideMargin) / availableWidth));
-    
-    // 비율을 5~9시 범위로 변환
     const exactHour = 5 + (ratio * 4);
     
-    // 가장 가까운 정수 시간으로 반올림
     return Math.round(exactHour);
   }, []);
 
-  // 시간별 배경색을 부드럽게 보간하는 함수 추가
+  // 시간별 배경색을 부드럽게 보간하는 함수
   const getInterpolatedBackgroundColor = (exactHour: number): string => {
     const hour = Math.floor(exactHour);
     const fraction = exactHour - hour;
     
-    // 5시 미만이면 5시 색상, 9시 초과면 9시 색상
     if (exactHour <= 5) return getBackgroundColor(5);
     if (exactHour >= 9) return getBackgroundColor(9);
     
-    // 정확한 시간이면 해당 색상 반환
     if (fraction === 0) return getBackgroundColor(hour);
     
-    // 두 시간 사이의 색상을 보간
     const currentColors = getHourColors(hour);
     const nextColors = getHourColors(hour + 1);
     
@@ -152,7 +145,7 @@ const ReturnQuest = () => {
     const colorMap: { [key: number]: string[] } = {
       5: ['#87CEEB', '#B0E0E6', '#FFF8DC'],
       6: ['#FFE4B5', '#FFA07A', '#FF8C69'],
-      7: ['#FF8C69', '#FF6347', '#CD5C5C'], // 이 라인 수정
+      7: ['#FF8C69', '#FF6347', '#CD5C5C'],
       8: ['#4B0082', '#2F4F4F', '#000080'],
       9: ['#191970', '#000000', '#0D0D0D']
     };
@@ -187,7 +180,7 @@ const ReturnQuest = () => {
     const availableWidth = clocksWidth - (sideMargin * 2);
     
     const ratio = Math.max(0, Math.min(1, (position - sideMargin) / availableWidth));
-    return 5 + (ratio * 4); // 5~9시 범위의 실시간 값
+    return 5 + (ratio * 4);
   }, []);
 
   const handleClockClick = useCallback((e: React.MouseEvent) => {
@@ -199,13 +192,11 @@ const ReturnQuest = () => {
     const rect = clocksElement.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
     
-    // 클릭 위치에서 시간 계산
     const targetHour = calculateHourFromPosition(clickX);
     
-    // 애니메이션과 함께 해당 시간으로 이동
     setIsAnimating(true);
     setSelectedHour(targetHour);
-    setCurrentExactHour(targetHour); // 추가
+    setCurrentExactHour(targetHour);
     
     setTimeout(() => {
       updateDragButtonPosition(targetHour);
@@ -233,32 +224,26 @@ const ReturnQuest = () => {
     
     setDragButtonPosition(newPosition);
     
-    // 실시간으로 정확한 시간 계산 (소수점 포함)
     const exactHour = calculateExactHourFromPosition(newPosition);
     setCurrentExactHour(exactHour);
     
-    // 정수 시간 업데이트
     const newHour = Math.round(exactHour);
     if (newHour !== selectedHour) {
       setSelectedHour(newHour);
     }
   }, [isDragging, dragStartX, selectedHour, calculateExactHourFromPosition]);
 
-  // handleDragEnd 함수 수정
+  // 드래그 종료 핸들러
   const handleDragEnd = useCallback(() => {
     if (!isDragging) return;
     
     setIsDragging(false);
     setIsAnimating(true);
     
-    // 가장 가까운 시간으로 스냅
     const targetHour = calculateHourFromPosition(dragButtonPosition);
     setSelectedHour(targetHour);
-    
-    // currentExactHour도 정수 시간으로 업데이트 (추가)
     setCurrentExactHour(targetHour);
     
-    // 애니메이션과 함께 정확한 위치로 이동
     setTimeout(() => {
       updateDragButtonPosition(targetHour);
       setTimeout(() => setIsAnimating(false), 300);
@@ -339,23 +324,20 @@ const ReturnQuest = () => {
     }
     else if (gamePhase === 'successResult') {
       timer = setTimeout(() => {
-        // 먼저 이미지들을 숨김
         setHideSuccessImages(true);
 
-        // 이미지가 사라진 후 메시지 표시
         const messageTimer = setTimeout(() => {
           setShowSuccessMessage(true);
 
-          // 메시지 표시 후 점수 화면으로 이동
           const scoreTimer = setTimeout(() => {
             navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=20&correct=true`);
           }, 5000);
 
           return () => clearTimeout(scoreTimer);
-        }, 1000); // 이미지 사라지는 애니메이션 시가
+        }, 1000);
 
         return () => clearTimeout(messageTimer);
-      }, 3000); // 이미지 표시 시간을 3초로 단축
+      }, 3000);
     }
     else if (gamePhase === 'failSequence1') {
       timer = setTimeout(() => {
@@ -420,19 +402,27 @@ const ReturnQuest = () => {
 
   return (
     <div className="relative w-full h-full overflow-hidden">
-      {/* 동적 배경색 - 실시간 보간된 색상 적용 */}
+      {/* 동적 배경색 */}
       <div 
         className="absolute inset-0 transition-all duration-200 ease-out"
         style={{ 
           background: gamePhase === 'gamePlay' ? getInterpolatedBackgroundColor(currentExactHour) : 
                      gamePhase === 'successResult' ? getBackgroundColor(selectedHour) :
-                     gamePhase === 'failSequence3' ? '#000000' : // 고라니 등장 시 검정 배경
+                     gamePhase === 'failSequence3' ? '#000000' :
                      'linear-gradient(to bottom, #FFE4B5 0%, #FFA07A 100%)'
         }}
       />
 
       {gamePhase === 'gameIntro' && (
-        <div className="absolute top-6 right-6 z-[100] w-20 h-20">
+        <div 
+          className="absolute z-[100]"
+          style={{
+            top: `calc(24px * ${scale})`,
+            right: `calc(24px * ${scale})`,
+            width: `calc(80px * ${scale})`,
+            height: `calc(80px * ${scale})`
+          }}
+        >
           <HomeButton />
         </div>
       )}
@@ -451,14 +441,17 @@ const ReturnQuest = () => {
             <motion.img
               src={sunsetSceneSun}
               alt="해"
-              className="w-256 h-256"
+              style={{
+                width: `calc(256px * ${scale})`,
+                height: `calc(256px * ${scale})`
+              }}
               initial={{ 
-                x: 400,
-                y: -100
+                x: `calc(400px * ${scale})`,
+                y: `calc(-100px * ${scale})`
               }}
               animate={showSun ? { 
                 x: 0,
-                y: 80
+                y: `calc(80px * ${scale})`
               } : {}}
               transition={{ duration: 3, ease: 'easeOut' }}
             />
@@ -466,8 +459,9 @@ const ReturnQuest = () => {
           
           {showTitle && (
             <motion.div 
-              className="absolute top-20 left-0 right-0 flex justify-center items-center z-20"
-              initial={{ opacity: 0, y: 20 }}
+              className="absolute left-0 right-0 flex justify-center items-center z-20"
+              style={{ top: `calc(80px * ${scale})` }}
+              initial={{ opacity: 0, y: `calc(20px * ${scale})` }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: 'easeOut' }}
             >
@@ -491,9 +485,10 @@ const ReturnQuest = () => {
             <img
               src={sunsetSceneSun}
               alt="해"
-              className="w-256 h-256"
               style={{
-                transform: 'translate(0px, 80px)'
+                width: `calc(256px * ${scale})`,
+                height: `calc(256px * ${scale})`,
+                transform: `translate(0px, ${80 * scale}px)`
               }}
             />
           </div>
@@ -507,17 +502,29 @@ const ReturnQuest = () => {
           
           <motion.div 
             className="absolute inset-0 flex flex-col items-center justify-center z-30"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: `calc(20px * ${scale})` }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.3 }}
           >
             <div className="relative w-4/5 max-w-4xl">
-              <div className="mb-8 flex justify-center items-center">
+              <div 
+                className="flex justify-center items-center"
+                style={{ marginBottom: `calc(32px * ${scale})` }}
+              >
                 <GameTitle text="귀가 시간 정하기" fontSize="text-6xl" strokeWidth="10px" />
               </div>
               
-              <div className="bg-white/90 border-8 border-green-600 rounded-xl p-10 mb-16 text-center">
-                <p className="text-4xl font-extrabold text-black leading-loose">
+              <div 
+                className="bg-white/90 border-8 border-green-600 rounded-xl text-center"
+                style={{ 
+                  padding: `calc(40px * ${scale})`,
+                  marginBottom: `calc(64px * ${scale})`
+                }}
+              >
+                <p 
+                  className="font-extrabold text-black leading-loose"
+                  style={{ fontSize: `calc(2.5rem * ${scale})` }}
+                >
                   해가 지기 시작해요<br/>
                   <span className="text-red-600">언제쯤</span><br/>
                   작업을 마치고 집으로 출발할까요?
@@ -526,18 +533,25 @@ const ReturnQuest = () => {
             </div>
           </motion.div>
           
-          <div className="absolute bottom-8 left-0 right-0 flex justify-center z-50">
+          <div 
+            className="absolute left-0 right-0 flex justify-center z-50"
+            style={{ bottom: `calc(32px * ${scale})` }}
+          >
             <img
               src={nextButton}
               alt="다음"
               onClick={handleNextPhase}
-              className="w-52 h-auto cursor-pointer hover:scale-105 transition-transform"
+              style={{
+                width: `calc(208px * ${scale})`,
+                height: 'auto'
+              }}
+              className="cursor-pointer hover:scale-105 transition-transform"
             />
           </div>
         </div>
       )}
 
-      {/* 게임 플레이 화면 - 클릭 및 드래그 기능 수정 */}
+      {/* 게임 플레이 화면 */}
       {gamePhase === 'gamePlay' && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           {/* 배경 이미지 */}
@@ -548,11 +562,21 @@ const ReturnQuest = () => {
           />
 
           {/* 확인 버튼 */}
-          <div className="flex justify-center mt-20 z-20">
+          <div 
+            className="flex justify-center z-20"
+            style={{ marginTop: `calc(80px * ${scale})` }}
+          >
             <button
               onClick={handleStartGame}
               disabled={isDragging || isAnimating}
-              className="bg-green-600 hover:bg-green-700 text-white font-extrabold py-4 px-8 rounded-xl text-4xl transition-colors duration-300 border-4 border-white disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+              className="bg-green-600 hover:bg-green-700 text-white font-extrabold rounded-xl border-4 border-white disabled:opacity-50 disabled:cursor-not-allowed shadow-lg transition-colors duration-300"
+              style={{
+                fontSize: `calc(2.5rem * ${scale})`,
+                paddingTop: `calc(16px * ${scale})`,
+                paddingBottom: `calc(16px * ${scale})`,
+                paddingLeft: `calc(32px * ${scale})`,
+                paddingRight: `calc(32px * ${scale})`
+              }}
             >
               {selectedHour}시에 귀가
             </button>
@@ -574,12 +598,11 @@ const ReturnQuest = () => {
                 }}
               />
               
-              {/* 통합된 클릭/드래그 영역 - 가장 위에 배치 */}
+              {/* 통합된 클릭/드래그 영역 */}
               <div
                 className="absolute inset-0 cursor-grab active:cursor-grabbing"
                 style={{ zIndex: 25 }}
                 onMouseDown={(e) => {
-                  // 드래그 버튼 영역인지 확인
                   const rect = clocksRef.current?.getBoundingClientRect();
                   if (!rect) return;
                   
@@ -588,17 +611,14 @@ const ReturnQuest = () => {
                   
                   if (buttonRect) {
                     const buttonCenterX = buttonRect.left + buttonRect.width / 2 - rect.left;
-                    const buttonRadius = 50; // 드래그 버튼 주변 영역
+                    const buttonRadius = 50 * scale;
                     
                     if (Math.abs(clickX - buttonCenterX) < buttonRadius) {
-                      // 드래그 버튼 근처 클릭 - 드래그 시작
                       handleMouseDown(e);
                     } else {
-                      // 다른 영역 클릭 - 클릭으로 이동
                       handleClockClick(e);
                     }
                   } else {
-                    // 버튼이 없으면 클릭으로 처리
                     handleClockClick(e);
                   }
                 }}
@@ -612,12 +632,11 @@ const ReturnQuest = () => {
                   
                   if (buttonRect) {
                     const buttonCenterX = buttonRect.left + buttonRect.width / 2 - rect.left;
-                    const buttonRadius = 50;
+                    const buttonRadius = 50 * scale;
                     
                     if (Math.abs(touchX - buttonCenterX) < buttonRadius) {
                       handleTouchStart(e);
                     } else {
-                      // 터치로 클릭 효과
                       const syntheticEvent = {
                         clientX: touch.clientX,
                         preventDefault: () => {},
@@ -637,13 +656,10 @@ const ReturnQuest = () => {
                   ${isDragging ? 'scale-110' : 'hover:scale-105'}
                   ${isAnimating ? 'transition-all duration-300 ease-out' : ''}`}
                 style={{
-                  width: '81px',
-                  height: '108px',
-                  left: `${dragButtonPosition}px`,
+                  width: `calc(81px * ${scale})`,
+                  height: `calc(108px * ${scale})`,
+                  left: `${dragButtonPosition * scale}px`,
                   top: '72%',
-                  transform: 'translate(-50%, -50%)',
-                  zIndex: 30,
-                  filter: isDragging ? 'drop-shadow(0 8px 16px rgba(0,0,0,0.3))' : 'none'
                 }}
                 draggable={false}
               />
@@ -681,7 +697,11 @@ const ReturnQuest = () => {
             <motion.img
               src={mission5SuccessGrandfather}
               alt="성공한 할아버지"
-              className="absolute w-1/2 h-auto object-contain z-30"
+              className="absolute object-contain z-30"
+              style={{ 
+                width: `calc(50% * ${scale})`,
+                height: 'auto'
+              }}
               initial={{ scale: 0.8, opacity: 0 }}
               animate={hideSuccessImages ? { scale: 0.5, opacity: 0 } : { scale: 1, opacity: 1 }}
               transition={hideSuccessImages ? { duration: 0.8, ease: 'easeIn' } : { duration: 1, delay: 0.3, ease: 'easeOut' }}
@@ -703,8 +723,9 @@ const ReturnQuest = () => {
           
           <div className="absolute inset-0 flex flex-col items-center justify-center z-30">
             <motion.div 
-              className="absolute top-[20%] left-0 right-0 flex justify-center items-center transform -translate-x-1/2"
-              initial={{ opacity: 0, y: -30 }}
+              className="absolute left-0 right-0 flex justify-center items-center transform -translate-x-1/2"
+              style={{ top: `calc(20% * ${scale})` }}
+              initial={{ opacity: 0, y: `calc(-30px * ${scale})` }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
             >
@@ -712,12 +733,19 @@ const ReturnQuest = () => {
             </motion.div>
             
             <motion.div 
-              className="mt-10 bg-green-600 bg-opacity-70 border-green-700 border-8 rounded-3xl p-12 w-[75%] mx-auto text-center relative"
-              initial={{ opacity: 0, scale: 0.8, y: 30 }}
+              className="bg-green-600 bg-opacity-70 border-green-700 border-8 rounded-3xl w-[75%] mx-auto text-center relative"
+              style={{ 
+                padding: `calc(48px * ${scale})`,
+                marginTop: `calc(40px * ${scale})`
+              }}
+              initial={{ opacity: 0, scale: 0.8, y: `calc(30px * ${scale})` }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
             >
-              <p className="text-5xl font-extrabold text-white leading-relaxed">
+              <p 
+                className="font-extrabold text-white leading-relaxed"
+                style={{ fontSize: `calc(3rem * ${scale})` }}
+              >
                 해가 지기 전이<br/>
                 집 가기 딱 좋은 시간이에요
               </p>
@@ -725,8 +753,13 @@ const ReturnQuest = () => {
               <motion.img
                 src={starCharacter}
                 alt="별별이"
-                className="absolute bottom-[-80px] left-[-60px] w-[200px] z-40"
-                initial={{ opacity: 0, x: -30, y: 10 }}
+                className="absolute z-40"
+                style={{
+                  bottom: `calc(-80px * ${scale})`,
+                  left: `calc(-60px * ${scale})`,
+                  width: `calc(200px * ${scale})`
+                }}
+                initial={{ opacity: 0, x: `calc(-30px * ${scale})`, y: `calc(10px * ${scale})` }}
                 animate={{ opacity: 1, x: 0, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.6, ease: 'easeOut' }}
               />
@@ -735,7 +768,7 @@ const ReturnQuest = () => {
         </div>
       )}
 
-      {/* 오답 시퀀스들 (기존 코드와 동일) */}
+      {/* 오답 시퀀스들 */}
       {gamePhase === 'failSequence1' && (
         <motion.img
           src={missionFailEveningDriving}
@@ -773,8 +806,11 @@ const ReturnQuest = () => {
             src={goraniFace}
             alt="고라니"
             className="absolute bottom-0 right-0 z-0"
-            style={{ width: '700px', height: '700px' }}
-            initial={{ opacity: 0, x: 100 }}
+            style={{ 
+              width: `calc(700px * ${scale})`, 
+              height: `calc(700px * ${scale})` 
+            }}
+            initial={{ opacity: 0, x: `calc(100px * ${scale})` }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
           />
@@ -802,7 +838,8 @@ const ReturnQuest = () => {
           
           {showWarning && (
             <motion.div
-              className="absolute inset-0 bg-[#FFF9C4]/60 flex flex-col items-center justify-end pb-32 z-10"
+              className="absolute inset-0 bg-[#FFF9C4]/60 flex flex-col items-center justify-end z-10"
+              style={{ paddingBottom: `calc(128px * ${scale})` }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8 }}
@@ -810,22 +847,35 @@ const ReturnQuest = () => {
               <motion.img
                 src={dangerWarning}
                 alt="위험 경고"
-                className="w-[16%] mb-4"
-                initial={{ y: -20, opacity: 0 }}
+                style={{
+                  width: `calc(16% * ${scale})`,
+                  marginBottom: `calc(16px * ${scale})`
+                }}
+                initial={{ y: `calc(-20px * ${scale})`, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
               />
               
               <motion.div
-                className="w-[80%] bg-white bg-opacity-90 border-red-600 border-8 rounded-xl p-8 text-center"
+                className="w-[80%] bg-white bg-opacity-90 border-red-600 border-8 rounded-xl text-center"
+                style={{ padding: `calc(32px * ${scale})` }}
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
-                <h2 className="text-6xl font-extrabold text-red-600 mb-4">
+                <h2
+                  className="text-red-600 font-extrabold"
+                  style={{ 
+                    fontSize: `calc(4rem * ${scale})`,
+                    marginBottom: `calc(16px * ${scale})`
+                  }}
+                >
                   야생 동물과 부딪혀요!
                 </h2>
-                <p className="text-4xl font-extrabold text-black">
+                <p 
+                  className="font-extrabold text-black"
+                  style={{ fontSize: `calc(2.5rem * ${scale})` }}
+                >
                   야간 주행 시 시야 확보가 어려워요<br/>
                   해가 지기 전에 집으로 돌아가요
                 </p>

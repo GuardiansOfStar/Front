@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Background from '../../components/ui/Background';
+import { useScale } from '../../hooks/useScale';
 
 // 이미지 임포트
 const grandchildrenHappy = '/assets/images/grandchildren_happy.png';
@@ -15,6 +16,8 @@ const ScorePage = () => {
   const [isCorrect, setIsCorrect] = useState(true);
   const [scenarioId, setScenarioId] = useState<string | null>(null);
   const [questId, setQuestId] = useState<string | null>(null);
+
+  const scale = useScale();
   
   // URL 쿼리 파라미터에서 정보 가져오기
   useEffect(() => {
@@ -83,12 +86,28 @@ const ScorePage = () => {
           <img
             src={isCorrect ? grandchildrenHappy : grandchildrenSad}
             alt={isCorrect ? "기쁜 손자손녀" : "슬픈 손자손녀"}
-            className="w-72 h-auto mb-[-40px] z-10" // 크기 키우고 마이너스 마진 적용, z-index 추가
+            className="relative z-20"
+            style={{
+              width: `calc(288px * ${scale})`,
+              height: 'auto',
+              marginBottom: `calc(-40px * ${scale})`
+            }}
           />
           
           {/* 점수 표시 - 크기 키우고 스타일 조정 */}
-          <div className="transition-transform duration-300 scale-105 bg-green-500/90 border-[16px] border-green-700 rounded-[80px] px-40 py-10 shadow-lg flex items-center justify-center">
-            <span className="text-9xl font-extrabold text-white">+{score}</span>
+          <div 
+            className="transition-transform duration-300 bg-green-500/90 border-green-700 shadow-lg flex items-center justify-center"
+            style={{
+              transform: `scale(${1.05 * scale})`,
+              borderWidth: `calc(16px * ${scale})`,
+              borderRadius: `calc(80px * ${scale})`,
+              paddingLeft: `calc(160px * ${scale})`,
+              paddingRight: `calc(160px * ${scale})`,
+              paddingTop: `calc(40px * ${scale})`,
+              paddingBottom: `calc(40px * ${scale})`
+            }}
+          >
+            <span className="text-8xl font-extrabold text-white">+{score}</span>
           </div>
         </div>
       </div>

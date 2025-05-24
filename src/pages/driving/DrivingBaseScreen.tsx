@@ -1,16 +1,18 @@
 // src/pages/driving/DrivingBaseScreen.tsx
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useScale } from '../../hooks/useScale';
 import GameTitle from '../../components/ui/GameTitle';
 
 // 이미지 임포트
-const basicRoad = '/assets/images/basic_road.png';
+const basicRoad = '/assets/images/driving_road.png';
 const motorcycle = '/assets/images/motorcycle.png';
 const homeButton = '/assets/images/home_button.png';
 
 const DrivingBaseScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const scale = useScale();
   const [scenarioId, setScenarioId] = useState<string | null>(null);
   const [nextQuestId, setNextQuestId] = useState<string | null>(null);
   const [showStartText, setShowStartText] = useState(false);
@@ -89,19 +91,36 @@ const DrivingBaseScreen = () => {
       />
       
       {/* 헤더 영역 */}
-      <div className="absolute top-4 right-4 z-10">
+      <div 
+        className="absolute z-10"
+        style={{
+          top: `calc(16px * ${scale})`,
+          right: `calc(16px * ${scale})`
+        }}
+      >
         <img
           src={homeButton}
           alt="홈으로"
-          className="w-16 h-16 cursor-pointer"
+          className="cursor-pointer"
+          style={{
+            width: `calc(64px * ${scale})`,
+            height: `calc(64px * ${scale})`
+          }}
           onClick={handleGoHome}
         />
       </div>
       
       {/* 주행 시작 텍스트 - 미션 2로 이동할 때만 표시 */}
       {showStartText && (
-        <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
-          <GameTitle text="주행 시작" fontSize="text-[5.5rem]" strokeWidth="12px" />
+        <div 
+          className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20"
+          style={{ top: '25%' }}
+        >
+          <GameTitle 
+            text="주행 시작" 
+            fontSize={`calc(5.5rem * ${scale})`}
+            strokeWidth={`calc(12px * ${scale})`}
+          />
         </div>
       )}
       
@@ -111,8 +130,8 @@ const DrivingBaseScreen = () => {
           src={motorcycle}
           alt="이륜차"
           style={{
-            width: '80%', // 60%에서 80%로 확대
-            maxHeight: '60vh', // 50vh에서 60vh로 확대
+            width: `calc(80% * ${scale})`, // 80%에 스케일 적용
+            maxHeight: `calc(60vh * ${scale})`, // 60vh에 스케일 적용
             objectFit: 'contain',
             objectPosition: 'bottom'
           }}

@@ -4,7 +4,6 @@ import AspectRatioContainer from './components/layout/AspectRatioContainer';
 
 import HomePage from './pages/home/HomePage';
 import ScenarioSelectPage from './pages/scenarioSelect/ScenarioSelectPage';
-import MapPage from './pages/map/MapPage';
 import EduScreen from './pages/ResultScreen/EduScreen';
 import Certificate from './pages/ResultScreen/Certificate';
 import PersonalInfo from './pages/ResultScreen/PersonalInfo';
@@ -34,7 +33,6 @@ function App() {
         {/* 기본 화면들 */}
         <Route path="/" element={<HomePage />} />
         <Route path="/scenarios" element={<ScenarioSelectPage />} />
-        <Route path="/map" element={<MapPage />} />
         <Route path="/prologue" element={<ProloguePage />} />
 
         {/* 주행 관련 화면들 */}

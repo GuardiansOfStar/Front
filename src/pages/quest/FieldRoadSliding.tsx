@@ -24,7 +24,7 @@ const FieldRoadSliding = () => {
                 className="absolute inset-0 w-full"
                 style={{
                     height: '200%', // 이미지 높이를 화면의 2배로 설정하여 스크롤 효과를 위한 여유 공간 확보
-                    transition: 'transform 7000ms cubic-bezier(0.22, 1, 0.36, 1)', // 5000ms에서 7000ms로 늘려 속도 감소
+                    transition: 'transform 20000ms cubic-bezier(0.22, 1, 0.36, 1)', // 5000ms에서 7000ms로 늘려 속도 감소
                     transform: startAnimation ? 'translateY(0%)' : 'translateY(-25%)', // 방향 전환: 위에서 아래로
                     willChange: 'transform'
                 }}

@@ -1,20 +1,23 @@
 import { useNavigate } from 'react-router-dom';
+import { useScale } from '../../hooks/useScale';
 
 const setting = '/assets/images/setting.png'
 
 const Setting = () => {
     const navigate = useNavigate();
+    const scale = useScale();
 
     return (
         <img
             src={setting}
-            alt="setting"
-            className="absolute top-5 right-10 
-            w-[9%] h-auto
-            cursor-pointer
-            z-50
-            active:scale-90 transition-transform duration-150"
-            onClick={() => navigate('/success')} // '/result' 대신 '/success'로 변경
+            alt="설정"
+            className="absolute cursor-pointer"
+            style={{
+                top: `calc(5% * ${scale})`,
+                right: `calc(4.5% * ${scale})`,
+                width: `calc(9% * ${scale})`
+            }}
+            onClick={() => navigate('/settings')}
         />
     );
 };

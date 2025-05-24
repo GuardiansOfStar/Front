@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useScale } from '../../hooks/useScale';
 
 // 이미지 임포트
 const leftArrowLight = '/assets/images/left_arrow_light.png';
@@ -34,8 +35,9 @@ const allScenarios = [
 
 const ScenarioList = () => {
     const navigate = useNavigate();
-    const [selectedScenarioIndex, setSelectedScenarioIndex] = useState(0);
-    const [frameColor, setFrameColor] = useState('bg-green-600'); // 초기 녹색 프레임
+    const scale = useScale();
+    const [selectedScenarioIndex, setSelectedScenarioIndex] = useState(1);
+    const [frameColor, setFrameColor] = useState('#48BB78'); // 초기 녹색 프레임
     
     // 시나리오 잠금 여부에 따라 프레임 색상 업데이트
     useEffect(() => {
@@ -66,32 +68,59 @@ const ScenarioList = () => {
         }, 300);
     };
 
-    // 시나리오 이미지 고정 너비 - 제목 박스 너비와 일치시키기 위해 사용
+    // 시나리오 이미지 고정 너비 - 스케일 적용
     const SELECTED_SCALE = 1.2;
-    const SCENARIO_WIDTH = 320;
+    const SCENARIO_WIDTH = 320 * scale;
 
     return (
-        <div className="flex flex-col items-center justify-between h-full px-4 py-4 space-y-0">
+        <div 
+            className="flex flex-col items-center justify-between h-full px-4 py-4 space-y-0"
+            style={{
+                paddingLeft: `calc(16px * ${scale})`,
+                paddingRight: `calc(16px * ${scale})`,
+                paddingTop: `calc(16px * ${scale})`,
+                paddingBottom: `calc(16px * ${scale})`
+            }}
+        >
             {/* 타이틀 - 패딩 최소화하고 상단 여백 적절히 조정 */}
-            <div className="bg-green-600 border-8 border-green-700 rounded-xl px-24 py-8 w-full max-w-5xl mb-0">
-                <h1 className="text-4xl font-extrabold text-white text-center">
+            <div 
+                className="bg-green-600 border-green-700 rounded-xl w-full max-w-5xl mb-0"
+                style={{
+                    borderWidth: `calc(8px * ${scale})`,
+                    borderRadius: `calc(12px * ${scale})`,
+                    paddingLeft: `calc(92px * ${scale})`,
+                    paddingRight: `calc(92px * ${scale})`,
+                    paddingTop: `calc(28px * ${scale})`,
+                    paddingBottom: `calc(28px * ${scale})`
+                }}
+            >
+                <h1 
+                    className="font-extrabold text-white text-center"
+                    style={{ fontSize: `${2.25 * scale}rem` }}
+                >
                     원하는 안전 교육 게임을 선택하세요
                 </h1>
             </div>
             
-            {/* 메인 컨텐츠 영역 - 시나리오 선택 (간격 축소) */}
+            {/* 메인 컨텐츠 영역 - 시나리오 선택 */}
             <div className="flex-grow flex flex-col items-center justify-center w-full mt-0 mb-0">
                 {/* 시나리오 표시 영역 */}
-                <div className="relative flex justify-center items-center w-full h-[230px] mb-0">
+                <div 
+                    className="relative flex justify-center items-center w-full"
+                    style={{ height: `calc(230px * ${scale})` }}
+                >
                     {/* 시나리오 이미지들 */}
-                    <div className="relative flex justify-center items-center w-full h-[230px]">
+                    <div 
+                        className="relative flex justify-center items-center w-full"
+                        style={{ height: `calc(230px * ${scale})` }}
+                    >
                         {allScenarios.map((scenario, index) => {
                             // 선택된 시나리오 여부 확인
                             const isSelected = selectedScenarioIndex === index;
                             
                             // 시나리오 위치 계산 (간격 축소)
-                            let translateX = (index - selectedScenarioIndex) * 350;
-                            let scale = isSelected ? SELECTED_SCALE : 0.9;
+                            let translateX = (index - selectedScenarioIndex) * 350 * scale;
+                            let scaleValue = isSelected ? SELECTED_SCALE : 0.9;
                             let opacity = isSelected ? 1 : 0.6;
                             
                             return (
@@ -99,7 +128,7 @@ const ScenarioList = () => {
                                     key={scenario.id}
                                     className="absolute transition-all duration-500 ease-in-out"
                                     style={{
-                                        transform: `translateX(${translateX}px) scale(${scale})`,
+                                        transform: `translateX(${translateX}px) scale(${scaleValue})`,
                                         zIndex: isSelected ? 15 : 5,
                                         opacity,
                                     }}
@@ -109,12 +138,13 @@ const ScenarioList = () => {
                                         className="overflow-hidden rounded-xl transition-all duration-300"
                                         style={{
                                             width: `${SCENARIO_WIDTH}px`,
-                                            height: '200px',
+                                            height: `calc(200px * ${scale})`,
                                             filter: scenario.locked ? 'grayscale(1) brightness(0.75)' : 'none',
-                                            border: isSelected ? `12px solid ${frameColor}` : 'none',
+                                            border: isSelected ? `calc(12px * ${scale}) solid ${frameColor}` : 'none',
                                             boxSizing: 'border-box',
                                             boxShadow: isSelected ? '0 4px 6px -1px rgba(0, 0, 0, 0.1)' : 'none',
-                                            cursor: isSelected && !scenario.locked ? 'pointer' : 'default'
+                                            cursor: isSelected && !scenario.locked ? 'pointer' : 'default',
+                                            borderRadius: `calc(12px * ${scale})`
                                         }}
                                     >
                                         <img
@@ -125,14 +155,21 @@ const ScenarioList = () => {
                                         
                                         {/* 잠금 표시 - 잠금된 시나리오만 */}
                                         {scenario.locked && (
-                                            <div className="absolute inset-0 flex items-center justify-center">
-                                                <div className="rounded-full p-3">
+                                            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-80">
+                                                <div 
+                                                    className="rounded-full"
+                                                    style={{ padding: `calc(12px * ${scale})` }}
+                                                >
                                                     <svg 
                                                         xmlns="http://www.w3.org/2000/svg" 
-                                                        className="h-14 w-14 text-white" 
+                                                        className="text-white" 
                                                         fill="none" 
                                                         viewBox="0 0 24 24" 
                                                         stroke="currentColor"
+                                                        style={{
+                                                            width: `calc(56px * ${scale})`,
+                                                            height: `calc(56px * ${scale})`
+                                                        }}
                                                     >
                                                         <path 
                                                             strokeLinecap="round" 
@@ -153,33 +190,53 @@ const ScenarioList = () => {
                 
                 {/* subtitle 박스 - 선택된 시나리오에 맞춰 스케일 동기화 */}
                 <div 
-                    className="rounded-full text-center overflow-hidden mt-4 mb-0 px-6 py-2 pointer-events-none text-white font-extrabold whitespace-nowrap"
+                    className="rounded-full text-center overflow-hidden pointer-events-none text-white font-extrabold whitespace-nowrap"
                     style={{ 
-                        width: `${SCENARIO_WIDTH}px`,
+                        width: `${SCENARIO_WIDTH + 68}px`,
                         backgroundColor: allScenarios[selectedScenarioIndex].locked ? '#718096' : '#48BB78',
                         transformOrigin: 'top',
                         boxSizing: 'border-box',
+                        marginTop: `calc(16px * ${scale})`,
+                        marginBottom: 0,
+                        paddingLeft: `calc(24px * ${scale})`,
+                        paddingRight: `calc(24px * ${scale})`,
+                        paddingTop: `calc(8px * ${scale})`,
+                        paddingBottom: `calc(8px * ${scale})`
                     }}
                 >
-                    <p className="text-xl truncate">
+                    <p 
+                        className="truncate"
+                        style={{ fontSize: `calc(1.55rem * ${scale})` }}
+                    >
                         {allScenarios[selectedScenarioIndex].subtitle}
                     </p>
                 </div>
             </div>
             
             {/* 하단 방향 버튼 - 간격 최소화 */}
-            <div className="flex justify-center space-x-4">
+            <div 
+                className="flex justify-center"
+                style={{ gap: `calc(16px * ${scale})` }}
+            >
                 <img
                     src={selectedScenarioIndex > 0 ? leftArrowDark : leftArrowLight}
                     alt="왼쪽으로"
-                    className={`w-28 h-28 ${selectedScenarioIndex > 0 ? 'cursor-pointer hover:scale-105 transition-transform' : 'opacity-50 cursor-not-allowed'}`}
+                    className={`${selectedScenarioIndex > 0 ? 'cursor-pointer hover:scale-105 transition-transform' : 'opacity-50 cursor-not-allowed'}`}
+                    style={{
+                        width: `calc(112px * ${scale})`,
+                        height: `calc(112px * ${scale})`
+                    }}
                     onClick={handleLeftClick}
                 />
                 
                 <img
                     src={selectedScenarioIndex < allScenarios.length - 1 ? rightArrowDark : rightArrowLight}
                     alt="오른쪽으로"
-                    className={`w-28 h-28 ${allScenarios.length - 1 > selectedScenarioIndex ? 'cursor-pointer hover:scale-105 transition-transform' : 'opacity-50 cursor-not-allowed'}`}
+                    className={`${allScenarios.length - 1 > selectedScenarioIndex ? 'cursor-pointer hover:scale-105 transition-transform' : 'opacity-50 cursor-not-allowed'}`}
+                    style={{
+                        width: `calc(112px * ${scale})`,
+                        height: `calc(112px * ${scale})`
+                    }}
                     onClick={handleRightClick}
                 />
             </div>

@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWindowSize } from 'react-use';
+import { useScale } from '../../hooks/useScale';
 import Confetti from 'react-confetti';
 
 const completion_background = '/assets/images/completion_background_long.png';
@@ -10,6 +11,7 @@ const motorcycle = '/assets/images/motorcycle.png';
 const CompletionBackground = () => {
     const navigate = useNavigate();
     const { width, height } = useWindowSize();
+    const scale = useScale();
     const [showConfetti] = useState(true);
     const [startAnimation, setStartAnimation] = useState(false);
 
@@ -18,24 +20,25 @@ const CompletionBackground = () => {
         setStartAnimation(true);
         console.log("CompletionBackground - 애니메이션 시작");
 
-        // 8초 후 결과 화면으로 자동 이동
+        // 8초 후 결과 화면으로 자동 이동 (스케일에 따라 시간 조정)
         const navigationTimer = setTimeout(() => {
             console.log("CompletionBackground - 결과 화면으로 이동");
             navigate('/development-notice');
-        }, 8000);
+        }, 8000 * Math.max(0.8, scale));
 
         return () => {
             clearTimeout(navigationTimer);
         };
-    }, [navigate]);
+    }, [navigate, scale]);
 
     return (
         <div className="relative w-full h-full overflow-hidden">
             {/* 배경 이미지 애니메이션 컨테이너 - 수정됨 */}
             <div
-                className="transition-transform duration-[6000ms] ease-out w-full h-full"
+                className="transition-transform ease-out w-full h-full"
                 style={{
-                    transform: startAnimation ? 'translateY(-2%)' : 'translateY(-30%)'
+                    transform: startAnimation ? 'translateY(-2%)' : 'translateY(-30%)',
+                    transitionDuration: `${6000 * Math.max(0.8, scale)}ms` // 애니메이션 지속시간 스케일 적용
                 }}
             >
                 <img
@@ -49,19 +52,22 @@ const CompletionBackground = () => {
             <img
                 src={motorcycle} 
                 alt="이륜차" 
-                className="absolute bottom-0 left-1/2 transform -translate-x-1/2
-                w-[75%] max-h-[60%] mx-auto object-contain"
+                className="absolute bottom-0 left-1/2 transform -translate-x-1/2 mx-auto object-contain"
+                style={{
+                    width: `calc(75% * ${scale})`,
+                    maxHeight: `calc(60% * ${scale})`
+                }}
             />
             
             {/* 컨페티 이펙트 */}
             {showConfetti && (
                 <div className="absolute top-0 left-0 w-screen z-50 pointer-events-none">
                     <Confetti
-                    width={width}
-                    height={height}
-                    numberOfPieces={650}
-                    gravity={0.1}
-                    recycle={true}
+                        width={width}
+                        height={height}
+                        numberOfPieces={650 * Math.min(1.5, scale)} // 스케일에 따라 컨페티 수량 조정
+                        gravity={0.1 * scale} // 중력도 스케일 적용
+                        recycle={true}
                     />
                 </div>
             )}
