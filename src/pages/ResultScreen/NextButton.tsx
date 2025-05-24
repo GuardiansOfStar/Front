@@ -13,10 +13,10 @@ const NextButton = ({ to }: NextButtonProps) => {
         src="/assets/images/next_button.png"
         alt="다음 버튼"
         onClick={() => navigate(to)}
-        className="absolute bottom-[0%] left-1/2 transform -translate-x-1/2
-                    w-40 h-auto 
+        className="absolute bottom-[10px] left-1/2 transform -translate-x-1/2
+                    w-44 h-auto 
                     cursor-pointer z-50 
-                    hover:scale-105 transition-transform duration-300"
+                    hover:scale-90 transition-transform duration-300"
         />
     );
 };
