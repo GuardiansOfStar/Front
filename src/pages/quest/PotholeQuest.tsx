@@ -9,7 +9,7 @@ import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attem
 const basicRoad = '/assets/images/basic_road.png';
 const roadWithPotholes = '/assets/images/road_with_small_pothole.png';
 const motorcycle = '/assets/images/motorcycle.png';
-const potholeAccident = '/assets/images/pothole_flat_tire.png';
+const potholeAccident = '/assets/images/grandfather_pothole_accident.png';
 const accidentTurnoff = '/assets/images/accident_turnoff_gfa.png';
 const dangerWarning = '/assets/images/danger_warning.png';
 const successCircle = '/assets/images/success_circle.png';
