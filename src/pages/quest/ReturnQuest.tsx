@@ -1,5 +1,5 @@
 // src/pages/quest/ReturnQuest.tsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import HomeButton from '../../components/ui/HomeButton';
@@ -51,15 +51,24 @@ const getBackgroundColor = (hour: number): string => {
 const ReturnQuest = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const clocksRef = useRef<HTMLDivElement>(null);
+  const dragButtonRef = useRef<HTMLImageElement>(null);
+  
   const [scenarioId, setScenarioId] = useState<string | null>(null);
   const [questId, setQuestId] = useState<string | null>(null);
   const [gamePhase, setGamePhase] = useState<GamePhase>('sunsetAnimation');
   const [selectedHour, setSelectedHour] = useState(7); // 기본값 7시
   const [showSun, setShowSun] = useState(false);
-  const [showTitle, setShowTitle] = useState(false); // 타이틀 표시 상태 추가
+  const [showTitle, setShowTitle] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [hideSuccessImages, setHideSuccessImages] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
-  const [currentFailSequence, setCurrentFailSequence] = useState(1);
+  
+  // 드래그 관련 상태
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStartX, setDragStartX] = useState(0);
+  const [dragButtonPosition, setDragButtonPosition] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   // URL 쿼리 파라미터 처리
   useEffect(() => {
@@ -70,25 +79,161 @@ const ReturnQuest = () => {
     setQuestId(qId || '5');
   }, [location]);
 
+  // 드래그 버튼 초기 위치 계산
+  useEffect(() => {
+    if (gamePhase === 'gamePlay' && clocksRef.current) {
+      updateDragButtonPosition(selectedHour);
+    }
+  }, [gamePhase, selectedHour]);
+
+  // 드래그 버튼 위치 업데이트 함수
+  const updateDragButtonPosition = useCallback((hour: number) => {
+    if (!clocksRef.current) return;
+    
+    const clocksWidth = clocksRef.current.offsetWidth;
+    const buttonWidth = 81; // drag_button.png 너비
+    
+    // 좌우 여백을 더 크게 설정하여 버튼이 화면 끝에 붙지 않도록 함
+    const sideMargin = clocksWidth * 0.1; // 전체 너비의 10%씩 좌우 여백
+    const availableWidth = clocksWidth - (sideMargin * 2);
+    
+    // 5시~9시까지 5개 구간으로 나누어 위치 계산
+    const hourIndex = hour - 5; // 0~4 인덱스
+    const position = sideMargin + (availableWidth * hourIndex / 4);
+    
+    setDragButtonPosition(position);
+  }, []);
+
+  // 위치로부터 시간 계산 함수
+  const calculateHourFromPosition = useCallback((position: number): number => {
+    if (!clocksRef.current) return 7;
+    
+    const clocksWidth = clocksRef.current.offsetWidth;
+    const sideMargin = clocksWidth * 0.1; // 좌우 여백
+    const availableWidth = clocksWidth - (sideMargin * 2);
+    
+    // 위치를 0~1 비율로 변환
+    const ratio = Math.max(0, Math.min(1, (position - sideMargin) / availableWidth));
+    
+    // 비율을 5~9시 범위로 변환
+    const exactHour = 5 + (ratio * 4);
+    
+    // 가장 가까운 정수 시간으로 반올림
+    return Math.round(exactHour);
+  }, []);
+
+  // 드래그 시작 핸들러
+  const handleDragStart = useCallback((clientX: number) => {
+    if (isAnimating) return;
+    
+    setIsDragging(true);
+    setDragStartX(clientX - dragButtonPosition);
+  }, [dragButtonPosition, isAnimating]);
+
+  // 드래그 중 핸들러
+  const handleDragMove = useCallback((clientX: number) => {
+    if (!isDragging || !clocksRef.current) return;
+    
+    const clocksWidth = clocksRef.current.offsetWidth;
+    const sideMargin = clocksWidth * 0.1; // 좌우 여백
+    
+    let newPosition = clientX - dragStartX;
+    
+    // 드래그 범위 제한 - 여백을 고려한 범위로 제한
+    newPosition = Math.max(sideMargin, Math.min(clocksWidth - sideMargin, newPosition));
+    
+    setDragButtonPosition(newPosition);
+    
+    // 실시간으로 시간 업데이트 (스냅 없이)
+    const newHour = calculateHourFromPosition(newPosition);
+    if (newHour !== selectedHour) {
+      setSelectedHour(newHour);
+    }
+  }, [isDragging, dragStartX, selectedHour, calculateHourFromPosition]);
+
+  // 드래그 종료 핸들러
+  const handleDragEnd = useCallback(() => {
+    if (!isDragging) return;
+    
+    setIsDragging(false);
+    setIsAnimating(true);
+    
+    // 가장 가까운 시간으로 스냅
+    const targetHour = calculateHourFromPosition(dragButtonPosition);
+    setSelectedHour(targetHour);
+    
+    // 애니메이션과 함께 정확한 위치로 이동
+    setTimeout(() => {
+      updateDragButtonPosition(targetHour);
+      setTimeout(() => setIsAnimating(false), 300);
+    }, 50);
+  }, [isDragging, dragButtonPosition, calculateHourFromPosition, updateDragButtonPosition]);
+
+  // 마우스 이벤트 핸들러
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    handleDragStart(e.clientX);
+  };
+
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    handleDragMove(e.clientX);
+  }, [handleDragMove]);
+
+  const handleMouseUp = useCallback(() => {
+    handleDragEnd();
+  }, [handleDragEnd]);
+
+  // 터치 이벤트 핸들러
+  const handleTouchStart = (e: React.TouchEvent) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    handleDragStart(touch.clientX);
+  };
+
+  const handleTouchMove = useCallback((e: TouchEvent) => {
+    if (e.touches.length > 0) {
+      const touch = e.touches[0];
+      handleDragMove(touch.clientX);
+    }
+  }, [handleDragMove]);
+
+  const handleTouchEnd = useCallback(() => {
+    handleDragEnd();
+  }, [handleDragEnd]);
+
+  // 글로벌 이벤트 리스너 등록/해제
+  useEffect(() => {
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener('touchmove', handleTouchMove, { passive: false });
+      document.addEventListener('touchend', handleTouchEnd);
+      
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+        document.removeEventListener('touchmove', handleTouchMove);
+        document.removeEventListener('touchend', handleTouchEnd);
+      };
+    }
+  }, [isDragging, handleMouseMove, handleMouseUp, handleTouchMove, handleTouchEnd]);
+
   // 단계별 자동 진행
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
     
     if (gamePhase === 'sunsetAnimation') {
-      // 해 애니메이션 시작
       timer = setTimeout(() => {
         setShowSun(true);
       }, 100);
       
-      // 해 애니메이션 완료 후 타이틀 표시
       const titleTimer = setTimeout(() => {
         setShowTitle(true);
-      }, 4000); // 해 애니메이션 완료 1초 후
+      }, 4000);
       
-      // 게임 안내로 전환
       const nextTimer = setTimeout(() => {
         setGamePhase('gameIntro');
-      }, 6000); // 타이틀 표시 후 2초 뒤
+      }, 6000);
       
       return () => {
         if (timer) clearTimeout(timer);
@@ -98,15 +243,23 @@ const ReturnQuest = () => {
     }
     else if (gamePhase === 'successResult') {
       timer = setTimeout(() => {
-        setShowSuccessMessage(true);
-        
-        // 점수 화면으로 이동
-        const scoreTimer = setTimeout(() => {
-          navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=20&correct=true`);
-        }, 5000);
-        
-        return () => clearTimeout(scoreTimer);
-      }, 4000);
+        // 먼저 이미지들을 숨김
+        setHideSuccessImages(true);
+
+        // 이미지가 사라진 후 메시지 표시
+        const messageTimer = setTimeout(() => {
+          setShowSuccessMessage(true);
+
+          // 메시지 표시 후 점수 화면으로 이동
+          const scoreTimer = setTimeout(() => {
+            navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=20&correct=true`);
+          }, 5000);
+
+          return () => clearTimeout(scoreTimer);
+        }, 1000); // 이미지 사라지는 애니메이션 시가
+
+        return () => clearTimeout(messageTimer);
+      }, 3000); // 이미지 표시 시간을 3초로 단축
     }
     else if (gamePhase === 'failSequence1') {
       timer = setTimeout(() => {
@@ -133,7 +286,6 @@ const ReturnQuest = () => {
         setShowWarning(true);
       }, 2000);
       
-      // 점수 화면으로 이동
       const scoreTimer = setTimeout(() => {
         navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=10&correct=false`);
       }, 8000);
@@ -148,11 +300,6 @@ const ReturnQuest = () => {
       if (timer) clearTimeout(timer);
     };
   }, [gamePhase, navigate, scenarioId, questId]);
-
-  // 시간 선택 핸들러
-  const handleTimeSelect = (hour: number) => {
-    setSelectedHour(hour);
-  };
 
   // 게임 시작 핸들러
   const handleStartGame = () => {
@@ -190,14 +337,12 @@ const ReturnQuest = () => {
       {gamePhase === 'gameIntro' && (
         <div className="absolute top-6 right-6 z-[100] w-20 h-20">
           <HomeButton />
-          {/* 임시 표시용 빨간 박스 */}
         </div>
       )}
 
       {/* 해가 지는 애니메이션 */}
       {gamePhase === 'sunsetAnimation' && (
         <div className="absolute inset-0">
-          {/* 산 이미지 - 하단 고정 */}
           <img
             src={sunsetSceneMountain}
             alt="산"
@@ -205,25 +350,23 @@ const ReturnQuest = () => {
             style={{ objectFit: 'cover', objectPosition: 'bottom' }}
           />
           
-          {/* 해 이미지 - 중앙 기준 애니메이션 */}
           <div className="absolute inset-0 flex items-center justify-center z-0">
             <motion.img
               src={sunsetSceneSun}
               alt="해"
               className="w-256 h-256"
               initial={{ 
-                x: 400,  // 화면 오른쪽에서 시작 (픽셀 단위)
-                y: -100  // 화면 위쪽에서 시작
+                x: 400,
+                y: -100
               }}
               animate={showSun ? { 
-                x: 0,   // 중앙에서 약간 오른쪽으로
-                y: 80   // 중앙에서 약간 위쪽으로
+                x: 0,
+                y: 80
               } : {}}
               transition={{ duration: 3, ease: 'easeOut' }}
             />
           </div>
           
-          {/* 타이틀 - 해 애니메이션과 겹치지 않게 하단에 배치 */}
           {showTitle && (
             <motion.div 
               className="absolute top-20 left-0 right-0 flex justify-center items-center z-20"
@@ -237,10 +380,9 @@ const ReturnQuest = () => {
         </div>
       )}
 
-      {/* 게임 안내 화면 - 배경에 해와 산이 그대로 남아있도록 수정 */}
+      {/* 게임 안내 화면 */}
       {gamePhase === 'gameIntro' && (
         <div className="absolute inset-0">
-          {/* 해와 산 배경 유지 */}
           <img
             src={sunsetSceneMountain}
             alt="산"
@@ -254,12 +396,11 @@ const ReturnQuest = () => {
               alt="해"
               className="w-256 h-256"
               style={{
-                transform: 'translate(0px, 80px)'  // 애니메이션 끝 위치 고정
+                transform: 'translate(0px, 80px)'
               }}
             />
           </div>
           
-          {/* 배경 오버레이 */}
           <motion.div 
             className="absolute inset-0 bg-[#FFF9C4]/60 z-20"
             initial={{ opacity: 0 }}
@@ -288,7 +429,6 @@ const ReturnQuest = () => {
             </div>
           </motion.div>
           
-          {/* 다음 버튼 */}
           <div className="absolute -bottom-4 left-0 right-0 flex justify-center z-50">
             <img
               src={nextButton}
@@ -300,7 +440,7 @@ const ReturnQuest = () => {
         </div>
       )}
 
-      {/* 게임 플레이 화면 */}
+      {/* 게임 플레이 화면 - 드래그 기능 개선 */}
       {gamePhase === 'gamePlay' && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           {/* 배경 이미지 */}
@@ -309,58 +449,64 @@ const ReturnQuest = () => {
             alt="귀가시간 설정 배경"
             className="absolute inset-0 w-full h-full object-cover z-0"
           />
+
+          {/* 확인 버튼 */}
+          <div className="flex justify-center mt-20 z-20">
+            <button
+              onClick={handleStartGame}
+              disabled={isDragging || isAnimating}
+              className="bg-green-600 hover:bg-green-700 text-white font-extrabold py-4 px-8 rounded-xl text-2xl transition-colors duration-300 border-4 border-green-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+            >
+              {selectedHour}시에 출발하기
+            </button>
+          </div>
           
-          {/* 시계 선택 영역 - 하단 고정 */}
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
-            {/* 시계 배경 */}
-            <div className="relative">
+          {/* 시계 드래그 영역 - 하단 중앙 고정 */}
+          <div className="absolute bottom-0 left-0 right-0 w-full z-10">
+            {/* 시계 컨테이너 */}
+            <div 
+              ref={clocksRef}
+              className="relative w-full"
+            >
+              {/* 시계 배경 이미지 - 반응형 */}
               <img
                 src={homecomingTimeClocks}
                 alt="시계들"
-                className="w-full h-auto"
-                style={{ width: '976px', height: '215px' }}
+                className="w-full h-auto object-cover"
+                style={{ 
+                  aspectRatio: '976/215'
+                }}
               />
               
               {/* 드래그 버튼 */}
               <img
+                ref={dragButtonRef}
                 src={dragButton}
-                alt="선택 버튼"
-                className="absolute cursor-pointer transition-all duration-300 hover:scale-110"
+                alt="드래그 버튼"
+                className={`absolute cursor-grab transition-all duration-300 select-none
+                  ${isDragging ? 'cursor-grabbing scale-110' : 'hover:scale-105'}
+                  ${isAnimating ? 'transition-all duration-300 ease-out' : ''}`}
                 style={{
                   width: '81px',
                   height: '108px',
-                  left: `${20 + (selectedHour - 5) * 190}px`, // 5시부터 시작해서 190px씩 간격
-                  top: '10px',
-                  zIndex: 20
+                  left: `${dragButtonPosition}px`,
+                  top: '72%',
+                  transform: 'translate(-50%, -50%)',
+                  zIndex: 30,
+                  filter: isDragging ? 'drop-shadow(0 8px 16px rgba(0,0,0,0.3))' : 'none'
                 }}
-                onClick={() => {}} // 클릭 핸들러는 아래 투명 버튼들이 처리
+                onMouseDown={handleMouseDown}
+                onTouchStart={handleTouchStart}
+                draggable={false}
               />
               
-              {/* 투명 클릭 영역들 */}
-              {[5, 6, 7, 8, 9].map((hour, index) => (
-                <button
-                  key={hour}
-                  className="absolute bg-transparent cursor-pointer"
-                  style={{
-                    left: `${20 + index * 190}px`,
-                    top: '10px',
-                    width: '150px',
-                    height: '195px',
-                    zIndex: 15
-                  }}
-                  onClick={() => handleTimeSelect(hour)}
-                />
-              ))}
-            </div>
-            
-            {/* 확인 버튼 */}
-            <div className="flex justify-center mt-8">
-              <button
-                onClick={handleStartGame}
-                className="bg-green-600 hover:bg-green-700 text-white font-extrabold py-4 px-8 rounded-xl text-2xl transition-colors duration-300 border-4 border-green-700"
-              >
-                {selectedHour}시에 출발하기
-              </button>
+              {/* 투명 드래그 영역 - 전체 시계 영역에서 드래그 가능 */}
+              <div
+                className="absolute inset-0 cursor-grab active:cursor-grabbing"
+                style={{ zIndex: 20 }}
+                onMouseDown={handleMouseDown}
+                onTouchStart={handleTouchStart}
+              />
             </div>
           </div>
         </div>
@@ -369,14 +515,12 @@ const ReturnQuest = () => {
       {/* 정답 결과 화면 */}
       {gamePhase === 'successResult' && !showSuccessMessage && (
         <div className="absolute inset-0 flex items-center justify-center">
-          {/* 배경 이미지 */}
           <img
             src={homecomingTimeSettingBackground}
             alt="배경"
             className="absolute inset-0 w-full h-full object-cover"
           />
           
-          {/* 노란색 오버레이 */}
           <motion.div
             className="absolute inset-0 bg-[#FFF9C4]/60 z-10"
             initial={{ opacity: 0 }}
@@ -384,55 +528,74 @@ const ReturnQuest = () => {
             transition={{ duration: 0.8 }}
           />
           
-          {/* 성공 원과 캐릭터 */}
           <div className="absolute inset-0 flex items-center justify-center z-20">
             <motion.img
               src={successCircle}
               alt="성공 원"
               className="absolute w-full h-full object-contain"
               initial={{ scale: 0.5, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 1, ease: 'easeOut' }}
+              animate={hideSuccessImages ? { scale: 0.3, opacity: 0 } : { scale: 1, opacity: 1 }}
+              transition={hideSuccessImages ? { duration: 0.8, ease: 'easeIn' } : { duration: 1, ease: 'easeOut' }}
             />
             
             <motion.img
               src={mission5SuccessGrandfather}
               alt="성공한 할아버지"
-              className="absolute w-2/5 h-auto object-contain z-30"
+              className="absolute w-1/2 h-auto object-contain z-30"
               initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 1, delay: 0.3, ease: 'easeOut' }}
+              animate={hideSuccessImages ? { scale: 0.5, opacity: 0 } : { scale: 1, opacity: 1 }}
+              transition={hideSuccessImages ? { duration: 0.8, ease: 'easeIn' } : { duration: 1, delay: 0.3, ease: 'easeOut' }}
             />
           </div>
         </div>
       )}
 
-      {/* 정답 메시지 화면 */}
       {gamePhase === 'successResult' && showSuccessMessage && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center z-30">
-          {/* 정답입니다! 타이틀 */}
-          <div className="absolute top-[20%] left-1/2 transform -translate-x-1/2">
-            <GameTitle text="정답입니다!" fontSize="text-6xl" strokeWidth="12px" />
-          </div>
+        <div className="absolute inset-0">
+          {/* 배경 유지 */}
+          <img
+            src={homecomingTimeSettingBackground}
+            alt="배경"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
           
-          {/* 메시지 박스 */}
-          <div className="mt-10 bg-green-600 bg-opacity-90 border-green-700 border-8 rounded-3xl p-8 w-[70%] mx-auto text-center relative">
-            <p className="text-4xl font-extrabold text-white leading-relaxed">
-              해가 지기 전이<br/>
-              집 가기 딱 좋은 시간이에요
-            </p>
+          <div className="absolute inset-0 bg-[#FFF9C4]/60 z-10" />
+          
+          <div className="absolute inset-0 flex flex-col items-center justify-center z-30">
+            <motion.div 
+              className="absolute top-[20%] left-1/2 transform -translate-x-1/2"
+              initial={{ opacity: 0, y: -30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: 'easeOut' }}
+            >
+              <GameTitle text="정답입니다!" fontSize="text-6xl" strokeWidth="12px" />
+            </motion.div>
             
-            {/* 별별이 캐릭터 */}
-            <img
-              src={starCharacter}
-              alt="별별이"
-              className="absolute bottom-[-80px] left-[-60px] w-[200px] z-40"
-            />
+            <motion.div 
+              className="mt-10 bg-green-600 bg-opacity-90 border-green-700 border-8 rounded-3xl p-8 w-[70%] mx-auto text-center relative"
+              initial={{ opacity: 0, scale: 0.8, y: 30 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
+            >
+              <p className="text-4xl font-extrabold text-white leading-relaxed">
+                해가 지기 전이<br/>
+                집 가기 딱 좋은 시간이에요
+              </p>
+              
+              <motion.img
+                src={starCharacter}
+                alt="별별이"
+                className="absolute bottom-[-80px] left-[-60px] w-[200px] z-40"
+                initial={{ opacity: 0, x: -30, y: 10 }}
+                animate={{ opacity: 1, x: 0, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.6, ease: 'easeOut' }}
+              />
+            </motion.div>
           </div>
         </div>
       )}
 
-      {/* 오답 시퀀스 1 - 야간 운전 */}
+      {/* 오답 시퀀스들 (기존 코드와 동일) */}
       {gamePhase === 'failSequence1' && (
         <motion.img
           src={missionFailEveningDriving}
@@ -444,7 +607,6 @@ const ReturnQuest = () => {
         />
       )}
 
-      {/* 오답 시퀀스 2 - 시야 흐림 */}
       {gamePhase === 'failSequence2' && (
         <motion.img
           src={blurredVision}
@@ -456,10 +618,8 @@ const ReturnQuest = () => {
         />
       )}
 
-      {/* 오답 시퀀스 3 - 고라니 등장 */}
       {gamePhase === 'failSequence3' && (
         <div className="absolute inset-0">
-          {/* 플래시 효과 */}
           <motion.img
             src={goraniFlash}
             alt="플래시"
@@ -469,7 +629,6 @@ const ReturnQuest = () => {
             transition={{ duration: 0.5 }}
           />
           
-          {/* 고라니 얼굴 */}
           <motion.img
             src={goraniFace}
             alt="고라니"
@@ -482,7 +641,6 @@ const ReturnQuest = () => {
         </div>
       )}
 
-      {/* 오답 시퀀스 4 - 사고 */}
       {gamePhase === 'failSequence4' && (
         <motion.img
           src={mission5FailGrandfather}
@@ -494,7 +652,6 @@ const ReturnQuest = () => {
         />
       )}
 
-      {/* 오답 결과 화면 */}
       {gamePhase === 'failResult' && (
         <div className="absolute inset-0">
           <img
@@ -503,7 +660,6 @@ const ReturnQuest = () => {
             className="absolute inset-0 w-full h-full object-cover"
           />
           
-          {/* 경고 메시지 */}
           {showWarning && (
             <motion.div
               className="absolute inset-0 bg-[#FFF9C4]/60 flex flex-col items-center justify-end pb-32 z-10"
