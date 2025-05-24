@@ -28,7 +28,7 @@ const SuccessBackground = () => {
         
         // 8초 후 결과 화면으로 자동 이동
         const navigationTimer = setTimeout(() => {
-            navigate('/development-notice');
+            navigate('/result');
         }, 15000);
 
         return () => {

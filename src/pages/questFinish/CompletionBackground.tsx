@@ -21,7 +21,7 @@ const CompletionBackground = () => {
         // 8초 후 결과 화면으로 자동 이동
         const navigationTimer = setTimeout(() => {
             console.log("CompletionBackground - 결과 화면으로 이동");
-            navigate('/development-notice');
+            navigate('/result');
         }, 8000);
 
         return () => {

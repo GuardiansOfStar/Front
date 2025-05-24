@@ -66,11 +66,11 @@ const Memory = () => {
       <Background />
 
       <div className="relative z-30 flex flex-col items-center justify-start py-5 px-4">
-        <GameTitle
+        <GameContext
           text="가장 기억에 남는 장면을 골라주세요"
-          fontSize="text-[48px]"
+          fontSize="text-[55px]"
           color="text-[#0E8E12]"
-          className="mt-7 mb-10"
+          className="mt-7 mb-9"
         />
 
         {/* 윗줄 2개 */}

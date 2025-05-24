@@ -28,13 +28,14 @@ import MyVillageRank from './pages/ResultScreen/MyVillageRank';
 import VillageRankList from './pages/ResultScreen/VillageRankList';
 import PerfectScore from './pages/ResultScreen/PerfectScore';
 
+
 function App() {
   return (
     <AspectRatioContainer fillMode="fit">
       <Routes>
         {/* 기본 화면들 */}
         <Route path="/" element={<HomePage />} />
-        <Route path="/scenarios" element={<PerfectScore />} />
+        <Route path="/scenarios" element={<ScenarioSelectPage />} />
         <Route path="/map" element={<MapPage />} />
         <Route path="/prologue" element={<ProloguePage />} />
 

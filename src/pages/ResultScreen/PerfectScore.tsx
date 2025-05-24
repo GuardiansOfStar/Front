@@ -19,7 +19,7 @@ const PerfectScore = () => {
         setTimeout(() => setShowCongrats(true), 300);   // 약간의 딜레이 후
         setTimeout(() => setShowAwards(true), 1500);    // 축하 후 등장
 
-        // 페이지 이동
+        // 페이지 자동 이동
         const navigationTimer = setTimeout(() => {
         navigate('/certificate');
         }, 15000);
