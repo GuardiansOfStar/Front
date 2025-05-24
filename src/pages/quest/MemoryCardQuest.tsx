@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import BackButton from '../../components/ui/BackButton';
+import { postQuestAttempt, AttemptPayload } from "../../services/endpoints/attempts";
 import GameTitle from '../../components/ui/GameTitle';
 
 // 이미지 임포트
@@ -267,6 +268,36 @@ const MemoryCardQuest: React.FC = () => {
     else if (attempts >= 5) score = 4;
     setFinalScore(score);
   }, [attempts]);
+
+  // 정재 : questAttempt API 호출
+  useEffect(() => {
+  if (gamePhase === "helmetEquipped") {
+    const sessionId = localStorage.getItem("session_id");
+    console.log("session_id : ", sessionId);
+    if (!sessionId) return console.error("session_id 없음");
+
+    // questId: URL 파라미터 또는 고정값으로
+    const questId = "helmet";
+
+    // payload 구성
+    const payload: AttemptPayload = {
+      attempt_number: attempts,         // state: 시도 횟수
+      score_awarded: finalScore,       // state: 최종 점수
+      selected_option: "helmet",       // 정답 혹은 선택값
+      is_correct: true,                // 헬멧을 찾았으니 true
+      //response_time: Math.floor((Date.now() - questionStartTimeRef.current!) / 1000),
+      response_time: 0,
+    };
+
+    postQuestAttempt(sessionId, questId, payload)
+      .then((res) => {
+        console.log("✅ 시도 기록 완료:", res.data.attempt_id);
+      })
+      .catch((err) => {
+        console.error("❌ 시도 기록 실패", err);
+      });
+  }
+}, [gamePhase, attempts, finalScore]);
 
   // 선물 애니메이션
   useEffect(() => {
