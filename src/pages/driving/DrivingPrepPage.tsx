@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 // 이미지 임포트
-const drivingBackground = '/assets/images/driving_background.png';
+const drivingBackground = '/assets/images/background.png';
 const motorcycleSideView = '/assets/images/motorcycle_side_view.png';
 
 const DrivingPrepPage = () => {

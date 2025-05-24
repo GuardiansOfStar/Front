@@ -16,7 +16,7 @@ export default class RoadScene extends Phaser.Scene {
   private isGameActive: boolean = true;
   private gameWidth!: number;
   private gameHeight!: number;
-  private roadSpeed: number = 1.2;
+  private roadSpeed: number = 2;
   private positionY: number = 0;
   private roadHeight: number = 0;
   private roadTargetY: number = 0;
@@ -25,13 +25,13 @@ export default class RoadScene extends Phaser.Scene {
   private potholeDetectionEnabled: boolean = false;
   private simulationTime: number = 0;
   private simulationDuration: number = 8000; // 총 시뮬레이션 시간
-  private potholeDetectionTime: number = 3000; // 포트홀 충돌 감지 시간
+  private potholeDetectionTime: number = 2000; // 포트홀 충돌 감지 시간
   private collisionProcessed: boolean = false;
   private redZoneRatioStart: number = 0.1;
   private redZoneRatioEnd:   number = 0.4;
   
   // 포트홀 위치 관련 변수 (새로 추가)
-  private potholeStartY: number = -300; // 도로 상단 위치에서 조금 아래
+  private potholeStartY: number = 100; // 도로 상단 위치에서 조금 아래
   private potholeTriggerY: number = 0; // 포트홀이 이 Y위치에 도달하면 감지
 
   constructor() {

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import BackButton from '../../components/ui/BackButton';
+import { postQuestAttempt, AttemptPayload } from "../../services/endpoints/attempts";
 import GameTitle from '../../components/ui/GameTitle';
 
 // 이미지 임포트
@@ -22,12 +23,12 @@ const nextButton = '/assets/images/next_button.png';
 const giftBoxVariants = {
   hidden:   { scale: 0.5, rotate: -30, opacity: 0 },
   visible:  {
-    scale: [1, 1.2, 0.9, 1],      // 4단계 키프레임
-    rotate: [-15, 15, -5, 0],     // 4단계 키프레임
+    scale: [1, 1.2, 0.9, 1],                  // 4단계 키프레임
+    rotate: [-15, 15, -5, 0],                 // 4단계 키프레임
     opacity: 1,
     transition: {
-      duration: 1,                // 전체 1초
-      times: [0, 0.3, 0.6, 1],    // 키프레임 시점
+      duration: 1,                            // 전체 1초
+      times: [0, 0.3, 0.6, 1],                // 키프레임 시점
       ease: ["easeOut", "easeIn", "easeOut"]  // 구간별 easing
     }
   }
@@ -39,7 +40,7 @@ const openBoxVariants = {
     scale: 1,
     opacity: 1,
     transition: {
-      type: "spring",            // 간단한 spring
+      type: "spring",                          // 간단한 spring
       stiffness: 200,
       damping: 20,
       duration: 0.8
@@ -55,7 +56,7 @@ const helmetVariants = {
     scale: 1,
     rotate: 0,
     transition: {
-      type: "spring",            // 헬멧은 부드러운 spring
+      type: "spring",                         // 헬멧은 부드러운 spring
       stiffness: 180,
       damping: 15,
       delay: 0.3,
@@ -267,6 +268,36 @@ const MemoryCardQuest: React.FC = () => {
     else if (attempts >= 5) score = 4;
     setFinalScore(score);
   }, [attempts]);
+
+  // 정재 : questAttempt API 호출
+  useEffect(() => {
+  if (gamePhase === "helmetEquipped") {
+    const sessionId = localStorage.getItem("session_id");
+    console.log("session_id : ", sessionId);
+    if (!sessionId) return console.error("session_id 없음");
+
+    // questId: URL 파라미터 또는 고정값으로
+    const questId = "helmet";
+
+    // payload 구성
+    const payload: AttemptPayload = {
+      attempt_number: attempts,         // state: 시도 횟수
+      score_awarded: finalScore,       // state: 최종 점수
+      selected_option: "helmet",       // 정답 혹은 선택값
+      is_correct: true,                // 헬멧을 찾았으니 true
+      //response_time: Math.floor((Date.now() - questionStartTimeRef.current!) / 1000),
+      response_time: 0,
+    };
+
+    postQuestAttempt(sessionId, questId, payload)
+      .then((res) => {
+        console.log("✅ 시도 기록 완료:", res.data.attempt_id);
+      })
+      .catch((err) => {
+        console.error("❌ 시도 기록 실패", err);
+      });
+  }
+}, [gamePhase, attempts, finalScore]);
 
   // 선물 애니메이션
   useEffect(() => {
@@ -744,23 +775,29 @@ const MemoryCardQuest: React.FC = () => {
           variants={openBoxVariants}
         >
           <div className="relative w-[800px] h-[800px]">
+            {/* 열린 상자 */}
             <motion.img
               src={giftOpenHelmet}
               alt="열린 상자"
               className="absolute inset-0 w-full h-full object-contain"
               variants={openBoxVariants}
             />
-            <motion.img
-              src={helmet}
-              alt="헬멧"
-              className="absolute left-1/2 transform -translate-x-1/2 w-[320px] h-[320px]"
-              initial="hidden"
-              animate="visible"
-              variants={helmetVariants}
-            />
+
+            {/* 헬멧을 flex로 완전 중앙에 */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <motion.img
+                src={helmet}
+                alt="헬멧"
+                className="w-[320px] h-[320px] object-contain"
+                initial="hidden"
+                animate="visible"
+                variants={helmetVariants}
+              />
+            </div>
           </div>
         </motion.div>
       )}
+
 
       {/* helmetEquipped */}
       {gamePhase === 'helmetEquipped' && (

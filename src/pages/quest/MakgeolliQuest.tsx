@@ -3,10 +3,11 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import FieldRoadSliding from './FieldRoadSliding';
+import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attempts';
 import GameTitle from '../../components/ui/GameTitle';
 
 // 이미지 임포트
-const fieldWorkBackground = '/assets/images/field_work_background.png';
+const orchardWorkBackground = '/assets/images/mission3_working_screen.png';
 const mealLadyBackground = '/assets/images/meal_lady_background.png';
 const homeButton = '/assets/images/home_button.png';
 const sparrow = '/assets/images/sparrow.png';
@@ -58,26 +59,26 @@ interface TrayItem {
 // 상수 - 트레이 아이템 위치 정의 (상대적 비율)
 const TRAY_ITEM_POSITIONS: { type: TrayItem['type'], xRatio: number, yRatio: number, rotation: number, scale: number, zIndex: number }[] = [
   // 국수 3개 - 이미지 참고하여 배치
-  { type: 'noodles', xRatio: 0.23, yRatio: 0.71, rotation: 0, scale: 2.4, zIndex: 6 },  // 왼쪽 국수
-  { type: 'noodles', xRatio: 0.40, yRatio: 0.56, rotation: 0, scale: 2.4, zIndex: 5 },  // 중앙 국수
-  { type: 'noodles', xRatio: 0.42, yRatio: 0.80, rotation: 0, scale: 2.4, zIndex: 8 },  // 아래 국수
+  { type: 'noodles', xRatio: 0.23, yRatio: 0.76, rotation: 0, scale: 2.4, zIndex: 6 },  // 왼쪽 국수
+  { type: 'noodles', xRatio: 0.40, yRatio: 0.61, rotation: 0, scale: 2.4, zIndex: 5 },  // 중앙 국수
+  { type: 'noodles', xRatio: 0.42, yRatio: 0.85, rotation: 0, scale: 2.4, zIndex: 8 },  // 아래 국수
   
   // 김치 2개
-  { type: 'kimchi', xRatio: 0.61, yRatio: 0.66, rotation: 0, scale: 1.4, zIndex: 4 },    // 오른쪽 김치
-  { type: 'kimchi', xRatio: 0.66, yRatio: 0.75, rotation: 0, scale: 1.4, zIndex: 4 },  // 왼쪽 김치
+  { type: 'kimchi', xRatio: 0.61, yRatio: 0.71, rotation: 0, scale: 1.4, zIndex: 4 },    // 오른쪽 김치
+  { type: 'kimchi', xRatio: 0.66, yRatio: 0.80, rotation: 0, scale: 1.4, zIndex: 4 },  // 왼쪽 김치
   
   // 막걸리 병과 잔
-  { type: 'bottle', xRatio: 0.8, yRatio: 0.51, rotation: 0, scale: 2.4, zIndex: 5 },    // 막걸리 병
-  { type: 'cup', xRatio: 0.82, yRatio: 0.73, rotation: 0, scale: 1.6, zIndex: 6 },       // 오른쪽 잔
+  { type: 'bottle', xRatio: 0.8, yRatio: 0.56, rotation: 0, scale: 2.4, zIndex: 5 },    // 막걸리 병
+  { type: 'cup', xRatio: 0.82, yRatio: 0.78, rotation: 0, scale: 1.6, zIndex: 6 },       // 오른쪽 잔
 ];
 
 // 상수 - 숨겨진 막걸리 위치 정의 (상대적 비율)
 const HIDDEN_MAKGEOLLI_POSITIONS: { xRatio: number, yRatio: number, rotation: number, scale: number, zIndex: number }[] = [
-  { xRatio: 0.8, yRatio: 0.51, rotation: 5, scale: 2.4, zIndex: 5 },  // 재사용
-  { xRatio: 0.40, yRatio: 0.56, rotation: 0, scale: 2.4, zIndex: 7 },    // 오른쪽 국수 뒤
-  { xRatio: 0.23, yRatio: 0.71, rotation: -10, scale: 1.8, zIndex: 2 },   // 왼쪽 김치 근처
-  { xRatio: 0.66, yRatio: 0.75, rotation: 15, scale: 2.0, zIndex: 3 },   // 오른쪽 김치 뒤
-  { xRatio: 0.85, yRatio: 0.30, rotation: 0, scale: 3.0, zIndex: 4 },   // 중앙 하단
+  { xRatio: 0.8, yRatio: 0.56, rotation: 5, scale: 2.4, zIndex: 5 },  // 재사용
+  { xRatio: 0.40, yRatio: 0.61, rotation: 0, scale: 2.4, zIndex: 7 },    // 오른쪽 국수 뒤
+  { xRatio: 0.23, yRatio: 0.76, rotation: -10, scale: 1.8, zIndex: 2 },   // 왼쪽 김치 근처
+  { xRatio: 0.66, yRatio: 0.80, rotation: 15, scale: 2.0, zIndex: 3 },   // 오른쪽 김치 뒤
+  { xRatio: 0.85, yRatio: 0.35, rotation: 0, scale: 3.0, zIndex: 4 },   // 중앙 하단
 ];
 
 const MakgeolliQuest = () => {
@@ -194,7 +195,7 @@ const MakgeolliQuest = () => {
         
         setGameScore(score);
       }
-      
+
       timer = setTimeout(() => {
         navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=${gameScore}&correct=true`);
       }, 3000);
@@ -213,6 +214,38 @@ const MakgeolliQuest = () => {
       setShowTrayBackground(true);
     }
   }, [gamePhase, trayItems.length]);
+
+  useEffect(() => {
+  if (gamePhase !== 'success' && gamePhase !== 'timeOver') return;
+
+  const sessionId = localStorage.getItem('session_id')!;
+  const elapsedTime = Math.floor((Date.now() - (gameStartTime ?? Date.now())) / 1000);
+
+  let finalScore = 0;
+  if (gamePhase === 'success' && gameStartTime) {
+    const elapsed = (Date.now() - gameStartTime) / 1000;
+    if (elapsed <= 30) finalScore = 20;
+    else if (elapsed <= 60) finalScore = 18;
+    else if (elapsed <= 120) finalScore = 15;
+    else if (elapsed <= 180) finalScore = 12;
+    else if (elapsed <= 240) finalScore = 10;
+    else finalScore = 5;
+  } else {
+    finalScore = 5; // 실패 시 기본 점수
+  }
+
+  const payload: AttemptPayload = {
+    attempt_number: 1,
+    score_awarded: finalScore,
+    selected_option: '',
+    is_correct: gamePhase === 'success',
+    response_time: elapsedTime,
+  };
+
+  postQuestAttempt(sessionId, "Makgeolli", payload)
+    .then(res => console.log("✅ 시도 기록 완료:", res.data.attempt_id))
+    .catch(err => console.error("❌ 시도 기록 실패", err));
+}, [gamePhase]);
 
   // 트레이 아이템 초기화 함수 - 상대적 비율 사용
   const initTrayItems = () => {
@@ -258,10 +291,10 @@ const MakgeolliQuest = () => {
       return '';
     }
     if (['fieldArrival'].includes(gamePhase)) {
-      return '/assets/images/farmland.png';
+      return '/assets/images/orchard_arrival_screen.png';
     }
     if (['working'].includes(gamePhase)) {
-      return fieldWorkBackground;
+      return orchardWorkBackground;
     }
     if (['mealLadyArrival', 'mealLadyIntro'].includes(gamePhase)) {
       return mealLadyBackground;
@@ -272,7 +305,7 @@ const MakgeolliQuest = () => {
     if (['success', 'timeOver'].includes(gamePhase)) {
       return mission3Success;
     }
-    return fieldWorkBackground;
+    return orchardWorkBackground;
   };
 
   // 옵션 선택 핸들러
@@ -382,7 +415,7 @@ const MakgeolliQuest = () => {
       {/* 논밭 도착 화면 */}
       {gamePhase === 'fieldArrival' && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <GameTitle text="논밭 도착" fontSize="text-8xl" />
+          <GameTitle text="과수원 도착" fontSize="text-8xl" />
         </div>
       )}
       
@@ -463,7 +496,7 @@ const MakgeolliQuest = () => {
 
           <div className="absolute top-[65%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
             <div className="w-[110vw] max-w-2xl bg-white/90 border-8 border-green-600 rounded-[2.2rem] p-10 text-center shadow-lg">
-              <p className="text-[2.7rem] font-extrabold text-black leading-tight tracking-wider">
+              <p className="text-[2.9rem] font-extrabold text-green-600 leading-tight tracking-wider">
                 새참 가져왔어요<br />
                 다들 먹고 하셔요!
               </p>
@@ -596,7 +629,7 @@ const MakgeolliQuest = () => {
               transition={{ duration: 0.8 }}
             >
               <GameTitle text="새참 속 막걸리 치우기" fontSize="text-6xl" />
-              <div className="bg-white/80 border-8 border-green-600 rounded-3xl px-6 py-12 mb-4 w-full">
+              <div className="bg-white/80 border-8 border-green-600 rounded-3xl px-6 py-12 mb-4 mt-6 w-full">
                 <p className="text-[2.8rem] font-extrabold text-center leading-relaxed">
                   {selectedOption === 'A' ? (
                     <>
