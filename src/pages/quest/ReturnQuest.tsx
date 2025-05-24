@@ -41,7 +41,7 @@ const getBackgroundColor = (hour: number): string => {
     switch(hour) {
       case 5: return 'linear-gradient(to bottom, #87CEEB 0%, #B0E0E6 50%, #FFF8DC 100%)'; // 밝은 하늘색
       case 6: return 'linear-gradient(to bottom, #FFE4B5 0%, #FFA07A 40%, #FF8C69 100%)'; // 연한 노을색
-      case 7: return 'linear-gradient(to bottom, #FF6347 0%, #FF4500 40%, #8B0000 100%)'; // 노을색
+      case 7: return 'linear-gradient(to bottom, #FF8C69 0%, #FF6347 40%, #CD5C5C 100%)';
       case 8: return 'linear-gradient(to bottom, #4B0082 0%, #2F4F4F 40%, #000080 100%)'; // 어둑한 색
       case 9: return 'linear-gradient(to bottom, #191970 0%, #000000 50%, #0D0D0D 100%)'; // 어두운 색
       default: return 'linear-gradient(to bottom, #FF6347 0%, #FF4500 40%, #8B0000 100%)';
@@ -152,7 +152,7 @@ const ReturnQuest = () => {
     const colorMap: { [key: number]: string[] } = {
       5: ['#87CEEB', '#B0E0E6', '#FFF8DC'],
       6: ['#FFE4B5', '#FFA07A', '#FF8C69'],
-      7: ['#FF6347', '#FF4500', '#8B0000'],
+      7: ['#FF8C69', '#FF6347', '#CD5C5C'], // 이 라인 수정
       8: ['#4B0082', '#2F4F4F', '#000080'],
       9: ['#191970', '#000000', '#0D0D0D']
     };
@@ -526,7 +526,7 @@ const ReturnQuest = () => {
             </div>
           </motion.div>
           
-          <div className="absolute -bottom-4 left-0 right-0 flex justify-center z-50">
+          <div className="absolute bottom-8 left-0 right-0 flex justify-center z-50">
             <img
               src={nextButton}
               alt="다음"

@@ -503,7 +503,7 @@ const MakgeolliQuest = () => {
             </div>
           </div>
 
-          <div className="absolute -bottom-6 left-0 right-0 flex justify-center z-50">
+          <div className="absolute bottom-2 left-0 right-0 flex justify-center z-50">
             <img
               src={nextButton}
               alt="다음"
