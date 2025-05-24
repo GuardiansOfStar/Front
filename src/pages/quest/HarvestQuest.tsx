@@ -8,12 +8,10 @@ import HomeButton from '../../components/ui/HomeButton';
 import GameTitle from '../../components/ui/GameTitle';
 
 // 이미지 임포트
-const fieldRoad = '/assets/images/field_road.png';
 const fieldHarvestBoxes = '/assets/images/field_harvest_boxes.png';
 const accident = '/assets/images/grandfather_field_accident.png';
 const dangerWarning = '/assets/images/danger_warning.png';
 const successCircle = '/assets/images/success_circle.png';
-const homeButton = '/assets/images/home_button.png';
 const starCharacter = '/assets/images/star_character.png';
 const grandfaSuccess = '/assets/images/mission4_success_grandfather_cart.png';
 const motorcycle = '/assets/images/mission4_motorcycle.png'
@@ -194,14 +192,17 @@ const HarvestQuest = () => {
         <div className="absolute inset-0">
           <div className="absolute inset-0 top-20 flex flex-col items-center justify-center z-30">
             {/* 선택지 제목 및 설명 */}
-            <div className="w-[735px] h-[339px] bg-[#FFFAFA] bg-opacity-75 border-[10px] border-[#FFFAFA] rounded-[30px] p-6 mb-8 flex flex-col justify-center items-center text-center">
+            <div className="w-[735px] h-[339px] 
+            bg-[#FFFAFA] bg-opacity-75 border-[10px] border-[#0DA429] rounded-[30px] 
+            p-6 mb-8 
+            flex flex-col justify-center items-center text-center">
               <GameTitle 
               text="무거운 짐 싣기" 
               fontSize="text-[60px]" 
               color="text-[#0DA429]" 
-              strokeWidth="10px"
+              strokeWidth="0px"
               />
-              <p className="text-[40px] font-extrabold text-black leading-snug">
+              <p className="mt-2 text-[40px] font-extrabold text-black leading-snug">
                 작업하는 중에 수확한 농작물을<br/>
                 <span className="text-[#B91C1C]">이륜차에 싣고 싶어요</span><br/>
                 어떻게 옮길까요?
@@ -209,33 +210,25 @@ const HarvestQuest = () => {
             </div>
             
             {/* 선택지 버튼 */}
-            <div className="flex justify-between w-[750px]">
+            <div className="flex justify-between w-[750px] p-0">
               <button
-                className={`w-[355px] h-[208px] 
-                  bg-[#FFFAFA] bg-opacity-70 
-                  border-[7px] border-[#0DA429] 
-                  rounded-[20px] 
-                  text-3xl font-extrabold text-black 
-                  transition duration-300 
+                className={`w-[355px] h-[208px] rounded-[20px] text-3xl font-extrabold text-black transition duration-300 border-[7px]
                   ${selectedOption === 'A' ? 
-                    'scale-105 bg-[#0DA429] bg-opacity-90' : 
-                    'hover:bg-opacity-90'}`}
+                    'bg-[#0DA429] bg-opacity-90 border-[#0DA429] scale-105' : 
+                    'bg-[#FFFAFA] bg-opacity-70 border-[#0DA429] hover:bg-opacity-90'}
+                `}
                 onClick={() => handleOptionSelect('A')}
                 disabled={!!selectedOption}
               >
-                과수원으로<br/><span style={{ color: '#B91C1C' }}>이륜차를 운전</span>하여 <br/> 짐을 싣는다
+                과수원으로<br/><span style={{ color: '#B91C1C' }}>이륜차를 운전해</span><br/> 짐을 싣는다
               </button>
               
               <button
-                className={`w-[355px] h-[208px] 
-                  bg-[#FFFAFA] bg-opacity-70 
-                  border-[7px] border-[#0DA429] 
-                  rounded-[20px] 
-                  text-3xl font-extrabold text-black 
-                  transition duration-300 
+                className={`w-[355px] h-[208px] rounded-[20px] text-3xl font-extrabold text-black transition duration-300 border-[7px]
                   ${selectedOption === 'B' ? 
-                    'scale-105 bg-[#0DA429] bg-opacity-90' : 
-                    'hover:bg-opacity-90'}`}
+                    'bg-[#0DA429] bg-opacity-90 border-[#0DA429] scale-105' : 
+                    'bg-[#FFFAFA] bg-opacity-70 border-[#0DA429] hover:bg-opacity-90'}
+                `}
                 onClick={() => handleOptionSelect('B')}
                 disabled={!!selectedOption}
               >
@@ -264,9 +257,9 @@ const HarvestQuest = () => {
                 <motion.img
                 src={grandfaSuccess}
                 alt="수레 끄시는 할아버지" 
-                className="absolute left-[20%] w-[439px] h-auto object-contain z-40"
+                className="absolute left-[20%] w-[400px] h-auto object-contain z-40"
                 onError={handleImageError}
-                animate={{ x: [0, 55] }} //X축: 0→65px
+                animate={{ x: [0, 45] }} //X축: 0→65px
                 transition={{ 
                   duration: 5, // 한 사이클(0→20→0)에 2초 
                   repeat: 1, // 반복
@@ -296,24 +289,26 @@ const HarvestQuest = () => {
       {gamePhase === 'successResult' && showSuccessMessage && (
         <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
           {/* 중앙 상단에 정답입니다! */}
-          <GameTitle 
-  text="정답입니다!" 
-  fontSize="text-[70px]" 
-  color="text-[#0E8E12]" 
-  strokeWidth="5px" 
-  className="text-center"
-/>
+          <div
+            className="text-[70px] font-extrabold text-[#0E8E12]"
+            style={{
+              WebkitTextStroke: '10px #FFFFFF',
+              paintOrder: 'stroke',
+            }}
+          >
+            정답입니다!
+          </div>
 
             {/* 중앙에 녹색 박스에 메시지 */}
             <div className="w-[754px] h-[306px] 
             bg-[#0DA429] bg-opacity-50 
             border-[10px] border-[#0E8E12] border-opacity-80 
             rounded-[30px] 
-            p-4 mx-auto mt-10 text-center relative">
-            <p className="text-[60px] text-[#FFFAFA]">
-              당신의 안전과<br/>
-              소중한 자산을 보호하는 <br/> 현명한 선택이에요
-            </p>
+            p-4 mx-auto mt-10 
+            flex justify-center items-center text-center relative">
+              <p className="text-[55px] font-extrabold text-[#FFFAFA]">
+                당신의 안전과<br/> 소중한 자산을 보호하는 <br/> 현명한 선택이에요
+              </p>
             </div>
           {/* 좌측 하단 별별이 캐릭터 */}
           <img 
@@ -359,12 +354,13 @@ const HarvestQuest = () => {
               />
               
               <motion.div 
-                className="w-[80%] bg-white bg-opacity-80 border-red-600 border-8 rounded-xl p-8 text-center"
+                className="w-[850px] h-[353px] bg-[#FFFAFA]/75 border-[#EE404C] border-[10px] rounded-[30px] p-8 text-center flex flex-col justify-center items-center"
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
-                <h2 className="text-6xl font-extrabold text-red-600 mb-4">덜컹! 넘어졌어요</h2>
+
+                <h2 className="text-6xl font-extrabold text-red-600 mb-5">덜컹! 넘어졌어요</h2>
                 <p className="text-4xl font-extrabold text-black">
                   뿌리에 걸려 낙상할 수 있어요<br />
                   이륜차는 도로에 두고 짐을 옮겨요
