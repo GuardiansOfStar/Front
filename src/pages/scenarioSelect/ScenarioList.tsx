@@ -18,8 +18,8 @@ const allScenarios = [
     },
     { 
         id: 2, 
-        title: '논밭 작업가는 날', 
-        subtitle: '논밭 작업가는 날',
+        title: '과수원 작업가는 날', 
+        subtitle: '과수원 작업가는 날',
         image: '/assets/images/scenario1.png',
         locked: false
     },
