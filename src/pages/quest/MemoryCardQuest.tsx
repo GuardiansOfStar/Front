@@ -878,104 +878,139 @@ const MemoryCardQuest: React.FC = () => {
 
       {/* 정답 보여주기 */}
       {gamePhase === 'showAnswer' && (
-        <div 
+        <motion.div 
           className="absolute inset-0 flex flex-col items-center justify-center z-10"
-          style={{ marginTop: `calc(96px * ${scale})` }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 * Math.max(0.8, scale) }}
         >
-          <div 
-            className="relative z-10"
+          <motion.div 
+            className="relative z-10 flex flex-col items-center"
             style={{
               width: '80%',
-              maxWidth: `calc(1024px * ${scale})`
+              maxWidth: `calc(1024px * ${scale})`,
+              marginTop: `calc(-64px * ${scale})`
             }}
+            initial={{ y: `calc(-30px * ${scale})`, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8 * Math.max(0.8, scale) }}
           >
-            <img
+            <motion.img
               src={grandchildren}
               alt="손자손녀"
-              className="absolute left-1/2 transform -translate-x-1/2 z-20"
               style={{
-                top: `calc(-166px * ${scale})`,
                 width: `calc(350px * ${scale})`,
-                height: 'auto'
+                height: 'auto',
+                marginBottom: `calc(-48px * ${scale})`,
+                zIndex: 20
               }}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.8 * Math.max(0.8, scale) }}
             />
-            <div 
-              className="bg-white bg-opacity-90 border-8 border-green-600 rounded-xl w-full mx-auto text-center"
+            <motion.div 
+              className="bg-white bg-opacity-90 border-8 border-green-600 rounded-xl w-full text-center"
               style={{
                 padding: `calc(40px * ${scale})`,
                 paddingTop: `calc(48px * ${scale})`,
                 maxWidth: `calc(718px * ${scale})`
               }}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.8 * Math.max(0.8, scale) }}
             >
-              <p 
+              <motion.p 
                 className="font-extrabold text-green-600"
                 style={{
                   fontSize: `calc(2.4rem * ${scale})`,
                   marginBottom: `calc(24px * ${scale})`
                 }}
+                initial={{ y: `calc(20px * ${scale})`, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.6 * Math.max(0.8, scale), delay: 0.3 * Math.max(0.8, scale) }}
               >
                 선물을 공개합니다
-              </p>
-              <p 
+              </motion.p>
+              <motion.p 
                 className="font-extrabold text-black"
                 style={{ fontSize: `calc(2.4rem * ${scale})` }}
+                initial={{ y: `calc(20px * ${scale})`, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.6 * Math.max(0.8, scale), delay: 0.5 * Math.max(0.8, scale) }}
               >
                 안전모는 당신을 보호해줄 <br/>소중한 선물이에요.
-              </p>
-            </div>
-          </div>
-        </div>
+              </motion.p>
+            </motion.div>
+          </motion.div>
+        </motion.div>
       )}
 
       {/* foundMatch */}
       {gamePhase === 'foundMatch' && (
-        <div 
+        <motion.div 
           className="absolute inset-0 flex flex-col items-center justify-center z-10"
-          style={{ marginTop: `calc(96px * ${scale})` }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 * Math.max(0.8, scale) }}
         >
-          <div 
-            className="relative z-10"
+          <motion.div 
+            className="relative z-10 flex flex-col items-center"
             style={{
               width: '80%',
               maxWidth: `calc(1024px * ${scale})`
             }}
+            initial={{ y: `calc(-30px * ${scale})`, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8 * Math.max(0.8, scale) }}
           >
-            <img
+            <motion.img
               src={grandchildren}
               alt="손자손녀"
-              className="absolute left-1/2 transform -translate-x-1/2 z-20"
               style={{
-                top: `calc(-166px * ${scale})`,
                 width: `calc(350px * ${scale})`,
-                height: 'auto'
+                height: 'auto',
+                marginBottom: `calc(-48px * ${scale})`,
+                zIndex: 20
               }}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.8 * Math.max(0.8, scale) }}
             />
-            <div 
-              className="bg-white bg-opacity-90 border-8 border-green-600 rounded-xl w-full mx-auto text-center"
+            <motion.div 
+              className="bg-white bg-opacity-90 border-8 border-green-600 rounded-xl w-full text-center"
               style={{
                 padding: `calc(40px * ${scale})`,
                 paddingTop: `calc(48px * ${scale})`,
                 maxWidth: `calc(718px * ${scale})`
               }}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.8 * Math.max(0.8, scale) }}
             >
-              <p 
+              <motion.p 
                 className="font-extrabold text-green-600"
                 style={{
                   fontSize: `calc(2.4rem * ${scale})`,
                   marginBottom: `calc(24px * ${scale})`
                 }}
+                initial={{ y: `calc(20px * ${scale})`, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.6 * Math.max(0.8, scale), delay: 0.3 * Math.max(0.8, scale) }}
               >
                 선물을 찾았어요!
-              </p>
-              <p 
+              </motion.p>
+              <motion.p 
                 className="font-extrabold text-black"
                 style={{ fontSize: `calc(2.4rem * ${scale})` }}
+                initial={{ y: `calc(20px * ${scale})`, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.6 * Math.max(0.8, scale), delay: 0.5 * Math.max(0.8, scale) }}
               >
                 안전모는 당신을 보호해줄 <br/>소중한 선물이에요.
-              </p>
-            </div>
-          </div>
-        </div>
+              </motion.p>
+            </motion.div>
+          </motion.div>
+        </motion.div>
       )}
 
       {gamePhase === 'showGift' && (

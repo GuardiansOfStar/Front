@@ -14,9 +14,9 @@ function HomeButton () {
             alt="홈으로"
             className="absolute cursor-pointer"
             style={{
-                top: `calc(5% * ${scale})`,
-                right: `calc(4.5% * ${scale})`,
-                width: `calc(9% * ${scale})`
+                top: `calc(4% * ${scale})`,
+                right: `calc(4% * ${scale})`,
+                width: `calc(11% * ${scale})`
             }}
             onClick={() => navigate('/')}
         />

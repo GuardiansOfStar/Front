@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Background from '../../components/ui/Background';
+import HomeButton from '../../components/ui/HomeButton';
 import { useScale } from '../../hooks/useScale';
 
 // 이미지 임포트
@@ -80,34 +81,37 @@ const ScorePage = () => {
       {/* 배경 컴포넌트 사용 */}
       <Background />
       
+      {/* 홈 버튼 추가 */}
+      <HomeButton />
+      
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center" style={{ marginTop: `calc(-100px * ${scale})` }}>
           {/* 손자/손녀 이미지 */}
           <img
             src={isCorrect ? grandchildrenHappy : grandchildrenSad}
             alt={isCorrect ? "기쁜 손자손녀" : "슬픈 손자손녀"}
             className="relative z-20"
             style={{
-              width: `calc(288px * ${scale})`,
+              width: `calc(312px * ${scale})`,
               height: 'auto',
-              marginBottom: `calc(-40px * ${scale})`
+              marginBottom: `calc(-36px * ${scale})`
             }}
           />
           
           {/* 점수 표시 - 크기 키우고 스타일 조정 */}
           <div 
-            className="transition-transform duration-300 bg-green-500/90 border-green-700 shadow-lg flex items-center justify-center"
+            className="transition-transform duration-300 bg-[#0DA429]/80 border-green-700 shadow-lg flex items-center justify-center"
             style={{
               transform: `scale(${1.05 * scale})`,
               borderWidth: `calc(16px * ${scale})`,
               borderRadius: `calc(80px * ${scale})`,
               paddingLeft: `calc(160px * ${scale})`,
               paddingRight: `calc(160px * ${scale})`,
-              paddingTop: `calc(40px * ${scale})`,
-              paddingBottom: `calc(40px * ${scale})`
+              paddingTop: `calc(20px * ${scale})`,
+              paddingBottom: `calc(20px * ${scale})`
             }}
           >
-            <span className="text-8xl font-extrabold text-white">+{score}</span>
+            <span className="text-9xl font-extrabold text-white">+{score}</span>
           </div>
         </div>
       </div>
