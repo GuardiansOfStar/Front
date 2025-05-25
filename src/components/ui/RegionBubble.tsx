@@ -1,3 +1,4 @@
+// Front/src/components/ui/RegionBubble.tsx
 import { useState, useEffect } from 'react';
 import { useScale } from '../../hooks/useScale';
 
@@ -7,19 +8,28 @@ interface RegionBubbleProps {
 
 const RegionBubble = ({ show }: RegionBubbleProps) => {
   const [visible, setVisible] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
   const scale = useScale();
 
   useEffect(() => {
     if (show) {
-      // 애니메이션 효과를 위해 지연 후 표시
+      // 표시할 때: 렌더링 시작 후 애니메이션
+      setShouldRender(true);
       const timer = setTimeout(() => {
         setVisible(true);
       }, 100);
       return () => clearTimeout(timer);
+    } else {
+      // 숨길 때: 애니메이션 먼저, 렌더링 종료는 나중에
+      setVisible(false);
+      const timer = setTimeout(() => {
+        setShouldRender(false);
+      }, 500 * Math.max(0.8, scale)); // 애니메이션 duration과 동일
+      return () => clearTimeout(timer);
     }
-  }, [show]);
+  }, [show, scale]);
 
-  if (!show) return null;
+  if (!shouldRender) return null;
 
   return (
     <div 
@@ -29,10 +39,10 @@ const RegionBubble = ({ show }: RegionBubbleProps) => {
         right: `calc(20px * ${scale})`
       }}
     >
-      {/* 말풍선 꼬리 - 더 길고 뚜렷하게 */}
+      {/* 말풍선 꼬리 */}
       <div 
         className={`absolute bg-green-600 transform rotate-45 shadow-md
-                   transition-all duration-300 ease-out z-0
+                   transition-all duration-500 ease-out z-0
                    ${visible ? 'opacity-100 scale-100' : 'opacity-0 scale-0'}`}
         style={{
           top: `calc(-16px * ${scale})`,
