@@ -24,7 +24,7 @@ export default class RoadScene extends Phaser.Scene {
   // 포트홀 관련 변수
   private potholeDetectionEnabled: boolean = false;
   private simulationTime: number = 0;
-  private simulationDuration: number = 8000; // 총 시뮬레이션 시간
+  private simulationDuration: number = 20000; // 총 시뮬레이션 시간
   private potholeDetectionTime: number = 2000; // 포트홀 충돌 감지 시간
   private collisionProcessed: boolean = false;
   private redZoneRatioStart: number = 0.1;
@@ -153,7 +153,7 @@ export default class RoadScene extends Phaser.Scene {
         });
       }
       
-      // 포트홀이 화면의 특정 영역(빨간 영역)에 도달했을 때 충돌 감지 활성화
+      // 포트홀이 화면의 특정 영역에 도달했을 때 충돌 감지 활성화
       if (!this.potholeDetectionEnabled && !this.collisionProcessed && 
           potholeScreenY >= this.gameHeight * 0.35 && potholeScreenY <= this.gameHeight * 0.6) {
         this.potholeDetectionEnabled = true;
