@@ -426,7 +426,7 @@ const MakgeolliQuest = () => {
         <div className="absolute inset-0 flex items-center justify-center">
           <GameTitle 
             text="과수원 도착" 
-            fontSize={`calc(8rem * ${scale})`}
+            fontSize={`calc(5rem * ${scale})`}
             strokeWidth={`calc(12px * ${scale})`}
           />
         </div>
