@@ -14,12 +14,13 @@ const helmetCard = '/assets/images/helmet_card.png';
 const strawHatCard = '/assets/images/straw_hat_card.png';
 const capHatCard = '/assets/images/cap_hat_card.png';
 const cardBack = '/assets/images/card_back.png';
-const characterWithHelmet = '/assets/images/character_with_helmet.png';
+const grandfatherWithHelmet = '/assets/images/grandfather_with_helmet.png';
 const giftBox = '/assets/images/gift.png';
 const giftOpenHelmet = '/assets/images/gift_open.png';
 const grandchildren = '/assets/images/grandchildren.png';
 const helmet = '/assets/images/helmet.png';
 const nextButton = '/assets/images/next_button.png';
+const confirmButton = '/assets/images/confirm_button.png'
 
 const giftBoxVariants = {
   hidden:   { scale: 0.5, rotate: -30, opacity: 0 },
@@ -89,7 +90,8 @@ type GamePhase =
   | 'showGift'
   | 'openGift'
   | 'helmetEquipped'
-  | 'score';
+  | 'reshowCards'          // 새로 추가
+  | 'showRemainingTries';  // 새로 추가
 
 const MemoryCardQuest: React.FC = () => {
   const navigate = useNavigate();
@@ -121,7 +123,7 @@ const MemoryCardQuest: React.FC = () => {
 
   // 스케일 적용된 카드 크기 및 간격
   const scaledCardGap = {
-    horizontal: 32 * scale,
+    horizontal: 72 * scale,
     vertical: 16 * scale
   };
 
@@ -153,7 +155,7 @@ const MemoryCardQuest: React.FC = () => {
           ...c,
           isFlipped: false
         })));
-      }, 2000 * Math.max(0.8, scale)); // 3000 -> 2000으로 단축
+      }, 3000 * Math.max(0.8, scale)); // 3000 -> 2000으로 단축
     }
 
     if (gamePhase === 'intro2') {
@@ -164,9 +166,9 @@ const MemoryCardQuest: React.FC = () => {
 
   // 힌트 타이틀 표시 관리
   useEffect(() => {
-    if (gamePhase === 'wrongPairFeedback' || gamePhase === 'wrongMatchFeedback' || gamePhase === 'tooManyAttempts') {
+    if (gamePhase === 'tooManyAttempts') {
       setShowHintTitle(false);
-    } else if (gamePhase === 'game') {
+    } else if (gamePhase === 'game' || gamePhase === 'reshowCards') {
       setShowHintTitle(true);
     }
   }, [gamePhase]);
@@ -184,7 +186,7 @@ const MemoryCardQuest: React.FC = () => {
     if (gamePhase === 'intro1') {
       autoTransitionTimerRef.current = window.setTimeout(() => {
         setGamePhase('intro2');
-      }, getScaledDuration(2000)); // 3000 -> 2000
+      }, getScaledDuration(2000)); 
     } 
     else if (gamePhase === 'wrongMatchFeedback') {
       autoTransitionTimerRef.current = window.setTimeout(() => {
@@ -193,40 +195,55 @@ const MemoryCardQuest: React.FC = () => {
           setFeedbackMessage("찾기 어려우신가요?\n정답을 알려드릴게요");
           setGamePhase('tooManyAttempts');
         } else {
-          setGamePhase('showCards');
+          setGamePhase('reshowCards');
         }
-      }, getScaledDuration(2000)); // 3500 -> 2000
+      }, getScaledDuration(2000));
     }
-    else if (
-      gamePhase === 'foundMatch' ||
-      gamePhase === 'showGift' ||
-      gamePhase === 'openGift' ||
-      gamePhase === 'helmetEquipped'
-    ) {
+    else if (gamePhase === 'showGift' || gamePhase === 'openGift') {
       autoTransitionTimerRef.current = window.setTimeout(() => {
         switch (gamePhase) {
-          case 'foundMatch':   setGamePhase('showGift');       break;
           case 'showGift':     setGamePhase('openGift');       break;
           case 'openGift':     setGamePhase('helmetEquipped'); break;
-          case 'helmetEquipped':
-            navigate(
-              `/score?scenario=${scenarioId}&quest=${questId}&score=${finalScore}&correct=true`
-            );
-            break;
         }
-      }, getScaledDuration(2000)); // 3000 -> 2000
+      }, getScaledDuration(2000));
     }
+    else if (gamePhase === 'helmetEquipped') {
+      autoTransitionTimerRef.current = window.setTimeout(() => {
+        navigate(
+          `/score?scenario=${scenarioId}&quest=${questId}&score=${finalScore}&correct=true`
+        );
+      }, getScaledDuration(3000)); // 3초 후 자동 전환
+    }
+    // foundMatch와 showAnswer, helmetEquipped의 자동 전환 제거
     else if (gamePhase === 'wrongPairFeedback') {
       autoTransitionTimerRef.current = window.setTimeout(() => {
-        if (attempts < 5) {
-          setFlippedCards([]);
-          setGamePhase('showCards');
-        } else {
+        if (attempts >= 5) {
           setShouldShowHintMessage(true);
           setFeedbackMessage("찾기 어려우신가요?\n정답을 알려드릴게요");
           setGamePhase('tooManyAttempts');
+        } else {
+          setFlippedCards([]);
+          setGamePhase('reshowCards');
         }
-      }, getScaledDuration(3000)); // 5000 -> 3000
+      }, getScaledDuration(2000));
+    }
+    // reshowCards 단계 처리
+    else if (gamePhase === 'reshowCards') {
+      // 카드를 모두 뒤집어서 보여주기
+      setCards(prev => prev.map(c => ({ ...c, isFlipped: true })));
+      
+      // 4초 후 남은 시도 횟수 보여주기
+      autoTransitionTimerRef.current = window.setTimeout(() => {
+        setGamePhase('showRemainingTries');
+      }, getScaledDuration(4000));
+    }
+    // showRemainingTries 단계 처리
+    else if (gamePhase === 'showRemainingTries') {
+      // 3초 후 게임으로 돌아가기 (기존 1초에서 3초로 변경)
+      autoTransitionTimerRef.current = window.setTimeout(() => {
+        setCards(prev => prev.map(c => ({ ...c, isFlipped: false })));
+        setGamePhase('game');
+      }, getScaledDuration(3000)); // 1000 -> 3000으로 변경
     }
     else if (gamePhase === 'tooManyAttempts') {
       autoTransitionTimerRef.current = window.setTimeout(() => {
@@ -243,14 +260,9 @@ const MemoryCardQuest: React.FC = () => {
           
           autoTransitionTimerRef.current = window.setTimeout(() => {
             setGamePhase('showAnswer');
-          }, getScaledDuration(1000)); // 1500 -> 1000
-        }, getScaledDuration(300)); // 500 -> 300
-      }, getScaledDuration(2000)); // 3000 -> 2000
-    } 
-    else if (gamePhase === 'showAnswer') {
-      autoTransitionTimerRef.current = window.setTimeout(() => {
-        setGamePhase('helmetEquipped');
-      }, getScaledDuration(2000)); // 3000 -> 2000
+          }, getScaledDuration(1000));
+        }, getScaledDuration(300));
+      }, getScaledDuration(2000));
     }
 
     return () => {
@@ -259,14 +271,6 @@ const MemoryCardQuest: React.FC = () => {
       }
     };
   }, [gamePhase, navigate, scenarioId, questId, finalScore, flippedCards, attempts, scale]);
-
-  useEffect(() => {
-    if (gamePhase === 'tooManyAttempts') {
-      setShouldShowHintMessage(true);
-    } else if (gamePhase === 'showAnswer') {
-      setShouldShowHintMessage(false);
-    }
-  }, [gamePhase]);
 
   // 점수 계산
   useEffect(() => {
@@ -399,9 +403,28 @@ const MemoryCardQuest: React.FC = () => {
             window.setTimeout(() => setGamePhase('foundMatch'), 400 * Math.max(0.8, scale));
           }, 400 * Math.max(0.8, scale));
         } else {
-          // 정답이 아닌 같은 쌍 선택 - 피드백 먼저 보여주고 나중에 카드 뒤집기
-          setFeedbackMessage("앗, 준비한 선물이 아니에요!\n안전모가 그려진 카드 쌍을 찾아주세요!");
-          setGamePhase('wrongMatchFeedback');
+          // 정답이 아닌 같은 쌍 선택 - setShowHintTitle(false) 제거
+          window.setTimeout(() => {
+            setFeedbackMessage("앗, 준비한 선물이 아니에요!\n안전모가 그려진 카드 쌍을 찾아주세요!");
+            setGamePhase('wrongMatchFeedback');
+            
+            window.setTimeout(() => {
+              setCards(prev =>
+                prev.map(c =>
+                  c.id === aId || c.id === bId
+                    ? { ...c, isFlipped: false }
+                    : c
+                )
+              );
+              setFlippedCards([]);
+            }, 1500 * Math.max(0.8, scale));
+          }, 800 * Math.max(0.8, scale));
+        }
+      } else {
+        // 서로 다른 쌍 선택 - setShowHintTitle(false) 제거
+        window.setTimeout(() => {
+          setFeedbackMessage("앗, 서로 다른 그림이에요!\n안전모가 그려진 카드 쌍을 찾아주세요");
+          setGamePhase('wrongPairFeedback');
           
           window.setTimeout(() => {
             setCards(prev =>
@@ -413,29 +436,10 @@ const MemoryCardQuest: React.FC = () => {
             );
             setFlippedCards([]);
           }, 1500 * Math.max(0.8, scale));
-        }
-      } else {
-        // 서로 다른 쌍 선택 - 피드백 먼저 보여주고 나중에 카드 뒤집기
-        setFeedbackMessage("앗, 서로 다른 그림이에요!\n안전모가 그려진 카드 쌍을 찾아주세요");
-        setShowHintTitle(false);
-        setGamePhase('wrongPairFeedback');
-        
-        window.setTimeout(() => {
-          setCards(prev =>
-            prev.map(c =>
-              c.id === aId || c.id === bId
-                ? { ...c, isFlipped: false }
-                : c
-            )
-          );
-          setFlippedCards([]);
-        }, 1500 * Math.max(0.8, scale));
+        }, 800 * Math.max(0.8, scale));
       }
     }
   };
-
-  // 홈으로 이동 핸들러
-  const handleGoHome = () => navigate('/');
 
   // 다음 단계로 이동 핸들러
   const handleNextPhase = () => {
@@ -444,6 +448,14 @@ const MemoryCardQuest: React.FC = () => {
     if (gamePhase === 'intro1')      setGamePhase('intro2');
     else if (gamePhase === 'intro2') setGamePhase('intro3');
     else if (gamePhase === 'intro3') setGamePhase('showCards');
+  };
+
+  const handleConfirm = () => {
+    if (gamePhase === 'foundMatch') {
+      setGamePhase('showGift');
+    } else if (gamePhase === 'showAnswer') {
+      setGamePhase('helmetEquipped');
+    }
   };
 
   // 배경 흐림 효과 렌더링 함수
@@ -457,13 +469,19 @@ const MemoryCardQuest: React.FC = () => {
     (gamePhase === 'intro2' && showMessage) ||
     gamePhase === 'intro3';
 
+  const showConfirmButton = 
+    gamePhase === 'foundMatch' || 
+    gamePhase === 'showAnswer';
   // 카드 컨테이너 패딩 조건부 설정
   const gameContentVisible = 
     gamePhase === 'showCards' || 
     gamePhase === 'game' || 
     gamePhase === 'wrongPairFeedback' ||
     gamePhase === 'wrongMatchFeedback'||
-    gamePhase === 'tooManyAttempts';
+    gamePhase === 'tooManyAttempts' ||
+    gamePhase === 'reshowCards' ||
+    gamePhase === 'showRemainingTries';  // 이 줄 추가
+
 
   return (
     <div className="relative w-full h-full">
@@ -652,27 +670,7 @@ const MemoryCardQuest: React.FC = () => {
           }}
         >
           <div className="w-full h-full flex flex-col items-center justify-start">
-            {/* 시도 횟수 */}
-            {gamePhase === 'game' && (
-              <div 
-                className="absolute bg-green-600 border-4 border-green-700 rounded-lg z-50"
-                style={{
-                  bottom: `calc(16px * ${scale})`,
-                  right: `calc(16px * ${scale})`,
-                  paddingLeft: `calc(16px * ${scale})`,
-                  paddingRight: `calc(16px * ${scale})`,
-                  paddingTop: `calc(8px * ${scale})`,
-                  paddingBottom: `calc(8px * ${scale})`
-                }}
-              >
-                <p 
-                  className="font-extrabold text-white"
-                  style={{ fontSize: `calc(1.25rem * ${scale})` }}
-                >
-                  시도 횟수: {attempts}
-                </p>
-              </div>
-            )}
+            {/* 시도 횟수 - 제거됨 */}
             
             {/* 타이틀 영역 */}
             <div 
@@ -684,11 +682,19 @@ const MemoryCardQuest: React.FC = () => {
               }}
             >
               <div className={showHintTitle ? '' : 'invisible'}>
-                <GameTitle 
-                  text="힌트: 머리를 보호해주는 선물은 무엇일까요?" 
-                  fontSize={`calc(2.2rem * ${scale})`} 
-                  strokeWidth={`calc(4px * ${scale})`} 
-                />
+                {(gamePhase === 'reshowCards' || gamePhase === 'showRemainingTries') ? (
+                  <GameTitle 
+                    text="카드 전체를 다시 보여 드릴게요" 
+                    fontSize={`calc(2.2rem * ${scale})`} 
+                    strokeWidth={`calc(4px * ${scale})`} 
+                  />
+                ) : (
+                  <GameTitle 
+                    text="힌트: 머리를 보호해주는 선물은 무엇일까요?" 
+                    fontSize={`calc(2.2rem * ${scale})`} 
+                    strokeWidth={`calc(4px * ${scale})`} 
+                  />
+                )}
               </div>
             </div>
             
@@ -793,13 +799,13 @@ const MemoryCardQuest: React.FC = () => {
             className="bg-white border-8 border-green-600 rounded-xl text-center shadow-lg mx-auto"
             style={{
               padding: `calc(32px * ${scale})`,
-              maxWidth: `calc(576px * ${scale})`,
+              maxWidth: `calc(683px * ${scale})`,
               width: '100%'
             }}
           >
             <p 
               className="font-extrabold text-green-600 whitespace-pre-line"
-              style={{ fontSize: `calc(3rem * ${scale})` }}
+              style={{ fontSize: `${2.2 * scale}rem` }}
             >
               {feedbackMessage}
             </p>
@@ -814,13 +820,13 @@ const MemoryCardQuest: React.FC = () => {
             className="bg-white border-8 border-green-600 rounded-xl text-center shadow-lg mx-auto"
             style={{
               padding: `calc(32px * ${scale})`,
-              maxWidth: `calc(576px * ${scale})`,
+              maxWidth: `calc(683px * ${scale})`,
               width: '100%'
             }}
           >
             <p 
               className="font-extrabold text-green-600 whitespace-pre-line"
-              style={{ fontSize: `calc(3rem * ${scale})` }}
+              style={{ fontSize: `${2.2 * scale}rem` }}
             >
               {feedbackMessage}
             </p>
@@ -835,15 +841,36 @@ const MemoryCardQuest: React.FC = () => {
             className="bg-white border-8 border-green-600 rounded-xl text-center shadow-lg mx-auto"
             style={{
               padding: `calc(32px * ${scale})`,
-              maxWidth: `calc(576px * ${scale})`,
+              maxWidth: `calc(683px * ${scale})`,
               width: '100%'
             }}
           >
             <p 
               className="font-extrabold text-green-600 whitespace-pre-line"
-              style={{ fontSize: `calc(3rem * ${scale})` }}
+              style={{ fontSize: `${2.2 * scale}rem` }}
             >
               {feedbackMessage}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* 남은 시도 횟수 표시 - 카드 위 오버레이 */}
+      {gamePhase === 'showRemainingTries' && (
+        <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+          <div 
+            className="bg-green-600 border-8 border-green-700 rounded-xl text-center shadow-lg"
+            style={{
+              padding: `calc(16px * ${scale})`,
+              maxWidth: `calc(440px * ${scale})`,
+              width: '100%'
+            }}
+          >
+            <p 
+              className="font-extrabold text-white"
+              style={{ fontSize: `calc(3rem * ${scale})` }}
+            >
+              남은 시도 횟수: {5 - attempts}
             </p>
           </div>
         </div>
@@ -867,8 +894,8 @@ const MemoryCardQuest: React.FC = () => {
               alt="손자손녀"
               className="absolute left-1/2 transform -translate-x-1/2 z-20"
               style={{
-                top: `calc(-160px * ${scale})`,
-                width: `calc(304px * ${scale})`,
+                top: `calc(-166px * ${scale})`,
+                width: `calc(350px * ${scale})`,
                 height: 'auto'
               }}
             />
@@ -877,13 +904,13 @@ const MemoryCardQuest: React.FC = () => {
               style={{
                 padding: `calc(40px * ${scale})`,
                 paddingTop: `calc(48px * ${scale})`,
-                maxWidth: `calc(512px * ${scale})`
+                maxWidth: `calc(718px * ${scale})`
               }}
             >
               <p 
                 className="font-extrabold text-green-600"
                 style={{
-                  fontSize: `calc(4rem * ${scale})`,
+                  fontSize: `calc(2.4rem * ${scale})`,
                   marginBottom: `calc(24px * ${scale})`
                 }}
               >
@@ -891,7 +918,7 @@ const MemoryCardQuest: React.FC = () => {
               </p>
               <p 
                 className="font-extrabold text-black"
-                style={{ fontSize: `calc(4rem * ${scale})` }}
+                style={{ fontSize: `calc(2.4rem * ${scale})` }}
               >
                 안전모는 당신을 보호해줄 <br/>소중한 선물이에요.
               </p>
@@ -918,8 +945,8 @@ const MemoryCardQuest: React.FC = () => {
               alt="손자손녀"
               className="absolute left-1/2 transform -translate-x-1/2 z-20"
               style={{
-                top: `calc(-160px * ${scale})`,
-                width: `calc(304px * ${scale})`,
+                top: `calc(-166px * ${scale})`,
+                width: `calc(350px * ${scale})`,
                 height: 'auto'
               }}
             />
@@ -928,13 +955,13 @@ const MemoryCardQuest: React.FC = () => {
               style={{
                 padding: `calc(40px * ${scale})`,
                 paddingTop: `calc(48px * ${scale})`,
-                maxWidth: `calc(512px * ${scale})`
+                maxWidth: `calc(718px * ${scale})`
               }}
             >
               <p 
                 className="font-extrabold text-green-600"
                 style={{
-                  fontSize: `calc(4rem * ${scale})`,
+                  fontSize: `calc(2.4rem * ${scale})`,
                   marginBottom: `calc(24px * ${scale})`
                 }}
               >
@@ -942,7 +969,7 @@ const MemoryCardQuest: React.FC = () => {
               </p>
               <p 
                 className="font-extrabold text-black"
-                style={{ fontSize: `calc(4rem * ${scale})` }}
+                style={{ fontSize: `calc(2.4rem * ${scale})` }}
               >
                 안전모는 당신을 보호해줄 <br/>소중한 선물이에요.
               </p>
@@ -1052,12 +1079,12 @@ const MemoryCardQuest: React.FC = () => {
           >
             <GameTitle 
               text="안전모를 착용했어요" 
-              fontSize={`calc(7rem * ${scale})`} 
+              fontSize={`${5.0 * scale}rem`}
               strokeWidth={`calc(12px * ${scale})`} 
             />
           </div>
           <motion.img
-            src={characterWithHelmet}
+            src={grandfatherWithHelmet}
             alt="캐릭터"
             className="h-auto"
             style={{
@@ -1081,6 +1108,22 @@ const MemoryCardQuest: React.FC = () => {
             src={nextButton}
             alt="다음"
             onClick={handleNextPhase}
+            className="h-auto cursor-pointer hover:scale-105 transition-transform"
+            style={{ width: `calc(192px * ${scale})` }}
+          />
+        </div>
+      )}
+
+      {/* 확인 버튼 */}
+      {showConfirmButton && (
+        <div 
+          className="absolute left-0 right-0 flex justify-center z-10"
+          style={{ bottom: `calc(32px * ${scale})` }}
+        >
+          <img
+            src={confirmButton}
+            alt="확인"
+            onClick={handleConfirm}
             className="h-auto cursor-pointer hover:scale-105 transition-transform"
             style={{ width: `calc(192px * ${scale})` }}
           />
