@@ -14,7 +14,7 @@ const Setting = () => {
             className="absolute cursor-pointer"
             style={{
                 top: `calc(5% * ${scale})`,
-                right: `calc(4.5% * ${scale})`,
+                right: `calc(3.6% * ${scale})`,
                 width: `calc(9% * ${scale})`
             }}
             onClick={() => navigate('/settings')}
