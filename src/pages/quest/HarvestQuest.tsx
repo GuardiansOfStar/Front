@@ -1,9 +1,7 @@
-// src/pages/quest/HarvestQuest.tsx
+// Front/src/pages/quest/HarvestQuest.tsx
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import HarvestBox from './HarvestBox';
-import HarvestBox2 from './HarvestBox2';
 import HomeButton from '../../components/ui/HomeButton';
 import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attempts';
 import GameTitle from '../../components/ui/GameTitle';
@@ -16,7 +14,7 @@ const dangerWarning = '/assets/images/danger_warning.png';
 const successCircle = '/assets/images/success_circle.png';
 const starCharacter = '/assets/images/star_character.png';
 const grandfaSuccess = '/assets/images/mission4_success_grandfather_cart.png';
-const motorcycle = '/assets/images/mission4_motorcycle.png'
+const motorcycle = '/assets/images/mission4_motorcycle.png';
 
 // 게임 단계 정의
 type GamePhase = 
@@ -43,6 +41,10 @@ const HarvestQuest = () => {
 
   const scale = useScale();
 
+  // 스케일 적용된 클릭 영역 크기
+  const scaledClickAreaPadding = 20 * scale;
+  const scaledHoverScale = 1.05 + (0.02 * scale); // 스케일에 따른 호버 효과 조정
+
   // URL 쿼리 파라미터에서 시나리오 ID와 퀘스트 ID 가져오기
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -51,11 +53,16 @@ const HarvestQuest = () => {
     setScenarioId(sId);
     setQuestId(qId || '4');
     
-    // 인트로 화면 3초 후 드라이빙
+    // 스케일에 따른 타이밍 조정 함수
+    const getScaledDuration = (baseDuration: number) => {
+      return baseDuration * Math.max(0.8, scale);
+    };
+    
+    // 인트로 화면 3초 후 드라이빙 - 스케일 적용
     const timer = setTimeout(() => {
       setGamePhase('driving');
       
-      // 드라이빙 1초 후 사과박스 쌓인 정지 화면으로 전환
+      // 드라이빙 1초 후 사과박스 쌓인 정지 화면으로 전환 - 스케일 적용
       const drivingTimer = setTimeout(() => {
         setGamePhase('harvestDone');
         
@@ -65,15 +72,15 @@ const HarvestQuest = () => {
         }, 0);
         
         return () => clearTimeout(alertTimer);
-      }, 1000);
+      }, getScaledDuration(1000));
       
       return () => clearTimeout(drivingTimer);
-    }, 3000);
+    }, getScaledDuration(3000));
     
     return () => clearTimeout(timer);
-  }, [location]);
+  }, [location, scale]);
   
-  // 선택지 선택 핸들러
+  // 선택지 선택 핸들러 - 스케일 적용된 타이밍
   const handleOptionSelect = (option: 'A' | 'B') => {
     setSelectedOption(option);
     
@@ -95,8 +102,12 @@ const HarvestQuest = () => {
       .then((res) => {console.log('✅ 시도 기록 완료:', res.data.attempt_id);})
       .catch((err) => {console.error('❌ 시도 기록 실패', err);});
 
+    const getScaledDuration = (baseDuration: number) => {
+      return baseDuration * Math.max(0.8, scale);
+    };
+
     if (option === 'B') {
-      // 정답 선택
+      // 정답 선택 - 스케일 적용된 타이밍
       setTimeout(() => {
         setGamePhase('successResult');
         
@@ -107,52 +118,53 @@ const HarvestQuest = () => {
           // 5초 후 점수 화면으로 이동
           setTimeout(() => {
             navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=20&correct=true`);
-          }, 5000);
-        }, 4000);
-      }, 1000);
+          }, getScaledDuration(5000));
+        }, getScaledDuration(4000));
+      }, getScaledDuration(1000));
     } else {
-      // 오답 선택
+      // 오답 선택 - 스케일 적용된 타이밍
       setTimeout(() => {
         setGamePhase('fadeOut');
         setTimeout(() => {
           setGamePhase('failResult');
           setTimeout(() => {
             navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=10&correct=false`);
-          }, 15000);
-        }, 2500);
-      }, 1000);
+          }, getScaledDuration(15000));
+        }, getScaledDuration(2500));
+      }, getScaledDuration(1000));
     }
   };
   
+  // failResult 단계에서 시간차를 두고 경고 메시지 표시 - 스케일 적용
   useEffect(() => {
     if (gamePhase === 'failResult') {
       const timer = setTimeout(() => {
         setShowWarning(true);
-      }, 4000);
+      }, 4000 * Math.max(0.8, scale));
 
       return () => clearTimeout(timer);
     } else {
       setShowWarning(false);
     }
-  }, [gamePhase]);
+  }, [gamePhase, scale]);
 
   // 이미지 오류 핸들러
   const handleImageError = () => {
     setFallbackImage(true);
   };
 
-  // 퀘스트 제목 렌더링
+  // 퀘스트 제목 렌더링 - 스케일 적용
   useEffect(() => {
     if (gamePhase === 'intro') {
       const timer = setTimeout(() => {
         setShowIntroText(true);
-      }, 3000);
+      }, 3000 * Math.max(0.8, scale));
 
       return () => clearTimeout(timer);
     } else {
       setShowIntroText(false);
     }
-  }, [gamePhase]);
+  }, [gamePhase, scale]);
 
   return (
     <div className="w-full h-full">
@@ -175,20 +187,6 @@ const HarvestQuest = () => {
         <HomeButton />
       )}
 
-      {/* 인트로 화면 */}
-      {gamePhase === 'intro' && (
-        <>
-          {/* HarvestBox와 showIntroText 관련 로직은 필요에 따라 활성화 */}
-        </>
-      )}
-
-      {/* 주행 화면 */}
-      {gamePhase === 'driving' && (
-        <div className="absolute inset-0 flex items-center justify-center z-10">
-          {/* HarvestBox2와 타이틀 관련 로직은 필요에 따라 활성화 */}
-        </div>
-      )}
-
       {/* 선택지 화면 */}
       {gamePhase === 'selection' && (
         <div className="absolute inset-0">
@@ -209,7 +207,7 @@ const HarvestQuest = () => {
             >
               <GameTitle 
                 text="무거운 짐 싣기" 
-                fontSize="text-[60px]" 
+                fontSize={`calc(3.75rem * ${scale})`} 
                 color="text-[#0DA429]" 
                 strokeWidth="0px"
               />
@@ -226,7 +224,7 @@ const HarvestQuest = () => {
               </p>
             </div>
             
-            {/* 선택지 버튼 */}
+            {/* 선택지 버튼 - 스케일 적용된 클릭 영역 */}
             <div 
               className="flex justify-between"
               style={{
@@ -235,7 +233,7 @@ const HarvestQuest = () => {
               }}
             >
               <button
-                className={`rounded-[20px] font-extrabold text-black transition duration-300
+                className={`rounded-[20px] font-extrabold text-black transition duration-300 cursor-pointer
                   ${selectedOption === 'A' ? 
                     'bg-[#0DA429] bg-opacity-90 border-[#0DA429] scale-105' : 
                     'bg-[#FFFAFA] bg-opacity-70 border-[#0DA429] hover:bg-opacity-90'}
@@ -244,7 +242,11 @@ const HarvestQuest = () => {
                   width: `calc(355px * ${scale})`,
                   height: `calc(208px * ${scale})`,
                   fontSize: `calc(1.875rem * ${scale})`,
-                  borderWidth: `calc(7px * ${scale})`
+                  borderWidth: `calc(7px * ${scale})`,
+                  // 클릭 영역 확장을 위한 패딩
+                  padding: `calc(${scaledClickAreaPadding}px)`,
+                  transform: selectedOption === 'A' ? `scale(${scaledHoverScale})` : 'scale(1)',
+                  boxSizing: 'border-box'
                 }}
                 onClick={() => handleOptionSelect('A')}
                 disabled={!!selectedOption}
@@ -253,7 +255,7 @@ const HarvestQuest = () => {
               </button>
               
               <button
-                className={`rounded-[20px] font-extrabold text-black transition duration-300
+                className={`rounded-[20px] font-extrabold text-black transition duration-300 cursor-pointer
                   ${selectedOption === 'B' ? 
                     'bg-[#0DA429] bg-opacity-90 border-[#0DA429] scale-105' : 
                     'bg-[#FFFAFA] bg-opacity-70 border-[#0DA429] hover:bg-opacity-90'}
@@ -262,7 +264,11 @@ const HarvestQuest = () => {
                   width: `calc(355px * ${scale})`,
                   height: `calc(208px * ${scale})`,
                   fontSize: `calc(1.875rem * ${scale})`,
-                  borderWidth: `calc(7px * ${scale})`
+                  borderWidth: `calc(7px * ${scale})`,
+                  // 클릭 영역 확장을 위한 패딩
+                  padding: `calc(${scaledClickAreaPadding}px)`,
+                  transform: selectedOption === 'B' ? `scale(${scaledHoverScale})` : 'scale(1)',
+                  boxSizing: 'border-box'
                 }}
                 onClick={() => handleOptionSelect('B')}
                 disabled={!!selectedOption}
@@ -301,7 +307,7 @@ const HarvestQuest = () => {
                   onError={handleImageError}
                   animate={{ x: [0, `calc(45px * ${scale})`] }}
                   transition={{ 
-                    duration: 5,
+                    duration: 5 * Math.max(0.8, scale),
                     repeat: 1,
                   }}
                 />
@@ -320,7 +326,11 @@ const HarvestQuest = () => {
                 <img 
                   src="/assets/images/character_with_helmet.png"  
                   alt="헬멧 쓴 캐릭터" 
-                  className="w-2/5 h-auto object-contain"
+                  className="object-contain"
+                  style={{
+                    width: `calc(40% * ${scale})`,
+                    height: 'auto'
+                  }}
                 />
               )}
             </div>
@@ -381,10 +391,13 @@ const HarvestQuest = () => {
       
       {/* 페이드아웃 화면 */}
       {gamePhase === 'fadeOut' && (
-        <img
+        <motion.img
           src="/assets/images/accident_fadeout.png"
           alt="전환 이미지"
-          className="absolute inset-0 w-full h-full object-cover z-50 opacity-0 animate-fadein"
+          className="absolute inset-0 w-full h-full object-cover z-50"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.5 * Math.max(0.8, scale) }}
         />
       )}
       
@@ -397,14 +410,14 @@ const HarvestQuest = () => {
             className="absolute inset-0 w-full h-full object-cover"
           />
 
-          {/* 애니메이션 컨테이너 */}
+          {/* 애니메이션 컨테이너 - 스케일 적용된 애니메이션 */}
           {showWarning && (
             <motion.div 
               className="absolute inset-0 bg-[#FFF9C4]/60 flex flex-col items-center justify-end z-10"
               style={{ paddingBottom: `calc(128px * ${scale})` }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.8 }}
+              transition={{ duration: 0.8 * Math.max(0.8, scale) }}
             >
               <motion.img 
                 src={dangerWarning} 
@@ -415,7 +428,7 @@ const HarvestQuest = () => {
                 }}
                 initial={{ y: `calc(-20px * ${scale})`, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
+                transition={{ duration: 0.8 * Math.max(0.8, scale), delay: 0.2 }}
               />
               
               <motion.div 
@@ -428,7 +441,7 @@ const HarvestQuest = () => {
                 }}
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
+                transition={{ duration: 0.8 * Math.max(0.8, scale), delay: 0.4 }}
               >
                 <h2 
                   className="font-extrabold text-red-600"

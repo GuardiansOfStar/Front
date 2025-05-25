@@ -1,4 +1,4 @@
-// src/pages/quest/MakgeolliQuest.tsx
+// Front/src/pages/quest/MakgeolliQuest.tsx
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -112,24 +112,29 @@ const MakgeolliQuest = () => {
     setQuestId('3');
   }, [location]);
 
-  // 단계별 자동 진행
+  // 단계별 자동 진행 - 스케일 적용된 타이밍
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
+    
+    // 스케일에 따른 타이밍 조정 함수
+    const getScaledDuration = (baseDuration: number) => {
+      return baseDuration * Math.max(0.8, scale);
+    };
     
     if (gamePhase === 'roadToField') {
       timer = setTimeout(() => {
         setGamePhase('fieldArrival');
-      }, 5000);
+      }, getScaledDuration(5000));
     }
     else if (gamePhase === 'fieldArrival') {
       timer = setTimeout(() => {
         setGamePhase('working');
-      }, 3000);
+      }, getScaledDuration(3000));
     }
     else if (gamePhase === 'working') {
       timer = setTimeout(() => {
         setGamePhase('mealLadyArrival');
-      }, 5000);
+      }, getScaledDuration(5000));
     }
     else if (gamePhase === 'mealLadyArrival') {
       const mealLadyAnimation = setInterval(() => {
@@ -138,13 +143,13 @@ const MakgeolliQuest = () => {
             clearInterval(mealLadyAnimation);
             return 1;
           }
-          return prev + 0.05;
+          return prev + (0.05 * Math.min(1.5, scale)); // 스케일에 따른 애니메이션 속도 조정
         });
-      }, 1000);
+      }, getScaledDuration(1000));
       
       timer = setTimeout(() => {
         setGamePhase('mealLadyIntro');
-      }, 1500);
+      }, getScaledDuration(1500));
       
       return () => clearInterval(mealLadyAnimation);
     }
@@ -157,7 +162,7 @@ const MakgeolliQuest = () => {
       
       timer = setTimeout(() => {
         setGamePhase('missionIntro');
-      }, 5000);
+      }, getScaledDuration(5000));
     }
     else if (gamePhase === 'missionIntro') {
       setShowTrayBackground(false);
@@ -165,6 +170,8 @@ const MakgeolliQuest = () => {
     else if (gamePhase === 'gamePlay') {
       setGameStartTime(Date.now());
       
+      // 타이머 간격도 스케일 적용
+      const timerInterval = 1000 / Math.max(0.8, scale);
       timerRef.current = setInterval(() => {
         setTimeRemaining(prev => {
           if (prev <= 0) {
@@ -175,7 +182,7 @@ const MakgeolliQuest = () => {
           }
           return prev - 1;
         });
-      }, 1000);
+      }, timerInterval);
       
       return () => {
         if (timerRef.current) clearInterval(timerRef.current);
@@ -200,13 +207,13 @@ const MakgeolliQuest = () => {
 
       timer = setTimeout(() => {
         navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=${gameScore}&correct=true`);
-      }, 3000);
+      }, getScaledDuration(3000));
     }
     
     return () => {
       if (timer) clearTimeout(timer);
     };
-  }, [gamePhase, navigate, scenarioId, questId, gameScore, gameStartTime, trayItems.length]);
+  }, [gamePhase, navigate, scenarioId, questId, gameScore, gameStartTime, trayItems.length, scale]);
 
   // gamePhase가 mealTray일 때 trayItems 자동 초기화
   useEffect(() => {
@@ -317,7 +324,7 @@ const MakgeolliQuest = () => {
     
     setTimeout(() => {
       setGamePhase('gameInstruction');
-    }, 300);
+    }, 300 * Math.max(0.8, scale)); // 스케일 적용
   };
   
   // 아이템 클릭 핸들러
@@ -417,7 +424,11 @@ const MakgeolliQuest = () => {
       {/* 논밭 도착 화면 */}
       {gamePhase === 'fieldArrival' && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <GameTitle text="과수원 도착" fontSize="text-8xl" />
+          <GameTitle 
+            text="과수원 도착" 
+            fontSize={`calc(8rem * ${scale})`}
+            strokeWidth={`calc(12px * ${scale})`}
+          />
         </div>
       )}
       
@@ -443,7 +454,7 @@ const MakgeolliQuest = () => {
             </h1>
           </div>
           
-          {/* 참새 애니메이션 */}
+          {/* 참새 애니메이션 - 스케일 적용 */}
           <motion.img
             src={sparrow}
             alt="참새"
@@ -455,14 +466,21 @@ const MakgeolliQuest = () => {
             }}
             initial={{ x: `calc(-150px * ${scale})` }}
             animate={{ 
-              x: `calc(${window.innerWidth + 150}px * ${scale})`,
-              y: [0, `calc(-20px * ${scale})`, `calc(10px * ${scale})`, `calc(-15px * ${scale})`, `calc(5px * ${scale})`, 0],
+              x: `calc(${(window.innerWidth + 150) * scale}px)`,
+              y: [
+                0, 
+                `calc(-20px * ${scale})`, 
+                `calc(10px * ${scale})`, 
+                `calc(-15px * ${scale})`, 
+                `calc(5px * ${scale})`, 
+                0
+              ],
               rotate: [0, 5, -3, 2, 0]
             }}
             transition={{
-              x: { duration: 5, ease: "easeInOut" },
-              y: { duration: 2.5, repeat: 1, ease: "easeInOut" },
-              rotate: { duration: 2.5, repeat: 1, ease: "easeInOut" }
+              x: { duration: 5 * Math.max(0.8, scale), ease: "easeInOut" },
+              y: { duration: 2.5 * Math.max(0.8, scale), repeat: 1, ease: "easeInOut" },
+              rotate: { duration: 2.5 * Math.max(0.8, scale), repeat: 1, ease: "easeInOut" }
             }}
           />
         </div>
@@ -485,8 +503,11 @@ const MakgeolliQuest = () => {
               <img
                 src={mealLady}
                 alt="새참 아주머니"
-                className="w-auto h-auto max-h-[120vh] object-contain object-bottom animate-[slideUp_1s_ease-out_forwards]"
-                style={{ marginBottom: '0' }}
+                className="w-auto h-auto max-h-[120vh] object-contain object-bottom"
+                style={{ 
+                  marginBottom: '0',
+                  animation: `slideUp ${1 * Math.max(0.8, scale)}s ease-out forwards`
+                }}
               />
             </div>
           </div>
@@ -522,8 +543,7 @@ const MakgeolliQuest = () => {
             <div 
               className="bg-white/90 border-8 border-green-600 rounded-[2.2rem] text-center shadow-lg"
               style={{
-                width: `calc(110vw * ${scale})`,
-                maxWidth: `calc(512px * ${scale})`,
+                width: `calc(512px * ${scale})`,
                 padding: `calc(40px * ${scale})`
               }}
             >
@@ -570,8 +590,8 @@ const MakgeolliQuest = () => {
                   case 'cup': itemSrc = makgeolliCup; break;
                 }
                 
-                const leftPercent = item.position.xRatio * 100 * scale;
-                const topPercent = item.position.yRatio * 100 * scale;
+                const leftPercent = item.position.xRatio * 100;
+                const topPercent = item.position.yRatio * 100;
                 const sizePercent = item.position.scale * 15 * scale;
 
                 return (
@@ -594,7 +614,11 @@ const MakgeolliQuest = () => {
               
               {/* 텍스트 레이어 */}
               <div className="absolute inset-0 flex items-center justify-center z-50">
-                <GameTitle text="새참 먹는 시간" fontSize="text-8xl" />
+                <GameTitle 
+                  text="새참 먹는 시간" 
+                  fontSize={`calc(8rem * ${scale})`}
+                  strokeWidth={`calc(12px * ${scale})`}
+                />
               </div>
             </>
           )}
@@ -648,23 +672,6 @@ const MakgeolliQuest = () => {
                   fontSize: `calc(1.875rem * ${scale})`,
                   padding: `calc(16px * ${scale})`
                 }}
-                onClick={() => handleOptionSelect('A')}
-                disabled={!!selectedOption}
-              >
-                작업중 막걸리는 보약!<br />
-                적당히 마신다
-              </button>
-              
-              <button
-                className={`w-[48%] bg-green-600 bg-opacity-80
-                border-8 border-green-600 rounded-xl
-                font-extrabold text-white
-                transition duration-300 
-                ${selectedOption === 'B' ? 'bg-green-600 scale-105 bg-opacity-95' : 'hover:bg-green-600'}`}
-                style={{ 
-                  fontSize: `calc(1.875rem * ${scale})`,
-                  padding: `calc(16px * ${scale})`
-                }}
                 onClick={() => handleOptionSelect('B')}
                 disabled={!!selectedOption}
               >
@@ -687,15 +694,19 @@ const MakgeolliQuest = () => {
             style={{ paddingTop: `calc(80px * ${scale})` }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.8 * Math.max(0.8, scale) }}
           >
             <motion.div
               className="relative z-10 w-4/5 max-w-4xl flex flex-col items-center"
               initial={{ y: `calc(-20px * ${scale})` }}
               animate={{ y: 0 }}
-              transition={{ duration: 0.8 }}
+              transition={{ duration: 0.8 * Math.max(0.8, scale) }}
             >
-              <GameTitle text="새참 속 막걸리 치우기" fontSize="text-6xl" />
+              <GameTitle 
+                text="새참 속 막걸리 치우기" 
+                fontSize={`calc(6rem * ${scale})`}
+                strokeWidth={`calc(10px * ${scale})`}
+              />
               <div 
                 className="bg-white/80 border-8 border-green-600 rounded-3xl w-full text-center"
                 style={{ 
@@ -977,4 +988,3 @@ const MakgeolliQuest = () => {
 };
 
 export default MakgeolliQuest;
-                  

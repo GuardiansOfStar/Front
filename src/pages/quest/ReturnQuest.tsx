@@ -1,10 +1,11 @@
-// src/pages/quest/ReturnQuest.tsx
+// Front/src/pages/quest/ReturnQuest.tsx
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import HomeButton from '../../components/ui/HomeButton';
 import GameTitle from '../../components/ui/GameTitle';
 import { useScale } from '../../hooks/useScale';
+import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attempts';
 
 // 이미지 임포트
 const homecomingTimeSettingBackground = '/assets/images/homecoming_time_setting_tree_road.png';
@@ -74,6 +75,11 @@ const ReturnQuest = () => {
 
   const scale = useScale();
 
+  // 스케일 적용된 값들
+  const scaledDragSensitivity = 1 * scale;
+  const scaledTouchRadius = 50 * scale;
+  const scaledButtonSize = 81 * scale;
+
   // URL 쿼리 파라미터 처리
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -90,14 +96,14 @@ const ReturnQuest = () => {
     }
   }, [gamePhase, selectedHour]);
 
-  // 드래그 버튼 위치 업데이트 함수
+  // 드래그 버튼 위치 업데이트 함수 - 스케일 적용
   const updateDragButtonPosition = useCallback((hour: number) => {
     if (!clocksRef.current) return;
     
     const clocksWidth = clocksRef.current.offsetWidth;
-    const buttonWidth = 81 * scale;
+    const buttonWidth = scaledButtonSize;
     
-    const sideMargin = clocksWidth * 0.1;
+    const sideMargin = clocksWidth * 0.1 * scale;
     const availableWidth = clocksWidth - (sideMargin * 2);
     
     const hourIndex = hour - 5;
@@ -105,21 +111,21 @@ const ReturnQuest = () => {
     
     setDragButtonPosition(position);
     setCurrentExactHour(hour);
-  }, [scale]);
+  }, [scale, scaledButtonSize]);
 
-  // 위치로부터 시간 계산 함수
+  // 위치로부터 시간 계산 함수 - 스케일 적용
   const calculateHourFromPosition = useCallback((position: number): number => {
     if (!clocksRef.current) return 7;
     
     const clocksWidth = clocksRef.current.offsetWidth;
-    const sideMargin = clocksWidth * 0.1;
+    const sideMargin = clocksWidth * 0.1 * scale;
     const availableWidth = clocksWidth - (sideMargin * 2);
     
     const ratio = Math.max(0, Math.min(1, (position - sideMargin) / availableWidth));
     const exactHour = 5 + (ratio * 4);
     
     return Math.round(exactHour);
-  }, []);
+  }, [scale]);
 
   // 시간별 배경색을 부드럽게 보간하는 함수
   const getInterpolatedBackgroundColor = (exactHour: number): string => {
@@ -176,13 +182,14 @@ const ReturnQuest = () => {
     if (!clocksRef.current) return 7;
     
     const clocksWidth = clocksRef.current.offsetWidth;
-    const sideMargin = clocksWidth * 0.1;
+    const sideMargin = clocksWidth * 0.1 * scale;
     const availableWidth = clocksWidth - (sideMargin * 2);
     
     const ratio = Math.max(0, Math.min(1, (position - sideMargin) / availableWidth));
     return 5 + (ratio * 4);
-  }, []);
+  }, [scale]);
 
+  // 클릭 핸들러 - 스케일 적용
   const handleClockClick = useCallback((e: React.MouseEvent) => {
     if (isDragging || isAnimating) return;
     
@@ -200,11 +207,11 @@ const ReturnQuest = () => {
     
     setTimeout(() => {
       updateDragButtonPosition(targetHour);
-      setTimeout(() => setIsAnimating(false), 300);
-    }, 50);
-  }, [isDragging, isAnimating, calculateHourFromPosition, updateDragButtonPosition]);
+      setTimeout(() => setIsAnimating(false), 300 * Math.max(0.8, scale));
+    }, 50 * Math.max(0.8, scale));
+  }, [isDragging, isAnimating, calculateHourFromPosition, updateDragButtonPosition, scale]);
 
-  // 드래그 시작 핸들러
+  // 드래그 시작 핸들러 - 스케일 적용
   const handleDragStart = useCallback((clientX: number) => {
     if (isAnimating) return;
     
@@ -212,12 +219,12 @@ const ReturnQuest = () => {
     setDragStartX(clientX - dragButtonPosition);
   }, [dragButtonPosition, isAnimating]);
 
-  // 드래그 중 핸들러
+  // 드래그 중 핸들러 - 스케일 적용
   const handleDragMove = useCallback((clientX: number) => {
     if (!isDragging || !clocksRef.current) return;
     
     const clocksWidth = clocksRef.current.offsetWidth;
-    const sideMargin = clocksWidth * 0.1;
+    const sideMargin = clocksWidth * 0.1 * scale;
     
     let newPosition = clientX - dragStartX;
     newPosition = Math.max(sideMargin, Math.min(clocksWidth - sideMargin, newPosition));
@@ -231,9 +238,9 @@ const ReturnQuest = () => {
     if (newHour !== selectedHour) {
       setSelectedHour(newHour);
     }
-  }, [isDragging, dragStartX, selectedHour, calculateExactHourFromPosition]);
+  }, [isDragging, dragStartX, selectedHour, calculateExactHourFromPosition, scale]);
 
-  // 드래그 종료 핸들러
+  // 드래그 종료 핸들러 - 스케일 적용
   const handleDragEnd = useCallback(() => {
     if (!isDragging) return;
     
@@ -246,9 +253,9 @@ const ReturnQuest = () => {
     
     setTimeout(() => {
       updateDragButtonPosition(targetHour);
-      setTimeout(() => setIsAnimating(false), 300);
-    }, 50);
-  }, [isDragging, dragButtonPosition, calculateHourFromPosition, updateDragButtonPosition]);
+      setTimeout(() => setIsAnimating(false), 300 * Math.max(0.8, scale));
+    }, 50 * Math.max(0.8, scale));
+  }, [isDragging, dragButtonPosition, calculateHourFromPosition, updateDragButtonPosition, scale]);
 
   // 마우스 이벤트 핸들러
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -264,7 +271,7 @@ const ReturnQuest = () => {
     handleDragEnd();
   }, [handleDragEnd]);
 
-  // 터치 이벤트 핸들러
+  // 터치 이벤트 핸들러 - 스케일 적용
   const handleTouchStart = (e: React.TouchEvent) => {
     e.preventDefault();
     const touch = e.touches[0];
@@ -299,22 +306,27 @@ const ReturnQuest = () => {
     }
   }, [isDragging, handleMouseMove, handleMouseUp, handleTouchMove, handleTouchEnd]);
 
-  // 단계별 자동 진행
+  // 단계별 자동 진행 - 스케일 적용된 타이밍
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
+    
+    // 스케일에 따른 타이밍 조정 함수
+    const getScaledDuration = (baseDuration: number) => {
+      return baseDuration * Math.max(0.8, scale);
+    };
     
     if (gamePhase === 'sunsetAnimation') {
       timer = setTimeout(() => {
         setShowSun(true);
-      }, 100);
+      }, getScaledDuration(100));
       
       const titleTimer = setTimeout(() => {
         setShowTitle(true);
-      }, 4000);
+      }, getScaledDuration(4000));
       
       const nextTimer = setTimeout(() => {
         setGamePhase('gameIntro');
-      }, 6000);
+      }, getScaledDuration(6000));
       
       return () => {
         if (timer) clearTimeout(timer);
@@ -330,43 +342,71 @@ const ReturnQuest = () => {
           setShowSuccessMessage(true);
 
           const scoreTimer = setTimeout(() => {
+            // API 호출
+            const sessionId = localStorage.getItem('session_id')!;
+            const payload: AttemptPayload = {
+              attempt_number: 1,
+              score_awarded: 20,
+              selected_option: selectedHour.toString(),
+              is_correct: true,
+              response_time: 0,
+            };
+
+            postQuestAttempt(sessionId, "Return", payload)
+              .then(res => console.log("✅ 시도 기록 완료:", res.data.attempt_id))
+              .catch(err => console.error("❌ 시도 기록 실패", err));
+
             navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=20&correct=true`);
-          }, 5000);
+          }, getScaledDuration(5000));
 
           return () => clearTimeout(scoreTimer);
-        }, 1000);
+        }, getScaledDuration(1000));
 
         return () => clearTimeout(messageTimer);
-      }, 3000);
+      }, getScaledDuration(3000));
     }
     else if (gamePhase === 'failSequence1') {
       timer = setTimeout(() => {
         setGamePhase('failSequence2');
-      }, 3000);
+      }, getScaledDuration(3000));
     }
     else if (gamePhase === 'failSequence2') {
       timer = setTimeout(() => {
         setGamePhase('failSequence3');
-      }, 2000);
+      }, getScaledDuration(2000));
     }
     else if (gamePhase === 'failSequence3') {
       timer = setTimeout(() => {
         setGamePhase('failSequence4');
-      }, 3000);
+      }, getScaledDuration(3000));
     }
     else if (gamePhase === 'failSequence4') {
       timer = setTimeout(() => {
         setGamePhase('failResult');
-      }, 3000);
+      }, getScaledDuration(3000));
     }
     else if (gamePhase === 'failResult') {
       timer = setTimeout(() => {
         setShowWarning(true);
-      }, 2000);
+      }, getScaledDuration(2000));
       
       const scoreTimer = setTimeout(() => {
+        // API 호출
+        const sessionId = localStorage.getItem('session_id')!;
+        const payload: AttemptPayload = {
+          attempt_number: 1,
+          score_awarded: 10,
+          selected_option: selectedHour.toString(),
+          is_correct: false,
+          response_time: 0,
+        };
+
+        postQuestAttempt(sessionId, "Return", payload)
+          .then(res => console.log("✅ 시도 기록 완료:", res.data.attempt_id))
+          .catch(err => console.error("❌ 시도 기록 실패", err));
+
         navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=10&correct=false`);
-      }, 8000);
+      }, getScaledDuration(8000));
       
       return () => {
         if (timer) clearTimeout(timer);
@@ -377,7 +417,7 @@ const ReturnQuest = () => {
     return () => {
       if (timer) clearTimeout(timer);
     };
-  }, [gamePhase, navigate, scenarioId, questId]);
+  }, [gamePhase, navigate, scenarioId, questId, selectedHour, scale]);
 
   // 게임 시작 핸들러
   const handleStartGame = () => {
@@ -404,12 +444,13 @@ const ReturnQuest = () => {
     <div className="relative w-full h-full overflow-hidden">
       {/* 동적 배경색 */}
       <div 
-        className="absolute inset-0 transition-all duration-200 ease-out"
+        className="absolute inset-0 transition-all ease-out"
         style={{ 
           background: gamePhase === 'gamePlay' ? getInterpolatedBackgroundColor(currentExactHour) : 
                      gamePhase === 'successResult' ? getBackgroundColor(selectedHour) :
                      gamePhase === 'failSequence3' ? '#000000' :
-                     'linear-gradient(to bottom, #FFE4B5 0%, #FFA07A 100%)'
+                     'linear-gradient(to bottom, #FFE4B5 0%, #FFA07A 100%)',
+          transitionDuration: `${200 * Math.max(0.8, scale)}ms`
         }}
       />
 
@@ -453,7 +494,10 @@ const ReturnQuest = () => {
                 x: 0,
                 y: `calc(80px * ${scale})`
               } : {}}
-              transition={{ duration: 3, ease: 'easeOut' }}
+              transition={{ 
+                duration: 3 * Math.max(0.8, scale), 
+                ease: 'easeOut' 
+              }}
             />
           </div>
           
@@ -463,9 +507,16 @@ const ReturnQuest = () => {
               style={{ top: `calc(80px * ${scale})` }}
               initial={{ opacity: 0, y: `calc(20px * ${scale})` }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, ease: 'easeOut' }}
+              transition={{ 
+                duration: 1 * Math.max(0.8, scale), 
+                ease: 'easeOut' 
+              }}
             >
-              <GameTitle text="해가 지고 있어요" fontSize="text-[5.2rem]" strokeWidth="12px" />
+              <GameTitle 
+                text="해가 지고 있어요" 
+                fontSize={`calc(5.2rem * ${scale})`} 
+                strokeWidth={`calc(12px * ${scale})`} 
+              />
             </motion.div>
           )}
         </div>
@@ -497,21 +548,25 @@ const ReturnQuest = () => {
             className="absolute inset-0 bg-[#FFF9C4]/60 z-20"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.8 * Math.max(0.8, scale) }}
           />
           
           <motion.div 
             className="absolute inset-0 flex flex-col items-center justify-center z-30"
             initial={{ opacity: 0, y: `calc(20px * ${scale})` }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.3 }}
+            transition={{ duration: 1 * Math.max(0.8, scale), delay: 0.3 }}
           >
             <div className="relative w-4/5 max-w-4xl">
               <div 
                 className="flex justify-center items-center"
                 style={{ marginBottom: `calc(32px * ${scale})` }}
               >
-                <GameTitle text="귀가 시간 정하기" fontSize="text-6xl" strokeWidth="10px" />
+                <GameTitle 
+                  text="귀가 시간 정하기" 
+                  fontSize={`calc(6rem * ${scale})`} 
+                  strokeWidth={`calc(10px * ${scale})`} 
+                />
               </div>
               
               <div 

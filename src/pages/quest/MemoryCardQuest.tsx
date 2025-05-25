@@ -1,3 +1,4 @@
+// Front/src/page/quest/MemoryCardQuest.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -14,7 +15,6 @@ const strawHatCard = '/assets/images/straw_hat_card.png';
 const capHatCard = '/assets/images/cap_hat_card.png';
 const cardBack = '/assets/images/card_back.png';
 const characterWithHelmet = '/assets/images/character_with_helmet.png';
-const homeButton = '/assets/images/home_button.png';
 const giftBox = '/assets/images/gift.png';
 const giftOpenHelmet = '/assets/images/gift_open.png';
 const grandchildren = '/assets/images/grandchildren.png';
@@ -119,6 +119,12 @@ const MemoryCardQuest: React.FC = () => {
   const autoTransitionTimerRef = useRef<number | null>(null);
   const feedbackTimerRef = useRef<number | null>(null);
 
+  // 스케일 적용된 카드 크기 및 간격
+  const scaledCardGap = {
+    horizontal: 32 * scale,
+    vertical: 16 * scale
+  };
+
   // URL 쿼리 파라미터
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -147,14 +153,14 @@ const MemoryCardQuest: React.FC = () => {
           ...c,
           isFlipped: false
         })));
-      }, 3000);
+      }, 2000 * Math.max(0.8, scale)); // 3000 -> 2000으로 단축
     }
 
     if (gamePhase === 'intro2') {
-      const timer = window.setTimeout(() => setShowMessage(true), 800);
+      const timer = window.setTimeout(() => setShowMessage(true), 500 * Math.max(0.8, scale)); // 800 -> 500
       return () => clearTimeout(timer);
     }
-  }, [gamePhase, isInitialized, initialCardOrder]);
+  }, [gamePhase, isInitialized, initialCardOrder, scale]);
 
   // 힌트 타이틀 표시 관리
   useEffect(() => {
@@ -165,16 +171,20 @@ const MemoryCardQuest: React.FC = () => {
     }
   }, [gamePhase]);
 
-  // 자동 전환
+  // 자동 전환 - 스케일 적용
   useEffect(() => {
     if (autoTransitionTimerRef.current != null) {
       clearTimeout(autoTransitionTimerRef.current);
     }
 
+    const getScaledDuration = (baseDuration: number) => {
+      return baseDuration * Math.max(0.8, scale);
+    };
+
     if (gamePhase === 'intro1') {
       autoTransitionTimerRef.current = window.setTimeout(() => {
         setGamePhase('intro2');
-      }, 3000);
+      }, getScaledDuration(2000)); // 3000 -> 2000
     } 
     else if (gamePhase === 'wrongMatchFeedback') {
       autoTransitionTimerRef.current = window.setTimeout(() => {
@@ -185,7 +195,7 @@ const MemoryCardQuest: React.FC = () => {
         } else {
           setGamePhase('showCards');
         }
-      }, 3500);
+      }, getScaledDuration(2000)); // 3500 -> 2000
     }
     else if (
       gamePhase === 'foundMatch' ||
@@ -204,7 +214,7 @@ const MemoryCardQuest: React.FC = () => {
             );
             break;
         }
-      }, 3000);
+      }, getScaledDuration(2000)); // 3000 -> 2000
     }
     else if (gamePhase === 'wrongPairFeedback') {
       autoTransitionTimerRef.current = window.setTimeout(() => {
@@ -216,7 +226,7 @@ const MemoryCardQuest: React.FC = () => {
           setFeedbackMessage("찾기 어려우신가요?\n정답을 알려드릴게요");
           setGamePhase('tooManyAttempts');
         }
-      }, 5000);
+      }, getScaledDuration(3000)); // 5000 -> 3000
     }
     else if (gamePhase === 'tooManyAttempts') {
       autoTransitionTimerRef.current = window.setTimeout(() => {
@@ -233,14 +243,14 @@ const MemoryCardQuest: React.FC = () => {
           
           autoTransitionTimerRef.current = window.setTimeout(() => {
             setGamePhase('showAnswer');
-          }, 1500);
-        }, 500);
-      }, 3000);
+          }, getScaledDuration(1000)); // 1500 -> 1000
+        }, getScaledDuration(300)); // 500 -> 300
+      }, getScaledDuration(2000)); // 3000 -> 2000
     } 
     else if (gamePhase === 'showAnswer') {
       autoTransitionTimerRef.current = window.setTimeout(() => {
         setGamePhase('helmetEquipped');
-      }, 3000);
+      }, getScaledDuration(2000)); // 3000 -> 2000
     }
 
     return () => {
@@ -248,7 +258,7 @@ const MemoryCardQuest: React.FC = () => {
         clearTimeout(autoTransitionTimerRef.current);
       }
     };
-  }, [gamePhase, navigate, scenarioId, questId, finalScore, flippedCards]);
+  }, [gamePhase, navigate, scenarioId, questId, finalScore, flippedCards, attempts, scale]);
 
   useEffect(() => {
     if (gamePhase === 'tooManyAttempts') {
@@ -295,20 +305,20 @@ const MemoryCardQuest: React.FC = () => {
     }
   }, [gamePhase, attempts, finalScore]);
 
-  // 선물 애니메이션
+  // 선물 애니메이션 - 스케일 적용
   useEffect(() => {
     if (gamePhase === 'openGift') {
       if (giftAnimationRef.current != null) clearTimeout(giftAnimationRef.current);
       setGiftAnimationStage(1);
       giftAnimationRef.current = window.setTimeout(() => {
         setGiftAnimationStage(2);
-        giftAnimationRef.current = window.setTimeout(() => setGiftAnimationStage(3), 1000);
-      }, 500);
+        giftAnimationRef.current = window.setTimeout(() => setGiftAnimationStage(3), 1000 * Math.max(0.8, scale));
+      }, 500 * Math.max(0.8, scale));
     }
     return () => {
       if (giftAnimationRef.current != null) clearTimeout(giftAnimationRef.current);
     };
-  }, [gamePhase]);
+  }, [gamePhase, scale]);
 
   // 카드 초기화 함수
   const initializeCards = () => {
@@ -338,7 +348,7 @@ const MemoryCardQuest: React.FC = () => {
     window.setTimeout(() => {
       setGamePhase('game');
       setCards(prev => prev.map(c => ({ ...c, isFlipped: false })));
-    }, 3000);
+    }, 3000 * Math.max(0.8, scale)); // 스케일 적용
   };
 
   // 카드 섞기 함수
@@ -386,11 +396,12 @@ const MemoryCardQuest: React.FC = () => {
               )
             );
             setFlippedCards([]);
-            window.setTimeout(() => setGamePhase('foundMatch'), 800);
-          }, 800);
+            window.setTimeout(() => setGamePhase('foundMatch'), 400 * Math.max(0.8, scale));
+          }, 400 * Math.max(0.8, scale));
         } else {
-          // 정답이 아닌 같은 쌍 선택 - 카드 다시 뒤집기
+          // 정답이 아닌 같은 쌍 선택 - 피드백 먼저 보여주고 나중에 카드 뒤집기
           setFeedbackMessage("앗, 준비한 선물이 아니에요!\n안전모가 그려진 카드 쌍을 찾아주세요!");
+          setGamePhase('wrongMatchFeedback');
           
           window.setTimeout(() => {
             setCards(prev =>
@@ -401,16 +412,24 @@ const MemoryCardQuest: React.FC = () => {
               )
             );
             setFlippedCards([]);
-            setGamePhase('wrongMatchFeedback');
-          }, 1000);
+          }, 1500 * Math.max(0.8, scale));
         }
       } else {
-        // 서로 다른 쌍 선택
+        // 서로 다른 쌍 선택 - 피드백 먼저 보여주고 나중에 카드 뒤집기
         setFeedbackMessage("앗, 서로 다른 그림이에요!\n안전모가 그려진 카드 쌍을 찾아주세요");
         setShowHintTitle(false);
+        setGamePhase('wrongPairFeedback');
+        
         window.setTimeout(() => {
-          setGamePhase('wrongPairFeedback');
-        }, 800);
+          setCards(prev =>
+            prev.map(c =>
+              c.id === aId || c.id === bId
+                ? { ...c, isFlipped: false }
+                : c
+            )
+          );
+          setFlippedCards([]);
+        }, 1500 * Math.max(0.8, scale));
       }
     }
   };
@@ -458,7 +477,7 @@ const MemoryCardQuest: React.FC = () => {
           className="absolute inset-0 bg-[#FFF9C4]/50 z-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.8 * Math.max(0.8, scale) }}
         />
       )}
 
@@ -471,17 +490,6 @@ const MemoryCardQuest: React.FC = () => {
             right: `calc(16px * ${scale})`
           }}
         >
-          <motion.img 
-            src={homeButton} 
-            alt="홈" 
-            style={{
-              width: `calc(64px * ${scale})`,
-              height: `calc(64px * ${scale})`
-            }}
-            className="cursor-pointer" 
-            onClick={handleGoHome} 
-            whileTap={{scale: 0.9}}
-          />
         </div>
       )}
       <div 
@@ -500,28 +508,32 @@ const MemoryCardQuest: React.FC = () => {
           className="absolute inset-0 flex flex-col items-center justify-center z-10"
           initial={{opacity: 0}}
           animate={{opacity: 1}}
-          transition={{duration: 0.8}}
+          transition={{duration: 0.8 * Math.max(0.8, scale)}}
         >
           <motion.div
             style={{ marginTop: `calc(96px * ${scale})` }}
             className="text-center"
             initial={{y: `calc(-20px * ${scale})`}}
             animate={{y: 0}}
-            transition={{duration: 0.8}}
+            transition={{duration: 0.8 * Math.max(0.8, scale)}}
           >
-            <GameTitle text="주행 준비하기" fontSize="text-7xl" strokeWidth="12px" />
+            <GameTitle 
+              text="주행 준비하기" 
+              fontSize={`${5.5 * scale}rem`}
+              strokeWidth={`calc(12px * ${scale})`} 
+            />
           </motion.div>
           <motion.img
             src={gameCharacter}
             alt="캐릭터"
             style={{
-              width: `calc(320px * ${scale})`,
+              width: `calc(340px * ${scale})`,
               height: 'auto',
-              marginTop: `calc(8px * ${scale})`
+              marginTop: `calc(2px * ${scale})`
             }}
             initial={{scale: 0.8, opacity: 0}}
             animate={{scale: 1, opacity: 1}}
-            transition={{duration: 0.8, ease: 'easeOut'}}
+            transition={{duration: 0.8 * Math.max(0.8, scale), ease: 'easeOut'}}
           />
         </motion.div>
       )}
@@ -530,46 +542,40 @@ const MemoryCardQuest: React.FC = () => {
         <motion.div
           className="absolute inset-0 flex flex-col items-center justify-center z-10"
           style={{ marginTop: `calc(-112px * ${scale})` }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
+          initial={{ opacity: 0, y: `calc(-30px * ${scale})` }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 * Math.max(0.8, scale) }}
         >
-          <motion.img
+          <img
             src={grandchildren}
             alt="손자손녀"
             style={{
               width: `calc(400px * ${scale})`,
               height: 'auto',
-              marginBottom: `calc(-64px * ${scale})`,
+              marginBottom: `calc(-92px * ${scale})`,
               zIndex: 20
             }}
-            initial={{ y: `calc(-30px * ${scale})`, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
           />
 
-          <motion.div
-            className="bg-white/80 border-8 border-green-600 rounded-xl text-center"
+          <div
+            className="bg-white/70 border-8 border-green-600 rounded-xl text-center"
             style={{
-              paddingLeft: `calc(32px * ${scale})`,
-              paddingRight: `calc(32px * ${scale})`,
-              paddingTop: `calc(48px * ${scale})`,
-              paddingBottom: `calc(48px * ${scale})`,
+              paddingLeft: `calc(24px * ${scale})`,
+              paddingRight: `calc(24px * ${scale})`,
+              paddingTop: `calc(92px * ${scale})`,
+              paddingBottom: `calc(92px * ${scale})`,
               width: '100%',
-              maxWidth: `calc(688px * ${scale})`
+              maxWidth: `calc(805px * ${scale})`
             }}
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.8 }}
           >
             <p 
               className="font-extrabold text-black"
-              style={{ fontSize: `calc(2.5rem * ${scale})` }}
+              style={{ fontSize: `calc(2.7rem * ${scale})` }}
             >
               할아버지,<br />
               운전하시기 전에 중요한 선물이 있어요!
             </p>
-          </motion.div>
+          </div>
         </motion.div>
       )}
 
@@ -580,13 +586,13 @@ const MemoryCardQuest: React.FC = () => {
           style={{ paddingTop: `calc(80px * ${scale})` }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.8 * Math.max(0.8, scale) }}
         >
           <motion.div
             className="relative z-10 w-4/5 max-w-4xl"
             initial={{ y: `calc(-20px * ${scale})` }}
             animate={{ y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.8 * Math.max(0.8, scale) }}
           >
             <h2 
               className="font-extrabold text-center text-green-600"
@@ -595,17 +601,30 @@ const MemoryCardQuest: React.FC = () => {
                 marginBottom: `calc(32px * ${scale})`
               }}
             >
-              손주가 준비한 선물 찾기
+              <GameTitle 
+                  text="손주가 준비한 선물 찾기" 
+                  fontSize={`calc(3rem * ${scale})`} 
+                  strokeWidth={`calc(6px * ${scale})`} 
+                />
             </h2>
             <div 
-              className="bg-white/80 border-8 border-green-600 rounded-xl text-center"
-              style={{ padding: `calc(48px * ${scale})` }}
+              className="bg-white/80 border-8 border-green-600 text-center"
+              style={{
+                paddingTop: `calc(52px * ${scale})`,
+                paddingBottom: `calc(52px * ${scale})`,
+                paddingLeft: `calc(32px * ${scale})`,
+                paddingRight: `calc(32px * ${scale})`,
+                borderRadius: `calc(48px * ${scale})`,
+                maxWidth: `calc(900px * ${scale})`,
+                width: '95%',
+                margin: '0 auto'  // 가운데 정렬 강제 적용
+              }}
             >
               <p 
                 className="font-extrabold text-black"
                 style={{ 
                   fontSize: `calc(2.5rem * ${scale})`,
-                  marginBottom: `calc(24px * ${scale})`
+                  marginBottom: `calc(48px * ${scale})`
                 }}
               >
                 선물은 과연 무엇일까요?<br />같은 그림의 카드 두 개를 찾아주세요!
@@ -626,10 +645,10 @@ const MemoryCardQuest: React.FC = () => {
         <div 
           className="absolute inset-0 z-10"
           style={{
-            paddingLeft: `calc(24px * ${scale})`,
-            paddingRight: `calc(24px * ${scale})`,
-            paddingTop: `calc(16px * ${scale})`,
-            paddingBottom: `calc(16px * ${scale})`
+            paddingLeft: `calc(16px * ${scale})`,
+            paddingRight: `calc(16px * ${scale})`,
+            paddingTop: `calc(8px * ${scale})`,
+            paddingBottom: `calc(8px * ${scale})`
           }}
         >
           <div className="w-full h-full flex flex-col items-center justify-start">
@@ -638,8 +657,8 @@ const MemoryCardQuest: React.FC = () => {
               <div 
                 className="absolute bg-green-600 border-4 border-green-700 rounded-lg z-50"
                 style={{
-                  bottom: `calc(24px * ${scale})`,
-                  right: `calc(24px * ${scale})`,
+                  bottom: `calc(16px * ${scale})`,
+                  right: `calc(16px * ${scale})`,
                   paddingLeft: `calc(16px * ${scale})`,
                   paddingRight: `calc(16px * ${scale})`,
                   paddingTop: `calc(8px * ${scale})`,
@@ -659,21 +678,25 @@ const MemoryCardQuest: React.FC = () => {
             <div 
               className="flex items-center justify-center"
               style={{ 
-                height: `calc(80px * ${scale})`,
-                marginBottom: `calc(24px * ${scale})`,
-                marginTop: `calc(16px * ${scale})`
+                height: `calc(30px * ${scale})`,
+                marginBottom: `calc(2px * ${scale})`,
+                marginTop: `calc(48px * ${scale})`
               }}
             >
               <div className={showHintTitle ? '' : 'invisible'}>
-                <GameTitle text="힌트: 머리를 보호해주는 선물은 무엇일까요?" fontSize="text-3xl" strokeWidth="6px" />
+                <GameTitle 
+                  text="힌트: 머리를 보호해주는 선물은 무엇일까요?" 
+                  fontSize={`calc(2.2rem * ${scale})`} 
+                  strokeWidth={`calc(4px * ${scale})`} 
+                />
               </div>
             </div>
             
-            {/* 카드 그리드 */}
+            {/* 카드 그리드 - 스케일 적용된 간격 */}
             <div 
               className="grid grid-cols-3 justify-items-center items-center flex-1 content-center"
               style={{
-                gap: `calc(64px * ${scale}) calc(32px * ${scale})`
+                gap: `${scaledCardGap.vertical}px ${scaledCardGap.horizontal}px`
               }}
             >
               {cards.map(card => {
@@ -688,9 +711,9 @@ const MemoryCardQuest: React.FC = () => {
                 const backCardInfo = { width: 210, height: 269 };
                 
                 const baseScale = Math.min(
-                  (1024 * 0.8) / (cardInfo.width * 3 + 128),
-                  (768 * 0.55) / (cardInfo.height * 2 + 32),
-                  1.2
+                  (1024 * 0.9) / (cardInfo.width * 3 + scaledCardGap.horizontal * 2),
+                  (768 * 0.75) / (cardInfo.height * 2 + scaledCardGap.vertical),
+                  1.8
                 ) * scale;
                 
                 const containerSize = {
@@ -701,13 +724,14 @@ const MemoryCardQuest: React.FC = () => {
                 return (
                   <div
                     key={card.id}
-                    className={`relative cursor-pointer transition-transform duration-300 hover:scale-105`}
+                    className={`relative cursor-pointer transition-transform hover:scale-105`}
                     onClick={() => handleCardClick(card.id)}
                     style={{
                       width: `${containerSize.width}px`,
                       height: `${containerSize.height}px`,
                       transform: card.isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
                       transformStyle: 'preserve-3d',
+                      transitionDuration: `${600 * Math.max(0.8, scale)}ms`
                     }}
                   >
                     {/* 카드 앞면 */}
@@ -762,7 +786,28 @@ const MemoryCardQuest: React.FC = () => {
         </div>
       )}
 
-            {/* 정답이 아닌 같은 쌍 피드백 - 게임 화면 위에 오버레이 */}
+      {/* 서로 다른 쌍 피드백 - 게임 화면 위에 오버레이 */}
+      {gamePhase === 'wrongPairFeedback' && (
+        <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+          <div 
+            className="bg-white border-8 border-green-600 rounded-xl text-center shadow-lg mx-auto"
+            style={{
+              padding: `calc(32px * ${scale})`,
+              maxWidth: `calc(576px * ${scale})`,
+              width: '100%'
+            }}
+          >
+            <p 
+              className="font-extrabold text-green-600 whitespace-pre-line"
+              style={{ fontSize: `calc(3rem * ${scale})` }}
+            >
+              {feedbackMessage}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* 정답이 아닌 같은 쌍 피드백 - 게임 화면 위에 오버레이 */}
       {gamePhase === 'wrongMatchFeedback' && (
         <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
           <div 
@@ -911,7 +956,16 @@ const MemoryCardQuest: React.FC = () => {
           className="absolute inset-0 flex items-center justify-center z-10"
           initial="hidden"
           animate="visible"
-          variants={giftBoxVariants}
+          variants={{
+            ...giftBoxVariants,
+            visible: {
+              ...giftBoxVariants.visible,
+              transition: {
+                ...giftBoxVariants.visible.transition,
+                duration: giftBoxVariants.visible.transition.duration * Math.max(0.8, scale)
+              }
+            }
+          }}
         >
           <motion.img
             src={giftBox}
@@ -930,7 +984,16 @@ const MemoryCardQuest: React.FC = () => {
           className="absolute inset-0 flex items-center justify-center z-10"
           initial="hidden"
           animate="visible"
-          variants={openBoxVariants}
+          variants={{
+            ...openBoxVariants,
+            visible: {
+              ...openBoxVariants.visible,
+              transition: {
+                ...openBoxVariants.visible.transition,
+                duration: (openBoxVariants.visible.transition.duration || 0.8) * Math.max(0.8, scale)
+              }
+            }
+          }}
         >
           <div 
             className="relative"
@@ -959,7 +1022,16 @@ const MemoryCardQuest: React.FC = () => {
                 }}
                 initial="hidden"
                 animate="visible"
-                variants={helmetVariants}
+                variants={{
+                  ...helmetVariants,
+                  visible: {
+                    ...helmetVariants.visible,
+                    transition: {
+                      ...helmetVariants.visible.transition,
+                      delay: (helmetVariants.visible.transition.delay || 0.3) * Math.max(0.8, scale)
+                    }
+                  }
+                }}
               />
             </div>
           </div>
@@ -972,13 +1044,17 @@ const MemoryCardQuest: React.FC = () => {
           className="absolute inset-0 flex flex-col items-center justify-center z-10"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.8 * Math.max(0.8, scale) }}
         >
           <div 
             className="text-center"
             style={{ marginTop: `calc(96px * ${scale})` }}
           >
-            <GameTitle text="안전모를 착용했어요" fontSize="text-7xl" strokeWidth="12px" />
+            <GameTitle 
+              text="안전모를 착용했어요" 
+              fontSize={`calc(7rem * ${scale})`} 
+              strokeWidth={`calc(12px * ${scale})`} 
+            />
           </div>
           <motion.img
             src={characterWithHelmet}
@@ -990,7 +1066,7 @@ const MemoryCardQuest: React.FC = () => {
             }}
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.8 * Math.max(0.8, scale) }}
           />
         </motion.div>
       )}
@@ -999,7 +1075,7 @@ const MemoryCardQuest: React.FC = () => {
       {showNextButton && (
         <div 
           className="absolute left-0 right-0 flex justify-center z-10"
-          style={{ bottom: `calc(48px * ${scale})` }}
+          style={{ bottom: `calc(32px * ${scale})` }}
         >
           <img
             src={nextButton}

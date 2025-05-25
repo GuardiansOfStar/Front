@@ -1,8 +1,8 @@
-// src/components/game/RoadGameComponent.tsx 수정
-
-import { useEffect, useRef } from 'react';
+// Front/src/components/game/RoadGameComponent.tsx
+import { useEffect, useRef, useState } from 'react';
 import Phaser from 'phaser';
 import RoadScene, { POTHOLE_COLLISION } from '../../game/scenes/RoadScene';
+import { useScale } from '../../hooks/useScale';
 
 interface RoadGameComponentProps {
   onPotholeCollision: () => void;
@@ -12,14 +12,27 @@ const RoadGameComponent = ({ onPotholeCollision }: RoadGameComponentProps) => {
   const gameRef = useRef<Phaser.Game | null>(null);
   const sceneRef = useRef<RoadScene | null>(null);
   const collisionHandledRef = useRef<boolean>(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
+
+  // loading state
+  const [isLoading, setIsLoading] = useState(true);
+  const scale = useScale();
+  
+  // 기준 해상도
+  const BASE_WIDTH = 1024;
+  const BASE_HEIGHT = 768;
   
   useEffect(() => {
-    console.log('RoadGameComponent 마운트됨');
+    console.log('RoadGameComponent 마운트됨, 스케일:', scale);
     
     // 게임이 이미 생성되었으면 새로 생성하지 않음
     if (gameRef.current) {
+      setIsLoading(false);
       return;
     }
+
+    setIsLoading(true);
     
     // 게임 컨테이너 요소 가져오기
     const container = document.getElementById('game-container');
@@ -28,20 +41,38 @@ const RoadGameComponent = ({ onPotholeCollision }: RoadGameComponentProps) => {
       return;
     }
     
-    // 컨테이너 크기 계산
-    const containerWidth = container.clientWidth;
-    const containerHeight = container.clientHeight;
+    containerRef.current = container as HTMLDivElement;
     
-    console.log('게임 컨테이너 크기:', containerWidth, containerHeight);
+    // 컨테이너 크기 계산 - 스케일 적용
+    const calculateGameSize = () => {
+      const containerRect = container.getBoundingClientRect();
+      const containerWidth = containerRect.width;
+      const containerHeight = containerRect.height;
+      
+      // 스케일을 고려한 게임 크기 계산
+      const gameWidth = Math.max(BASE_WIDTH * scale, containerWidth);
+      const gameHeight = Math.max(BASE_HEIGHT * scale, containerHeight);
+      
+      console.log('게임 크기 계산:', {
+        container: { width: containerWidth, height: containerHeight },
+        calculated: { width: gameWidth, height: gameHeight },
+        scale: scale
+      });
+      
+      return { gameWidth, gameHeight };
+    };
     
-    // 게임 인스턴스 생성
-    gameRef.current = new Phaser.Game({
+    const { gameWidth, gameHeight } = calculateGameSize();
+    
+    // 게임 설정 - 스케일 적용
+    const gameConfig: Phaser.Types.Core.GameConfig = {
       type: Phaser.AUTO,
-      width: containerWidth,
-      height: containerHeight,
+      width: gameWidth,
+      height: gameHeight,
       parent: 'game-container',
       scale: {
-        mode: Phaser.Scale.NONE,
+        mode: Phaser.Scale.NONE, // 자동 스케일링 비활성화
+        autoCenter: Phaser.Scale.CENTER_BOTH,
       },
       physics: {
         default: 'arcade',
@@ -51,10 +82,19 @@ const RoadGameComponent = ({ onPotholeCollision }: RoadGameComponentProps) => {
         }
       },
       scene: [RoadScene],
-      transparent: true, // 배경색 대신 투명하게 설정
-    });
+      transparent: true,
+      // 고해상도 지원
+      render: {
+        antialias: true,
+        pixelArt: false,
+        roundPixels: false
+      }
+    };
     
-    // 게임 인스턴스가 생성된 후 씬에 접근
+    // 게임 인스턴스 생성
+    gameRef.current = new Phaser.Game(gameConfig);
+    
+    // 씬 이벤트 설정
     const setupSceneEvents = () => {
       if (!gameRef.current) return;
       
@@ -81,33 +121,63 @@ const RoadGameComponent = ({ onPotholeCollision }: RoadGameComponentProps) => {
       }
     };
     
-    // 씬이 생성된 후 이벤트 설정을 위해 약간의 딜레이를 줌
-    const timer = setTimeout(setupSceneEvents, 300); // 500ms에서 300ms로 변경
+    // 씬이 생성된 후 이벤트 설정
+    const eventSetupDelay = 300 * Math.max(0.8, scale);
+    const timer = setTimeout(setupSceneEvents, eventSetupDelay);
     
-    // 화면 크기 변경 시 게임 크기 조정
-    const handleResize = () => {
-      if (!gameRef.current || !container) return;
+    // ResizeObserver를 사용한 반응형 크기 조정
+    const setupResizeObserver = () => {
+      if (!container || !gameRef.current) return;
       
-      // 새 컨테이너 크기 계산
-      const newWidth = container.clientWidth;
-      const newHeight = container.clientHeight;
+      resizeObserverRef.current = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          const { width, height } = entry.contentRect;
+          
+          if (gameRef.current && width > 0 && height > 0) {
+            // 새로운 게임 크기 계산 - 스케일 적용
+            const newGameWidth = Math.max(BASE_WIDTH * scale, width);
+            const newGameHeight = Math.max(BASE_HEIGHT * scale, height);
+            
+            console.log('리사이즈 감지:', {
+              container: { width, height },
+              newGame: { width: newGameWidth, height: newGameHeight },
+              scale: scale
+            });
+            
+            // 게임 크기 조정
+            gameRef.current.scale.resize(newGameWidth, newGameHeight);
+            
+            // RoadScene의 resize 메서드 호출
+            if (sceneRef.current && typeof sceneRef.current.resize === 'function') {
+              sceneRef.current.resize(newGameWidth, newGameHeight);
+            }
+          }
+        }
+      });
       
-      // 게임 크기 재설정
-      gameRef.current.scale.resize(newWidth, newHeight);
-      
-      // RoadScene의 resize 메서드 호출
-      if (sceneRef.current && typeof sceneRef.current.resize === 'function') {
-        sceneRef.current.resize(newWidth, newHeight);
-      }
+      resizeObserverRef.current.observe(container);
     };
     
-    // 리사이즈 이벤트 리스너 등록
-    window.addEventListener('resize', handleResize);
+    // ResizeObserver 설정
+    setupResizeObserver();
     
-    // 컴포넌트 언마운트 시 게임 인스턴스 제거
+    // 게임 로딩 완료 처리
+    const handleGameReady = () => {
+      console.log('게임 리소스 로딩 완료');
+      setIsLoading(false);
+    };
+
+    gameRef.current.events.once('ready', handleGameReady);
+    
+    // 컴포넌트 언마운트 시 정리
     return () => {
       clearTimeout(timer);
-      window.removeEventListener('resize', handleResize);
+      
+      // ResizeObserver 정리
+      if (resizeObserverRef.current) {
+        resizeObserverRef.current.disconnect();
+        resizeObserverRef.current = null;
+      }
       
       if (gameRef.current) {
         // 이벤트 리스너 제거
@@ -115,17 +185,60 @@ const RoadGameComponent = ({ onPotholeCollision }: RoadGameComponentProps) => {
           sceneRef.current.events.off(POTHOLE_COLLISION);
         }
         
+        gameRef.current.events.off('ready', handleGameReady);
         gameRef.current.destroy(true);
         gameRef.current = null;
+        sceneRef.current = null;
         collisionHandledRef.current = false;
       }
       
       console.log('RoadGameComponent 언마운트됨');
     };
-  }, [onPotholeCollision]);
+  }, [onPotholeCollision, scale]);
+  
+  // 스케일 변경 시 게임 크기 재조정
+  useEffect(() => {
+    if (gameRef.current && containerRef.current) {
+      const container = containerRef.current;
+      const containerRect = container.getBoundingClientRect();
+      
+      // 새로운 게임 크기 계산
+      const newGameWidth = Math.max(BASE_WIDTH * scale, containerRect.width);
+      const newGameHeight = Math.max(BASE_HEIGHT * scale, containerRect.height);
+      
+      console.log('스케일 변경으로 인한 게임 크기 조정:', {
+        newScale: scale,
+        newSize: { width: newGameWidth, height: newGameHeight }
+      });
+      
+      // 게임 크기 조정
+      gameRef.current.scale.resize(newGameWidth, newGameHeight);
+      
+      // RoadScene의 resize 메서드 호출
+      if (sceneRef.current && typeof sceneRef.current.resize === 'function') {
+        sceneRef.current.resize(newGameWidth, newGameHeight);
+      }
+    }
+  }, [scale]);
   
   return (
-    <div id="game-container" className="w-full h-full" />
+    <div id="game-container" className="w-full h-full relative">
+      {isLoading && (
+        <div 
+          className="absolute inset-0 bg-green-50 z-10 transition-opacity flex items-center justify-center"
+          style={{ 
+            transitionDuration: `${500 * Math.max(0.8, scale)}ms` 
+          }}
+        >
+          <div 
+            className="text-green-600 font-bold"
+            style={{ fontSize: `calc(1.5rem * ${scale})` }}
+          >
+            게임 로딩 중...
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

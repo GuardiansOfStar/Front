@@ -1,4 +1,4 @@
-// src/game/scenes/RoadScene.ts
+// Front/src/game/scenes/RoadScene.ts
 import Phaser from 'phaser';
 
 // 이벤트 상수 정의
@@ -16,23 +16,28 @@ export default class RoadScene extends Phaser.Scene {
   private isGameActive: boolean = true;
   private gameWidth!: number;
   private gameHeight!: number;
-  private roadSpeed: number = 2;
-  private positionY: number = 0;
   private roadHeight: number = 0;
   private roadTargetY: number = 0;
   
-  // 포트홀 관련 변수
+  // 스케일 관련 변수
+  private uiScale: number = 1;
+  private baseWidth: number = 1024;
+  private baseHeight: number = 768;
+  
+  // 포트홀 관련 변수 - 스케일 적용
+  private roadSpeed: number = 2;
+  private positionY: number = 0;
   private potholeDetectionEnabled: boolean = false;
   private simulationTime: number = 0;
-  private simulationDuration: number = 20000; // 총 시뮬레이션 시간
-  private potholeDetectionTime: number = 2000; // 포트홀 충돌 감지 시간
+  private simulationDuration: number = 8000;
+  private potholeDetectionTime: number = 2000;
   private collisionProcessed: boolean = false;
   private redZoneRatioStart: number = 0.1;
-  private redZoneRatioEnd:   number = 0.4;
+  private redZoneRatioEnd: number = 0.4;
   
-  // 포트홀 위치 관련 변수 (새로 추가)
-  private potholeStartY: number = 100; // 도로 상단 위치에서 조금 아래
-  private potholeTriggerY: number = 0; // 포트홀이 이 Y위치에 도달하면 감지
+  // 포트홀 위치 관련 변수
+  private potholeStartY: number = 100;
+  private potholeTriggerY: number = 0;
 
   constructor() {
     super({ key: 'RoadScene' });
@@ -61,9 +66,10 @@ export default class RoadScene extends Phaser.Scene {
   create() {
     console.log('RoadScene create 시작');
     
-    // 게임 크기 저장
+    // 게임 크기 저장 및 스케일 계산
     this.gameWidth = this.scale.width;
     this.gameHeight = this.scale.height;
+    this.calculateScale();
     
     // 디버깅용 그래픽 초기화
     this.debugGraphics = this.add.graphics();
@@ -72,14 +78,14 @@ export default class RoadScene extends Phaser.Scene {
     // 도로 컨테이너 생성
     this.roadContainer = this.add.container(0, 0);
     
-    // 도로 이미지 생성
+    // 도로 이미지 생성 - 스케일 적용
     this.road = this.add.image(
       this.gameWidth / 2,
       this.gameHeight,
       'road'
     );
     
-    // 도로 이미지 설정
+    // 도로 이미지 설정 - 스케일 적용
     this.road.setOrigin(0.5, 1.0);
     const roadAspectRatio = this.road.height / this.road.width;
     this.road.displayWidth = this.gameWidth;
@@ -91,10 +97,10 @@ export default class RoadScene extends Phaser.Scene {
     // 도로를 컨테이너에 추가
     this.roadContainer.add(this.road);
     
-    // *** 중요 변경: 즉시 포트홀 생성 (처음부터 도로에 포함되도록) ***
+    // 포트홀 생성
     this.createPothole();
     
-    // 핸들바와 손 추가
+    // 핸들바와 손 추가 - 스케일 적용
     this.hands = this.add.sprite(
       this.gameWidth / 2,
       this.gameHeight,
@@ -102,24 +108,52 @@ export default class RoadScene extends Phaser.Scene {
     );
     this.hands.setOrigin(0.5, 1);
     
-    const scaleRatio = this.gameWidth * 0.8 / this.hands.width;
-    this.hands.setScale(scaleRatio);
+    // 손 이미지 크기 조정 - 스케일 적용
+    const handsScaleRatio = (this.gameWidth * 0.8 * this.uiScale) / this.hands.width;
+    this.hands.setScale(handsScaleRatio);
     this.hands.setDepth(10);
+    
+    // 도로 속도 스케일 적용
+    this.roadSpeed = 2 * this.uiScale;
+    this.simulationDuration = 8000 / Math.max(0.8, this.uiScale);
+    this.potholeDetectionTime = 2000 / Math.max(0.8, this.uiScale);
     
     // 초기화
     this.simulationTime = 0;
     this.positionY = 0;
     
-    console.log('RoadScene create 완료');
+    console.log('RoadScene create 완료, 스케일:', this.uiScale);
+  }
+
+  // 스케일 계산 함수
+  private calculateScale() {
+    const scaleX = this.gameWidth / this.baseWidth;
+    const scaleY = this.gameHeight / this.baseHeight;
+    this.uiScale = Math.min(scaleX, scaleY);
+    
+    // CSS 변수와 동기화
+    const rootElement = document.documentElement;
+    const computedStyle = getComputedStyle(rootElement);
+    const cssScale = computedStyle.getPropertyValue('--scale').trim();
+    if (cssScale && !isNaN(parseFloat(cssScale))) {
+      this.uiScale = parseFloat(cssScale);
+    }
+    
+    console.log('Phaser 스케일 계산:', {
+      gameSize: { width: this.gameWidth, height: this.gameHeight },
+      baseSize: { width: this.baseWidth, height: this.baseHeight },
+      calculatedScale: this.uiScale,
+      cssScale: cssScale
+    });
   }
 
   update(time: number, delta: number) {
     if (!this.isGameActive) return;
     
-    // 시뮬레이션 시간 업데이트
-    this.simulationTime += delta;
+    // 시뮬레이션 시간 업데이트 - 스케일 적용
+    this.simulationTime += delta * this.uiScale;
     
-    // 도로 스크롤 업데이트
+    // 도로 스크롤 업데이트 - 스케일 적용
     this.positionY += this.roadSpeed;
     
     // 도로가 화면을 벗어나지 않도록 제한
@@ -131,9 +165,10 @@ export default class RoadScene extends Phaser.Scene {
       // 포트홀의 실제 화면상 위치 계산
       const potholeScreenY = this.pothole.y + this.roadContainer.y;
       
-      // 디버그 그래픽 그리기
+      // 디버그 그래픽 그리기 - 스케일 적용
       this.debugGraphics.clear();
-      // this.debugGraphics.lineStyle(2, 0xff0000, 1);
+      const debugLineWidth = 2 * this.uiScale;
+      this.debugGraphics.lineStyle(debugLineWidth, 0xff0000, 1);
       this.debugGraphics.strokeRect(
         this.pothole.x - (this.pothole.displayWidth / 2),
         potholeScreenY - (this.pothole.displayHeight / 2),
@@ -141,26 +176,32 @@ export default class RoadScene extends Phaser.Scene {
         this.pothole.displayHeight
       );
       
-      // 로깅 (1초마다)
-      if (this.simulationTime % 1000 < 20) {
+      // 로깅 간격 조정 - 스케일 적용
+      const logInterval = 1000 / Math.max(0.8, this.uiScale);
+      if (this.simulationTime % logInterval < 20) {
         console.log('포트홀 현재 위치:', {
           screenY: potholeScreenY,
           roadContainerY: this.roadContainer.y,
           potholeY: this.pothole.y,
           visible: this.pothole.visible,
           detection: this.potholeDetectionEnabled,
-          roadPosition: this.positionY
+          roadPosition: this.positionY,
+          scale: this.uiScale
         });
       }
       
-      // 포트홀이 화면의 특정 영역에 도달했을 때 충돌 감지 활성화
+      // 포트홀 충돌 감지 영역 - 스케일 적용
+      const detectionStartY = this.gameHeight * (0.35 * this.uiScale);
+      const detectionEndY = this.gameHeight * (0.6 * this.uiScale);
+      
       if (!this.potholeDetectionEnabled && !this.collisionProcessed && 
-          potholeScreenY >= this.gameHeight * 0.35 && potholeScreenY <= this.gameHeight * 0.6) {
+          potholeScreenY >= detectionStartY && potholeScreenY <= detectionEndY) {
         this.potholeDetectionEnabled = true;
         console.log('포트홀 감지 활성화됨:', potholeScreenY);
         
-        // 충돌 처리 전 약간의 지연 제공 (사용자가 볼 수 있도록)
-        this.time.delayedCall(700, () => {
+        // 충돌 처리 지연 - 스케일 적용
+        const collisionDelay = 700 / Math.max(0.8, this.uiScale);
+        this.time.delayedCall(collisionDelay, () => {
           if (this.isGameActive && !this.collisionProcessed) {
             console.log('포트홀 충돌 처리 시작');
             this.handleCollision();
@@ -176,51 +217,53 @@ export default class RoadScene extends Phaser.Scene {
     }
   }
   
-  // 포트홀 생성 함수 - 완전히 개선됨
+  // 포트홀 생성 함수 - 스케일 적용
   private createPothole() {
-    console.log('포트홀 생성 시작');
+    console.log('포트홀 생성 시작, 스케일:', this.uiScale);
 
-    // 1) X 좌표
-    const centerX   = this.gameWidth / 2;
-    const maxOffset = this.gameWidth * 0.05;
+    // X 좌표 - 스케일 적용
+    const centerX = this.gameWidth / 2;
+    const maxOffset = this.gameWidth * 0.05 * this.uiScale;
     const x = centerX + Phaser.Math.FloatBetween(-maxOffset, maxOffset);
 
-    // 2) 로컬 Y 범위(빨간 존) 계산 & 클램핑
+    // Y 범위 계산 - 스케일 적용
     const roadTopY = this.gameHeight - this.roadHeight;
     let redStartY = Phaser.Math.Clamp(
-      roadTopY + this.roadHeight * this.redZoneRatioStart,
+      roadTopY + this.roadHeight * this.redZoneRatioStart * this.uiScale,
       0, this.gameHeight
     );
-    let redEndY   = Phaser.Math.Clamp(
-      roadTopY + this.roadHeight * this.redZoneRatioEnd,
+    let redEndY = Phaser.Math.Clamp(
+      roadTopY + this.roadHeight * this.redZoneRatioEnd * this.uiScale,
       0, this.gameHeight
     );
 
     const initialY = Phaser.Math.FloatBetween(redStartY, redEndY);
 
-    // 3) 스프라이트 한 번만 생성
+    // 포트홀 스프라이트 생성
     const sprite = this.add.sprite(x, initialY, 'pothole');
 
-    // 4) 텍스처 유효성 확인 (실제 상황에선 보통 통과하므로 간단히)
+    // 텍스처 유효성 확인
     if (!sprite.texture || !sprite.texture.key) {
       console.error('포트홀 이미지 로드 실패 — 대체 그래픽으로 표시');
       const g = this.add.graphics();
       g.fillStyle(0xff0000, 1);
-      g.fillCircle(x, initialY, 30);
+      const fallbackRadius = 30 * this.uiScale;
+      g.fillCircle(x, initialY, fallbackRadius);
       this.roadContainer.add(g);
       return;
     }
 
-    // 5) this.pothole에 할당하고 컨테이너에 추가
+    // 포트홀 크기 조정 - 스케일 적용
+    const potholeScale = 1 * this.uiScale;
+    sprite.setScale(potholeScale);
+    sprite.setAlpha(1);
+    sprite.setDepth(5);
+
     this.pothole = sprite;
-    this.pothole.setScale(1);
-    this.pothole.setAlpha(1);
-    this.pothole.setDepth(5);
     this.roadContainer.add(this.pothole);
 
-    console.log('포트홀 생성 완료 (화면 내 Y):', initialY);
+    console.log('포트홀 생성 완료 (스케일 적용된 Y):', initialY, '스케일:', this.uiScale);
   }
-
 
   // 충돌 처리 함수
   private handleCollision() {
@@ -229,7 +272,7 @@ export default class RoadScene extends Phaser.Scene {
     this.collisionProcessed = true;
     this.isGameActive = false;
     
-    console.log('포트홀 충돌 이벤트 발생!');
+    console.log('포트홀 충돌 이벤트 발생! 스케일:', this.uiScale);
     this.events.emit(POTHOLE_COLLISION);
   }
 
@@ -238,10 +281,11 @@ export default class RoadScene extends Phaser.Scene {
     this.isGameActive = false;
   }
   
-  // 화면 크기 변경 시 호출될 메서드
+  // 화면 크기 변경 시 호출될 메서드 - 스케일 재계산
   resize(width: number, height: number) {
     this.gameWidth = width;
     this.gameHeight = height;
+    this.calculateScale();
     
     if (this.road) {
       const roadAspectRatio = this.road.height / this.road.width;
@@ -258,6 +302,15 @@ export default class RoadScene extends Phaser.Scene {
     if (this.hands) {
       this.hands.x = this.gameWidth / 2;
       this.hands.y = this.gameHeight;
+      
+      // 손 이미지 크기 재조정 - 스케일 적용
+      const handsScaleRatio = (this.gameWidth * 0.8 * this.uiScale) / this.hands.width;
+      this.hands.setScale(handsScaleRatio);
     }
+    
+    // 도로 속도 재조정
+    this.roadSpeed = 2 * this.uiScale;
+    
+    console.log('RoadScene 리사이즈 완료, 새 스케일:', this.uiScale);
   }
 }
