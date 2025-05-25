@@ -13,7 +13,7 @@ const Memory = () => {
     if (selectedIndexes.length === 1) {
       const timer = setTimeout(() => {
         navigate("/survey");
-      }, 3000);
+      }, 1500);
       return () => clearTimeout(timer);
     }
   }, [selectedIndexes, navigate]);
