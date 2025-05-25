@@ -156,7 +156,7 @@ const HarvestQuest = () => {
   return (
     <div className="w-full h-full">
       {/* 배경 - 게임 단계에 따라 다른 배경 표시 */}
-      {(gamePhase !== 'fadeOut' ) && (
+      {(gamePhase !== 'fadeOut' && gamePhase !== 'failResult' ) && (
         <img
           src={fieldHarvestBoxes}
           alt="갈림길 배경"
@@ -276,9 +276,9 @@ const HarvestQuest = () => {
                 <motion.img
                 src={grandfaSuccess}
                 alt="수레 끄시는 할아버지" 
-                className="absolute left-[20%] w-[400px] h-auto object-contain z-40"
+                className="absolute left-[10%] w-[400px] h-auto object-contain z-40"
                 onError={handleImageError}
-                animate={{ x: [0, 45] }} //X축: 0→65px
+                animate={{ x: [0, 35] }} //X축: 0→65px
                 transition={{ 
                   duration: 5, // 한 사이클(0→20→0)에 2초 
                   repeat: 1, // 반복
@@ -288,7 +288,7 @@ const HarvestQuest = () => {
                 <img 
                   src={motorcycle}
                   alt="오토바이"
-                  className="absolute right-[26%] w-[323px] object-contain z-50"
+                  className="absolute right-[23%] w-[323px] object-contain z-50"
                   onError={handleImageError}
                 />
                 </>
