@@ -14,7 +14,6 @@ import DrivingPrepPage from './pages/driving/DrivingPrepPage';
 import MemoryCardQuest from './pages/quest/MemoryCardQuest';
 import ScorePage from './pages/score/ScorePage';
 import PotholeQuest from './pages/quest/PotholeQuest';
-import DrivingBaseScreen from './pages/driving/DrivingBaseScreen';
 
 import CompletionBackground from './pages/questFinish/CompletionBackground';
 import SuccessBackground from './pages/questFinish/SuccessBackground';
@@ -42,7 +41,6 @@ function App() {
         <Route path="/makgeolli-quest" element={<MakgeolliQuest/>} />
         <Route path="/harvest-quest" element={<HarvestQuest />} />
         <Route path="/return-quest" element={<ReturnQuest/>}/>
-        <Route path="/driving-base" element={<DrivingBaseScreen/>} />
         <Route path="/score" element={<ScorePage />} />
         
         

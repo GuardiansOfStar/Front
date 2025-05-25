@@ -35,7 +35,7 @@ const GameTitle = ({
           key={i} 
           className={`inline-block ${color} px-responsive-xs rounded`}
           style={{
-            marginRight: i === text.length - 1 ? '0' : '-16px'  // 마지막 글자는 마진 없음
+            marginRight: i === text.length - 1 ? '0' : '-10px'  // 마지막 글자는 마진 없음
           }}
         >
           {ch}
