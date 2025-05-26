@@ -62,16 +62,23 @@ const StarSurvey = () => {
         }}
       >
         <div 
-          className="flex"
-          style={{ gap: `calc(20px * ${scale})` }}
+          className="flex items-center justify-center"
+          style={{ 
+            gap: `calc(20px * ${scale})`,
+            width: '100%',
+            height: '100%'
+          }}
         >
           {[1, 2, 3, 4, 5].map((i) => (
             <div
               key={i}
               style={{
-                width: `calc(145px * ${scale})`,
-                height: `calc(145px * ${scale})`,
-                cursor: 'pointer'
+                width: `calc(120px * ${scale})`,
+                height: `calc(120px * ${scale})`,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
               }}
               onClick={() => setSelectedStar(i)}
             >
@@ -105,9 +112,8 @@ const StarSurvey = () => {
         className="absolute cursor-pointer hover:scale-105 transition-transform duration-300 z-50"
         style={{
           bottom: `calc(54px * ${scale})`,
-          left: `calc(344px * ${scale})`, // 중앙 정렬: (1024 - 336) / 2
-          width: `calc(336px * ${scale})`,
-          height: `calc(152px * ${scale})`
+          left: `calc(382px * ${scale})`, // 중앙 정렬: (1024 - 336) / 2
+          width: `calc(260px * ${scale})`,
         }}
       />
     </div>
