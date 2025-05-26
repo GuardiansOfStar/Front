@@ -3,6 +3,7 @@ interface GameTitleProps {
   fontSize?: string;
   color?: string;
   strokeWidth?: string;
+  strokeColor?: string;
   className?: string;
 }
 
@@ -11,6 +12,7 @@ const GameTitle = ({
   fontSize = 'text-responsive-6xl',
   color = 'text-[#0DA429]',
   strokeWidth = 'calc(12px * var(--scale, 1))',
+  strokeColor = 'white',
   className = ''
 }: GameTitleProps) => {
   // fontSize가 rem, px 등의 CSS 값인지 확인
@@ -20,7 +22,7 @@ const GameTitle = ({
     <h2 
       className={`${isCSSValue ? '' : fontSize} font-black whitespace-nowrap ${className}`}
       style={{
-        WebkitTextStroke: `${strokeWidth} white`,
+        WebkitTextStroke: `${strokeWidth} ${strokeColor}`,
         paintOrder: 'stroke',
         display: 'flex',
         justifyContent: 'center',

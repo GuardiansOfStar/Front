@@ -19,9 +19,6 @@ const NextButton = ({ to = '/star' }: NextButtonProps) => {
             className="absolute cursor-pointer z-50 hover:scale-105 transition-transform duration-300"
             style={{
                 bottom: `calc(80px * ${scale})`,
-                left: `calc(362px * ${scale})`, // 중앙 정렬: (1024 - 231) / 2 (UI Size에서 231 × 106)
-                width: `calc(231px * ${scale})`,
-                height: `calc(106px * ${scale})`
             }}
         />
     );
