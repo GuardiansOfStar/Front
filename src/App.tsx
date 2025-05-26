@@ -34,6 +34,8 @@ function App() {
         {/* 기본 화면들 */}
         <Route path="/" element={<ReturnQuest />} />
         <Route path="/scenarios" element={<ScenarioSelectPage />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/scenarios" element={<ScenarioSelectPage />} />
         <Route path="/prologue" element={<ProloguePage />} />
 
         {/* 주행 관련 화면들 */}

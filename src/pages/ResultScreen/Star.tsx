@@ -1,37 +1,28 @@
-import { useState } from 'react';
-import { useScale } from '../../hooks/useScale';
+// Star.tsx
+import React from 'react';
 
-const filled_star = '/assets/images/filled_star.png'
-const empty_star = '/assets/images/empty_star.png'
-
+// props로 채움 여부와 클릭 이벤트 받기
 interface StarProps {
-  size?: number;
+    filled: boolean;
+    onClick: () => void;
 }
 
-const Star = ({ size = 100 }: StarProps) => {
-    const [isClicked, setIsClicked] = useState(true);
-    const scale = useScale();
+const filled_star = '/assets/images/filled_star.png';
+const empty_star = '/assets/images/empty_star.png';
 
-    const handleClick = () => {
-        setIsClicked(!isClicked);
-    };
-
-    // size가 이미 스케일이 적용된 값인지 확인하고, 그렇지 않다면 스케일 적용
-    const finalSize = size === 100 ? size * scale : size;
-
+const Star = ({ filled, onClick }: StarProps) => {
     return (
         <img
-            src={isClicked ? filled_star : empty_star}
-            alt="별 이미지"
-            onClick={handleClick}
-            style={{
-                width: finalSize,
-                height: finalSize,
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-            }}
+        src={filled ? filled_star : empty_star} // ⭐ 상태에 따라 이미지 변경
+        alt="별 이미지"
+        onClick={onClick} // ⭐ 클릭 시 상위 컴포넌트에 알림
+        style={{
+            width: '120px',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+        }}
         />
-    );
+  );
 };
 
 export default Star;
