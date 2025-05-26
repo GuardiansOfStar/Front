@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useScale } from "../../hooks/useScale";
 import Background from "../../components/ui/Background";
 import GameTitle from "../../components/ui/GameTitle";
-import BackButton from "../../components/ui/BackButton";
 
 const Memory = () => {
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
@@ -45,23 +44,18 @@ const Memory = () => {
         key={index}
         onClick={() => toggleSelection(index)}
         className="flex flex-col items-center cursor-pointer transition z-30"
-        style={{
-          // 카드별 위치 조정
-          marginRight: index === 0 ? `calc(80px * ${scale})` : 
-                      index === 2 ? `calc(40px * ${scale})` :
-                      index === 3 ? `calc(40px * ${scale})` : '0px'
-        }}
       >
         <img
           src={option.img}
           alt={option.label}
-          className={`object-cover transition border-white
-          ${isSelected ? "border-red-500" : "border-transparent"}`}
+          className={`object-cover transition ${
+            isSelected ? "border-red-500" : "border-transparent"
+          }`}
           style={{
             width: `calc(280px * ${scale})`,
             height: `calc(210px * ${scale})`,
             borderRadius: `calc(30px * ${scale})`,
-            borderWidth: `calc(10px * ${scale})`,
+            borderWidth: isSelected ? `calc(10px * ${scale})` : '0px',
             marginBottom: `calc(4px * ${scale})`
           }}
         />
@@ -84,7 +78,6 @@ const Memory = () => {
     <div className="relative w-full h-full">
       <div className="absolute inset-0 bg-[#FFF9C4]/70 z-10" />
       <Background />
-      <BackButton />
 
       <div className="absolute inset-0 z-30">
         {/* 질문 텍스트 */}
@@ -101,7 +94,7 @@ const Memory = () => {
             text="가장 기억에 남는 장면을 골라주세요"
             fontSize={`calc(50px * ${scale})`}
             color="text-[#0E8E12]"
-            strokeWidth={`calc(5px * ${scale})`}
+            strokeWidth={`calc(6px * ${scale})`}
           />
         </div>
 
@@ -110,7 +103,7 @@ const Memory = () => {
           className="absolute flex justify-center"
           style={{
             top: `calc(168px * ${scale})`,
-            left: `calc(233px * ${scale})`,
+            left: `calc(213px * ${scale})`,
             gap: `calc(64px * ${scale})`
           }}
         >
@@ -121,8 +114,8 @@ const Memory = () => {
         <div 
           className="absolute flex justify-center"
           style={{
-            top: `calc(422px * ${scale})`,
-            left: `calc(72px * ${scale})`,
+            top: `calc(462px * ${scale})`,
+            left: `calc(52px * ${scale})`,
             gap: `calc(40px * ${scale})`
           }}
         >
