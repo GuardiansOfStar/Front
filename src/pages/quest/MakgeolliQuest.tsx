@@ -10,7 +10,6 @@ import { useScale } from '../../hooks/useScale';
 // 이미지 임포트
 const orchardWorkBackground = '/assets/images/mission3_working_screen.png';
 const mealLadyBackground = '/assets/images/meal_lady_background.png';
-const homeButton = '/assets/images/home_button.png';
 const sparrow = '/assets/images/sparrow.png';
 const mealLady = '/assets/images/meal_lady.png';
 const makgeolliGameTray = '/assets/images/makgeolli_game_tray.png';
@@ -60,8 +59,8 @@ interface TrayItem {
 // 상수 - 트레이 아이템 위치 정의 (상대적 비율)
 const TRAY_ITEM_POSITIONS: { type: TrayItem['type'], xRatio: number, yRatio: number, rotation: number, scale: number, zIndex: number }[] = [
   // 국수 3개
-  { type: 'noodles', xRatio: 0.23, yRatio: 0.76, rotation: 0, scale: 2.4, zIndex: 6 },
-  { type: 'noodles', xRatio: 0.40, yRatio: 0.61, rotation: 0, scale: 2.4, zIndex: 5 },
+  { type: 'noodles', xRatio: 0.21, yRatio: 0.76, rotation: 0, scale: 2.4, zIndex: 6 },
+  { type: 'noodles', xRatio: 0.43, yRatio: 0.63, rotation: 0, scale: 2.4, zIndex: 5 },
   { type: 'noodles', xRatio: 0.42, yRatio: 0.85, rotation: 0, scale: 2.4, zIndex: 8 },
   
   // 김치 2개
@@ -75,7 +74,7 @@ const TRAY_ITEM_POSITIONS: { type: TrayItem['type'], xRatio: number, yRatio: num
 
 // 상수 - 숨겨진 막걸리 위치 정의 (상대적 비율)
 const HIDDEN_MAKGEOLLI_POSITIONS: { xRatio: number, yRatio: number, rotation: number, scale: number, zIndex: number }[] = [
-  { xRatio: 0.8, yRatio: 0.56, rotation: 5, scale: 2.4, zIndex: 5 },
+  { xRatio: 0.8, yRatio: 0.56, rotation: -90, scale: 2.4, zIndex: 5 },
   { xRatio: 0.40, yRatio: 0.61, rotation: 0, scale: 2.4, zIndex: 7 },
   { xRatio: 0.23, yRatio: 0.76, rotation: -10, scale: 1.8, zIndex: 2 },
   { xRatio: 0.66, yRatio: 0.80, rotation: 15, scale: 2.0, zIndex: 3 },
@@ -409,16 +408,6 @@ const MakgeolliQuest = () => {
           right: `calc(16px * ${scale})`
         }}
       >
-        <img
-          src={homeButton}
-          alt="홈으로"
-          style={{
-            width: `calc(64px * ${scale})`,
-            height: `calc(64px * ${scale})`
-          }}
-          className="cursor-pointer"
-          onClick={handleGoHome}
-        />
       </div>
       
       {/* 논밭 도착 화면 */}
@@ -536,32 +525,58 @@ const MakgeolliQuest = () => {
             </div>
           </div>
 
-          <div 
-            className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20"
-            style={{ top: `calc(65% * ${scale})` }}
+          <motion.div 
+            className="absolute inset-0 flex justify-center z-20"
+            style={{ 
+              alignItems: 'flex-end',
+              paddingBottom: `calc(140px * ${scale})`
+            }}
+            initial={{ opacity: 0, y: `calc(-50px * ${scale})`, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ 
+              duration: 0.8 * Math.max(0.8, scale),
+              delay: 0.3 * Math.max(0.8, scale),
+              ease: "easeOut"
+            }}
           >
-            <div 
-              className="bg-white/90 border-8 border-green-600 rounded-[2.2rem] text-center shadow-lg"
+            <motion.div 
+              className="bg-white/90 border-8 border-[#0E8E12] text-center shadow-lg"
               style={{
-                width: `calc(512px * ${scale})`,
-                padding: `calc(40px * ${scale})`
+                width: `calc(834px * ${scale})`,
+                padding: `calc(28px * ${scale})`,
+                borderRadius: `calc(48px * ${scale})`,
+                borderWidth: `calc(12px * ${scale})`
               }}
+              transition={{ duration: 0.2 }}
             >
-              <p 
-                className="font-black text-green-600 leading-tight tracking-wider"
-                style={{ fontSize: `calc(2.9rem * ${scale})` }}
+              <motion.p 
+                className="font-black text-[#0E8E12] tracking-wider"
+                style={{ fontSize: `calc(3.2rem * ${scale})` }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ 
+                  duration: 0.6 * Math.max(0.8, scale),
+                  delay: 0.6 * Math.max(0.8, scale)
+                }}
               >
                 새참 가져왔어요<br />
                 다들 먹고 하셔요!
-              </p>
-            </div>
-          </div>
+              </motion.p>
+            </motion.div>
+          </motion.div>
 
-          <div 
+          <motion.div 
             className="absolute left-0 right-0 flex justify-center z-50"
-            style={{ bottom: `calc(8px * ${scale})` }}
+            style={{ bottom: `calc(24px * ${scale})` }}
+            initial={{ opacity: 0, y: `calc(30px * ${scale})` }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ 
+              duration: 0.6 * Math.max(0.8, scale),
+              delay: 1.2 * Math.max(0.8, scale),
+              ease: "easeOut"
+            }}
           >
-            <img
+            <motion.img
               src={nextButton}
               alt="다음"
               onClick={handleNextPhase}
@@ -569,9 +584,15 @@ const MakgeolliQuest = () => {
                 width: `calc(208px * ${scale})`,
                 height: 'auto'
               }}
-              className="cursor-pointer hover:scale-105 transition-transform"
+              className="cursor-pointer"
+              whileHover={{ 
+                scale: 1.05,
+                y: `calc(-2px * ${scale})`
+              }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ duration: 0.2 }}
             />
-          </div>
+          </motion.div>
         </div>
       )}
 
@@ -613,10 +634,10 @@ const MakgeolliQuest = () => {
               })}
               
               {/* 텍스트 레이어 */}
-              <div className="absolute inset-0 flex items-center justify-center z-50">
+              <div className="absolute left-0 right-0 flex items-center justify-center z-50" style={{ top: `calc(230px * ${scale})` }}>
                 <GameTitle 
                   text="새참 먹는 시간" 
-                  fontSize={`calc(8rem * ${scale})`}
+                  fontSize={`calc(96px * ${scale})`}
                   strokeWidth={`calc(12px * ${scale})`}
                 />
               </div>
@@ -632,52 +653,86 @@ const MakgeolliQuest = () => {
           
           <div 
             className="absolute inset-0 flex flex-col items-center justify-center z-10"
-            style={{ top: `calc(16px * ${scale})` }}
+            style={{ top: `calc(40px * ${scale})` }}
           >
-            <h2 
-              className="font-black text-green-600 text-center"
-              style={{ 
-                fontSize: `calc(3.2rem * ${scale})`,
-                marginBottom: `calc(32px * ${scale})`
-              }}
-            >
-              새참을 먹어요
-            </h2>
-
+            {/* 제목을 박스 밖으로 이동하고 GameTitle 적용 */}
+            <div style={{ marginBottom: `calc(24px * ${scale})` }}>
+              <GameTitle 
+                text="새참을 먹어요" 
+                fontSize={`calc(3.75rem * ${scale})`}
+                strokeWidth={`calc(10px * ${scale})`}
+              />
+            </div>
+            
+            {/* 선택지 설명 */}
             <div 
-              className="bg-white bg-opacity-90 border-8 border-green-600 rounded-3xl w-[75%]"
-              style={{ 
+              className="bg-[#FFFAFA] bg-opacity-75 border-[#0DA429] rounded-[30px] flex flex-col justify-center items-center text-center"
+              style={{
+                width: `calc(735px * ${scale})`,
+                height: `calc(280px * ${scale})`,
+                borderWidth: `calc(10px * ${scale})`,
                 padding: `calc(24px * ${scale})`,
                 marginBottom: `calc(32px * ${scale})`
               }}
             >
               <p 
-                className="font-black text-black text-center"
-                style={{ fontSize: `calc(2.6rem * ${scale})` }}
+                className="font-black text-black leading-snug"
+                style={{ fontSize: `calc(2.5rem * ${scale})` }}
               >
-                저런! 새참에 막걸리가 있어요.<br/>
-                작업이 끝나면 운전해야 하는데…<br/>
+                저런! 새참에 <span style={{ color: '#B91C1C' }}>막걸리</span>가 있어요.<br/>
+                작업이 끝나면 <span style={{ color: '#B91C1C' }}>운전해야 하는데</span>…<br/>
                 어떡하죠?
               </p>
             </div>
-
-            <div className="flex justify-between w-[75%]">
+            
+            {/* 선택지 버튼 */}
+            <div 
+              className="flex justify-between"
+              style={{
+                width: `calc(750px * ${scale})`,
+                gap: `calc(16px * ${scale})`
+              }}
+            >
               <button
-                className={`w-[48%] bg-green-600 bg-opacity-80
-                border-8 border-green-600 rounded-xl
-                font-black text-white 
-                transition duration-300 
-                ${selectedOption === 'A' ? 'bg-green-600 scale-105 bg-opacity-95' : 'hover:bg-green-600'}`}
-                style={{ 
-                  fontSize: `calc(1.875rem * ${scale})`,
-                  padding: `calc(16px * ${scale})`
+                className={`rounded-[20px] font-black text-black transition duration-300 cursor-pointer flex items-center justify-center
+                  ${selectedOption === 'A' ? 
+                    'bg-[#0DA429] bg-opacity-90 border-[#0DA429] scale-105' : 
+                    'bg-[#FFFAFA] bg-opacity-70 border-[#0DA429] hover:bg-opacity-90'}
+                `}
+                style={{
+                  width: `calc(355px * ${scale})`,
+                  height: `calc(208px * ${scale})`,
+                  fontSize: `calc(2.1rem * ${scale})`,
+                  borderWidth: `calc(7px * ${scale})`,
+                  boxSizing: 'border-box'
+                }}
+                onClick={() => handleOptionSelect('A')}
+                disabled={!!selectedOption}
+              >
+                <span className="text-center leading-tight">
+                  작업중 <span style={{ color: '#B91C1C' }}>막걸리</span>는<br/>보약!<br/> <span style={{ color: '#B91C1C' }}>적당히 마신다</span>
+                </span>
+              </button>
+              
+              <button
+                className={`rounded-[20px] font-black text-black transition duration-300 cursor-pointer flex items-center justify-center
+                  ${selectedOption === 'B' ? 
+                    'bg-[#0DA429] bg-opacity-90 border-[#0DA429] scale-105' : 
+                    'bg-[#FFFAFA] bg-opacity-70 border-[#0DA429] hover:bg-opacity-90'}
+                `}
+                style={{
+                  width: `calc(355px * ${scale})`,
+                  height: `calc(208px * ${scale})`,
+                  fontSize: `calc(2.1rem * ${scale})`,
+                  borderWidth: `calc(7px * ${scale})`,
+                  boxSizing: 'border-box'
                 }}
                 onClick={() => handleOptionSelect('B')}
                 disabled={!!selectedOption}
               >
-                운전해야 하니<br />
-                막걸리는<br />
-                마시지 않는다
+                <span className="text-center leading-tight">
+                  <span style={{ color: '#B91C1C' }}>운전해야 하니</span><br/><span style={{ color: '#B91C1C' }}>막걸리</span>는<br/><span style={{ color: '#B91C1C' }}>마시지 않는다</span>
+                </span>
               </button>
             </div>
           </div>
@@ -704,23 +759,27 @@ const MakgeolliQuest = () => {
             >
               <GameTitle 
                 text="새참 속 막걸리 치우기" 
-                fontSize={`calc(6rem * ${scale})`}
+                fontSize={`calc(64px * ${scale})`}
                 strokeWidth={`calc(10px * ${scale})`}
               />
               <div 
-                className="bg-white/80 border-8 border-green-600 rounded-3xl w-full text-center"
+                className="bg-white/80 border-8 border-green-600 w-full text-center"
                 style={{ 
-                  paddingLeft: `calc(24px * ${scale})`,
-                  paddingRight: `calc(24px * ${scale})`,
-                  paddingTop: `calc(48px * ${scale})`,
-                  paddingBottom: `calc(48px * ${scale})`,
+                  borderRadius: `calc(48px * ${scale})`,
+                  paddingLeft: `calc(12px * ${scale})`,
+                  paddingRight: `calc(12px * ${scale})`,
+                  paddingTop: `calc(36px * ${scale})`,
+                  paddingBottom: `calc(36px * ${scale})`,
                   marginBottom: `calc(16px * ${scale})`,
                   marginTop: `calc(24px * ${scale})`
                 }}
               >
                 <p 
                   className="font-black text-center leading-relaxed"
-                  style={{ fontSize: `calc(2.8rem * ${scale})` }}
+                  style={{
+                    fontSize: `calc(2.8rem * ${scale})`,
+                    lineHeight: 1.8
+                }}
                 >
                   {selectedOption === 'A' ? (
                     <>
@@ -745,13 +804,13 @@ const MakgeolliQuest = () => {
           </motion.div>
           
           {/* 시작 버튼 */}
-          <div className="absolute bottom-0 left-0 right-0 flex justify-center z-50">
+          <div className="absolute left-0 right-0 flex justify-center z-50" style={{ bottom: `calc(-50px * ${scale})` }}>
             <img
               src={startButton}
               alt="시작하기"
               onClick={handleNextPhase}
               style={{
-                width: `calc(208px * ${scale})`,
+                width: `calc(300px * ${scale})`,
                 height: 'auto'
               }}
               className="cursor-pointer hover:scale-105 transition-transform"
@@ -765,10 +824,10 @@ const MakgeolliQuest = () => {
         <div className="absolute inset-0 flex items-center justify-center">
           {/* 남은 막걸리 카운터 */}
           <div 
-            className="absolute bg-green-600 rounded-xl flex items-center z-50 shadow-lg"
+            className="absolute bg-green-600/70 rounded-xl flex items-center z-50 shadow-lg"
             style={{
-              top: `calc(96px * ${scale})`,
-              right: `calc(64px * ${scale})`,
+              top: `calc(32px * ${scale})`,
+              right: `calc(32px * ${scale})`,
               padding: `calc(16px * ${scale})`
             }}
           >
@@ -791,7 +850,7 @@ const MakgeolliQuest = () => {
               }}
             />
             <span 
-              className="text-white font-black"
+              className="text-white font-bold"
               style={{ fontSize: `calc(2.5rem * ${scale})` }}
             >
               {5-foundCount}/5
@@ -875,7 +934,7 @@ const MakgeolliQuest = () => {
             }}
           >
             <p 
-              className="text-green-700 font-black text-center"
+              className="text-green-700 font-bold text-center"
               style={{ fontSize: `calc(1.25rem * ${scale})` }}
             >
               {foundCount === 0 

@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import HarvestBox from './HarvestBox';
-import HomeButton from '../../components/ui/HomeButton';
 import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attempts';
 import GameTitle from '../../components/ui/GameTitle';
 import { useScale } from '../../hooks/useScale';
@@ -182,11 +181,6 @@ const HarvestQuest = () => {
       {/* 배경 흐리게 처리 */}
       {(gamePhase !== 'intro' && gamePhase !== 'driving' && gamePhase !== 'harvestDone' && gamePhase !== 'failResult' ) && (
         <div className="absolute inset-0 bg-[#FFF9C4]/60 z-10"></div>
-      )}
-
-      {/* 헤더 영역 */}
-      {(gamePhase !== 'fadeOut' && gamePhase !== 'failResult') && (
-        <HomeButton />
       )}
 
       {/* 인트로 화면 */}
