@@ -8,7 +8,7 @@ import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attem
 import GameTitle from '../../components/ui/GameTitle';
 
 // 이미지 임포트
-const fieldHarvestBoxes = '/assets/images/field_harvest_boxes.png';
+const fieldHarvestBoxes = '/assets/images/work_complete_with_applebox.png';
 const field = '/assets/images/work_complete_without_applebox.png';
 const accident = '/assets/images/grandfather_field_accident.png';
 const dangerWarning = '/assets/images/danger_warning.png';
@@ -156,7 +156,7 @@ const HarvestQuest = () => {
   return (
     <div className="w-full h-full">
       {/* 배경 - 게임 단계에 따라 다른 배경 표시 */}
-      {(gamePhase !== 'intro' && gamePhase !== 'fadeOut' && gamePhase !== 'failResult' ) && (
+      {(gamePhase !== 'intro' && gamePhase !== 'fadeOut' && gamePhase !== 'failResult'&& gamePhase !== 'score' ) && (
         <img
           src={fieldHarvestBoxes}
           alt="수확완료 화면"
