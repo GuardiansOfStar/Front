@@ -3,8 +3,9 @@ import { useScale } from '../../hooks/useScale';
 import Background from '../../components/ui/Background';
 import HomeButton from '../../components/ui/HomeButton';
 
-const smiling_grandchildren = '/assets/images/grandchildren_happy.png'
+const smiling_grandchildren = '/assets/images/grandchildren.png'
 const get_certificate = '/assets/images/get_certificate.png'
+const drive_end_button = '/assets/images/drive_end_button.png'
 
 const Certificate = () => {
   const navigate = useNavigate();
@@ -13,7 +14,18 @@ const Certificate = () => {
   return (
     <div className="relative w-full h-full">
       <Background />
-      <HomeButton />
+      {/* 운전 종료 버튼 (기존 HomeButton 위치) */}
+      <img
+        src={drive_end_button}
+        alt="운전 종료"
+        className="absolute cursor-pointer"
+        style={{
+          top: `calc(4% * ${scale})`,
+          right: `calc(4% * ${scale})`,
+          width: `calc(11% * ${scale})`
+        }}
+        onClick={() => navigate('/')}
+      />
       
       {/* 손자손녀 이미지 */}
       <img
@@ -21,10 +33,9 @@ const Certificate = () => {
         alt="웃는 손주들"
         className="absolute z-50"
         style={{
-          width: `calc(416px * ${scale})`,
-          height: `calc(259px * ${scale})`,
-          left: `calc(304px * ${scale})`, // 중앙 정렬: (1024 - 416) / 2
-          top: `calc(50px * ${scale})`
+          width: `calc(378px * ${scale})`,
+          left: `calc(323px * ${scale})`, // 중앙 정렬: (1024 - 375) / 2
+          top: `calc(100px * ${scale})`
         }}
       />
       
@@ -57,7 +68,7 @@ const Certificate = () => {
           }}
         >
           무사히 돌아와줘서 고마워요<br />
-          안전운전하는 할머니/할아버지가 자랑스러워요
+          안전운전하는 할아버지가 자랑스러워요
         </div>
       </div>
 
@@ -69,9 +80,8 @@ const Certificate = () => {
         className="absolute cursor-pointer z-50 hover:scale-105 transition-transform duration-300"
         style={{
           width: `calc(293px * ${scale})`,
-          height: `calc(126px * ${scale})`,
           left: `calc(365px * ${scale})`, // 중앙 정렬: (1024 - 293) / 2
-          bottom: `calc(80px * ${scale})`
+          bottom: `calc(0px * ${scale})`
         }}
       />
     </div>
