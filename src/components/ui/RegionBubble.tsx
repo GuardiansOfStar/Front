@@ -66,7 +66,7 @@ const RegionBubble = ({ show }: RegionBubbleProps) => {
         }}
       >
         <p 
-          className="font-bold whitespace-nowrap"
+          className="font-black whitespace-nowrap"
           style={{ fontSize: `calc(1.25rem * ${scale})` }}
         >
           잠깐, 지역 선택은 하셨나요?

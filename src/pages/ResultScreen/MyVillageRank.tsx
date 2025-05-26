@@ -31,7 +31,7 @@ const MyVillageRank = () => {
 
       {/* 제목 */}
       <div
-        className="absolute bg-green-600 border-green-700 text-white font-bold text-center z-20"
+        className="absolute bg-green-600 border-green-700 text-white font-black text-center z-20"
         style={{
           width: `calc(718px * ${scale})`,
           height: `calc(100px * ${scale})`,
@@ -55,7 +55,7 @@ const MyVillageRank = () => {
 
       {/* 사용자 마을 강조 박스 */}
       <div 
-        className="absolute bg-green-700 border-green-700 z-30 shadow-2xl flex items-center justify-around text-white font-bold"
+        className="absolute bg-green-700 border-green-700 z-30 shadow-2xl flex items-center justify-around text-white font-black"
         style={{
           width: `calc(908px * ${scale})`,
           height: `calc(135px * ${scale})`,
@@ -130,7 +130,7 @@ const MyVillageRank = () => {
         }}
       >
         <div 
-          className="w-full text-center text-white font-bold"
+          className="w-full text-center text-white font-black"
           style={{
             fontSize: `calc(35px * ${scale})`,
             lineHeight: `calc(70px * ${scale})`,

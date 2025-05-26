@@ -33,7 +33,7 @@ const PersonalInfo = () => {
         }}
       >
         <div
-          className="text-center font-bold text-white"
+          className="text-center font-black text-white"
           style={{
             fontSize: `calc(55px * ${scale})`,
             lineHeight: `calc(66px * ${scale})`
@@ -68,7 +68,7 @@ const PersonalInfo = () => {
           }}
         >
           <label 
-            className="absolute text-white font-bold"
+            className="absolute text-white font-black"
             style={{
               width: `calc(87px * ${scale})`,
               height: `calc(60px * ${scale})`,
@@ -108,7 +108,7 @@ const PersonalInfo = () => {
           }}
         >
           <label 
-            className="absolute text-white font-bold"
+            className="absolute text-white font-black"
             style={{
               width: `calc(87px * ${scale})`,
               height: `calc(60px * ${scale})`,
@@ -148,7 +148,7 @@ const PersonalInfo = () => {
           }}
         >
           <label 
-            className="absolute text-white font-bold"
+            className="absolute text-white font-black"
             style={{
               width: `calc(127px * ${scale})`,
               height: `calc(60px * ${scale})`,

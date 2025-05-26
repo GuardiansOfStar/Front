@@ -773,7 +773,7 @@ const MakgeolliQuest = () => {
             }}
           >
             <span 
-              className="text-white font-bold"
+              className="text-white font-black"
               style={{ 
                 fontSize: `calc(1.875rem * ${scale})`,
                 marginRight: `calc(12px * ${scale})`
@@ -791,7 +791,7 @@ const MakgeolliQuest = () => {
               }}
             />
             <span 
-              className="text-white font-bold"
+              className="text-white font-black"
               style={{ fontSize: `calc(2.5rem * ${scale})` }}
             >
               {5-foundCount}/5
@@ -875,7 +875,7 @@ const MakgeolliQuest = () => {
             }}
           >
             <p 
-              className="text-green-700 font-bold text-center"
+              className="text-green-700 font-black text-center"
               style={{ fontSize: `calc(1.25rem * ${scale})` }}
             >
               {foundCount === 0 

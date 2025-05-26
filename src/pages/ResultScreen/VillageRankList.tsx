@@ -21,7 +21,7 @@ const VillageRankList = () => {
 
       {/* 제목 */}
       <div
-        className="absolute bg-green-600 border-green-700 text-white font-bold text-center z-20"
+        className="absolute bg-green-600 border-green-700 text-white font-black text-center z-20"
         style={{
           width: `calc(718px * ${scale})`,
           height: `calc(100px * ${scale})`,
@@ -65,7 +65,7 @@ const VillageRankList = () => {
         
         {/* 테이블 헤더 */}
         <div 
-          className="w-full text-center text-white font-bold sticky top-0 z-10"
+          className="w-full text-center text-white font-black sticky top-0 z-10"
           style={{
             fontSize: `calc(35px * ${scale})`,
             lineHeight: `calc(70px * ${scale})`,
@@ -95,7 +95,7 @@ const VillageRankList = () => {
             {mockData.map((village, idx) => (
               <div 
                 key={idx} 
-                className="text-white font-bold border-b hover:bg-green-600 flex justify-around items-center"
+                className="text-white font-black border-b hover:bg-green-600 flex justify-around items-center"
                 style={{
                   fontSize: `calc(30px * ${scale})`,
                   paddingTop: `calc(20px * ${scale})`,

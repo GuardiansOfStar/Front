@@ -47,7 +47,7 @@ const DevelopmentNotice = () => {
           
           <button
             onClick={() => navigate('/')}
-            className="bg-green-600 hover:bg-green-700 text-white font-bold transition-colors duration-300"
+            className="bg-green-600 hover:bg-green-700 text-white font-black transition-colors duration-300"
             style={{
               paddingTop: `calc(16px * ${scale})`,
               paddingBottom: `calc(16px * ${scale})`,
