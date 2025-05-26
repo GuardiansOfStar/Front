@@ -7,10 +7,10 @@ const HarvestBox = () => {
 
     // 사과박스의 위치와 크기 지정
     const boxData = [
-        { top: '55%', left: '20%', width: '50%' },
-        { top: '65%', left: '45%', width: '45%' },
-        { top: '75%', left: '79%', width: '71%' },
-        { top: '82%', left: '24%', width: '55%' },
+        { top: '432px', left: '229px', width: '459px' },
+        { top: '432px', left: '562px', width: '459px' },
+        { top: '537px', left: '792px', width: '517px' },
+        { top: '566px', left: '396px', width: '492px' },
     ];
 
     useEffect(() => {

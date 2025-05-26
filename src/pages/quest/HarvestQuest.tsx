@@ -3,13 +3,13 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import HarvestBox from './HarvestBox';
-import HarvestBox2 from './HarvestBox2';
 import HomeButton from '../../components/ui/HomeButton';
 import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attempts';
 import GameTitle from '../../components/ui/GameTitle';
 
 // 이미지 임포트
 const fieldHarvestBoxes = '/assets/images/field_harvest_boxes.png';
+const field = '/assets/images/work_complete_without_applebox.png';
 const accident = '/assets/images/grandfather_field_accident.png';
 const dangerWarning = '/assets/images/danger_warning.png';
 const successCircle = '/assets/images/success_circle.png';
@@ -64,7 +64,7 @@ const HarvestQuest = () => {
         }, 0);
         
         return () => clearTimeout(alertTimer);
-      }, 1000);
+      }, 0);
       
       return () => clearTimeout(drivingTimer);
     }, 3000);
@@ -156,10 +156,10 @@ const HarvestQuest = () => {
   return (
     <div className="w-full h-full">
       {/* 배경 - 게임 단계에 따라 다른 배경 표시 */}
-      {(gamePhase !== 'fadeOut' && gamePhase !== 'failResult' ) && (
+      {(gamePhase !== 'intro' && gamePhase !== 'fadeOut' && gamePhase !== 'failResult' ) && (
         <img
           src={fieldHarvestBoxes}
-          alt="갈림길 배경"
+          alt="수확완료 화면"
           className="absolute w-full h-full object-cover"
         />
       )}
@@ -176,8 +176,13 @@ const HarvestQuest = () => {
       {/* 인트로 화면 */}
       {gamePhase === 'intro' && (
         <>
-          
-          {/*<HarvestBox /> 
+          <img
+          src={field}
+          alt="수확 전 화면"
+          className="absolute w-full h-full object-cover"
+        />
+          <HarvestBox /> 
+          {/*
           showIntroText && (
             <div className="absolute inset-0 flex items-center justify-center z-20">
               <GameTitle text="작업 완료" fontSize="text-[5.25rem]" strokeWidth="12px" />
