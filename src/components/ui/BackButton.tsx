@@ -24,9 +24,9 @@ const BackButton = ({ onClick }: BackButtonProps) => {
             onClick={handleBack}
             className="absolute cursor-pointer z-50 active:scale-90 transition-transform duration-150"
             style={{
-                top: `calc(16px * ${scale})`,
-                left: `calc(16px * ${scale})`,
-                width: `calc(100px * ${scale})`,
+                top: `calc(4% * ${scale})`,
+                left: `calc(4% * ${scale})`,
+                width: `calc(11% * ${scale})`,
                 height: 'auto'
             }}
         />

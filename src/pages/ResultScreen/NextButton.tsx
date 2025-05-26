@@ -18,7 +18,10 @@ const NextButton = ({ to = '/star' }: NextButtonProps) => {
             onClick={() => navigate(to)}
             className="absolute cursor-pointer z-50 hover:scale-105 transition-transform duration-300"
             style={{
-                bottom: `calc(80px * ${scale})`,
+                width: `calc(200px * ${scale})`,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                bottom: `calc(40px * ${scale})`,
             }}
         />
     );

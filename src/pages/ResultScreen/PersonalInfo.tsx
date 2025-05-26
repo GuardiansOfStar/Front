@@ -3,6 +3,7 @@ import { useScale } from '../../hooks/useScale';
 import Background from '../../components/ui/Background';
 import NextButton from './NextButton';
 import HomeButton from '../../components/ui/HomeButton';
+import BackButton from '../../components/ui/BackButton';
 
 const PersonalInfo = () => {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ const PersonalInfo = () => {
   return (
     <div className="relative w-full h-full">
       <Background />
+      <BackButton />
       <HomeButton />
 
       {/* 타이틀 */}
@@ -139,7 +141,7 @@ const PersonalInfo = () => {
           />
         </div>
 
-        {/* 전화번호 필드 */}
+                {/* 전화번호 필드 */}
         <div 
           className="absolute"
           style={{
@@ -150,12 +152,13 @@ const PersonalInfo = () => {
           <label 
             className="absolute text-white font-black"
             style={{
-              width: `calc(127px * ${scale})`,
+              width: `calc(160px * ${scale})`,
               height: `calc(60px * ${scale})`,
               fontSize: `calc(50px * ${scale})`,
               lineHeight: `calc(60px * ${scale})`,
               left: 0,
-              top: 0
+              top: 0,
+              whiteSpace: 'nowrap'
             }}
           >
             연락처
