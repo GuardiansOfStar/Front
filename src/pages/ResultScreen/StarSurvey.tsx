@@ -13,7 +13,7 @@ const StarSurvey = () => {
   const navigate = useNavigate();
 
   // 5개의 ⭐ 중 몇 개가 선택되었는지를 관리하는 상태 (초기값: 5)
-  const [selectedStar, setSelectedStar] = useState(5);
+  const [selectedStar, setSelectedStar] = useState(0);
 
   return (
     <div className="relative w-full h-full overflow-hidden flex flex-col items-center justify-center">
