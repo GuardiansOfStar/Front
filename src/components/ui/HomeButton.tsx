@@ -12,7 +12,7 @@ function HomeButton () {
         <img
             src={homeButton}
             alt="홈으로"
-            className="absolute cursor-pointer"
+            className="absolute cursor-pointer z-50"
             style={{
                 top: `calc(4% * ${scale})`,
                 right: `calc(4% * ${scale})`,

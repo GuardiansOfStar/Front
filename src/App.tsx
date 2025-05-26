@@ -22,9 +22,8 @@ import MakgeolliQuest from './pages/quest/MakgeolliQuest';
 import ReturnQuest from './pages/quest/ReturnQuest';
 import DevelopmentNotice from './pages/DevelopmentNotice';
 import Memory from './pages/ResultScreen/Memory';
-import MyVillageRank from './pages/ResultScreen/MyVillageRank';
-import VillageRankList from './pages/ResultScreen/VillageRankList';
 import PerfectScore from './pages/ResultScreen/PerfectScore';
+import VillageRank from './pages/ResultScreen/VillageRank';
 
 
 function App() {
@@ -57,8 +56,7 @@ function App() {
         <Route path="/info" element={<PersonalInfo/>} />
         <Route path="/survey" element={<StarSurvey />} />
         <Route path="/memory" element={<Memory />} />
-        <Route path='/village' element={<MyVillageRank/>} />
-        <Route path='/rank' element={<VillageRankList/>} />
+        <Route path='/rank' element={<VillageRank/>} />
 
 
         {/* 추가: 개발 중 알림 페이지 */}
