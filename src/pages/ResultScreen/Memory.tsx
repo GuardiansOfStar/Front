@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useScale } from "../../hooks/useScale";
 import Background from "../../components/ui/Background";
-import GameContext from "../../components/ui/GameContext";
 import GameTitle from "../../components/ui/GameTitle";
+import BackButton from "../../components/ui/BackButton";
 
 const Memory = () => {
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
   const navigate = useNavigate();
+  const scale = useScale();
 
   // 하나 선택-> 3초 후 자동 이동
   useEffect(() => {
@@ -43,43 +45,87 @@ const Memory = () => {
         key={index}
         onClick={() => toggleSelection(index)}
         className="flex flex-col items-center cursor-pointer transition z-30"
+        style={{
+          // 카드별 위치 조정
+          marginRight: index === 0 ? `calc(80px * ${scale})` : 
+                      index === 2 ? `calc(40px * ${scale})` :
+                      index === 3 ? `calc(40px * ${scale})` : '0px'
+        }}
       >
         <img
           src={option.img}
           alt={option.label}
-          className={`w-[280px] h-[210px] object-cover rounded-[30px] transition 
-          border-[10px] ${isSelected ? "border-red-500" : "border-transparent"} mb-1`}
+          className={`object-cover transition border-white
+          ${isSelected ? "border-red-500" : "border-transparent"}`}
+          style={{
+            width: `calc(280px * ${scale})`,
+            height: `calc(210px * ${scale})`,
+            borderRadius: `calc(30px * ${scale})`,
+            borderWidth: `calc(10px * ${scale})`,
+            marginBottom: `calc(4px * ${scale})`
+          }}
         />
-        <GameContext
-          text={option.label}
-          fontSize="text-[35px]"
-          color="text-black"
-          strokeWidth="5px"
-        />
+        <div
+          className="text-black font-black text-center"
+          style={{
+            fontSize: `calc(35px * ${scale})`,
+            lineHeight: `calc(42px * ${scale})`,
+            WebkitTextStroke: `calc(5px * ${scale}) white`,
+            paintOrder: 'stroke'
+          }}
+        >
+          {option.label}
+        </div>
       </div>
     );
   };
 
   return (
-    <div className="relative w-full min-h-screen overflow-hidden">
+    <div className="relative w-full h-full">
       <div className="absolute inset-0 bg-[#FFF9C4]/70 z-10" />
       <Background />
+      <BackButton />
 
-      <div className="relative z-30 flex flex-col items-center justify-start py-5 px-4">
-        <GameContext
-          text="가장 기억에 남는 장면을 골라주세요"
-          fontSize="text-[55px]"
-          color="text-[#0E8E12]"
-          className="mt-7 mb-9"
-        />
+      <div className="absolute inset-0 z-30">
+        {/* 질문 텍스트 */}
+        <div 
+          className="absolute"
+          style={{
+            top: `calc(68px * ${scale})`,
+            left: `calc(166px * ${scale})`,
+            width: `calc(692px * ${scale})`,
+            height: `calc(60px * ${scale})`
+          }}
+        >
+          <GameTitle
+            text="가장 기억에 남는 장면을 골라주세요"
+            fontSize={`calc(50px * ${scale})`}
+            color="text-[#0E8E12]"
+            strokeWidth={`calc(5px * ${scale})`}
+          />
+        </div>
 
         {/* 윗줄 2개 */}
-        <div className="flex justify-center gap-16 mb-4">
+        <div 
+          className="absolute flex justify-center"
+          style={{
+            top: `calc(168px * ${scale})`,
+            left: `calc(233px * ${scale})`,
+            gap: `calc(64px * ${scale})`
+          }}
+        >
           {topRow.map((option, idx) => renderCard(option, idx))}
         </div>
 
         {/* 아랫줄 3개 */}
-        <div className="flex justify-center gap-10">
+        <div 
+          className="absolute flex justify-center"
+          style={{
+            top: `calc(422px * ${scale})`,
+            left: `calc(72px * ${scale})`,
+            gap: `calc(40px * ${scale})`
+          }}
+        >
           {bottomRow.map((option, idx) => renderCard(option, idx + 2))}
         </div>
       </div>

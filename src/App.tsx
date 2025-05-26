@@ -32,7 +32,7 @@ function App() {
     <AspectRatioContainer fillMode="fit">
       <Routes>
         {/* 기본 화면들 */}
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<ReturnQuest />} />
         <Route path="/scenarios" element={<ScenarioSelectPage />} />
         <Route path="/prologue" element={<ProloguePage />} />
 

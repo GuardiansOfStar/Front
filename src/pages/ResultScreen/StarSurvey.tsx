@@ -1,54 +1,86 @@
-// StarSurvey.tsx
-import { useState } from 'react'; // ⭐ 상태 관리를 위해 useState 추가
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useScale } from '../../hooks/useScale';
 import Background from '../../components/ui/Background';
-import NextButton from './NextButton';
 import Star from './Star'; 
 import GameTitle from '../../components/ui/GameTitle';
-import GameContext from '../../components/ui/GameContext';
+import BackButton from '../../components/ui/BackButton';
 
 const starCharacter = '/assets/images/star_character.png';
+const submitButton = '/assets/images/submit_button.png';
 
 const StarSurvey = () => {
   const navigate = useNavigate();
+  const scale = useScale();
 
   // 5개의 ⭐ 중 몇 개가 선택되었는지를 관리하는 상태 (초기값: 5)
   const [selectedStar, setSelectedStar] = useState(5);
 
   return (
-    <div className="relative w-full h-full overflow-hidden flex flex-col items-center justify-center">
+    <div className="relative w-full h-full">
       <div className="absolute inset-0 bg-[#FFF9C4]/70 z-20" />
       <Background />
 
       {/* 뒤로가기 버튼 */}
-      <img
-        src="/assets/images/back_button.png"
-        alt="뒤로가기 버튼"
-        onClick={() => navigate('/memory')}
-        className="absolute top-[3%] left-[3%] w-[110px] h-auto z-50 cursor-pointer hover:scale-90 transition-transform duration-300"
-      />
+      <BackButton onClick={() => navigate('/memory')} />
 
       {/* 질문 텍스트 */}
-      <GameContext
-        text="안전교육 게임이 도움이 되셨나요?"
-        fontSize="text-[52px]"
-        color="text-[#0DA429]"
-        className="absolute top-[23%] z-50 mb-5"
-      />
+      <div 
+        className="absolute z-50"
+        style={{
+          top: `calc(181px * ${scale})`,
+          left: `calc(173px * ${scale})`,
+          width: `calc(678px * ${scale})`,
+          height: `calc(60px * ${scale})`
+        }}
+      >
+        <GameTitle
+          text="안전교육 게임이 도움이 되셨나요?"
+          fontSize={`calc(50px * ${scale})`}
+          color="text-[#0DA429]"
+          strokeWidth={`calc(5px * ${scale})`}
+        />
+      </div>
 
       {/* 별점 박스 */}
-      <div className="w-[750px] h-[200px] bg-white border-2 border-green-700 rounded-3xl flex justify-center items-center z-40">
-        <div className="flex gap-5">
-          {
-            // ⭐을 5개 그리되, 선택된 개수에 따라 채워진 상태 전달
-            [1, 2, 3, 4, 5].map((i) => (
+      <div 
+        className="absolute bg-white bg-opacity-70 border-green-700 z-40"
+        style={{
+          width: `calc(750px * ${scale})`,
+          height: `calc(202px * ${scale})`,
+          left: `calc(137px * ${scale})`,
+          top: `calc(287px * ${scale})`,
+          borderWidth: `calc(4px * ${scale})`,
+          borderStyle: 'solid',
+          borderRadius: `calc(30px * ${scale})`,
+          borderColor: '#15803d',
+          backgroundColor: 'rgba(255, 250, 250, 0.7)',
+          boxShadow: 'inset 0px 4px 4px rgba(0, 0, 0, 0.25)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
+        <div 
+          className="flex"
+          style={{ gap: `calc(20px * ${scale})` }}
+        >
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div
+              key={i}
+              style={{
+                width: `calc(145px * ${scale})`,
+                height: `calc(145px * ${scale})`,
+                cursor: 'pointer'
+              }}
+              onClick={() => setSelectedStar(i)}
+            >
               <Star
-                key={i}                            //내부요소 구별용
-                filled={i <= selectedStar}         // i가 선택된 별 수 이하면 채움
-                onClick={() => setSelectedStar(i)} // 클릭 시 선택된 별 수 업데이트
+                filled={i <= selectedStar}
+                onClick={() => setSelectedStar(i)}
               />
-            ))
-          }
+            </div>
+          ))}
         </div>
       </div>
 
@@ -56,17 +88,27 @@ const StarSurvey = () => {
       <img 
         src={starCharacter} 
         alt="별별이" 
-        className="absolute bottom-[12%] left-[3%] w-[250px] z-50"
+        className="absolute z-50"
+        style={{
+          bottom: `calc(80px * ${scale})`,
+          left: `calc(30px * ${scale})`,
+          width: `calc(250px * ${scale})`,
+          height: 'auto'
+        }}
       />
 
       {/* 제출 버튼 */}
       <img
-        src="/assets/images/submit_button.png"
+        src={submitButton}
         alt="제출 버튼"
         onClick={() => navigate('/village')} 
-        className="absolute bottom-[7%] left-1/2 transform -translate-x-1/2 
-        w-[300px] h-auto z-40 cursor-pointer
-        hover:scale-90 transition-transform duration-300"
+        className="absolute cursor-pointer hover:scale-105 transition-transform duration-300 z-50"
+        style={{
+          bottom: `calc(54px * ${scale})`,
+          left: `calc(344px * ${scale})`, // 중앙 정렬: (1024 - 336) / 2
+          width: `calc(336px * ${scale})`,
+          height: `calc(152px * ${scale})`
+        }}
       />
     </div>
   );
