@@ -447,7 +447,7 @@ const MakgeolliQuest = () => {
             }}
           >
             <h1 
-              className="font-extrabold text-white text-center tracking-wide"
+              className="font-black text-white text-center tracking-wide"
               style={{ fontSize: `calc(6rem * ${scale})` }}
             >
               작업 중
@@ -548,7 +548,7 @@ const MakgeolliQuest = () => {
               }}
             >
               <p 
-                className="font-extrabold text-green-600 leading-tight tracking-wider"
+                className="font-black text-green-600 leading-tight tracking-wider"
                 style={{ fontSize: `calc(2.9rem * ${scale})` }}
               >
                 새참 가져왔어요<br />
@@ -635,7 +635,7 @@ const MakgeolliQuest = () => {
             style={{ top: `calc(16px * ${scale})` }}
           >
             <h2 
-              className="font-extrabold text-green-600 text-center"
+              className="font-black text-green-600 text-center"
               style={{ 
                 fontSize: `calc(3.2rem * ${scale})`,
                 marginBottom: `calc(32px * ${scale})`
@@ -652,7 +652,7 @@ const MakgeolliQuest = () => {
               }}
             >
               <p 
-                className="font-extrabold text-black text-center"
+                className="font-black text-black text-center"
                 style={{ fontSize: `calc(2.6rem * ${scale})` }}
               >
                 저런! 새참에 막걸리가 있어요.<br/>
@@ -665,7 +665,7 @@ const MakgeolliQuest = () => {
               <button
                 className={`w-[48%] bg-green-600 bg-opacity-80
                 border-8 border-green-600 rounded-xl
-                font-extrabold text-white 
+                font-black text-white 
                 transition duration-300 
                 ${selectedOption === 'A' ? 'bg-green-600 scale-105 bg-opacity-95' : 'hover:bg-green-600'}`}
                 style={{ 
@@ -719,7 +719,7 @@ const MakgeolliQuest = () => {
                 }}
               >
                 <p 
-                  className="font-extrabold text-center leading-relaxed"
+                  className="font-black text-center leading-relaxed"
                   style={{ fontSize: `calc(2.8rem * ${scale})` }}
                 >
                   {selectedOption === 'A' ? (
@@ -895,7 +895,7 @@ const MakgeolliQuest = () => {
           
           <div className="relative z-20 text-center">
             <h1 
-              className="font-extrabold text-green-700"
+              className="font-black text-green-700"
               style={{ 
                 fontSize: `calc(4rem * ${scale})`,
                 marginBottom: `calc(32px * ${scale})`
@@ -913,7 +913,7 @@ const MakgeolliQuest = () => {
               }}
             >
               <p 
-                className="text-white font-extrabold leading-loose"
+                className="text-white font-black leading-loose"
                 style={{ fontSize: `calc(3rem * ${scale})` }}
               >
                 음주운전을 예방한 당신이<br />
@@ -943,7 +943,7 @@ const MakgeolliQuest = () => {
           
           <div className="relative z-20 text-center">
             <h1 
-              className="font-extrabold text-green-700"
+              className="font-black text-green-700"
               style={{ 
                 fontSize: `calc(4rem * ${scale})`,
                 marginBottom: `calc(32px * ${scale})`
@@ -961,7 +961,7 @@ const MakgeolliQuest = () => {
               }}
             >
               <p 
-                className="text-white font-extrabold leading-loose"
+                className="text-white font-black leading-loose"
                 style={{ fontSize: `calc(2.5rem * ${scale})` }}
               >
                 음주운전을 예방한 당신이<br />

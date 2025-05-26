@@ -103,7 +103,7 @@ const ProloguePage = () => {
   const MissionContent = () => (
     <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
       <h1 
-        className="text-green-600 font-extrabold animate-[fadeIn_800ms_ease-out]"
+        className="text-green-600 font-black animate-[fadeIn_800ms_ease-out]"
         style={{ 
           fontSize: `calc(6xl * ${scale})`,
           marginBottom: `${60 * scale}px`
@@ -123,7 +123,7 @@ const ProloguePage = () => {
         }}
       >
         <p 
-          className="text-center text-white font-extrabold"
+          className="text-center text-white font-black"
           style={{
             fontSize: `${3.0 * scale}rem`,
             letterSpacing: `${0.07 * scale}em`
@@ -172,7 +172,7 @@ const ProloguePage = () => {
             >
               <div className="relative">
                 <p 
-                  className="text-black font-extrabold"
+                  className="text-black font-black"
                   style={{
                     fontSize: `${2.1 * scale}rem`,
                     letterSpacing: `${0.07 * scale}em`
@@ -289,7 +289,7 @@ const ProloguePage = () => {
           }}
         >
           <p 
-            className="font-extrabold text-black"
+            className="font-black text-black"
             style={{ fontSize: `${2.6 * scale}rem` }}
           >
             무엇보다 할아버지가 제일 소중해요!<br />

@@ -263,7 +263,7 @@ const PotholeQuest = () => {
               }}
             >
               <h2 
-                className="font-extrabold text-[#0DA429] text-center"
+                className="font-black text-[#0DA429] text-center"
                 style={{ 
                   fontSize: `calc(3.5rem * ${scale})`,
                   marginTop: `calc(-8px * ${scale})`
@@ -272,7 +272,7 @@ const PotholeQuest = () => {
                 구덩이 조심
               </h2>
               <p
-                className="text-black text-center font-extrabold leading-relaxed"
+                className="text-black text-center font-black leading-relaxed"
                 style={{
                   fontSize: `calc(2.2rem * ${scale})`,
                   marginTop: `calc(32px * ${scale})`,
@@ -295,7 +295,7 @@ const PotholeQuest = () => {
               }}
             >
               <button
-                className={`rounded-[20px] font-extrabold text-black transition duration-300 cursor-pointer flex items-center justify-center
+                className={`rounded-[20px] font-black text-black transition duration-300 cursor-pointer flex items-center justify-center
                   ${selectedOption === 'A' ? 
                     'bg-[#0DA429] bg-opacity-90 border-[#0DA429] scale-105' : 
                     'bg-[#FFFAFA] bg-opacity-70 border-[#0DA429] hover:bg-opacity-90'}
@@ -322,7 +322,7 @@ const PotholeQuest = () => {
               </button>
               
               <button
-                className={`rounded-[20px] font-extrabold text-black transition duration-300 cursor-pointer flex items-center justify-center
+                className={`rounded-[20px] font-black text-black transition duration-300 cursor-pointer flex items-center justify-center
                   ${selectedOption === 'B' ? 
                     'bg-[#0DA429] bg-opacity-90 border-[#0DA429] scale-105' : 
                     'bg-[#FFFAFA] bg-opacity-70 border-[#0DA429] hover:bg-opacity-90'}
@@ -464,7 +464,7 @@ const PotholeQuest = () => {
               transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
             >
               <p 
-                className="font-extrabold text-white"
+                className="font-black text-white"
                 style={{ fontSize: `calc(3.5rem * ${scale})` }}
               >
                 휴, 속도를 줄인 덕분에<br />
@@ -561,7 +561,7 @@ const PotholeQuest = () => {
                 transition={{ duration: 0.8 * Math.max(0.8, scale), delay: 0.4 * Math.max(0.8, scale) }}
               >
                 <h2 
-                  className="text-red-600 font-extrabold"
+                  className="text-red-600 font-black"
                   style={{ 
                     fontSize: `calc(4rem * ${scale})`,
                     marginBottom: `calc(16px * ${scale})`
@@ -570,7 +570,7 @@ const PotholeQuest = () => {
                   이륜차가 기우뚱!
                 </h2>
                 <p 
-                  className="font-extrabold text-black"
+                  className="font-black text-black"
                   style={{ fontSize: `calc(2.5rem * ${scale})` }}
                 >
                   구덩이는 도로 위 함정과 같아요.<br />

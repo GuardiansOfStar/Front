@@ -212,7 +212,7 @@ const HarvestQuest = () => {
                 strokeWidth="0px"
               />
               <p 
-                className="font-extrabold text-black leading-snug"
+                className="font-black text-black leading-snug"
                 style={{ 
                   fontSize: `calc(2.5rem * ${scale})`,
                   marginTop: `calc(8px * ${scale})`
@@ -233,7 +233,7 @@ const HarvestQuest = () => {
               }}
             >
               <button
-                className={`rounded-[20px] font-extrabold text-black transition duration-300 cursor-pointer
+                className={`rounded-[20px] font-black text-black transition duration-300 cursor-pointer
                   ${selectedOption === 'A' ? 
                     'bg-[#0DA429] bg-opacity-90 border-[#0DA429] scale-105' : 
                     'bg-[#FFFAFA] bg-opacity-70 border-[#0DA429] hover:bg-opacity-90'}
@@ -255,7 +255,7 @@ const HarvestQuest = () => {
               </button>
               
               <button
-                className={`rounded-[20px] font-extrabold text-black transition duration-300 cursor-pointer
+                className={`rounded-[20px] font-black text-black transition duration-300 cursor-pointer
                   ${selectedOption === 'B' ? 
                     'bg-[#0DA429] bg-opacity-90 border-[#0DA429] scale-105' : 
                     'bg-[#FFFAFA] bg-opacity-70 border-[#0DA429] hover:bg-opacity-90'}
@@ -343,7 +343,7 @@ const HarvestQuest = () => {
         <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
           {/* 중앙 상단에 정답입니다! */}
           <div
-            className="text-[#0E8E12] font-extrabold"
+            className="text-[#0E8E12] font-black"
             style={{
               fontSize: `calc(4.375rem * ${scale})`,
               WebkitTextStroke: `calc(10px * ${scale}) #FFFFFF`,
@@ -368,7 +368,7 @@ const HarvestQuest = () => {
             }}
           >
             <p 
-              className="font-extrabold text-[#FFFAFA]"
+              className="font-black text-[#FFFAFA]"
               style={{ fontSize: `calc(3.4375rem * ${scale})` }}
             >
               당신의 안전과<br/> 소중한 자산을 보호하는 <br/> 현명한 선택이에요
@@ -444,7 +444,7 @@ const HarvestQuest = () => {
                 transition={{ duration: 0.8 * Math.max(0.8, scale), delay: 0.4 }}
               >
                 <h2 
-                  className="font-extrabold text-red-600"
+                  className="font-black text-red-600"
                   style={{ 
                     fontSize: `calc(3.75rem * ${scale})`,
                     marginBottom: `calc(20px * ${scale})`
@@ -453,7 +453,7 @@ const HarvestQuest = () => {
                   덜컹! 넘어졌어요
                 </h2>
                 <p 
-                  className="font-extrabold text-black"
+                  className="font-black text-black"
                   style={{ fontSize: `calc(2.5rem * ${scale})` }}
                 >
                   뿌리에 걸려 낙상할 수 있어요<br />

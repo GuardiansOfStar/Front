@@ -154,7 +154,7 @@ const ScorePage = () => {
           >
             <span 
               className={`
-                text-9xl font-extrabold text-white
+                text-9xl font-black text-white
                 transition-all duration-300
                 ${showScore ? 'transform scale-100' : 'transform scale-75'}
               `}

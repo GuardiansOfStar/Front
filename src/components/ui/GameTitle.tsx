@@ -18,7 +18,7 @@ const GameTitle = ({
   
   return (
     <h2 
-      className={`${isCSSValue ? '' : fontSize} font-extrabold whitespace-nowrap ${className}`}
+      className={`${isCSSValue ? '' : fontSize} font-black whitespace-nowrap ${className}`}
       style={{
         WebkitTextStroke: `${strokeWidth} white`,
         paintOrder: 'stroke',

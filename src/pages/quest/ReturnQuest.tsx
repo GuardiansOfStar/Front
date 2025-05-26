@@ -577,7 +577,7 @@ const ReturnQuest = () => {
                 }}
               >
                 <p 
-                  className="font-extrabold text-black leading-loose"
+                  className="font-black text-black leading-loose"
                   style={{ fontSize: `calc(2.5rem * ${scale})` }}
                 >
                   해가 지기 시작해요<br/>
@@ -624,7 +624,7 @@ const ReturnQuest = () => {
             <button
               onClick={handleStartGame}
               disabled={isDragging || isAnimating}
-              className="bg-green-600 hover:bg-green-700 text-white font-extrabold rounded-xl border-4 border-white disabled:opacity-50 disabled:cursor-not-allowed shadow-lg transition-colors duration-300"
+              className="bg-green-600 hover:bg-green-700 text-white font-black rounded-xl border-4 border-white disabled:opacity-50 disabled:cursor-not-allowed shadow-lg transition-colors duration-300"
               style={{
                 fontSize: `calc(2.5rem * ${scale})`,
                 paddingTop: `calc(16px * ${scale})`,
@@ -798,7 +798,7 @@ const ReturnQuest = () => {
               transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
             >
               <p 
-                className="font-extrabold text-white leading-relaxed"
+                className="font-black text-white leading-relaxed"
                 style={{ fontSize: `calc(3rem * ${scale})` }}
               >
                 해가 지기 전이<br/>
@@ -919,7 +919,7 @@ const ReturnQuest = () => {
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
                 <h2
-                  className="text-red-600 font-extrabold"
+                  className="text-red-600 font-black"
                   style={{ 
                     fontSize: `calc(4rem * ${scale})`,
                     marginBottom: `calc(16px * ${scale})`
@@ -928,7 +928,7 @@ const ReturnQuest = () => {
                   야생 동물과 부딪혀요!
                 </h2>
                 <p 
-                  className="font-extrabold text-black"
+                  className="font-black text-black"
                   style={{ fontSize: `calc(2.5rem * ${scale})` }}
                 >
                   야간 주행 시 시야 확보가 어려워요<br/>

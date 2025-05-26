@@ -26,7 +26,7 @@ const DevelopmentNotice = () => {
           }}
         >
           <h1 
-            className="font-extrabold text-green-700"
+            className="font-black text-green-700"
             style={{ 
               fontSize: `calc(4xl * ${scale})`,
               marginBottom: `calc(24px * ${scale})`

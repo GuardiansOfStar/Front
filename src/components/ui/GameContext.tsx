@@ -15,7 +15,7 @@ const GameContext = ({
   className = ''
 }: GameTitleProps) => {
   return (
-    <h2 className={`${fontSize} font-extrabold whitespace-nowrap ${className}`}>
+    <h2 className={`${fontSize} font-black whitespace-nowrap ${className}`}>
       {text.split('').map((ch, i) => (
         ch === ' ' ? ' ' :
         <span 

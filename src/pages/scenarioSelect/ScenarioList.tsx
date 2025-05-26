@@ -99,7 +99,7 @@ const ScenarioList = () => {
                 }}
             >
                 <h1 
-                    className="font-extrabold text-white text-center"
+                    className="font-black text-white text-center"
                     style={{ fontSize: `${2.7 * scale}rem` }}
                 >
                     원하는 안전 교육 게임을 선택하세요
@@ -209,7 +209,7 @@ const ScenarioList = () => {
                 
                 {/* subtitle 박스 - 선택된 시나리오에 맞춰 스케일 동기화 */}
                 <div 
-                    className="rounded-lg text-center overflow-hidden pointer-events-none text-white font-extrabold whitespace-nowrap transition-all duration-300"
+                    className="rounded-lg text-center overflow-hidden pointer-events-none text-white font-black whitespace-nowrap transition-all duration-300"
                     style={{ 
                         width: `${SCENARIO_WIDTH + 68 * scale}px`,
                         backgroundColor: allScenarios[selectedScenarioIndex].locked ? '#718096' : '#0DA429',

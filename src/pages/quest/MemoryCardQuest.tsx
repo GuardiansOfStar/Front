@@ -587,7 +587,7 @@ const MemoryCardQuest: React.FC = () => {
             }}
           >
             <p 
-              className="font-extrabold text-black"
+              className="font-black text-black"
               style={{ fontSize: `calc(2.7rem * ${scale})` }}
             >
               할아버지,<br />
@@ -613,7 +613,7 @@ const MemoryCardQuest: React.FC = () => {
             transition={{ duration: 0.8 * Math.max(0.8, scale) }}
           >
             <h2 
-              className="font-extrabold text-center text-green-600"
+              className="font-black text-center text-green-600"
               style={{ 
                 fontSize: `calc(3rem * ${scale})`,
                 marginBottom: `calc(32px * ${scale})`
@@ -639,7 +639,7 @@ const MemoryCardQuest: React.FC = () => {
               }}
             >
               <p 
-                className="font-extrabold text-black"
+                className="font-black text-black"
                 style={{ 
                   fontSize: `calc(2.5rem * ${scale})`,
                   marginBottom: `calc(48px * ${scale})`
@@ -648,7 +648,7 @@ const MemoryCardQuest: React.FC = () => {
                 선물은 과연 무엇일까요?<br />같은 그림의 카드 두 개를 찾아주세요!
               </p>
               <p 
-                className="font-extrabold text-green-600"
+                className="font-black text-green-600"
                 style={{ fontSize: `calc(2.5rem * ${scale})` }}
               >
                 힌트: 이 선물은 머리를 보호해줘요
@@ -804,7 +804,7 @@ const MemoryCardQuest: React.FC = () => {
             }}
           >
             <p 
-              className="font-extrabold text-green-600 whitespace-pre-line"
+              className="font-black text-green-600 whitespace-pre-line"
               style={{ fontSize: `${2.2 * scale}rem` }}
             >
               {feedbackMessage}
@@ -825,7 +825,7 @@ const MemoryCardQuest: React.FC = () => {
             }}
           >
             <p 
-              className="font-extrabold text-green-600 whitespace-pre-line"
+              className="font-black text-green-600 whitespace-pre-line"
               style={{ fontSize: `${2.2 * scale}rem` }}
             >
               {feedbackMessage}
@@ -846,7 +846,7 @@ const MemoryCardQuest: React.FC = () => {
             }}
           >
             <p 
-              className="font-extrabold text-green-600 whitespace-pre-line"
+              className="font-black text-green-600 whitespace-pre-line"
               style={{ fontSize: `${2.2 * scale}rem` }}
             >
               {feedbackMessage}
@@ -867,7 +867,7 @@ const MemoryCardQuest: React.FC = () => {
             }}
           >
             <p 
-              className="font-extrabold text-white"
+              className="font-black text-white"
               style={{ fontSize: `calc(3rem * ${scale})` }}
             >
               남은 시도 횟수: {5 - attempts}
@@ -920,7 +920,7 @@ const MemoryCardQuest: React.FC = () => {
               transition={{ duration: 0.8 * Math.max(0.8, scale) }}
             >
               <motion.p 
-                className="font-extrabold text-green-600"
+                className="font-black text-green-600"
                 style={{
                   fontSize: `calc(2.4rem * ${scale})`,
                   marginBottom: `calc(24px * ${scale})`
@@ -932,7 +932,7 @@ const MemoryCardQuest: React.FC = () => {
                 선물을 공개합니다
               </motion.p>
               <motion.p 
-                className="font-extrabold text-black"
+                className="font-black text-black"
                 style={{ fontSize: `calc(2.4rem * ${scale})` }}
                 initial={{ y: `calc(20px * ${scale})`, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -957,7 +957,8 @@ const MemoryCardQuest: React.FC = () => {
             className="relative z-10 flex flex-col items-center"
             style={{
               width: '80%',
-              maxWidth: `calc(1024px * ${scale})`
+              maxWidth: `calc(1024px * ${scale})`,
+              marginTop: `calc(-100px * ${scale})` // 이 값을 더 음수로 변경
             }}
             initial={{ y: `calc(-30px * ${scale})`, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -988,7 +989,7 @@ const MemoryCardQuest: React.FC = () => {
               transition={{ duration: 0.8 * Math.max(0.8, scale) }}
             >
               <motion.p 
-                className="font-extrabold text-green-600"
+                className="font-black text-green-600"
                 style={{
                   fontSize: `calc(2.4rem * ${scale})`,
                   marginBottom: `calc(24px * ${scale})`
@@ -1000,7 +1001,7 @@ const MemoryCardQuest: React.FC = () => {
                 선물을 찾았어요!
               </motion.p>
               <motion.p 
-                className="font-extrabold text-black"
+                className="font-black text-black"
                 style={{ fontSize: `calc(2.4rem * ${scale})` }}
                 initial={{ y: `calc(20px * ${scale})`, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
