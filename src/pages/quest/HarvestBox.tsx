@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
+import { useScale } from '../../hooks/useScale';
 
 const NUM_BOXES = 4;
 
 const HarvestBox = () => {
     const [visibleBoxes, setVisibleBoxes] = useState<boolean[]>(Array(NUM_BOXES).fill(false));
+    const scale = useScale();
 
-    // 사과박스의 위치와 크기 지정
+    // 사과박스의 위치와 크기 지정 - 스케일 적용
     const boxData = [
         { top: '55%', left: '20%', width: '50%' },
         { top: '65%', left: '45%', width: '45%' },
@@ -15,36 +17,37 @@ const HarvestBox = () => {
 
     useEffect(() => {
         const timers = boxData.map((_, i) =>
-        setTimeout(() => {
-            setVisibleBoxes((prev) => {
-            const updated = [...prev];
-            updated[i] = true;
-            return updated;
-            });
-        }, i * 500)
+            setTimeout(() => {
+                setVisibleBoxes((prev) => {
+                    const updated = [...prev];
+                    updated[i] = true;
+                    return updated;
+                });
+            }, i * 500 * Math.max(0.8, scale)) // 애니메이션 간격도 스케일 적용
         );
 
         return () => timers.forEach(clearTimeout);
-    }, []);
+    }, [scale]); // scale을 dependency에 추가
 
     return (
         <div className="w-full h-full">
-        {boxData.map((box, index) => (
-            <img
-            key={index}
-            src='/assets/images/apple_box.png'
-            alt={`사과박스-${index}`}
-            className={`absolute transition-all duration-500 ease-out
-                ${visibleBoxes[index] ? 'opacity-100 scale-100' : 'opacity-0 scale-0'}`}
-            style={{
-                top: box.top,
-                left: box.left,
-                width: box.width,
-                transform: 'translate(-50%, -50%)',
-                zIndex: 10,
-            }}
-            />
-        ))}
+            {boxData.map((box, index) => (
+                <img
+                    key={index}
+                    src='/assets/images/apple_box.png'
+                    alt={`사과박스-${index}`}
+                    className={`absolute transition-all ease-out
+                        ${visibleBoxes[index] ? 'opacity-100 scale-100' : 'opacity-0 scale-0'}`}
+                    style={{
+                        top: box.top,
+                        left: box.left,
+                        width: `calc(${box.width} * ${scale})`, // 너비에 스케일 적용
+                        transform: 'translate(-50%, -50%)',
+                        transitionDuration: `${500 * Math.max(0.8, scale)}ms`, // 애니메이션 지속시간 스케일 적용
+                        zIndex: 10,
+                    }}
+                />
+            ))}
         </div>
     );
 };

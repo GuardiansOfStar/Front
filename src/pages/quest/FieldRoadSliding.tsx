@@ -1,52 +1,88 @@
-// src/pages/quest/FieldRoadSliding.tsx
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { useScale } from '../../hooks/useScale';
+import GameTitle from '../../components/ui/GameTitle';
 
-// 필드로 가는 배경 이미지 사용
-const background = '/assets/images/orchard_driving_road.png';
+const fieldRoad = '/assets/images/orchard_driving_road.png';
 const motorcycle = '/assets/images/motorcycle.png';
 
-const FieldRoadSliding = () => {
+const FieldRoadSliding = ({ onComplete }: { onComplete?: () => void }) => {
     const [startAnimation, setStartAnimation] = useState(false);
+    const [showTitle, setShowTitle] = useState(false);
+    const [showStartText, setShowStartText] = useState(true);
+    const scale = useScale();
 
     useEffect(() => {
-        // 약간의 지연 후 애니메이션 시작 (더 자연스러운 효과를 위해)
-        const timer = setTimeout(() => {
+        // 1초 후 애니메이션 시작
+        const animationTimer = setTimeout(() => {
             setStartAnimation(true);
-        }, 500); // 지연시간 300ms에서 500ms로 늘림
-        
-        return () => clearTimeout(timer);
-    }, []);
+        }, 1000 * Math.max(0.8, scale));
+    
+        return () => {
+            clearTimeout(animationTimer);
+        };
+    }, [scale]);
+
+    useEffect(() => {
+        if (startAnimation) {
+            const completeTimer = setTimeout(() => {
+                onComplete?.();
+            }, 5000 * Math.max(0.8, scale)); // 애니메이션 시간과 동일
+            
+            return () => clearTimeout(completeTimer);
+        }
+    }, [startAnimation, scale, onComplete]);
 
     return (
-        <div className="w-full h-full relative overflow-hidden">
-            {/* 배경 이미지 애니메이션 컨테이너 */}
-            <div
-                className="absolute inset-0 w-full"
-                style={{
-                    height: '200%', // 이미지 높이를 화면의 2배로 설정하여 스크롤 효과를 위한 여유 공간 확보
-                    transition: 'transform 7000ms cubic-bezier(0.22, 1, 0.36, 1)', // 5000ms에서 7000ms로 늘려 속도 감소
-                    transform: startAnimation ? 'translateY(0%)' : 'translateY(-25%)', // 방향 전환: 위에서 아래로
-                    willChange: 'transform'
-                }}
-            >
-                <img
-                    src={background}
-                    alt="논밭으로 주행 중"
-                    className="w-full h-full object-cover"
-                    style={{ objectPosition: 'center top' }} // 이미지 상단부터 표시되도록 변경
-                />
+        <div className="w-full h-full">
+            {/* 배경 도로 이미지 - 동적 스크롤 효과 */}
+            <div className="absolute inset-0">
+                <div
+                    className="transition-transform"
+                    style={{
+                        transform: startAnimation ? 'translateY(-20%)' : 'translateY(-40%)',
+                        transitionDuration: `${5000 * Math.max(0.8, scale)}ms`,
+                        transitionTimingFunction: 'cubic-bezier(0.4, 0.0, 0.6, 1.0)', // 부드러운 커브
+                        maxWidth: '100%',
+                        willChange: 'transform',
+                    }}
+                >
+                    <img
+                        src={fieldRoad}
+                        alt="과수원 가는 길"
+                        className="w-full h-auto object-contain"
+                        style={{
+                            minHeight: `calc(120vh * ${scale})`,
+                            objectPosition: 'center bottom'
+                        }}
+                    />
+                </div>
             </div>
             
-            {/* 오토바이 이미지 */}
-            <div className="absolute bottom-0 w-full flex justify-center z-10">
+            {/* 제목 표시 - 스케일 적용 */}
+            {showTitle && !showStartText && (
+                <motion.div 
+                    className="absolute left-1/2 transform -translate-x-1/2 z-20"
+                    style={{ 
+                        top: `calc(20% * ${scale})`
+                    }}
+                    initial={{ opacity: 0, y: `calc(-20px * ${scale})` }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8 * Math.max(0.8, scale) }}
+                >
+                </motion.div>
+            )}
+            
+            {/* 오토바이 이미지 - PotholeQuest와 동일한 스타일 적용 */}
+            <div className="absolute bottom-0 w-full flex justify-center">
                 <img 
                     src={motorcycle} 
                     alt="이륜차" 
+                    className="object-contain object-bottom"
                     style={{
-                        width: '80%',
-                        maxHeight: '60vh',
-                        objectFit: 'contain',
-                        objectPosition: 'bottom'
+                        width: `calc(100% * ${scale})`,
+                        maxHeight: `calc(70vh * ${scale})`,
+                        zIndex: 10
                     }}
                 />
             </div>

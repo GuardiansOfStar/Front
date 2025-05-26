@@ -38,11 +38,33 @@ module.exports = {
         },
       },
       fontSize: {
-        // 고령층 사용자를 위한 큰 폰트 사이즈
+        // 고령층 사용자를 위한 큰 폰트 사이즈 (기존)
         '2xl': '1.75rem',   // 28px
         '3xl': '2rem',      // 32px
         '4xl': '2.5rem',    // 40px
         '5xl': '3rem',      // 48px
+        // 반응형 폰트 사이즈 추가
+        'responsive-sm': ['calc(0.875rem * var(--scale, 1))', { lineHeight: 'calc(1.25rem * var(--scale, 1))' }],
+        'responsive-base': ['calc(1rem * var(--scale, 1))', { lineHeight: 'calc(1.5rem * var(--scale, 1))' }],
+        'responsive-lg': ['calc(1.125rem * var(--scale, 1))', { lineHeight: 'calc(1.75rem * var(--scale, 1))' }],
+        'responsive-xl': ['calc(1.25rem * var(--scale, 1))', { lineHeight: 'calc(1.75rem * var(--scale, 1))' }],
+        'responsive-2xl': ['calc(1.5rem * var(--scale, 1))', { lineHeight: 'calc(2rem * var(--scale, 1))' }],
+        'responsive-3xl': ['calc(1.875rem * var(--scale, 1))', { lineHeight: 'calc(2.25rem * var(--scale, 1))' }],
+        'responsive-4xl': ['calc(2.25rem * var(--scale, 1))', { lineHeight: 'calc(2.5rem * var(--scale, 1))' }],
+        'responsive-5xl': ['calc(3rem * var(--scale, 1))', { lineHeight: '1' }],
+        'responsive-6xl': ['calc(3.75rem * var(--scale, 1))', { lineHeight: '1' }],
+        'responsive-7xl': ['calc(4.5rem * var(--scale, 1))', { lineHeight: '1' }],
+        'responsive-8xl': ['calc(6rem * var(--scale, 1))', { lineHeight: '1' }],
+        'responsive-9xl': ['calc(8rem * var(--scale, 1))', { lineHeight: '1' }],
+      },
+      spacing: {
+        // 반응형 spacing
+        'responsive-xs': 'calc(0.5rem * var(--scale, 1))',
+        'responsive-sm': 'calc(1rem * var(--scale, 1))',
+        'responsive-md': 'calc(1.5rem * var(--scale, 1))',
+        'responsive-lg': 'calc(2rem * var(--scale, 1))',
+        'responsive-xl': 'calc(3rem * var(--scale, 1))',
+        'responsive-2xl': 'calc(4rem * var(--scale, 1))',
       },
       borderRadius: {
         // 부드러운 모서리
@@ -55,8 +77,6 @@ module.exports = {
       },
       animation: {
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-      },
-      animation: {
         'shake': 'shake 0.5s ease-in-out',
         'bounce': 'bounce 1s infinite',
         'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
@@ -69,19 +89,19 @@ module.exports = {
           '75%': { transform: 'translateX(-5px)' },
         },
       },
+      // 고령층 사용자를 위한 기본 설정
+      fontFamily: {
+        sans: ['Pretendard',
+               '-apple-system',
+               'BlinkMacSystemFont',
+               'system-ui',
+               'Roboto',
+               'Helvetica Neue',
+               'Arial',
+               'sans-serif'
+              ],
+        },
     },
-    // 고령층 사용자를 위한 기본 설정
-    fontFamily: {
-      sans: ['Pretendard',
-             '-apple-system',
-             'BlinkMacSystemFont',
-             'system-ui',
-             'Roboto',
-             'Helvetica Neue',
-             'Arial',
-             'sans-serif'
-            ],
-      },
   },
   plugins: [],
 }

@@ -1,67 +1,113 @@
+import { useNavigate } from 'react-router-dom';
+import { useScale } from '../../hooks/useScale';
 import Background from '../../components/ui/Background';
 import NextButton from './NextButton';
-import { useNavigate } from 'react-router-dom';
 
 const PersonalInfo = () => {
   const navigate = useNavigate();
+  const scale = useScale();
 
   return (
-    <div
-      className="absolute w-full h-full"
-    >
-      <div className="absolute inset-0 bg-[#FFF9C4]/70 z-20" />
+    <div className="relative w-full h-screen overflow-hidden flex flex-col items-center justify-center">
       <Background />
-      <img
-        src="/assets/images/back_button.png"
-        alt="뒤로가기 버튼"
-        onClick={() => navigate('/certificate')}
-        className="absolute top-[3%] left-[3%] w-[110px] h-auto z-50 cursor-pointer hover:scale-90 transition-transform duration-300"
-      />
 
-      <div className="absolute top-[19%] left-1/2 transform -translate-x-1/2 
-        w-[740px] h-[125px] 
-        bg-[#0DA429] bg-opacity-90
-        border-[10px] border-[#0E8E12] border-opacity-80 
-        rounded-[40px] 
-        p-6 z-50 flex items-center justify-center 
-        text-[55px] text-[#FFFAFA] font-extrabold">
+      <div 
+        className="bg-green-600 text-white text-center font-bold z-50"
+        style={{
+          width: `calc(65% * ${scale})`,
+          borderWidth: `calc(4px * ${scale})`,
+          borderColor: '#15803d', // green-700
+          borderStyle: 'solid',
+          borderRadius: `calc(12px * ${scale})`,
+          padding: `calc(16px * ${scale})`,
+          fontSize: `calc(3xl * ${scale})`,
+          marginBottom: `calc(24px * ${scale})`
+        }}
+      >
         아래의 내용을 입력해주세요
       </div>
 
-      <div className="absolute top-[37%] left-1/2 transform -translate-x-1/2
-        flex items-center justify-center w-[70%] h-[45%]
-        bg-[#0DA429] bg-opacity-60 
-        border-[10px] border-[#0E8E12] border-opacity-80 
-        rounded-[25px] 
-        p-6 z-50 
-        text-[50px]  text-[#FFFAFA] font-extrabold">
-        <div className="flex flex-col gap-6">
+      <div 
+        className="bg-green-500 z-50"
+        style={{
+          width: `calc(70% * ${scale})`,
+          borderWidth: `calc(4px * ${scale})`,
+          borderColor: '#15803d', // green-700
+          borderStyle: 'solid',
+          borderRadius: `calc(8px * ${scale})`,
+          padding: `calc(24px * ${scale})`
+        }}
+      >
+        <div 
+          className="flex flex-col"
+          style={{ gap: `calc(24px * ${scale})` }}
+        >
           <div className="flex items-center justify-between">
-            <label className="text-white font-bold w-1/3 text-left pe-1">이름</label>
+            <label 
+              className="text-white font-bold w-1/3 text-left"
+              style={{ fontSize: `calc(2xl * ${scale})` }}
+            >
+              이름
+            </label>
             <input
               type="text"
-              className="w-[350px] h-[61px] bg-[#FFFAFA] rounded-[10px] px-3 text-gray-800"
+              className="w-2/3 bg-white rounded-md px-3 text-gray-800"
+              style={{
+                height: `calc(40px * ${scale})`,
+                borderRadius: `calc(6px * ${scale})`,
+                paddingLeft: `calc(12px * ${scale})`,
+                paddingRight: `calc(12px * ${scale})`,
+                fontSize: `calc(1rem * ${scale})`
+              }}
+              placeholder="이름을 입력하세요"
             />
           </div>
 
           <div className="flex items-center justify-between">
-            <label className="text-white font-bold w-1/3 text-left">나이</label>
+            <label 
+              className="text-white font-bold w-1/3 text-left"
+              style={{ fontSize: `calc(2xl * ${scale})` }}
+            >
+              나이
+            </label>
             <input
               type="text"
-              className="w-[350px] h-[61px] bg-[#FFFAFA] rounded-[10px] px-3 text-gray-800"
+              className="w-2/3 bg-white rounded-md px-3 text-gray-800"
+              style={{
+                height: `calc(40px * ${scale})`,
+                borderRadius: `calc(6px * ${scale})`,
+                paddingLeft: `calc(12px * ${scale})`,
+                paddingRight: `calc(12px * ${scale})`,
+                fontSize: `calc(1rem * ${scale})`
+              }}
+              placeholder="나이를 입력하세요"
             />
           </div>
 
           <div className="flex items-center justify-between">
-            <label className="text-white font-bold w-1/3 text-left mr-5">연락처</label>
+            <label 
+              className="text-white font-bold w-1/3 text-left"
+              style={{ fontSize: `calc(2xl * ${scale})` }}
+            >
+              연락처
+            </label>
             <input
               type="text"
-              className="w-[350px] h-[61px] bg-[#FFFAFA] rounded-[10px] px-3 text-gray-800"
+              className="w-2/3 bg-white rounded-md px-3 text-gray-800"
+              style={{
+                height: `calc(40px * ${scale})`,
+                borderRadius: `calc(6px * ${scale})`,
+                paddingLeft: `calc(12px * ${scale})`,
+                paddingRight: `calc(12px * ${scale})`,
+                fontSize: `calc(1rem * ${scale})`
+              }}
+              placeholder="연락처를 입력하세요"
             />
           </div>
         </div>
       </div>
-      <NextButton to= '/memory' />
+      
+      <NextButton/>
     </div>
   );
 };

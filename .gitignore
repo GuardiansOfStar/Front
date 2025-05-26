@@ -27,3 +27,6 @@ dist-ssr
 
 # dotenv environment variables file
 .env
+
+# vs code workspace 설정 추적 금지
+*.vscode

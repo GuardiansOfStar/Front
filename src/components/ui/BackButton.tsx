@@ -1,3 +1,5 @@
+import { useScale } from '../../hooks/useScale';
+
 const back_button = '/assets/images/back_button.png'
 
 interface BackButtonProps {
@@ -5,6 +7,8 @@ interface BackButtonProps {
 }
 
 const BackButton = ({ onClick }: BackButtonProps) => {
+    const scale = useScale();
+
     const handleBack = () => {
         if (onClick) {
             onClick();
@@ -15,10 +19,16 @@ const BackButton = ({ onClick }: BackButtonProps) => {
 
     return (
         <img 
-        src={back_button} 
-        alt="뒤로가기"
-        onClick={handleBack}
-        className="absolute top-4 left-4 w-[100px] h-auto cursor-pointer z-50 active:scale-90 transition-transform duration-150"
+            src={back_button} 
+            alt="뒤로가기"
+            onClick={handleBack}
+            className="absolute cursor-pointer z-50 active:scale-90 transition-transform duration-150"
+            style={{
+                top: `calc(16px * ${scale})`,
+                left: `calc(16px * ${scale})`,
+                width: `calc(100px * ${scale})`,
+                height: 'auto'
+            }}
         />
     );
 };

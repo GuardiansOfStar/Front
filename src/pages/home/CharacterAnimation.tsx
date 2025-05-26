@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { useScale } from '../../hooks/useScale';
+
 const star_character = '/assets/images/star_character.png'
 
 interface CharacterAnimationProps {
@@ -7,6 +9,7 @@ interface CharacterAnimationProps {
 
 const CharacterAnimation = ({ onAnimationComplete }: CharacterAnimationProps) => {
     const [animationCompleted, setAnimationCompleted] = useState(false);
+    const scale = useScale();
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -21,17 +24,20 @@ const CharacterAnimation = ({ onAnimationComplete }: CharacterAnimationProps) =>
 
     return (
         <img
-        src={star_character}
-        alt="캐릭터"
-        className="absolute w-[18%] h-auto z-20"
-        style={{
-            // 초기 위치: 좌측 중앙
-            // 종료 위치: 시작하기 버튼 오른쪽 하단
-            top: animationCompleted ? '65%' : '50%', 
-            left: animationCompleted ? '65%' : '10%',
-            transform: 'translate(0, 0)', // 별도 transform 제거
-            transition: 'all 2s ease-out'
-        }}
+            src={star_character}
+            alt="캐릭터"
+            className="absolute z-20"
+            style={{
+                // 해상도 대응 크기
+                width: `calc(18% * ${scale})`,
+                height: 'auto',
+                // 해상도 대응 위치
+                top: animationCompleted ? `calc(65% * ${scale})` : `calc(50% * ${scale})`, 
+                left: animationCompleted ? `calc(65% * ${scale})` : `calc(10% * ${scale})`,
+                transform: 'translate(0, 0)',
+                // 애니메이션 지속시간도 스케일에 따라 조정 가능 (선택사항)
+                transition: `all ${2000 * Math.max(0.8, scale)}ms ease-out`
+            }}
         />
     );
 };
