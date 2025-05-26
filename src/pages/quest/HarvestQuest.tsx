@@ -226,7 +226,7 @@ const HarvestQuest = () => {
               color="text-[#0DA429]" 
               strokeWidth="0px"
               />
-              <p className="mt-2 text-[40px] font-extrabold text-black leading-snug">
+              <p className="mt-2 text-[40px] font-black text-black leading-snug">
                 작업하는 중에 수확한 농작물을<br/>
                 <span className="text-[#B91C1C]">이륜차에 싣고 싶어요</span><br/>
                 어떻게 옮길까요?
