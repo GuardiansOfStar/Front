@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWindowSize } from 'react-use';
+import { useScale } from '../../hooks/useScale';
 import Confetti from 'react-confetti';
 import DancingStar from './DancingStar';
 
@@ -11,6 +12,7 @@ const motorcycle = '/assets/images/motorcycle.png';
 const SuccessBackground = () => {
     const navigate = useNavigate();
     const { width, height } = useWindowSize();
+    const scale = useScale();
     const [showConfetti] = useState(true);
     const [startAnimation, setStartAnimation] = useState(false);
     const [showDancingStar, setShowDancingStar] = useState(false);
@@ -20,30 +22,31 @@ const SuccessBackground = () => {
         // 애니메이션 시작
         setStartAnimation(true);
 
-        // 4초 뒤 댄싱스타 등장 및 오토바이 페이드아웃
+        // 4초 뒤 댄싱스타 등장 및 오토바이 페이드아웃 (스케일에 따라 시간 조정)
         const transitionTimer = setTimeout(() => {
             setShowDancingStar(true);
             setHideMotorcycle(true);
-        }, 7400);
+        }, 7400 * Math.max(0.8, scale));
         
-        // 8초 후 결과 화면으로 자동 이동
+        // 8초 후 결과 화면으로 자동 이동 (스케일에 따라 시간 조정)
         const navigationTimer = setTimeout(() => {
             navigate('/result');
-        }, 15000);
+        }, 15000 * Math.max(0.8, scale));
 
         return () => {
             clearTimeout(transitionTimer);
             clearTimeout(navigationTimer);
         };
-    }, [navigate]);
+    }, [navigate, scale]);
 
     return (
         <div className="relative w-full h-full overflow-hidden">
             {/* 배경 이미지 애니메이션 컨테이너 - 수정됨 */}
             <div
-                className="transition-transform duration-[7500ms] ease-out w-full h-full"
+                className="transition-transform ease-out w-full h-full"
                 style={{
-                transform: startAnimation ? 'translateY(-6%)' : 'translateY(-35%)',
+                    transform: startAnimation ? 'translateY(-6%)' : 'translateY(-35%)',
+                    transitionDuration: `${7500 * Math.max(0.8, scale)}ms` // 애니메이션 지속시간 스케일 적용
                 }}
             >
                 <img
@@ -57,9 +60,12 @@ const SuccessBackground = () => {
             <img 
                 src={motorcycle} 
                 alt="이륜차" 
-                className={`absolute bottom-0 left-1/2 transform -translate-x-1/2
-                w-[75%] max-h-[60%] mx-auto object-contain  transition-opacity duration-1000 ${hideMotorcycle ? 'opacity-0' : 'opacity-100'}
-                z-50`}
+                className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 mx-auto object-contain transition-opacity duration-1000 z-50
+                    ${hideMotorcycle ? 'opacity-0' : 'opacity-100'}`}
+                style={{
+                    width: `calc(75% * ${scale})`,
+                    maxHeight: `calc(60% * ${scale})`
+                }}
             />
             
             {/* 컨페티 이펙트 */}
@@ -67,8 +73,8 @@ const SuccessBackground = () => {
                 <Confetti
                     width={width}
                     height={height}
-                    numberOfPieces={600}
-                    gravity={0.1}
+                    numberOfPieces={600 * Math.min(1.5, scale)} // 스케일에 따라 컨페티 수량 조정
+                    gravity={0.1 * scale} // 중력도 스케일 적용
                     recycle={true}
                 />
             )}

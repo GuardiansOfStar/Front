@@ -1,10 +1,9 @@
-//import { useEffect, useState } from 'react';
+import { useScale } from '../../hooks/useScale';
 
 const HarvestBox2 = () => {
-    // 애니메이션 없이 고정된 상태로 모든 박스를 보이게 함
-    //const visibleBoxes = Array(NUM_BOXES).fill(true);
+    const scale = useScale();
 
-    // 사과박스의 위치와 크기 지정
+    // 사과박스의 위치와 크기 지정 - 스케일 적용
     const boxData = [
         { top: '55%', left: '20%', width: '50%' },
         { top: '65%', left: '45%', width: '45%' },
@@ -23,7 +22,7 @@ const HarvestBox2 = () => {
                     style={{
                         top: box.top,
                         left: box.left,
-                        width: box.width,
+                        width: `calc(${box.width} * ${scale})`, // 너비에 스케일 적용
                         transform: 'translate(-50%, -50%)',
                         zIndex: 10,
                         opacity: 1, // 명시적으로

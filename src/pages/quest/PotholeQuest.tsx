@@ -1,30 +1,28 @@
-// src/pages/quest/PotholeQuest.tsx
+// Front/src/pages/quest/PotholeQuest.tsx
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion'; // framer-motion 추가
-import RoadGameComponent from '../../components/game/RoadGameComponent';
+import { motion } from 'framer-motion';
 import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attempts';
+import { useScale } from '../../hooks/useScale';
+import GameTitle from '../../components/ui/GameTitle';
 
-// 이미지 임포트 (기존과 동일)
-const basicRoad = '/assets/images/basic_road.png';
-const roadWithPotholes = '/assets/images/road_with_small_pothole.png';
+// 이미지 임포트
+const drivingRoad = '/assets/images/driving_road.png';
 const motorcycle = '/assets/images/motorcycle.png';
+const smallPothole = '/assets/images/small_pothole.png';
 const potholeAccident = '/assets/images/grandfather_pothole_accident.png';
-const accidentTurnoff = '/assets/images/accident_turnoff_gfa.png';
 const dangerWarning = '/assets/images/danger_warning.png';
 const successCircle = '/assets/images/success_circle.png';
-const homeButton = '/assets/images/home_button.png';
 const starCharacter = '/assets/images/star_character.png';
+const confirmButton = '/assets/images/confirm_button.png';
 
-// 게임 단계 정의 (기존과 동일)
+// 게임 단계 정의
 type GamePhase = 
-  | 'driving'       // 오토바이 주행 (Phaser 게임)
-  | 'potholeAlert'  // 포트홀 발견
+  | 'driving'       // 동적 주행 화면
   | 'selection'     // 선택지 제공
   | 'successResult' // 정답 선택 결과
   | 'fadeOut'       // 오답 페이드아웃
   | 'failResult'    // 오답 선택 결과
-  | 'score';        // 점수 화면
 
 const PotholeQuest = () => {
   const navigate = useNavigate();
@@ -34,14 +32,18 @@ const PotholeQuest = () => {
   const [gamePhase, setGamePhase] = useState<GamePhase>('driving');
   const [selectedOption, setSelectedOption] = useState<'A' | 'B' | null>(null);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  const [fallbackImage, setFallbackImage] = useState(false);
-  
-  // 추가: 경고 메시지 표시 여부
   const [showWarning, setShowWarning] = useState(false);
+  const [showStartText, setShowStartText] = useState(true);
+  const [startAnimation, setStartAnimation] = useState(false);
+  const [hideSuccessImages, setHideSuccessImages] = useState(false);
 
-  // URL 쿼리 파라미터에서 시나리오 ID와 퀘스트 ID 가져오기
+  const scale = useScale();
+
+  const scaledClickAreaPadding = 20 * scale;
+  const scaledHoverScale = 1.05 + (0.02 * scale); // 스케일에 따른 호버 효과 조정
+
+  // URL 쿼리 파라미터 처리
   useEffect(() => {
-    // 기존 코드 유지
     const searchParams = new URLSearchParams(location.search);
     const sId = searchParams.get('scenario');
     const qId = searchParams.get('quest');
@@ -49,38 +51,60 @@ const PotholeQuest = () => {
     setQuestId(qId || '2');
   }, [location]);
 
-  // 새로 추가: failResult 단계에서 시간차를 두고 경고 메시지 표시
+  // 주행 단계 타이밍 제어
+  useEffect(() => {
+    if (gamePhase === 'driving') {
+      // 1초 후 애니메이션 시작
+      const animationTimer = setTimeout(() => {
+        setStartAnimation(true);
+      }, 3000 * Math.max(0.8, scale));
+
+      // 3초 후 "주행 시작" 텍스트 숨김
+      const hideTextTimer = setTimeout(() => {
+        setShowStartText(false);
+      }, 3000 * Math.max(0.8, scale));
+
+      // 7초 후 (스크롤 애니메이션이 포트홀 위치에 도달한 후) 선택지 화면으로 전환
+      const transitionTimer = setTimeout(() => {
+        setGamePhase('selection');
+      }, 8000 * Math.max(0.8, scale));
+
+      return () => {
+        clearTimeout(animationTimer);
+        clearTimeout(hideTextTimer);
+        clearTimeout(transitionTimer);
+      };
+    }
+  }, [gamePhase, scale]);
+
+  // failResult 단계에서 경고 메시지 표시
   useEffect(() => {
     if (gamePhase === 'failResult') {
       const timer = setTimeout(() => {
         setShowWarning(true);
-      }, 2000); // 2초 후 경고 메시지 표시
+      }, 2000 * Math.max(0.8, scale));
 
-      return () => clearTimeout(timer); // 클린업
+      return () => clearTimeout(timer);
     } else {
-      setShowWarning(false); // 다시 숨기기
+      setShowWarning(false);
     }
-  }, [gamePhase]);
+  }, [gamePhase, scale]);
 
-  // 포트홀 충돌 핸들러 (기존과 동일)
-  const handlePotholeCollision = () => {
-    // 기존 코드 유지
-    console.log('PotholeQuest: 포트홀 충돌 핸들러 호출됨');
-    
-    if (gamePhase !== 'driving') {
-      console.log('이미 다른 단계로 전환됨, 무시합니다:', gamePhase);
-      return;
+  const handleConfirmClick = () => {
+    if (gamePhase === 'successResult' && showSuccessMessage) {
+      // 성공 메시지에서 확인 버튼 클릭 시
+      navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=20&correct=true`);
+    } else if (gamePhase === 'failResult' && showWarning) {
+      // 실패 메시지에서 확인 버튼 클릭 시
+      navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=10&correct=false`);
     }
-    
-    setGamePhase('selection');
-    console.log('포트홀 충돌 감지: 선택지 화면으로 전환됨');
   };
-  
-  // 선택지 선택 핸들러 (기존과 동일)
+
+  // 선택지 선택 핸들러
   const handleOptionSelect = (option: 'A' | 'B') => {
     setSelectedOption(option);
     
-    // 정재 : 퀘스트 시도 & 점수 반영 API
+    // API 호출
     const isCorrect = option === 'A';
     const scoreAwarded = isCorrect ? 20 : 10;
 
@@ -98,244 +122,482 @@ const PotholeQuest = () => {
       .then((res) => {console.log('✅ 시도 기록 완료:', res.data.attempt_id);})
       .catch((err) => {console.error('❌ 시도 기록 실패', err);});
 
+    const getScaledDuration = (baseDuration: number) => {
+      return baseDuration * Math.max(0.8, scale);
+    };
+
     if (option === 'A') {
       // 정답 선택
       setTimeout(() => {
         setGamePhase('successResult');
         
-        // 첫 번째 성공 메시지 표시
         setTimeout(() => {
-          setShowSuccessMessage(true);
+          setHideSuccessImages(true);
           
-          // 5초 후 점수 화면으로 이동
           setTimeout(() => {
-            navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=20&correct=true`);
-          }, 5000);
-        }, 2000);
-      }, 1000);
+            setShowSuccessMessage(true);
+          }, getScaledDuration(1000));
+        }, getScaledDuration(3000));
+      }, getScaledDuration(1000));
     } else {
       // 오답 선택
       setTimeout(() => {
         setGamePhase('fadeOut');
         setTimeout(() => {
           setGamePhase('failResult');
-          setTimeout(() => {
-            navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=10&correct=false`);
-          }, 5000); // 오답 결과 유지 시간
-        }, 1500);
-      }, 1000);
+        }, getScaledDuration(1500));
+      }, getScaledDuration(1000));
     }
   };
   
-  // 나머지 함수 (기존과 동일)
   const handleGoHome = () => {
     navigate('/');
   };
 
-  const handleImageError = () => {
-    setFallbackImage(true);
-  };
-
-  const renderTitleText = (text: string, fontSize = "text-5xl", color = "text-green-600") => (
-    <div className="relative inline-block">
-      <h1 className={`${fontSize} font-extrabold ${color} px-8 py-3`}
-          style={{ 
-            textShadow: '2px 2px 0 #FFF, -2px -2px 0 #FFF, 2px -2px 0 #FFF, -2px 2px 0 #FFF',
-            WebkitTextStroke: '1px white'
-          }}>
-        {text}
-      </h1>
-    </div>
-  );
-
   return (
     <div className="w-full h-full">
-      {/* 배경 - 게임 단계에 따라 다른 배경 표시 */}
-      {gamePhase === 'driving' ? (
-        // Phaser 게임 렌더링 - 전체 화면으로 조정
-        <div className="absolute inset-0 w-full h-full">
-          <RoadGameComponent onPotholeCollision={handlePotholeCollision} />
+      {/* 배경 - 동적 스크롤 효과 */}
+      <div className="absolute inset-0">
+        <div
+          className="transition-transform"
+          style={{
+            transform: startAnimation ? 'translateY(-15%)' : 'translateY(-40%)',
+            transitionDuration: `${5000 * Math.max(0.8, scale)}ms`,
+            transitionTimingFunction: 'cubic-bezier(0.4, 0.0, 0.6, 1.0)', // ease-out 대신 더 부드러운 커브
+            maxWidth: '100%',
+            willChange: 'transform',
+          }}
+        >
+          <img
+            src={drivingRoad}
+            alt="주행 배경"
+            className="w-full h-auto object-contain"
+          />
+          
+          {/* 포트홀을 배경 이미지의 특정 위치에 미리 배치 */}
+          <img
+            src={smallPothole}
+            alt="포트홀"
+            className="absolute"
+            style={{
+              left: '40%',
+              top: `calc(30% * ${scale})`, // 배경 이미지 기준 위치
+              width: `calc(220px * ${scale})`,
+              height: 'auto',
+              transform: 'translateX(-50%)',
+              zIndex: 5
+            }}
+          />
         </div>
-      ) : (
-        // 정적 배경 이미지
-        <img
-          src={gamePhase === 'potholeAlert' || gamePhase === 'selection' ? roadWithPotholes : basicRoad}
-          alt="주행 배경"
-          className="absolute w-full h-full object-cover"
-        />
-      )}
+      </div>
       
       {/* 헤더 영역 */}
       {(gamePhase !== 'fadeOut' && gamePhase !== 'failResult') && (
-        <div className="absolute top-4 right-4 z-10">
-          <img
-            src={homeButton}
-            alt="홈으로"
-            className="w-16 h-16 cursor-pointer"
-            onClick={handleGoHome}
-          />
+        <div 
+          className="absolute z-10"
+          style={{
+            top: `calc(16px * ${scale})`,
+            right: `calc(16px * ${scale})`
+          }}
+        >
         </div>
       )}
-      {(gamePhase !== 'fadeOut' && gamePhase !== 'failResult')}
-      
-      {/* 포트홀 경고 화면 */}
-      {gamePhase === 'potholeAlert' && (
+
+      {/* 주행 화면 */}
+      {gamePhase === 'driving' && (
         <div className="absolute inset-0">
-          {/* 경고 텍스트만 상단에 표시 */}
-          <div className="absolute top-20 left-1/2 transform -translate-x-1/2">
-            {renderTitleText('앞에 구덩이가 있어요!')}
+          {/* 오토바이 이미지 - 화면 하단 중앙, 크게 */}
+          <div className="absolute bottom-0 w-full flex justify-center">
+            <img 
+              src={motorcycle} 
+              alt="이륜차" 
+              className="object-contain object-bottom"
+              style={{
+                width: `calc(100% * ${scale})`,
+                maxHeight: `calc(70vh * ${scale})`,
+                zIndex: 10
+              }}
+            />
           </div>
+
+          {/* "주행 시작" 텍스트 */}
+          {showStartText && (
+            <motion.div 
+              className="absolute left-1/2 transform -translate-x-1/2 z-20"
+              style={{ 
+                top: `calc(20% * ${scale})`
+              }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8 * Math.max(0.8, scale) }}
+            >
+              <GameTitle 
+                text="주행 시작" 
+                fontSize={`calc(5.5rem * ${scale})`}
+                strokeWidth={`calc(12px * ${scale})`}
+              />
+            </motion.div>
+          )}
         </div>
       )}
       
-      {/* 선택지 화면 - 오토바이 제거 */}
+      {/* 선택지 화면 */}
       {gamePhase === 'selection' && (
         <div className="absolute inset-0">
-          {/* 배경 불투명도 효과 */}
           <div className="absolute inset-0 bg-[#FFF9C4]/60 z-0"></div>
           
-          <div className="absolute inset-x-0 top-20 bottom-0 flex flex-col items-center justify-center z-10">
+          <div 
+            className="absolute inset-x-0 bottom-0 flex flex-col items-center justify-center z-10"
+            style={{ top: `calc(20px * ${scale})` }}
+          >
             {/* 선택지 제목 및 설명 */}
-            <div className="bg-white bg-opacity-90 border-8 border-green-600 rounded-3xl p-6 mb-8 w-[75%]">
-              <h2 className="text-5xl font-extrabold text-green-600 text-center mb-4">구덩이 조심</h2>
-              <p className="text-[2.2rem] font-extrabold text-black text-center">
-                앞에 큰 구덩이가 있어요!<br/>
-                구덩이를 지날 때는 핸들 통제가 어려워져요.<br/>
+            <div 
+              className="bg-[#FFFAFA] bg-opacity-75 border-[#0DA429] rounded-[30px] flex flex-col justify-center items-center text-center"
+              style={{ 
+                width: `calc(815px * ${scale})`,
+                height: `calc(400px * ${scale})`,
+                borderWidth: `calc(10px * ${scale})`,
+                padding: `calc(12px * ${scale})`,
+                marginBottom: `calc(32px * ${scale})`
+              }}
+            >
+              <h2 
+                className="font-black text-[#0DA429] text-center"
+                style={{ 
+                  fontSize: `calc(3.5rem * ${scale})`,
+                  marginTop: `calc(-8px * ${scale})`
+                }}
+              >
+                구덩이 조심
+              </h2>
+              <p
+                className="text-black text-center font-black leading-relaxed"
+                style={{
+                  fontSize: `calc(2.2rem * ${scale})`,
+                  marginTop: `calc(32px * ${scale})`,
+                  letterSpacing: `calc(0.05em * ${scale})`
+                }}
+              >
+                앞에 큰 <span style={{ color: '#B91C1C' }}>구덩이</span>가 있어요!<br/>
+                구덩이를 지날 때는 핸들 통제가 어려워져요<br/>
                 어떻게 운전할까요?
               </p>
             </div>
-            {/* 선택지 버튼 */}
-            <div className="flex justify-between w-[75%]">
-              <button
-                className={`w-[48%] bg-green-600 bg-opacity-80
-                border-8 border-green-600 rounded-xl p-4
-                text-3xl font-extrabold text-white 
-                transition duration-300 focus:outline-none focus:ring-0
 
-                ${selectedOption === 'A' 
-                  ? 'bg-green-600 scale-105 bg-opacity-95' 
-                  : 'hover:bg-green-600'}`}
+            {/* 선택지 버튼 */}
+            <div
+              className="flex justify-between"
+              style={{
+                width: `calc(815px * ${scale})`,
+                gap: `calc(20px * ${scale})`,
+                padding: 0
+              }}
+            >
+              <button
+                className={`rounded-[20px] font-black text-black transition duration-300 cursor-pointer flex items-center justify-center
+                  ${selectedOption === 'A' ? 
+                    'bg-[#0DA429] bg-opacity-90 border-[#0DA429] scale-105' : 
+                    'bg-[#FFFAFA] bg-opacity-70 border-[#0DA429] hover:bg-opacity-90'}
+                `}
+                style={{
+                  width: `calc(385px * ${scale})`,
+                  height: `calc(208px * ${scale})`,
+                  fontSize: `calc(2.2rem * ${scale})`,
+                  borderWidth: `calc(7px * ${scale})`,
+                  transform: selectedOption === 'A' ? `scale(${scaledHoverScale})` : 'scale(1)',
+                  boxSizing: 'border-box',
+                  lineHeight: 1.4,
+                  padding: `calc(12px * ${scale})` // 내부 여백 추가
+
+                }}
                 onClick={() => handleOptionSelect('A')}
                 disabled={!!selectedOption}
               >
-                속도를 줄이고 <br/>구덩이를 피해 <br/>조심히 지나간다
+                <div style={{ textAlign: 'center' }}>
+                  <span style={{ color: '#B91C1C' }}>속도를 줄이고</span><br/>
+                  구덩이를 피해<br/>
+                  조심히 지나간다
+                </div>
               </button>
               
               <button
-                className={`w-[48%] bg-green-600 bg-opacity-80
-                border-8 border-green-600 rounded-xl p-4
-                text-3xl font-extrabold text-white
-                transition duration-300
-                focus:outline-none focus:ring-0
-
-                ${selectedOption === 'B' 
-                ? 
-                'bg-green-600 scale-105 bg-opacity-95' : 'hover:bg-green-600'}`}
+                className={`rounded-[20px] font-black text-black transition duration-300 cursor-pointer flex items-center justify-center
+                  ${selectedOption === 'B' ? 
+                    'bg-[#0DA429] bg-opacity-90 border-[#0DA429] scale-105' : 
+                    'bg-[#FFFAFA] bg-opacity-70 border-[#0DA429] hover:bg-opacity-90'}
+                `}
+                style={{
+                  width: `calc(385px * ${scale})`,
+                  height: `calc(208px * ${scale})`,
+                  fontSize: `calc(2.2rem * ${scale})`,
+                  borderWidth: `calc(7px * ${scale})`,
+                  transform: selectedOption === 'B' ? `scale(${scaledHoverScale})` : 'scale(1)',
+                  boxSizing: 'border-box',
+                  lineHeight: 1.4,
+                  padding: `calc(12px * ${scale})` 
+                }}
                 onClick={() => handleOptionSelect('B')}
                 disabled={!!selectedOption}
               >
-                빨리 지나가면 <br/>덜 흔들릴 것 같아 <br/>속도를 높여 지나간다
+                <div style={{ textAlign: 'center' }}>
+                빨리 지나가면 <br/>덜 흔들릴 것 같아 <br/><span style={{ color: '#B91C1C' }}>속도를 높여 지나간다</span>
+                </div>
               </button>
             </div>
           </div>
         </div>
       )}
       
-      {/* 정답 결과 화면 - 오토바이 제거 */}
+      {/* 정답 결과 화면 */}
       {gamePhase === 'successResult' && !showSuccessMessage && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          {/* 중앙에 큰 success_circle 이미지 */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <img
-              src={successCircle} 
-              alt="성공 원" 
-              className="absolute w-[100vw] h-[100vw] object-contain z-10"
-            />
-            {/* 그 위에 오토바이 운전하는 할아버지 이미지 */}
-            <div className="absolute inset-0 flex items-center justify-center z-20">
-              <img 
-                src="/assets/images/mission2_success_grandfather.png"  
-                alt="오토바이 운전하는 할아버지" 
-                className="object-contain z-40"
-                onError={handleImageError}
+          {/* 배경 이미지 */}
+          <div className="absolute inset-0">
+            <div
+              className="transition-transform ease-out"
+              style={{
+                transform: 'translateY(-15%)',
+                transitionDuration: `${5000 * Math.max(0.8, scale)}ms`,
+                maxWidth: '100%',
+                willChange: 'transform',
+              }}
+            >
+              <img
+                src={drivingRoad}
+                alt="주행 배경"
+                className="w-full h-auto object-contain"
               />
             </div>
           </div>
+
+          {/* 배경 오버레이 */}
+          <motion.div
+            className="absolute inset-0 bg-[#FFF9C4]/60 z-10"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
+          />
+
+          {/* 성공 원과 캐릭터 */}
+          <div className="absolute inset-0 flex items-center justify-center z-20">
+            <motion.img
+              src={successCircle} 
+              alt="성공 원" 
+              className="absolute w-full h-full object-contain"
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={hideSuccessImages ? { scale: 0.3, opacity: 0 } : { scale: 1, opacity: 1 }}
+              transition={hideSuccessImages ? { duration: 0.8, ease: 'easeIn' } : { duration: 1, ease: 'easeOut' }}
+            />
+            
+            <motion.img 
+              src="/assets/images/mission2_success_grandfather.png"  
+              alt="오토바이 운전하는 할아버지" 
+              className="absolute object-contain z-30"
+              style={{
+                width: `calc(50% * ${scale})`,
+                height: 'auto'
+              }}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={hideSuccessImages ? { scale: 0.5, opacity: 0 } : { scale: 1, opacity: 1 }}
+              transition={hideSuccessImages ? { duration: 0.8, ease: 'easeIn' } : { duration: 1, delay: 0.3, ease: 'easeOut' }}
+            />
+          </div>
         </div>
       )}
-      
-      {/* 정답 후 성공 메시지 화면 - 오토바이 제거 */}
-      {gamePhase === 'successResult' && showSuccessMessage && (
-        <div className="absolute inset-0 bg-[#FFF9C4]/60 flex flex-col items-center justify-center z-10">
-          {/* 중앙 상단에 정답입니다! */}
-          <div className="absolute top-[20%] text-6xl font-extrabold text-green-700 left-1/2 transform -translate-x-1/2 z-20">
-          정답입니다!
-          </div>
           
-          {/* 중앙에 녹색 박스에 메시지 */}
-          <div className="mt-10 bg-green-600 bg-opacity-90 border-green-700 border-8  rounded-3xl p-10 w-[73%] mx-auto text-center relative">
-              <p className="text-5xl font-extrabold text-white ">
-              휴, 속도를 줄인 덕분에<br />
-              구덩이를 잘 피했어요
-            </p>
+      {/* 정답 후 성공 메시지 화면 */}
+      {gamePhase === 'successResult' && showSuccessMessage && (
+        <div className="absolute inset-0">
+          {/* 배경 이미지 유지 */}
+          <div className="absolute inset-0">
+            <div
+              className="transition-transform ease-out"
+              style={{
+                transform: 'translateY(-15%)',
+                transitionDuration: `${5000 * Math.max(0.8, scale)}ms`,
+                maxWidth: '100%',
+                willChange: 'transform',
+              }}
+            >
+              <img
+                src={drivingRoad}
+                alt="주행 배경"
+                className="w-full h-auto object-contain"
+              />
             </div>
-            {/* 좌측 하단 별별이 캐릭터 */}
-            <img 
-            src={starCharacter} 
-            alt="별별이" 
-            className="absolute bottom-[15%] left-[3%] w-[23%] z-30"
-          />
           </div>
+
+          {/* 배경 오버레이 */}
+          <div className="absolute inset-0 bg-[#FFF9C4]/60 z-10" />
+          
+          {/* 메시지 콘텐츠 */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center z-30">
+            <motion.div 
+              className="absolute left-0 right-0 flex justify-center items-center"
+              style={{ 
+                top: `calc(15% * ${scale})`
+              }}
+              initial={{ opacity: 0, y: `calc(-30px * ${scale})` }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: 'easeOut' }}
+            >
+              <GameTitle 
+                text="정답입니다!" 
+                fontSize={`calc(4rem * ${scale})`}
+                strokeWidth={`calc(12px * ${scale})`}
+              />
+            </motion.div>
+            
+            <motion.div 
+              className="bg-[#0DA429]/80 bg-opacity-90 border-green-700 border-8 w-[73%] mx-auto text-center relative"
+              style={{ 
+                marginTop: `calc(240px * ${scale})`,
+                paddingTop: `calc(60px * ${scale})`,    // 위쪽 패딩 증가
+                paddingBottom: `calc(60px * ${scale})`, // 아래쪽 패딩 증가
+                paddingLeft: `calc(40px * ${scale})`,   // 좌우는 기존 유지
+                paddingRight: `calc(40px * ${scale})`,
+                borderRadius: `calc(48px * ${scale})`
+              }}
+              initial={{ opacity: 0, scale: 0.8, y: `calc(30px * ${scale})` }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
+            >
+              <p 
+                className="font-black text-white"
+                style={{ fontSize: `calc(3.5rem * ${scale})` }}
+              >
+                휴, 속도를 줄인 덕분에<br />
+                구덩이를 잘 피했어요
+              </p>
+            </motion.div>
+
+            {/* 확인 버튼 */}
+            <motion.button
+              onClick={handleConfirmClick}
+              className="cursor-pointer hover:scale-105 transition-transform duration-200 border-0 outline-none bg-transparent p-0"
+              style={{
+                marginTop: `calc(40px * ${scale})`,
+                width: `calc(200px * ${scale})`,
+                height: 'auto',
+                marginBottom: `calc(20px * ${scale})` // 하단 간격 조정
+              }}
+              initial={{ opacity: 0, y: `calc(20px * ${scale})` }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
+            >
+              <img 
+                src={confirmButton} 
+                alt="확인 버튼" 
+                className="w-full h-auto"
+              />
+            </motion.button>
+
+            <motion.img 
+              src={starCharacter} 
+              alt="별별이" 
+              className="absolute z-40"
+              style={{
+                bottom: `calc(15% * ${scale})`,
+                left: `calc(3% * ${scale})`,
+                width: `calc(23% * ${scale})`
+              }}
+              initial={{ opacity: 0, x: `calc(-30px * ${scale})`, y: `calc(10px * ${scale})` }}
+              animate={{ opacity: 1, x: 0, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6, ease: 'easeOut' }}
+            />
+          </div>
+        </div>
       )}
       
       {/* 페이드아웃 화면 */}
       {gamePhase === 'fadeOut' && (
-        <img
-        src="/assets/images/accident_fadeout.png"
-        alt="전환 이미지"
-        className="absolute inset-0 w-full h-full object-cover z-50 opacity-0 animate-fadein"
+        <motion.img
+          src="/assets/images/accident_fadeout.png"
+          alt="전환 이미지"
+          className="absolute inset-0 w-full h-full object-cover z-50"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.5 * Math.max(0.8, scale) }}
         />
       )}
       
-      {/* 오답 결과 화면 - 수정된 부분 */}
+      {/* 오답 결과 화면 */}
       {gamePhase === 'failResult' && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          {/* 배경 이미지 - 즉시 표시 */}
           <img
             src={potholeAccident}
             alt="사고 장면"
             className="absolute inset-0 w-full h-full object-cover"
           />
           
-          {/* 애니메이션 컨테이너 - showWarning 상태에 따라 표시 */}
           {showWarning && (
             <motion.div 
-              className="absolute inset-0 bg-[#FFF9C4]/60 flex flex-col items-center justify-end pb-32 z-10"
+              className="absolute inset-0 bg-[#FFF9C4]/60 flex flex-col items-center justify-end z-10"
+              style={{ paddingBottom:`calc(40px * ${scale})` }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.8 }}
+              transition={{ duration: 0.8 * Math.max(0.8, scale) }}
             >
               <motion.img 
                 src={dangerWarning} 
                 alt="위험 경고" 
-                className="w-[16%] mb-1" //간격 조절 여기서
-                initial={{ y: -20, opacity: 0 }}
+                style={{ 
+                  width: `calc(16% * ${scale})`,
+                  marginBottom: `calc(4px * ${scale})`
+                }}
+                initial={{ y: `calc(-20px * ${scale})`, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
+                transition={{ duration: 0.8 * Math.max(0.8, scale), delay: 0.2 * Math.max(0.8, scale) }}
               />
               
               <motion.div 
-                className="w-[80%] bg-white bg-opacity-80 border-red-600 border-8 rounded-xl p-8 text-center"
+                className="w-[80%] bg-white bg-opacity-80 border-red-600 border-8 rounded-xl text-center"
+                style={{
+                  padding: `calc(32px * ${scale})`
+                }}
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
+                transition={{ duration: 0.8 * Math.max(0.8, scale), delay: 0.4 * Math.max(0.8, scale) }}
               >
-                <h2 className="text-6xl font-extrabold text-red-600 mb-4">이륜차가 기우뚱!</h2>
-                <p className="text-4xl font-extrabold text-black">
+                <h2 
+                  className="text-red-600 font-black"
+                  style={{ 
+                    fontSize: `calc(4rem * ${scale})`,
+                    marginBottom: `calc(16px * ${scale})`
+                  }}
+                >
+                  이륜차가 기우뚱!
+                </h2>
+                <p 
+                  className="font-black text-black"
+                  style={{ fontSize: `calc(2.5rem * ${scale})` }}
+                >
                   구덩이는 도로 위 함정과 같아요.<br />
                   속도를 줄이고 지나가야 안전해요.
                 </p>
               </motion.div>
+
+              {/* 확인 버튼 */}
+              <motion.button
+                onClick={handleConfirmClick}
+                className="cursor-pointer hover:scale-105 transition-transform duration-200 border-0 outline-none bg-transparent p-0"
+                style={{
+                  marginTop: `calc(40px * ${scale})`,
+                  width: `calc(200px * ${scale})`,
+                  height: 'auto',
+                  marginBottom: `calc(20px * ${scale})` // 하단 간격 조정
+                }}
+                initial={{ opacity: 0, y: `calc(20px * ${scale})` }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
+              >
+                <img 
+                  src={confirmButton} 
+                  alt="확인 버튼" 
+                  className="w-full h-auto"
+                />
+              </motion.button>
             </motion.div>
           )}
         </div>

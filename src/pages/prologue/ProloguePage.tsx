@@ -1,9 +1,12 @@
-// src/pages/prologue/ProloguePage.tsx (최종 수정본)
+// src/pages/prologue/ProloguePage.tsx (간소화된 버전)
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 import { createGuestUser } from '../../services/endpoints/user';
 import { createSession } from '../../services/endpoints/session';
+
+import { useScale } from '../../hooks/useScale';
 
 // 이미지 임포트
 const scenario1FullMap = '/assets/images/scenario1_full_map.png';
@@ -12,18 +15,20 @@ const departButton = '/assets/images/depart_button.png';
 const grandchildren = '/assets/images/grandchildren.png';
 const homeButton = '/assets/images/home_button.png';
 const nextButton = '/assets/images/next_button.png';
+const letterEnvelope = '/assets/images/letter_envelope.png';
 import BackButton from '../../components/ui/BackButton';
+import GameTitle from '../../components/ui/GameTitle';
 
-// 프롤로그 단계 정의
-type PrologueStep = 'mission' | 'map' | 'mapToEncouragement' | 'encouragement';
+// 프롤로그 단계 정의 (간소화)
+type PrologueStep = 'mission' | 'map' | 'letterMessage' | 'encouragement';
 
 const ProloguePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const scale = useScale();
   const [step, setStep] = useState<PrologueStep>('mission');
   const [scenarioId, setScenarioId] = useState<string | null>(null);
   const [showMessage, setShowMessage] = useState(false);
-  const [animationProgress, setAnimationProgress] = useState(0);
   
   // URL 쿼리 파라미터에서 시나리오 ID 가져오기
   useEffect(() => {
@@ -32,17 +37,8 @@ const ProloguePage = () => {
     setScenarioId(id);
     console.log("id : ", id);
 
-    // 정재 : User id, Session id 생성 + 관리 위해 localStorage에 저장
-   
-    //임시
-    /*if (import.meta.env.DEV) {
-    localStorage.removeItem("user_id");
-    localStorage.removeItem("session_id");
-    }*/
     const alreadyHasUser = localStorage.getItem("user_id");
-    // console.log("alreadyHasUser : ", alreadyHasUser);
     const alreadyHasSession = localStorage.getItem("session_id");
-    // console.log("alreadyHasSession : ", alreadyHasSession);
     
     // 한 번만 생성
     if (id && !alreadyHasUser && !alreadyHasSession) {
@@ -64,7 +60,7 @@ const ProloguePage = () => {
         });
     }
 
-    // 각 단계별로 2초 후 메시지 표시
+    // map 단계에서 2초 후 메시지 표시
     if (step === 'map') {
       const timer = setTimeout(() => {
         setShowMessage(true);
@@ -72,40 +68,23 @@ const ProloguePage = () => {
       
       return () => clearTimeout(timer);
     }
-    
-    // 애니메이션 진행 상태 관리
-    if (step === 'mapToEncouragement') {
-      // 초기 상태 설정
-      setAnimationProgress(0);
+
+    // letterMessage 단계에서 3초 후 encouragement로 자동 전환
+    if (step === 'letterMessage') {
+      const timer = setTimeout(() => {
+        setStep('encouragement');
+      }, 3000);
       
-      // 애니메이션 진행 시간
-      const duration = 1500; // 1.5초
-      const startTime = Date.now();
-      
-      const animationTimer = setInterval(() => {
-        const elapsed = Date.now() - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        setAnimationProgress(progress);
-        
-        if (progress >= 1) {
-          clearInterval(animationTimer);
-          // 애니메이션 완료 후 encouragement 단계로 즉시 전환
-          setStep('encouragement');
-        }
-      }, 16);
-      
-      return () => clearInterval(animationTimer);
+      return () => clearTimeout(timer);
     }
   }, [location, step]);
 
   // 다음 단계로 이동 핸들러
   const handleNextStep = () => {
-    setShowMessage(false); // 다음 단계로 넘어갈 때 메시지 초기화
     if (step === 'mission') {
       setStep('map');
-    } else if (step === 'map') {
-      // 이제 map에서 바로 encouragement로 가지 않고 중간 애니메이션 단계를 거침
-      setStep('mapToEncouragement');
+    } else if (step === 'map' && showMessage) {
+      setStep('letterMessage');
     }
   };
 
@@ -120,170 +99,218 @@ const ProloguePage = () => {
     navigate(`/driving-prep?scenario=${scenarioId}&nextQuest=1`);
   };
 
-  // 미션 소개 컴포넌트
-  const MissionIntro = () => (
-    <div className="absolute inset-0 flex flex-col items-center justify-center">
-      {/* 배경 이미지 직접 추가 */}
-      <img
-        src="/assets/images/background.png"
-        alt="미션 배경"
-        className="absolute inset-0 w-full h-full object-cover z-0"
-      />
-      <div className="w-full h-full flex flex-col items-center justify-center z-10 relative">
-        <h1 className="text-6xl font-extrabold text-green-600 mb-12 animate-[fadeIn_800ms_ease-out]">[ 논밭 작업 하는 날 ]</h1>
-        <div className="relative bg-green-600 bg-opacity-90 border-8 border-green-600 rounded-xl p-8 w-4/5 max-w-4xl mx-auto animate-[fadeIn_1200ms_ease-out]">
-          <p className="text-4xl text-center text-white font-extrabold">
-            이륜차를 타고 논밭에 갔다가
-            <br />
-            집으로 안전하게 돌아오세요
-          </p>
-          
-          {/* 별별이 캐릭터를 박스 모서리에 오버랩하여 배치 */}
-          <img 
-            src={starCharacter}
-            alt="별별이 캐릭터" 
-            className="absolute -bottom-24 -left-24 w-48 h-auto z-20 animate-[fadeIn_1500ms_ease-out]"
-          />
-        </div>
-      </div>
-    </div>
-  );
-
-  // 약도 컴포넌트
-  const MapDisplay = () => (
-    <div className="absolute inset-0">
-      {/* 전체 배경으로 지도 사용 */}
-      <div className="w-full h-full relative">
-        <img 
-          src={scenario1FullMap} 
-          alt="경로 지도" 
-          className="w-full h-full object-cover"
-        />
-        
-        {/* 2초 후 메시지 표시 */}
-        {showMessage && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-4/5 max-w-4xl mx-auto">
-              {/* 말풍선 형태로 메시지 표시 */}
-              <div className="bg-white bg-opacity-90 border-8 border-green-600 rounded-xl p-8 w-full mx-auto text-center animate-[fadeIn_800ms_ease-out]">
-                <div className="relative">
-                  <p className="text-3xl text-black font-extrabold">
-                    이륜차 운전 중 여러 상황이 벌어져요!<br />
-                    안전 운전에 유의하여 문제를 해결해보아요
-                  </p>
-                  <img 
-                    src={starCharacter}
-                    alt="별별이 캐릭터" 
-                    className="absolute -bottom-28 -left-28 w-48 h-48 animate-[fadeIn_1200ms_ease-out]"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-
-  // 맵에서 격려 메시지로 전환하는 애니메이션 컴포넌트
-  const MapToEncouragementTransition = () => (
-    <div className="absolute inset-0 flex items-center justify-center">
-      {/* 배경에 지도 표시 */}
-      <div className="absolute inset-0">
-        <img 
-          src={scenario1FullMap} 
-          alt="배경 지도" 
-          className="w-full h-full object-cover"
-        />
-      </div>
-      
-      {/* 페이드 인 되는 노란색 배경 오버레이 */}
-      <div 
-        className="absolute inset-0 bg-[#FFF9C4]" 
+  // 미션 소개 컨텐츠
+  const MissionContent = () => (
+    <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+      <h1 
+        className="text-green-600 font-black animate-[fadeIn_800ms_ease-out]"
         style={{ 
-          opacity: animationProgress * 0.6, // 최대 80% 불투명도까지 
-          transition: 'opacity 1.5s ease-in-out' 
-        }}
-      />
-      
-      {/* 메시지 컨테이너와 손자손녀 이미지를 함께 그룹화 - 함께 애니메이션 적용 */}
-      <div 
-        className="relative w-4/5 max-w-4xl z-10"
-        style={{ 
-          opacity: Math.max(0, (animationProgress - 0.3) * 1.5), // 30% 진행 후 나타나기 시작
-          transform: `translateY(${(1 - Math.min(1, animationProgress * 1.2)) * 20}px)`, // 위치 이동 효과 감소
+          fontSize: `calc(6xl * ${scale})`,
+          marginBottom: `${60 * scale}px`
         }}
       >
-        {/* 손자손녀 이미지 - 메시지 박스 위에 위치 */}
-        <img 
-          src={grandchildren} 
-          alt="손자손녀" 
-          className="absolute -top-36 left-1/2 transform -translate-x-1/2 w-72 h-auto z-20"
-        />
+        <GameTitle text="과수원 작업 하는 날" fontSize="text-6xl" strokeWidth="8px"/>
+      </h1>
+      <div 
+        className="relative bg-green-600 bg-opacity-80 border-green-600 w-4/5 max-w-4xl mx-auto animate-[fadeIn_1200ms_ease-out]"
+        style={{
+          borderWidth: `calc(8px * ${scale})`,
+          paddingTop: `${scale * 72}px`,
+          paddingBottom: `${scale * 72}px`,
+          borderRadius: `calc(36px * ${scale})`,
+          paddingLeft: `calc(32px * ${scale})`,
+          paddingRight: `calc(32px * ${scale})`
+        }}
+      >
+        <p 
+          className="text-center text-white font-black"
+          style={{
+            fontSize: `${3.0 * scale}rem`,
+            letterSpacing: `${0.07 * scale}em`
+          }}
+        >
+          이륜차를 타고 과수원에 갔다가
+          <br />
+          집으로 안전하게 돌아오세요
+        </p>
         
-        {/* 메시지 박스 */}
-        <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-xl p-16 pt-20 w-full text-center">
-          <p className="text-4xl font-extrabold text-black">
-            무엇보다 할아버지가 제일 소중해요!<br />
-            조심히 다녀오세요!
-          </p>
-        </div>
+        <img 
+          src={starCharacter}
+          alt="별별이 캐릭터" 
+          className="absolute animate-[fadeIn_1500ms_ease-out]"
+          style={{
+            bottom: `calc(-96px * ${scale})`,
+            left: `calc(-96px * ${scale})`,
+            width: `calc(192px * ${scale})`,
+            height: 'auto',
+            zIndex: 20
+          }}
+        />
       </div>
     </div>
   );
 
-  // 격려 메시지 컴포넌트
-  const EncouragementMessage = () => (
-    <div className="absolute inset-0 flex items-center justify-center bg-[#FFFDE7]">
-      {/* 배경에 지도 흐리게 표시 */}
-      <div className="absolute inset-0 opacity-20">
-        <img 
-          src={scenario1FullMap} 
-          alt="배경 지도" 
-          className="w-full h-full object-contain"
-        />
-      </div>
+  // 맵 + 안내 메시지 컨텐츠
+  const MapContent = () => (
+    <>
+      {showMessage && (
+        <div className="absolute inset-0 flex items-center justify-center z-20">
+          <div 
+            className="w-4/5 max-w-4xl mx-auto"
+            style={{ maxWidth: `calc(1024px * ${scale})` }}
+          >
+            <motion.div 
+              className="bg-white bg-opacity-90 border-green-600 rounded-xl w-full mx-auto text-center"
+              style={{
+                borderWidth: `calc(8px * ${scale})`,
+                borderRadius: `calc(24px * ${scale})`,
+                padding: `calc(32px * ${scale})`
+              }}
+              initial={{ opacity: 0, y: `calc(20px * ${scale})` }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <div className="relative">
+                <p 
+                  className="text-black font-black"
+                  style={{
+                    fontSize: `${2.1 * scale}rem`,
+                    letterSpacing: `${0.07 * scale}em`
+                  }}
+                >
+                  이륜차 운전 중 여러 상황이 벌어져요!<br />
+                  안전 운전에 유의하여 문제를 해결해보아요
+                </p>
+                <img 
+                  src={starCharacter}
+                  alt="별별이 캐릭터" 
+                  className="absolute"
+                  style={{
+                    bottom: `calc(-80px * ${scale})`,
+                    left: `calc(-160px * ${scale})`,
+                    width: `calc(212px * ${scale})`,
+                    height: `calc(212px * ${scale})`
+                  }}
+                />
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+
+  // 편지 메시지 컨텐츠
+  const LetterMessageContent = () => (
+  <div className="absolute inset-0 flex items-center justify-center z-20">
+    <div className="flex flex-col items-center justify-center">
+      {/* 응원 메시지 타이틀 */}
+      <motion.div
+        initial={{ opacity: 0, y: `calc(-40px * ${scale})` }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        
+        style={{
+          marginBottom: `calc(-80px * ${scale})`,
+          padding: `calc(20px * ${scale})`,
+          borderRadius: `calc(20px * ${scale})`
+        }}
+      >
+        <GameTitle text="응원 메시지가 도착했어요!" fontSize="text-5xl" strokeWidth="8px" />
+      </motion.div>
       
-      {/* 애니메이션 제거: animate-[fadeIn_800ms_ease-out] 클래스 삭제 */}
-      <div className="relative w-4/5 max-w-4xl z-10">
+      {/* 편지 봉투 애니메이션 - 중앙 정렬 수정 */}
+      <motion.div
+        className="flex items-center justify-center"
+        style={{
+          width: `calc(520px * ${scale})`,
+          height: `calc(520px * ${scale})`,
+        }}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8 }}
+      >
+        <motion.img
+          src={letterEnvelope}
+          alt="편지 봉투"
+          className="object-contain"
+          style={{
+            width: `calc(720px * ${scale})`,
+            height: 'auto'
+          }}
+          initial={{ rotate: -5 }}
+          animate={{ 
+            scale: [1, 1.1, 0.9, 1], 
+            rotate: [-5, 5, -2, 0],
+            y: [0, `calc(-10px * ${scale})`, `calc(5px * ${scale})`, 0]
+          }}
+          transition={{ 
+            duration: 2,
+            times: [0, 0.3, 0.6, 1],
+            ease: "easeOut",
+            repeat: Infinity,
+            repeatType: "reverse",
+            repeatDelay: 1
+          }}
+        />
+      </motion.div>
+    </div>
+  </div>
+);
+
+  // 격려 메시지 컨텐츠
+  const EncouragementContent = () => (
+    <div className="absolute inset-0 flex items-center justify-center z-20">
+      <motion.div 
+        className="relative w-4/5"
+        style={{ maxWidth: `calc(1024px * ${scale})` }}
+        initial={{ opacity: 0, y: `calc(20px * ${scale})` }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         <img 
           src={grandchildren} 
           alt="손자손녀" 
-          className="absolute -top-36 left-1/2 transform -translate-x-1/2 w-72 h-auto z-20"
+          className="absolute left-1/2 transform -translate-x-1/2 z-20"
+          style={{
+            top: `calc(-168px * ${scale})`,
+            width: `calc(380px * ${scale})`,
+            height: 'auto'
+          }}
         />
         
-        {/* 메시지 박스 */}
-        <div className="bg-white bg-opacity-80 border-8 border-green-600 rounded-xl p-16 pt-20 w-full text-center">
-          <p className="text-4xl font-extrabold text-black">
+        <div 
+          className="bg-white bg-opacity-90 border-green-600 rounded-xl w-full text-center"
+          style={{
+            borderWidth: `calc(8px * ${scale})`,
+            borderRadius: `calc(36px * ${scale})`,
+            padding: `calc(64px * ${scale})`,
+            paddingTop: `calc(80px * ${scale})`
+          }}
+        >
+          <p 
+            className="font-black text-black"
+            style={{ fontSize: `${2.6 * scale}rem` }}
+          >
             무엇보다 할아버지가 제일 소중해요!<br />
             조심히 다녀오세요!
           </p>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 
   // 네비게이션 버튼 컴포넌트
   const NavigationButtons = () => {
-    // 시나리오 선택 화면으로 이동하는 핸들러
     const handleBackToScenarios = () => {
       navigate('/scenarios');
     };
 
     return (
       <>
-        {/* 뒤로가기 버튼 - 미션 단계에서만 표시 */}
         {step === 'mission' && (
           <BackButton onClick={handleBackToScenarios} />
         )}
-        
-        {/* 홈 버튼 */}
-        <img
-          src={homeButton}
-          alt="홈으로"
-          onClick={handleGoHome}
-          className="absolute top-4 right-4 z-20 w-16 h-16 cursor-pointer active:scale-90 transition-transform duration-150"
-        />
       </>
     );
   };
@@ -292,23 +319,60 @@ const ProloguePage = () => {
     <div className="relative w-full h-full">
       <NavigationButtons />
       
-      {/* 단계별 컴포넌트 조건부 렌더링 */}
-      {step === 'mission' && <MissionIntro />}
-      {step === 'map' && <MapDisplay />}
-      {step === 'mapToEncouragement' && <MapToEncouragementTransition />}
-      {step === 'encouragement' && <EncouragementMessage />}
+      {/* 배경 이미지 */}
+      <div className="absolute inset-0">
+          {step === 'mission' ? (
+            <img
+              src="/assets/images/background.png"
+              alt="미션 배경"
+              className="absolute inset-0 w-full h-full object-cover z-0"
+            />
+          ) : (
+            <motion.img 
+              src={scenario1FullMap} 
+              alt="경로 지도" 
+              className="w-full h-full object-cover"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1.2, ease: "easeOut" }}
+            />
+          )}
+        </div>
       
-      {/* 버튼 렌더링 - 고정 위치에 배치 */}
-      {/* map 단계에서는 showMessage가 true일 때만 표시 */}
+      {/* 노란색 오버레이 - map에서 메시지 표시 시와 encouragement에서만 */}
+      {((step === 'map' && showMessage) || step === 'letterMessage' || step === 'encouragement') && (
+        <motion.div 
+          className="absolute inset-0 bg-[#FFF9C4]/60 z-5"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+        />
+      )}
+      
+      {/* 단계별 컨텐츠 */}
+      {step === 'mission' && <MissionContent />}
+      {step === 'map' && <MapContent />}
+      {step === 'letterMessage' && <LetterMessageContent />}
+      {step === 'encouragement' && <EncouragementContent />}
+      
+      {/* 버튼 렌더링 - 모든 단계에서 동일한 위치와 크기 */}
       {(step === 'mission' || 
         (step === 'map' && showMessage) || 
         step === 'encouragement') && (
-        <div className="absolute bottom-1 left-0 right-0 flex justify-center items-center z-50">
+        <div 
+          className="absolute left-0 right-0 flex justify-center items-center z-50"
+          style={{ 
+            bottom: step === 'encouragement' ? `calc(-20px * ${scale})` : `calc(48px * ${scale})` 
+          }}
+        >
           <img
             src={step === 'encouragement' ? departButton : nextButton}
             alt={step === 'encouragement' ? '출발하기' : '다음'}
             onClick={step === 'encouragement' ? handleDepartClick : handleNextStep}
-            className="w-52 h-auto cursor-pointer hover:scale-105 transition-transform"
+            className="h-auto cursor-pointer hover:scale-105 transition-transform"
+            style={{ 
+              width: step === 'encouragement' ? `calc(240px * ${scale})` : `calc(192px * ${scale})` 
+            }}
           />
         </div>
       )}

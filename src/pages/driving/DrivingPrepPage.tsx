@@ -1,6 +1,7 @@
 // src/pages/driving/DrivingPrepPage.tsx 수정 부분
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useScale } from '../../hooks/useScale';
 
 // 이미지 임포트
 const drivingBackground = '/assets/images/background.png';
@@ -9,6 +10,7 @@ const motorcycleSideView = '/assets/images/motorcycle_side_view.png';
 const DrivingPrepPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const scale = useScale();
   const [motorcyclePosition, setMotorcyclePosition] = useState(-100);
   const [scenarioId, setScenarioId] = useState<string | null>(null);
   const [nextQuestId, setNextQuestId] = useState<string | null>(null);
@@ -41,13 +43,13 @@ const DrivingPrepPage = () => {
           clearInterval(animationInterval);
           return prev;
         }
-        // 이동 속도 (픽셀 단위)
-        return prev + 5;
+        // 이동 속도 (픽셀 단위) - 스케일에 따라 조정
+        return prev + (5 * scale);
       });
     }, 16); // 약 60fps
     
     return () => clearInterval(animationInterval);
-  }, []);
+  }, [scale]);
 
   return (
     <div className="relative w-full h-full">
@@ -64,9 +66,9 @@ const DrivingPrepPage = () => {
         alt="이륜차"
         style={{ 
           position: 'absolute',
-          left: `${motorcyclePosition}px`,
-          bottom: '-10%',
-          width: '740px',
+          left: `${motorcyclePosition * scale}px`,
+          bottom: `calc(-10% * ${scale})`,
+          width: `calc(740px * ${scale})`,
           height: 'auto',
         }}
       />
