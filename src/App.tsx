@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import AspectRatioContainer from './components/layout/AspectRatioContainer';
 
 import HomePage from './pages/home/HomePage';
+import SettingPage from './pages/home/SettingPage';
 import ScenarioSelectPage from './pages/scenarioSelect/ScenarioSelectPage';
 import EduScreen from './pages/ResultScreen/EduScreen';
 import Certificate from './pages/ResultScreen/Certificate';
@@ -32,7 +33,8 @@ function App() {
       <Routes>
         {/* 기본 화면들 */}
         <Route path="/" element={<HomePage />} />
-        <Route path="/scenarios" element={<EduScreen />} />
+        <Route path="/settings" element={<SettingPage />} />
+        <Route path="/scenarios" element={<ScenarioSelectPage />} />
         <Route path="/prologue" element={<ProloguePage />} />
 
         {/* 주행 관련 화면들 */}

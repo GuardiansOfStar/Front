@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import Background from '../../components/ui/Background';
 import CharacterAnimation from './CharacterAnimation';
-import Setting from '../../components/ui/SettingButton';
 import StartButton from '../../components/ui/StartButton';
 import RegionBubble from '../../components/ui/RegionBubble';
+import SettingButton from '../../components/ui/SettingButton';
 
 const title = '/assets/images/title.png';
 const team_name = '/assets/images/team_name.png'
@@ -47,7 +47,7 @@ const HomePage = () => {
     <div className="w-full h-full">
       {/* 화면 높이에 맞춰서 비율을 유지 */}
       <Background />
-      <Setting />
+      <SettingButton />
 
       {/* 말풍선 컴포넌트 */}
       <RegionBubble show={showBubble} />

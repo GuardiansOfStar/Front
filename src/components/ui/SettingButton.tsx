@@ -3,7 +3,7 @@ import { useScale } from '../../hooks/useScale';
 
 const setting = '/assets/images/setting.png'
 
-const Setting = () => {
+const SettingButton = () => {
     const navigate = useNavigate();
     const scale = useScale();
 
@@ -22,4 +22,4 @@ const Setting = () => {
     );
 };
 
-export default Setting;
+export default SettingButton;
