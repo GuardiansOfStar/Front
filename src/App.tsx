@@ -24,8 +24,10 @@ import PathChoiceQuest from './pages/quest/PathChoiceQuest';
 import HarvestQuest from './pages/quest/HarvestQuest';
 import MakgeolliQuest from './pages/quest/MakgeolliQuest';
 import DevelopmentNotice from './pages/DevelopmentNotice';
+import { useHowlerBgm } from "./hooks/useHowlerBgm";
 
 function App() {
+  useHowlerBgm("sample_base.ogg");
   return (
     <AspectRatioContainer fillMode="fit">
       <Routes>
