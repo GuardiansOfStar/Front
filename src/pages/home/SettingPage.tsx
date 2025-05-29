@@ -2,7 +2,7 @@ import Background from '../../components/ui/Background';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const allRegions = ['보성군', '보라색', '담양군', '강릉시', '강력반', '해남군', '목포시'];
+const allRegions = ['보성군', '보라색', '보라카이', '담양군', '강릉시', '강력반', '해남군', '목포시'];
 
 const SettingPage = () => {
     const [inputValue, setInputValue] = useState('');
