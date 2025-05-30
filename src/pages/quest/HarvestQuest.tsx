@@ -7,6 +7,7 @@ import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attem
 import GameTitle from '../../components/ui/GameTitle';
 import { useScale } from '../../hooks/useScale';
 import { useScore } from '../../context/ScoreContext';
+import { useCharacter } from '../../context/CharacterContext';
 
 // 이미지 임포트
 const fieldHarvestBoxes = '/assets/images/work_complete_with_applebox.png';
@@ -43,6 +44,9 @@ const HarvestQuest = () => {
 
   const scale = useScale();
   const { updateQuestScore } = useScore();
+
+  // character context
+  const { characterImages } = useCharacter();
 
   // 스케일 적용된 클릭 영역 크기
   const scaledClickAreaPadding = 20 * scale;
@@ -444,7 +448,7 @@ const HarvestQuest = () => {
       {gamePhase === 'failResult' && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <img
-            src={accident}
+            src={characterImages.fieldAccident}
             alt="사고 장면"
             className="absolute inset-0 w-full h-full object-cover"
           />

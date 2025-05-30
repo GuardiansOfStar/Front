@@ -27,9 +27,9 @@ const ScenarioItem = ({ scenario, isCurrentSelection }: ScenarioProps) => {
             return;
         }
         
-        // 선택 효과 후 프롤로그 페이지로 이동
+        // 선택 효과 후 캐릭터 선택 페이지로 이동
         setTimeout(() => {
-            navigate(`/prologue?scenario=${scenario.id}`);
+            navigate(`/character-select?sscenario=${scenario.id}`);
         }, 800);
     };
 

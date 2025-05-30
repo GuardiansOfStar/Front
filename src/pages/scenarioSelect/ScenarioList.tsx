@@ -71,7 +71,7 @@ const ScenarioList = () => {
         if (scenario.locked) return;
         
         setTimeout(() => {
-            navigate(`/prologue?scenario=${scenario.id}`);
+            navigate(`/character-select?scenario=${scenario.id}`); // sscenario -> scenario 수정
         }, 300 * Math.max(0.8, scale)); // 스케일 적용된 지연시간
     };
 

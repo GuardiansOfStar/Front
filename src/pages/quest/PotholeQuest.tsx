@@ -6,6 +6,7 @@ import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attem
 import { useScale } from '../../hooks/useScale';
 import GameTitle from '../../components/ui/GameTitle';
 import { useScore } from '../../context/ScoreContext';
+import { useCharacter } from '../../context/CharacterContext';
 
 // 이미지 임포트
 const drivingRoad = '/assets/images/driving_road.png';
@@ -40,6 +41,9 @@ const PotholeQuest = () => {
 
   const scale = useScale();
   const { updateQuestScore } = useScore();
+
+  // character context
+  const { characterImages } = useCharacter();
 
   const scaledHoverScale = 1.05 + (0.02 * scale);
   // URL 쿼리 파라미터 처리
@@ -393,9 +397,9 @@ const PotholeQuest = () => {
               transition={hideSuccessImages ? { duration: 0.8, ease: 'easeIn' } : { duration: 1, ease: 'easeOut' }}
             />
             
-            <motion.img 
-              src="/assets/images/mission2_success_grandfather.png"  
-              alt="오토바이 운전하는 할아버지" 
+            <motion.img
+              src={characterImages.mission2Success}  
+              alt="오토바이 운전하는 캐릭터" 
               className="absolute object-contain z-30"
               style={{
                 width: `calc(50% * ${scale})`,
@@ -529,7 +533,7 @@ const PotholeQuest = () => {
       {gamePhase === 'failResult' && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <img
-            src={potholeAccident}
+            src={characterImages.potholeAccident}
             alt="사고 장면"
             className="absolute inset-0 w-full h-full object-cover"
           />

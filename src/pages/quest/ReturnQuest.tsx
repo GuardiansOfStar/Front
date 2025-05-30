@@ -7,6 +7,7 @@ import GameTitle from '../../components/ui/GameTitle';
 import { useScale } from '../../hooks/useScale';
 import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attempts';
 import { useScore } from '../../context/ScoreContext';
+import { useCharacter } from '../../context/CharacterContext';
 
 // 이미지 임포트
 const homecomingTimeSettingBackground = '/assets/images/homecoming_time_setting_tree_road.png';
@@ -76,6 +77,9 @@ const ReturnQuest = () => {
 
   const scale = useScale();
   const { updateQuestScore } = useScore();
+
+  // character context
+  const { characterImages } = useCharacter();
 
   // 스케일 적용된 값들
   const scaledDragSensitivity = 1 * scale;
@@ -758,8 +762,8 @@ const ReturnQuest = () => {
             />
             
             <motion.img
-              src={mission5SuccessGrandfather}
-              alt="성공한 할아버지"
+              src={characterImages.mission5Success}
+              alt="성공한 캐릭터"
               className="absolute object-contain z-30"
               style={{ 
                 width: `calc(50% * ${scale})`,
@@ -834,7 +838,7 @@ const ReturnQuest = () => {
       {/* 오답 시퀀스들 */}
       {gamePhase === 'failSequence1' && (
         <motion.img
-          src={missionFailEveningDriving}
+          src={characterImages.missionFailEveningDriving}
           alt="야간 운전"
           className="absolute inset-0 w-full h-full object-cover"
           initial={{ opacity: 0 }}
@@ -882,7 +886,7 @@ const ReturnQuest = () => {
 
       {gamePhase === 'failSequence4' && (
         <motion.img
-          src={mission5FailGrandfather}
+          src={characterImages.mission5Fail}
           alt="사고"
           className="absolute inset-0 w-full h-full object-cover"
           initial={{ opacity: 0 }}
@@ -894,7 +898,7 @@ const ReturnQuest = () => {
       {gamePhase === 'failResult' && (
         <div className="absolute inset-0">
           <img
-            src={mission5FailGrandfather}
+            src={characterImages.mission5Fail}
             alt="사고 배경"
             className="absolute inset-0 w-full h-full object-cover"
           />

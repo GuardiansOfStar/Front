@@ -7,6 +7,7 @@ import { postQuestAttempt, AttemptPayload } from "../../services/endpoints/attem
 import GameTitle from '../../components/ui/GameTitle';
 import { useScale } from '../../hooks/useScale';
 import { useScore } from '../../context/ScoreContext';
+import { useCharacter } from '../../context/CharacterContext';
 
 // 이미지 임포트
 const gameBackground = '/assets/images/pre_drive_background.png';
@@ -130,6 +131,9 @@ const MemoryCardQuest: React.FC = () => {
 
   // api
   const { updateQuestScore } = useScore();
+
+  // character context
+  const { characterImages } = useCharacter();
 
   // URL 쿼리 파라미터
   useEffect(() => {
@@ -1111,7 +1115,6 @@ const MemoryCardQuest: React.FC = () => {
         </motion.div>
       )}
 
-      {/* helmetEquipped */}
       {gamePhase === 'helmetEquipped' && (
         <motion.div
           className="absolute inset-0 flex flex-col items-center justify-center z-10"
@@ -1130,7 +1133,7 @@ const MemoryCardQuest: React.FC = () => {
             />
           </div>
           <motion.img
-            src={grandfatherWithHelmet}
+            src={characterImages.withHelmet}
             alt="캐릭터"
             className="h-auto"
             style={{
