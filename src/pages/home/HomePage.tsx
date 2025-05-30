@@ -35,7 +35,7 @@ const HomePage = () => {
     setAnimationCompleted(true);
   };
 
-  // 페이지 로드 후 10초 후에 말풍선 표시, 5초 후에 말풍선 숨김
+  // 페이지 로드 후 2초 후에 말풍선 표시, 5초 후에 말풍선 숨김
   useEffect(() => {
     if (!hasRegion) {
       const showTimer = setTimeout(() => {
@@ -44,7 +44,7 @@ const HomePage = () => {
           setShowBubble(false);
         }, 5000);
         return () => clearTimeout(hideTimer);
-      }, 10000);
+      }, 2000);
       return () => clearTimeout(showTimer);
     }
   }, [hasRegion]);

@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attempts';
 import { useScale } from '../../hooks/useScale';
 import GameTitle from '../../components/ui/GameTitle';
+import { useScore } from '../../context/ScoreContext';
 
 // 이미지 임포트
 const drivingRoad = '/assets/images/driving_road.png';
@@ -38,10 +39,9 @@ const PotholeQuest = () => {
   const [hideSuccessImages, setHideSuccessImages] = useState(false);
 
   const scale = useScale();
+  const { updateQuestScore } = useScore();
 
-  const scaledClickAreaPadding = 20 * scale;
-  const scaledHoverScale = 1.05 + (0.02 * scale); // 스케일에 따른 호버 효과 조정
-
+  const scaledHoverScale = 1.05 + (0.02 * scale);
   // URL 쿼리 파라미터 처리
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -119,7 +119,10 @@ const PotholeQuest = () => {
     };
 
     postQuestAttempt(sessionId, qId, payload)
-      .then((res) => {console.log('✅ 시도 기록 완료:', res.data.attempt_id);})
+      .then((res) => {
+        console.log('✅ 시도 기록 완료:', res.data.attempt_id);
+        updateQuestScore("pothole", scoreAwarded);
+      })
       .catch((err) => {console.error('❌ 시도 기록 실패', err);});
 
     const getScaledDuration = (baseDuration: number) => {
