@@ -36,18 +36,16 @@ const HomePage = () => {
   };
 
   // 페이지 로드 후 10초 후에 말풍선 표시, 5초 후에 말풍선 숨김
+  // 애니메이션 완료 후 버블 표시 useEffect
   useEffect(() => {
-    if (!hasRegion) {
+    if (animationCompleted) {
       const showTimer = setTimeout(() => {
         setShowBubble(true);
-        const hideTimer = setTimeout(() => {
-          setShowBubble(false);
-        }, 5000);
-        return () => clearTimeout(hideTimer);
-      }, 10000);
+            }, 2000); // 애니메이션 끝난 후 2초 뒤 등장
       return () => clearTimeout(showTimer);
     }
-  }, [hasRegion]);
+  }, [animationCompleted]);
+
 
   return (
     <div className="w-full h-full">
