@@ -6,6 +6,7 @@ import BackButton from '../../components/ui/BackButton';
 import { postQuestAttempt, AttemptPayload } from "../../services/endpoints/attempts";
 import GameTitle from '../../components/ui/GameTitle';
 import { useScale } from '../../hooks/useScale';
+import { useScore } from '../../context/ScoreContext';
 
 // 이미지 임포트
 const gameBackground = '/assets/images/pre_drive_background.png';
@@ -127,6 +128,9 @@ const MemoryCardQuest: React.FC = () => {
     vertical: 16 * scale
   };
 
+  // api
+  const { updateQuestScore } = useScore();
+
   // URL 쿼리 파라미터
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -212,7 +216,7 @@ const MemoryCardQuest: React.FC = () => {
         navigate(
           `/score?scenario=${scenarioId}&quest=${questId}&score=${finalScore}&correct=true`
         );
-      }, getScaledDuration(3000)); // 3초 후 자동 전환
+      }, getScaledDuration(3000));
     }
     // foundMatch와 showAnswer, helmetEquipped의 자동 전환 제거
     else if (gamePhase === 'wrongPairFeedback') {
@@ -239,11 +243,11 @@ const MemoryCardQuest: React.FC = () => {
     }
     // showRemainingTries 단계 처리
     else if (gamePhase === 'showRemainingTries') {
-      // 3초 후 게임으로 돌아가기 (기존 1초에서 3초로 변경)
+      // 3초 후 게임으로 돌아가기
       autoTransitionTimerRef.current = window.setTimeout(() => {
         setCards(prev => prev.map(c => ({ ...c, isFlipped: false })));
         setGamePhase('game');
-      }, getScaledDuration(3000)); // 1000 -> 3000으로 변경
+      }, getScaledDuration(3000));
     }
     else if (gamePhase === 'tooManyAttempts') {
       autoTransitionTimerRef.current = window.setTimeout(() => {
@@ -282,15 +286,18 @@ const MemoryCardQuest: React.FC = () => {
     setFinalScore(score);
   }, [attempts]);
 
-  // API 호출
+  // API call && context update
   useEffect(() => {
     if (gamePhase === "helmetEquipped") {
       const sessionId = localStorage.getItem("session_id");
-      console.log("session_id : ", sessionId);
-      if (!sessionId) return console.error("session_id 없음");
-
-      const questId = "helmet";
-
+      
+      if (!sessionId) {
+        console.error("❌ session_id가 없습니다");
+        return;
+      }
+      
+      const questIdForApi = "helmet";
+      
       const payload: AttemptPayload = {
         attempt_number: attempts,
         score_awarded: finalScore,
@@ -299,15 +306,17 @@ const MemoryCardQuest: React.FC = () => {
         response_time: 0,
       };
 
-      postQuestAttempt(sessionId, questId, payload)
+      postQuestAttempt(sessionId, questIdForApi, payload)
         .then((res) => {
           console.log("✅ 시도 기록 완료:", res.data.attempt_id);
+          // score update to Context
+          updateQuestScore("helmet", finalScore);
         })
         .catch((err) => {
           console.error("❌ 시도 기록 실패", err);
         });
     }
-  }, [gamePhase, attempts, finalScore]);
+  }, [gamePhase, attempts, finalScore, updateQuestScore]);
 
   // 선물 애니메이션 - 스케일 적용
   useEffect(() => {
@@ -352,7 +361,7 @@ const MemoryCardQuest: React.FC = () => {
     window.setTimeout(() => {
       setGamePhase('game');
       setCards(prev => prev.map(c => ({ ...c, isFlipped: false })));
-    }, 3000 * Math.max(0.8, scale)); // 스케일 적용
+    }, 3000 * Math.max(0.8, scale));
   };
 
   // 카드 섞기 함수
@@ -403,7 +412,7 @@ const MemoryCardQuest: React.FC = () => {
             window.setTimeout(() => setGamePhase('foundMatch'), 400 * Math.max(0.8, scale));
           }, 400 * Math.max(0.8, scale));
         } else {
-          // 정답이 아닌 같은 쌍 선택 - setShowHintTitle(false) 제거
+          // 정답이 아닌 같은 쌍 선택
           window.setTimeout(() => {
             setFeedbackMessage("앗, 준비한 선물이 아니에요!\n안전모가 그려진 카드 쌍을 찾아주세요!");
             setGamePhase('wrongMatchFeedback');
@@ -421,7 +430,7 @@ const MemoryCardQuest: React.FC = () => {
           }, 800 * Math.max(0.8, scale));
         }
       } else {
-        // 서로 다른 쌍 선택 - setShowHintTitle(false) 제거
+        // 서로 다른 쌍 선택
         window.setTimeout(() => {
           setFeedbackMessage("앗, 서로 다른 그림이에요!\n안전모가 그려진 카드 쌍을 찾아주세요");
           setGamePhase('wrongPairFeedback');
@@ -472,6 +481,7 @@ const MemoryCardQuest: React.FC = () => {
   const showConfirmButton = 
     gamePhase === 'foundMatch' || 
     gamePhase === 'showAnswer';
+
   // 카드 컨테이너 패딩 조건부 설정
   const gameContentVisible = 
     gamePhase === 'showCards' || 
@@ -480,8 +490,7 @@ const MemoryCardQuest: React.FC = () => {
     gamePhase === 'wrongMatchFeedback'||
     gamePhase === 'tooManyAttempts' ||
     gamePhase === 'reshowCards' ||
-    gamePhase === 'showRemainingTries';  // 이 줄 추가
-
+    gamePhase === 'showRemainingTries';
 
   return (
     <div className="relative w-full h-full">
@@ -510,6 +519,7 @@ const MemoryCardQuest: React.FC = () => {
         >
         </div>
       )}
+
       <div 
         className="absolute z-50"
         style={{

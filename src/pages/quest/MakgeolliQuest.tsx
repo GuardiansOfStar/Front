@@ -6,6 +6,7 @@ import FieldRoadSliding from './FieldRoadSliding';
 import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attempts';
 import GameTitle from '../../components/ui/GameTitle';
 import { useScale } from '../../hooks/useScale';
+import { useScore } from '../../context/ScoreContext';
 
 // 이미지 임포트
 const orchardWorkBackground = '/assets/images/mission3_working_screen.png';
@@ -101,6 +102,7 @@ const MakgeolliQuest = () => {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   
   const scale = useScale();
+  const { updateQuestScore } = useScore();
   
   // URL 쿼리 파라미터 처리
   useEffect(() => {
@@ -251,7 +253,10 @@ const MakgeolliQuest = () => {
     };
 
     postQuestAttempt(sessionId, "Makgeolli", payload)
-      .then(res => console.log("✅ 시도 기록 완료:", res.data.attempt_id))
+      .then((res) => {
+        console.log('✅ 시도 기록 완료:', res.data.attempt_id);
+        updateQuestScore("Makgeolli", finalScore);
+      })
       .catch(err => console.error("❌ 시도 기록 실패", err));
   }, [gamePhase]);
 
@@ -356,11 +361,6 @@ const MakgeolliQuest = () => {
       initializeGame();
       setGamePhase('gamePlay');
     }
-  };
-  
-  // 홈으로 이동 핸들러
-  const handleGoHome = () => {
-    navigate('/');
   };
   
   // 트레이 컨테이너 렌더링 함수
@@ -503,7 +503,6 @@ const MakgeolliQuest = () => {
         </div>
       )}
 
-      {/* 새참 아주머니 소개 화면 */}
       {gamePhase === 'mealLadyIntro' && (
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute inset-x-0 bottom-0 flex justify-center">

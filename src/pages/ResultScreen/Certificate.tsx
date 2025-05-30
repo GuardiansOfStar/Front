@@ -1,7 +1,10 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useScale } from '../../hooks/useScale';
+import { useScore } from '../../context/ScoreContext';
+import { completeSession } from '../../services/endpoints/session';
+
 import Background from '../../components/ui/Background';
-import HomeButton from '../../components/ui/HomeButton';
 
 const smiling_grandchildren = '/assets/images/grandchildren.png'
 const get_certificate = '/assets/images/get_certificate.png'
@@ -10,6 +13,23 @@ const drive_end_button = '/assets/images/drive_end_button.png'
 const Certificate = () => {
   const navigate = useNavigate();
   const scale = useScale();
+
+  // session end api
+  const { totalScore } = useScore();
+
+  useEffect(() => {
+    const sessionId = localStorage.getItem('session_id');
+    if (sessionId) {
+      completeSession(sessionId)
+        .then(() => {
+          console.log('✅ 세션 완료 처리됨', { totalScore });
+        })
+        .catch(err => {
+          console.error('❌ 세션 완료 실패:', err);
+        });
+    }
+  }, [totalScore]);
+
 
   return (
     <div className="relative w-full h-full">
