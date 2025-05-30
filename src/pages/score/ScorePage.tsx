@@ -90,7 +90,7 @@ const ScorePage = () => {
           console.log("알 수 없는 미션 ID입니다. 홈으로 이동합니다.");
           navigate('/');
       }
-    }, 3000);
+    }, 4000);
     
     return () => clearTimeout(timer);
   }, [location, navigate]);
@@ -136,20 +136,20 @@ const ScorePage = () => {
               transition-all duration-700 ease-out
               ${showScore 
                 ? 'transform scale-100 opacity-100' 
-                : 'transform scale-50 opacity-0'
+                : 'transform scale-100 opacity-0'  // scale-50에서 scale-100으로 변경
               }
             `}
             style={{
               transform: showScore 
                 ? `scale(${1.05 * scale})` 
-                : `scale(${0.5 * scale})`,
+                : `scale(${1.05 * scale})`,  // 0.5에서 1.05로 변경하여 크기 변화 제거
               borderWidth: `calc(16px * ${scale})`,
               borderRadius: `calc(80px * ${scale})`,
               paddingLeft: `calc(160px * ${scale})`,
               paddingRight: `calc(160px * ${scale})`,
               paddingTop: `calc(20px * ${scale})`,
               paddingBottom: `calc(20px * ${scale})`,
-              animation: showScore ? 'scoreAppear 0.7s ease-out 0.2s, scoreBounce 0.5s ease-out 0.9s' : 'none'
+              animation: showScore ? 'fadeInBox 0.7s ease-out' : 'none'  // 새로운 애니메이션으로 변경
             }}
           >
             <span 
@@ -182,17 +182,11 @@ const ScorePage = () => {
           }
         }
         
-        @keyframes scoreAppear {
+        @keyframes fadeInBox {
           0% {
-            transform: scale(0.3) rotate(-10deg);
             opacity: 0;
           }
-          50% {
-            transform: scale(1.15) rotate(5deg);
-            opacity: 0.8;
-          }
           100% {
-            transform: scale(1.05) rotate(0deg);
             opacity: 1;
           }
         }
