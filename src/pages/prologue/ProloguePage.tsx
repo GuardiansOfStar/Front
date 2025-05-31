@@ -39,10 +39,11 @@ const ProloguePage = () => {
 
     const alreadyHasUser = localStorage.getItem("user_id");
     const alreadyHasSession = localStorage.getItem("session_id");
-    
+    console.log("(O) user_id : ", alreadyHasUser);
+    console.log("(O) session_id : ", alreadyHasSession);
     // 한 번만 생성
     if (id && !alreadyHasUser && !alreadyHasSession) {
-      createGuestUser("0") // 예산군 villageId : 0
+      createGuestUser("0") // 마을 정보 반영 -> settingPage 
         .then((userRes) => {
           const userId = userRes.data.user_id;
           console.log("!!!", userRes.data);

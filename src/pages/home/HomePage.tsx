@@ -9,6 +9,14 @@ const title = '/assets/images/title.png';
 const team_name = '/assets/images/team_name.png'
 
 const HomePage = () => {
+  // localStorage에 저장했던 session_id, user_id 초기화!
+  useEffect(() => {
+    localStorage.removeItem("session_id");
+    localStorage.removeItem("user_id");
+    //마을 정보는 놔둘 예정
+  }, []);
+
+
   // ✅ 지역 설정 여부 확인 (localStorage에 selectedRegion이 있는지)
   const [hasRegion, setHasRegion] = useState(() => {
     return localStorage.getItem('selectedRegion') !== null;

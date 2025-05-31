@@ -1,5 +1,22 @@
 import api from "../api";
 
+export interface QuestResult {
+  quest_id: string;
+  success: boolean;
+  attempts: number;
+}
+
+export interface SessionDetail {
+  session_id: string;
+  user_id: string;
+  scenario_id: string;
+  start_time: { _seconds: number; _nanoseconds: number };
+  end_time: null | { _seconds: number; _nanoseconds: number };
+  total_attempts: number;
+  total_score: number;
+  quests: QuestResult[];
+}
+
 export function createSession(userId: string) {
   return api.post("/sessions", {
     user_id: userId,
@@ -7,15 +24,7 @@ export function createSession(userId: string) {
   });
 }
 
-// session total score management api
-export function updateSessionScore(sessionId: string, totalScore: number) {
-  return api.put(`/sessions/${sessionId}`, {
-    total_score: totalScore
-  });
-}
+export function getSession(sessionId: string) {
+  return api.get<SessionDetail>(`/sessions/${sessionId}`);
 
-export function completeSession(sessionId: string) {
-  return api.put(`/sessions/${sessionId}/complete`, {
-    end_time: new Date().toISOString()
-  });
 }
