@@ -26,4 +26,5 @@ export function createSession(userId: string) {
 
 export function getSession(sessionId: string) {
   return api.get<SessionDetail>(`/sessions/${sessionId}`);
+
 }

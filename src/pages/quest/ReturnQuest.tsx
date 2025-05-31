@@ -6,6 +6,7 @@ import HomeButton from '../../components/ui/HomeButton';
 import GameTitle from '../../components/ui/GameTitle';
 import { useScale } from '../../hooks/useScale';
 import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attempts';
+import { useScore } from '../../context/ScoreContext';
 
 // 이미지 임포트
 const homecomingTimeSettingBackground = '/assets/images/homecoming_time_setting_tree_road.png';
@@ -74,6 +75,7 @@ const ReturnQuest = () => {
   const [currentExactHour, setCurrentExactHour] = useState(7);
 
   const scale = useScale();
+  const { updateQuestScore } = useScore();
 
   // 스케일 적용된 값들
   const scaledDragSensitivity = 1 * scale;
@@ -353,7 +355,10 @@ const ReturnQuest = () => {
             };
 
             postQuestAttempt(sessionId, "Return", payload)
-              .then(res => console.log("✅ 시도 기록 완료:", res.data.attempt_id))
+              .then((res) => {
+                console.log("✅ 시도 기록 완료:", res.data.attempt_id);
+                updateQuestScore("Return", 20);
+              })
               .catch(err => console.error("❌ 시도 기록 실패", err));
 
             navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=20&correct=true`);
@@ -402,8 +407,11 @@ const ReturnQuest = () => {
         };
 
         postQuestAttempt(sessionId, "Return", payload)
-          .then(res => console.log("✅ 시도 기록 완료:", res.data.attempt_id))
-          .catch(err => console.error("❌ 시도 기록 실패", err));
+          .then((res) => {
+            console.log('✅ 시도 기록 완료:', res.data.attempt_id);
+            updateQuestScore("Return", 10);
+          })
+          .catch((err) => {console.error('❌ 시도 기록 실패', err);});
 
         navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=10&correct=false`);
       }, getScaledDuration(8000));
