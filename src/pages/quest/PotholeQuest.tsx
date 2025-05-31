@@ -14,7 +14,7 @@ const smallPothole = '/assets/images/small_pothole.png';
 const potholeAccident = '/assets/images/grandfather_pothole_accident.png';
 const dangerWarning = '/assets/images/danger_warning.png';
 const successCircle = '/assets/images/success_circle.png';
-const starCharacter = '/assets/images/star_character.png';
+export const starCharacter = '/assets/images/star_character.png';
 const confirmButton = '/assets/images/confirm_button.png';
 
 // 게임 단계 정의
