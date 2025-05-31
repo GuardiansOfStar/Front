@@ -46,7 +46,6 @@ const HomePage = () => {
     }
   }, [animationCompleted]);
 
-
   return (
     <div className="w-full h-full">
       <Background />
@@ -54,19 +53,22 @@ const HomePage = () => {
 
       {/* ✅ 선택된 지역이 있을 경우 우측 상단에 텍스트 표시 */}
       {selectedRegion && (
-        <div>
-          {/* ✅ 지역 설정 완료 배경 이미지 */}
-          <img
-            src='/assets/images/location_settings.png'
-            alt='지역설정 완료배경'
-            className='absolute top-[54px] right-[140px] w-[175px] z-50'
-          />
-          {/* ✅ 중앙 위에 올라오는 텍스트 */}
-          <div className="absolute top-[63px] right-[15.5%]
-          text-[35px] font-black text-green-800 whitespace-nowrap">
-            {selectedRegion}
-          </div>
+        <div className="absolute top-[50px] right-[137px]
+        flex items-center justify-center gap-1
+        w-auto px-4 py-2 bg-green-400 bg-opacity-10 rounded-[20px] z-50 shadow-md">
+        
+        {/* ✅ GPS 이미지 */}
+        <img
+          src="/assets/images/gps_icon.png"
+          alt="gps 아이콘"
+          className="w-[40px]"
+        />
+        
+        {/* ✅ 지역명 텍스트 */}
+        <div className="text-[34px] font-extrabold text-green-700 whitespace-nowrap">
+          {selectedRegion}
         </div>
+      </div>
       )}
 
       <RegionBubble show={showBubble} />

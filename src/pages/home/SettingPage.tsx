@@ -25,19 +25,26 @@ const locationData = {
 const SettingPage = () => {
     const [inputValue, setInputValue] = useState('');
     const [selectedRegion, setSelectedRegion] = useState('');
-    // 👁 자동완성 목록 표시 여부
     const [showSuggestions, setShowSuggestions] = useState(false);
+    const [registeredRegions, setRegisteredRegions] = useState([
+        '보성군', '보라카이', '담양군', '강릉시', '해남군', '목포시',
+    ]);
     const navigate = useNavigate();
 
-    // 모든 지역명 추출 후 가나다 순 정렬
-    const allRegions = Object.values(locationData).flat(); // 시군구 전부 모으기
+    const allRegions = Object.values(locationData).flat();
     const sortedRegions = allRegions
-        .filter(region => region.includes(inputValue)) // 입력된 단어 포함 여부
-        .sort((a, b) => a.localeCompare(b, 'ko')); // 한글 가나다순 정렬
+        .filter(region => region.includes(inputValue))
+        .sort((a, b) => a.localeCompare(b, 'ko'));
 
     const handleSubmit = () => {
         if (selectedRegion) {
         localStorage.setItem('selectedRegion', selectedRegion);
+
+        // ✅ 리스트에 중복 없이 추가
+        setRegisteredRegions(prev =>
+            prev.includes(selectedRegion) ? prev : [...prev, selectedRegion]
+        );
+
         navigate('/');
         } else {
         alert('지역을 선택해주세요.');
@@ -62,12 +69,12 @@ const SettingPage = () => {
             type="text"
             placeholder="지역명을 입력하세요"
             value={inputValue}
-            onChange={(e) => { //사용자가 입력창에 sth 입력할 때마다 호출
-            setInputValue(e.target.value); //입력한 값을 상태 inputValue에 저장
+            onChange={(e) => {
+            setInputValue(e.target.value);
             setShowSuggestions(true);
             }}
-            onFocus={() => setShowSuggestions(true)} // 입력창 클릭 시 자동완성 표시. 포커스: 현재 키보드나 입력을 어디에 하고 있는지를 브라우저가 인식하는 상태.
-            onBlur={() => setTimeout(() => setShowSuggestions(false), 800)} // 포커스 잃으면 숨김 (만약 바로 setShowSuggestions(false)만 쓰면,사용자가 추천 목록 버튼을 클릭하기 전에 자동완성 목록이 사라져서 클릭이 무시됩니다.)
+            onFocus={() => setShowSuggestions(true)}
+            onBlur={() => setTimeout(() => setShowSuggestions(false), 800)}
             className="absolute left-[191px] top-[143px] z-50 w-[641px] h-[130px] bg-[#0DA429] border-[7px] border-[#0E8E12] shadow-[inset_0px_4px_4px_rgba(0,0,0,0.25)] rounded-[20px] text-[#FFFAFA] text-[50px] leading-[120%] placeholder-[#FFFAFA] placeholder:text-[50px] placeholder:leading-[120%] font-bold text-center px-4"
         />
 
@@ -78,9 +85,9 @@ const SettingPage = () => {
                 <button
                 key={region}
                 onClick={() => {
-                    setSelectedRegion(region); // 선택된 지역으로 저장
-                    setInputValue(region);     // 입력창에도 반영
-                    setShowSuggestions(false); // 자동완성 닫기
+                    setSelectedRegion(region);
+                    setInputValue(region);
+                    setShowSuggestions(false);
                 }}
                 className={`w-full h-[100px] flex justify-center items-center ${selectedRegion === region ? 'bg-green-700' : 'bg-[#0DA429]'} text-white text-[40px] font-bold border-[5px] border-[#0E8E12] transition-colors duration-200 rounded-[20px]`}
                 >
@@ -88,6 +95,37 @@ const SettingPage = () => {
                 </button>
             ))}
             </div>
+        )}
+
+        {!inputValue && (
+            <>
+            <div
+                className="absolute left-[187px] top-[331px] w-[521px] h-[34px] text-[30px] leading-[120%] font-black text-[#0E8E12]"
+            >
+            이미 등록된 지역 목록
+            </div>
+
+            <div className="absolute left-[194px] top-[380px] max-w-[90%] w-[640px] overflow-x-auto">
+                <div className="flex gap-4">
+                {registeredRegions.map((region) => (
+                    <button
+                    key={region}
+                    onClick={() => setSelectedRegion(region)}
+                    className={`
+                        w-[120px] h-[67px]
+                        ${selectedRegion === region ? 'bg-green-700' : 'bg-[rgba(11,159,38,0.5)]'}
+                        border-[7px] border-[#0E8E12]
+                        rounded-[20px]
+                        text-white text-[20px] font-extrabold
+                        flex-shrink-0 whitespace-nowrap
+                    `}
+                    >
+                    {region}
+                    </button>
+                ))}
+                </div>
+            </div>
+            </>
         )}
 
         {/* 선택하기 버튼 */}
@@ -98,7 +136,7 @@ const SettingPage = () => {
             className="absolute bottom-[70px] left-1/2 transform -translate-x-1/2 
             w-[234px] h-auto z-30 cursor-pointer hover:scale-90 transition-transform duration-200"
         />
-        </div>
+    </div>
     );
 };
 
