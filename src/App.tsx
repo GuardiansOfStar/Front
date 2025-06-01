@@ -1,6 +1,6 @@
 // Front/src/App.tsx
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ScoreProvider } from './context/ScoreContext';
+// import { ScoreProvider } from './context/ScoreContext';
 import { CharacterProvider } from './context/CharacterContext';
 import AspectRatioContainer from './components/layout/AspectRatioContainer';
 
@@ -31,7 +31,7 @@ import VillageRank from './pages/ResultScreen/VillageRank';
 
 function App() {
  return (
-   <ScoreProvider>
+   //<ScoreProvider>
      <CharacterProvider>
        <AspectRatioContainer fillMode="fit">
          <Routes>
@@ -64,12 +64,13 @@ function App() {
            <Route path="/memory" element={<Memory />} />
            <Route path='/rank' element={<VillageRank/>} />
 
+
            {/* 추가: 개발 중 알림 페이지 */}
            <Route path="/development-notice" element={<DevelopmentNotice />} />
          </Routes>
        </AspectRatioContainer>
      </CharacterProvider>
-   </ScoreProvider>
+   //</ScoreProvider>
  );
 }
 

@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import GameTitle from '../../components/ui/GameTitle';
 import { useScale } from '../../hooks/useScale';
 import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attempts';
-import { useScore } from '../../context/ScoreContext';
+// import { useScore } from '../../context/ScoreContext';
 import { useCharacter } from '../../context/CharacterContext';
 
 // 이미지 임포트
@@ -76,7 +76,7 @@ const ReturnQuest = () => {
   const [currentExactHour, setCurrentExactHour] = useState(7);
 
   const scale = useScale();
-  const { updateQuestScore } = useScore();
+  // const { updateQuestScore } = useScore();
 
   // character context
   const { characterImages } = useCharacter();
@@ -419,7 +419,7 @@ const ReturnQuest = () => {
       postQuestAttempt(sessionId, "Return", payload)
         .then((res) => {
           console.log('✅ 시도 기록 완료:', res.data.attempt_id);
-          updateQuestScore("Return", 10);
+          // updateQuestScore("Return", 10);
         })
         .catch((err) => {console.error('❌ 시도 기록 실패', err);});
 

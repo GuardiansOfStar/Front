@@ -9,6 +9,14 @@ const title = '/assets/images/title.png';
 const team_name = '/assets/images/team_name.png'
 
 const HomePage = () => {
+  // localStorage에 저장했던 session_id, user_id 초기화!
+  useEffect(() => {
+    localStorage.removeItem("session_id");
+    localStorage.removeItem("user_id");
+    //마을 정보는 놔둘 예정
+  }, []);
+
+
   // ✅ 지역 설정 여부 확인 (localStorage에 selectedRegion이 있는지)
   const [hasRegion, setHasRegion] = useState(() => {
     return localStorage.getItem('selectedRegion') !== null;
@@ -35,9 +43,9 @@ const HomePage = () => {
     setAnimationCompleted(true);
   };
 
-  // 페이지 로드 후 2초 후에 말풍선 표시, 5초 후에 말풍선 숨김
+  // 애니메이션 완료 후 버블 표시 useEffect, 5초 후에 말풍선 숨김
   useEffect(() => {
-    if (!hasRegion) {
+    if (animationCompleted) {
       const showTimer = setTimeout(() => {
         setShowBubble(true);
         const hideTimer = setTimeout(() => {
@@ -47,7 +55,8 @@ const HomePage = () => {
       }, 2000);
       return () => clearTimeout(showTimer);
     }
-  }, [hasRegion]);
+  }, [animationCompleted]);
+
 
   return (
     <div className="w-full h-full">
@@ -56,19 +65,22 @@ const HomePage = () => {
 
       {/* ✅ 선택된 지역이 있을 경우 우측 상단에 텍스트 표시 */}
       {selectedRegion && (
-        <div>
-          {/* ✅ 지역 설정 완료 배경 이미지 */}
-          <img
-            src='/assets/images/location_settings.png'
-            alt='지역설정 완료배경'
-            className='absolute top-[54px] right-[140px] w-[175px] z-50'
-          />
-          {/* ✅ 중앙 위에 올라오는 텍스트 */}
-          <div className="absolute top-[63px] right-[15.5%]
-          text-[35px] font-black text-green-800 whitespace-nowrap">
-            {selectedRegion}
-          </div>
+        <div className="absolute top-[50px] right-[137px]
+        flex items-center justify-center gap-1
+        w-auto px-4 py-2 bg-green-400 bg-opacity-10 rounded-[20px] z-50 shadow-md">
+        
+        {/* ✅ GPS 이미지 */}
+        <img
+          src="/assets/images/gps_icon.png"
+          alt="gps 아이콘"
+          className="w-[40px]"
+        />
+        
+        {/* ✅ 지역명 텍스트 */}
+        <div className="text-[34px] font-extrabold text-green-700 whitespace-nowrap">
+          {selectedRegion}
         </div>
+      </div>
       )}
 
       <RegionBubble show={showBubble} />

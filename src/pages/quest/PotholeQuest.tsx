@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attempts';
 import { useScale } from '../../hooks/useScale';
 import GameTitle from '../../components/ui/GameTitle';
-import { useScore } from '../../context/ScoreContext';
+// import { useScore } from '../../context/ScoreContext';
 import { useCharacter } from '../../context/CharacterContext';
 
 // 이미지 임포트
@@ -15,7 +15,7 @@ const smallPothole = '/assets/images/small_pothole.png';
 const potholeAccident = '/assets/images/grandfather_pothole_accident.png';
 const dangerWarning = '/assets/images/danger_warning.png';
 const successCircle = '/assets/images/success_circle.png';
-const starCharacter = '/assets/images/star_character.png';
+export const starCharacter = '/assets/images/star_character.png';
 const confirmButton = '/assets/images/confirm_button.png';
 
 // 게임 단계 정의
@@ -40,7 +40,7 @@ const PotholeQuest = () => {
   const [hideSuccessImages, setHideSuccessImages] = useState(false);
 
   const scale = useScale();
-  const { updateQuestScore } = useScore();
+  // const { updateQuestScore } = useScore();
 
   // character context
   const { characterImages } = useCharacter();
@@ -125,7 +125,7 @@ const PotholeQuest = () => {
     postQuestAttempt(sessionId, qId, payload)
       .then((res) => {
         console.log('✅ 시도 기록 완료:', res.data.attempt_id);
-        updateQuestScore("pothole", scoreAwarded);
+        // updateQuestScore("pothole", scoreAwarded);
       })
       .catch((err) => {console.error('❌ 시도 기록 실패', err);});
 

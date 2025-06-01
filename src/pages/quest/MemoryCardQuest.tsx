@@ -6,8 +6,8 @@ import BackButton from '../../components/ui/BackButton';
 import { postQuestAttempt, AttemptPayload } from "../../services/endpoints/attempts";
 import GameTitle from '../../components/ui/GameTitle';
 import { useScale } from '../../hooks/useScale';
-import { useScore } from '../../context/ScoreContext';
-import { useCharacter } from '../../context/CharacterContext';
+// import { useScore } from '../../context/ScoreContext';
+import { useCharacter } from 'context/CharacterContext';
 
 // 이미지 임포트
 const gameBackground = '/assets/images/pre_drive_background.png';
@@ -130,7 +130,7 @@ const MemoryCardQuest: React.FC = () => {
   };
 
   // api
-  const { updateQuestScore } = useScore();
+  // const { updateQuestScore } = useScore();
 
   // character context
   const { characterImages } = useCharacter();
@@ -314,13 +314,13 @@ const MemoryCardQuest: React.FC = () => {
         .then((res) => {
           console.log("✅ 시도 기록 완료:", res.data.attempt_id);
           // score update to Context
-          updateQuestScore("helmet", finalScore);
+          // updateQuestScore("helmet", finalScore);
         })
         .catch((err) => {
           console.error("❌ 시도 기록 실패", err);
         });
     }
-  }, [gamePhase, attempts, finalScore, updateQuestScore]);
+  }, [gamePhase, attempts, finalScore]);
 
   // 선물 애니메이션 - 스케일 적용
   useEffect(() => {

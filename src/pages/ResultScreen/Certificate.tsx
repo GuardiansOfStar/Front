@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useScale } from '../../hooks/useScale';
-import { useScore } from '../../context/ScoreContext';
-import { completeSession } from '../../services/endpoints/session';
+// import { useScore } from '../../context/ScoreContext';
+//import { completeSession } from '../../services/endpoints/session';
 
 import Background from '../../components/ui/Background';
 
@@ -14,6 +14,7 @@ const Certificate = () => {
   const navigate = useNavigate();
   const scale = useScale();
 
+  /*
   // session end api
   const { totalScore } = useScore();
 
@@ -29,6 +30,7 @@ const Certificate = () => {
         });
     }
   }, [totalScore]);
+  */
 
 
   return (
