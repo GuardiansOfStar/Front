@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-import { createGuestUser } from '../../services/endpoints/user';
+// import { createGuestUser } from '../../services/endpoints/user';
 import { createSession } from '../../services/endpoints/session';
 
 import { useScale } from '../../hooks/useScale';
