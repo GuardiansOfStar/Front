@@ -48,7 +48,7 @@ const getBackgroundColor = (hour: number): string => {
       case 7: return 'linear-gradient(to bottom, #FF8C69 0%, #FF6347 40%, #CD5C5C 100%)';
       case 8: return 'linear-gradient(to bottom, #4B0082 0%, #2F4F4F 40%, #000080 100%)';
       case 9: return 'linear-gradient(to bottom, #191970 0%, #000000 50%, #0D0D0D 100%)';
-      default: return 'linear-gradient(to bottom, #FF6347 0%, #FF4500 40%, #8B0000 100%)';
+      default: return '#000000';
     }
   };
 
@@ -356,7 +356,7 @@ const ReturnQuest = () => {
     else if (gamePhase === 'failSequence1') {
       timer = setTimeout(() => {
         setGamePhase('failSequence2');
-      }, getScaledDuration(3000));
+      }, getScaledDuration(2000));
     }
     else if (gamePhase === 'failSequence2') {
       timer = setTimeout(() => {
@@ -366,12 +366,12 @@ const ReturnQuest = () => {
     else if (gamePhase === 'failSequence3') {
       timer = setTimeout(() => {
         setGamePhase('failSequence4');
-      }, getScaledDuration(3000));
+      }, getScaledDuration(2000));
     }
     else if (gamePhase === 'failSequence4') {
       timer = setTimeout(() => {
         setGamePhase('failResult');
-      }, getScaledDuration(3000));
+      }, getScaledDuration(2000));
     }
     else if (gamePhase === 'failResult') {
       timer = setTimeout(() => {
@@ -455,9 +455,11 @@ const ReturnQuest = () => {
         className="absolute inset-0 transition-all ease-out"
         style={{ 
           background: gamePhase === 'gamePlay' ? getInterpolatedBackgroundColor(currentExactHour) : 
-                     gamePhase === 'successResult' ? getBackgroundColor(selectedHour) :
-                     gamePhase === 'failSequence3' ? '#000000' :
-                     'linear-gradient(to bottom, #FFE4B5 0%, #FFA07A 100%)',
+                    gamePhase === 'successResult' ? getBackgroundColor(selectedHour) :
+                    (gamePhase === 'failSequence1' || gamePhase === 'failSequence2' || 
+                      gamePhase === 'failSequence3' || gamePhase === 'failSequence4') ? '#000000' :
+                    gamePhase === 'failResult' ? '#000000' :
+                    'linear-gradient(to bottom, #FFE4B5 0%, #FFA07A 100%)',
           transitionDuration: `${200 * Math.max(0.8, scale)}ms`
         }}
       />
@@ -884,26 +886,40 @@ const ReturnQuest = () => {
 
       {gamePhase === 'failSequence3' && (
         <div className="absolute inset-0">
+          {/* 깜깜한 배경 */}
+          <div className="absolute inset-0 bg-black z-0" />
+          
+          {/* 플래시 깜빡임 효과 */}
           <motion.img
             src={goraniFlash}
             alt="플래시"
             className="absolute inset-0 w-full h-full object-cover z-10"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
+            initial={{ opacity: 0 }}
+            animate={{ 
+              opacity: [0, 1, 0, 1, 0, 1] 
+            }}
+            transition={{
+              duration: 1.2 * Math.max(0.8, scale),
+              times: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 1],
+              ease: "linear"
+            }}
           />
           
+          {/* 고라니 등장 - 마지막 플래시와 함께 */}
           <motion.img
             src={goraniFace}
             alt="고라니"
-            className="absolute bottom-0 right-0 z-0"
+            className="absolute bottom-0 right-0 z-5"
             style={{ 
               width: `calc(700px * ${scale})`, 
               height: `calc(700px * ${scale})` 
             }}
-            initial={{ opacity: 0, x: `calc(100px * ${scale})` }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ 
+              duration: 0.1 * Math.max(0.8, scale), 
+              delay: 0.6 * Math.max(0.8, scale)
+            }}
           />
         </div>
       )}
