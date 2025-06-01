@@ -400,7 +400,7 @@ const ReturnQuest = () => {
       postQuestAttempt(sessionId, "Return", payload)
         .then((res) => {
           console.log("✅ 시도 기록 완료:", res.data.attempt_id);
-          updateQuestScore("Return", 20);
+          // updateQuestScore("Return", 20);
         })
         .catch(err => console.error("❌ 시도 기록 실패", err));
 
