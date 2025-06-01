@@ -22,6 +22,7 @@ const startButton = '/assets/images/start_button.png';
 const mission3Success = '/assets/images/mission3_success.png';
 const starCharacter = '/assets/images/star_character.png';
 const nextButton = '/assets/images/next_button.png';
+const confirmButton = '/assets/images/confirm_button.png';
 
 // 파일 상단에 기준 해상도 상수 추가
 const BASE_WIDTH = 1024;
@@ -205,10 +206,6 @@ const MakgeolliQuest = () => {
         
         setGameScore(score);
       }
-
-      timer = setTimeout(() => {
-        navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=${gameScore}&correct=true`);
-      }, getScaledDuration(3000));
     }
     
     return () => {
@@ -275,6 +272,12 @@ const MakgeolliQuest = () => {
     }));
     
     setTrayItems(items);
+  };
+
+  const handleConfirmClick = () => {
+    if (gamePhase === 'success' || gamePhase === 'timeOver') {
+      navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=${gameScore}&correct=true`);
+    }
   };
 
   // 게임 초기화 함수
@@ -652,13 +655,13 @@ const MakgeolliQuest = () => {
           
           <div 
             className="absolute inset-0 flex flex-col items-center justify-center z-10"
-            style={{ top: `calc(40px * ${scale})` }}
+            style={{ top: `calc(0px * ${scale})` }}
           >
             {/* 제목을 박스 밖으로 이동하고 GameTitle 적용 */}
             <div style={{ marginBottom: `calc(24px * ${scale})` }}>
               <GameTitle 
                 text="새참을 먹어요" 
-                fontSize={`calc(3.75rem * ${scale})`}
+                fontSize={`${scale * 56}px`}
                 strokeWidth={`calc(10px * ${scale})`}
               />
             </div>
@@ -730,7 +733,7 @@ const MakgeolliQuest = () => {
                 disabled={!!selectedOption}
               >
                 <span className="text-center leading-tight">
-                  <span style={{ color: '#B91C1C' }}>운전해야 하니</span><br/><span style={{ color: '#B91C1C' }}>막걸리</span>는<br/><span style={{ color: '#B91C1C' }}>마시지 않는다</span>
+                  운전해야 하니<br/>막걸리는<br/><span style={{ color: '#B91C1C' }}>마시지 않는다</span>
                 </span>
               </button>
             </div>
@@ -948,99 +951,198 @@ const MakgeolliQuest = () => {
       
       {/* 성공 화면 */}
       {gamePhase === 'success' && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="absolute inset-0 bg-[#FFF9C4]/60 z-10"></div>
+        <div className="absolute inset-0">
+          {/* 배경 이미지 유지 */}
+          <img
+            src={mission3Success}
+            alt="성공 배경"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
           
-          <div className="relative z-20 text-center">
-            <h1 
-              className="font-black text-green-700"
-              style={{ 
-                fontSize: `calc(4rem * ${scale})`,
-                marginBottom: `calc(32px * ${scale})`
-              }}
+          {/* 배경 오버레이 */}
+          <motion.div
+            className="absolute inset-0 bg-[#FFF9C4]/60 z-10"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8 * Math.max(0.8, scale), delay: 2.0 }}
+          />
+          
+          {/* 메시지 콘텐츠 */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center z-30">
+            <motion.div 
+              className="absolute left-0 right-0 flex justify-center items-center"
+              style={{ top: `calc(15% * ${scale})` }}
+              initial={{ opacity: 0, y: `calc(-30px * ${scale})` }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 * Math.max(0.8, scale), delay: 2.0, ease: 'easeOut' }}
             >
-              막걸리 치우기 성공!
-            </h1>
+              <GameTitle 
+                text="막걸리 치우기 성공!" 
+                fontSize={`${64 * scale}px`}
+                strokeWidth={`calc(12px * ${scale})`}
+                color="text-[#0E8E12]"
+              />
+            </motion.div>
             
-            <div 
-              className="relative bg-green-600/90 border-green-700 rounded-[2.2rem] mx-auto text-center"
-              style={{
-                borderWidth: `calc(9.6px * ${scale})`,
-                padding: `calc(48px * ${scale})`,
-                width: `calc(700px * ${scale})`
+            <motion.div 
+              className="bg-[#0DA429]/90 border-[#0E8E12] border-8 w-[73%] mx-auto text-center relative"
+              style={{ 
+                marginTop: `calc(220px * ${scale})`,
+                marginBottom: `calc(40px * ${scale})`,
+                paddingTop: `calc(48px * ${scale})`,
+                paddingBottom: `calc(48px * ${scale})`,
+                paddingLeft: `calc(40px * ${scale})`,
+                paddingRight: `calc(40px * ${scale})`,
+                borderRadius: `calc(48px * ${scale})`
               }}
+              initial={{ opacity: 0, scale: 0.8, y: `calc(30px * ${scale})` }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.8 * Math.max(0.8, scale), delay: 2.0, ease: 'easeOut' }}
             >
               <p 
-                className="text-white font-black leading-loose"
-                style={{ fontSize: `calc(3rem * ${scale})` }}
+                className="font-black text-white leading-relaxed"
+                style={{ fontSize: `${60 * scale}px` }}
               >
                 음주운전을 예방한 당신이<br />
                 마을의 영웅이에요
               </p>
-              
-              <img
-                src={starCharacter}
-                alt="별별이 캐릭터"
-                className="absolute"
-                style={{
-                  bottom: `calc(-112px * ${scale})`,
-                  left: `calc(-96px * ${scale})`,
-                  width: `calc(224px * ${scale})`,
-                  height: `calc(224px * ${scale})`
-                }}
+            </motion.div>
+
+            {/* 확인 버튼 */}
+            <motion.button
+              onClick={handleConfirmClick}
+              className="cursor-pointer hover:scale-105 transition-transform duration-200 border-0 outline-none bg-transparent p-0"
+              style={{
+                marginTop: `calc(40px * ${scale})`,
+                width: `calc(200px * ${scale})`,
+                height: 'auto',
+                marginBottom: `calc(20px * ${scale})`
+              }}
+              initial={{ opacity: 0, y: `calc(20px * ${scale})` }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 * Math.max(0.8, scale), delay: 2.5, ease: 'easeOut' }}
+            >
+              <img 
+                src={confirmButton} 
+                alt="확인 버튼" 
+                className="w-full h-auto"
               />
-            </div>
+            </motion.button>
+
+            <motion.img 
+              src={starCharacter} 
+              alt="별별이" 
+              className="absolute z-40"
+              style={{
+                bottom: `calc(15% * ${scale})`,
+                left: `calc(3% * ${scale})`,
+                width: `calc(23% * ${scale})`
+              }}
+              initial={{ opacity: 0, x: `calc(-30px * ${scale})`, y: `calc(10px * ${scale})` }}
+              animate={{ opacity: 1, x: 0, y: 0 }}
+              transition={{ duration: 0.8 * Math.max(0.8, scale), delay: 2.4, ease: 'easeOut' }}
+            />
           </div>
         </div>
       )}
       
       {/* 시간 초과 화면 */}
       {gamePhase === 'timeOver' && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="absolute inset-0 bg-[#FFF9C4]/60 z-10"></div>
+        <div className="absolute inset-0">
+          {/* 배경 이미지 유지 */}
+          <img
+            src={mission3Success}
+            alt="배경"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
           
-          <div className="relative z-20 text-center">
-            <h1 
-              className="font-black text-green-700"
-              style={{ 
-                fontSize: `calc(4rem * ${scale})`,
-                marginBottom: `calc(32px * ${scale})`
-              }}
+          {/* 배경 오버레이 */}
+          <motion.div
+            className="absolute inset-0 bg-[#FFF9C4]/60 z-10"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8 * Math.max(0.8, scale), delay: 2.0}}
+          />
+          
+          {/* 메시지 콘텐츠 */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center z-30">
+            <motion.div 
+              className="absolute left-0 right-0 flex justify-center items-center"
+              style={{ top: `calc(15% * ${scale})` }}
+              initial={{ opacity: 0, y: `calc(-30px * ${scale})` }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 * Math.max(0.8, scale), delay: 2.0, ease: 'easeOut' }}
             >
-              노력해주셔서 감사해요!
-            </h1>
+              <GameTitle 
+                text="노력해주셔서 감사해요!" 
+                fontSize={`calc(4rem * ${scale})`}
+                strokeWidth={`calc(12px * ${scale})`}
+                color="text-green-700"
+              />
+            </motion.div>
             
-            <div 
-              className="relative bg-green-600/90 border-green-700 rounded-[2.2rem] mx-auto text-center"
-              style={{
-                borderWidth: `calc(9.6px * ${scale})`,
-                padding: `calc(48px * ${scale})`,
-                width: `calc(700px * ${scale})`
+            <motion.div 
+              className="bg-[#0DA429]/90 border-[#0E8E12] border-8 w-[73%] mx-auto text-center relative"
+              style={{ 
+                marginTop: `calc(220px * ${scale})`,
+                marginBottom: `calc(40px * ${scale})`,
+                paddingTop: `calc(48px * ${scale})`,
+                paddingBottom: `calc(48px * ${scale})`,
+                paddingLeft: `calc(40px * ${scale})`,
+                paddingRight: `calc(40px * ${scale})`,
+                borderRadius: `calc(48px * ${scale})`
               }}
+              initial={{ opacity: 0, scale: 0.8, y: `calc(30px * ${scale})` }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.8 * Math.max(0.8, scale), delay: 2.0, ease: 'easeOut' }}
             >
               <p 
-                className="text-white font-black leading-loose"
-                style={{ fontSize: `calc(2.5rem * ${scale})` }}
+                className="font-black text-white leading-relaxed"
+                style={{ fontSize: `${60 * scale}px` }}
               >
                 음주운전을 예방한 당신이<br />
                 마을의 영웅이에요
               </p>
-              
-              <img
-                src={starCharacter}
-                alt="별별이 캐릭터"
-                className="absolute"
-                style={{
-                  bottom: `calc(-112px * ${scale})`,
-                  left: `calc(-96px * ${scale})`,
-                  width: `calc(224px * ${scale})`,
-                  height: `calc(224px * ${scale})`
-                }}
+            </motion.div>
+
+            {/* 확인 버튼 */}
+            <motion.button
+              onClick={handleConfirmClick}
+              className="cursor-pointer hover:scale-105 transition-transform duration-200 border-0 outline-none bg-transparent p-0"
+              style={{
+                marginTop: `calc(40px * ${scale})`,
+                width: `calc(200px * ${scale})`,
+                height: 'auto',
+                marginBottom: `calc(20px * ${scale})`
+              }}
+              initial={{ opacity: 0, y: `calc(20px * ${scale})` }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 * Math.max(0.8, scale), delay: 2.5, ease: 'easeOut' }}
+            >
+              <img 
+                src={confirmButton} 
+                alt="확인 버튼" 
+                className="w-full h-auto"
               />
-            </div>
+            </motion.button>
+
+            <motion.img 
+              src={starCharacter} 
+              alt="별별이" 
+              className="absolute z-40"
+              style={{
+                bottom: `calc(15% * ${scale})`,
+                left: `calc(3% * ${scale})`,
+                width: `calc(23% * ${scale})`
+              }}
+              initial={{ opacity: 0, x: `calc(-30px * ${scale})`, y: `calc(10px * ${scale})` }}
+              animate={{ opacity: 1, x: 0, y: 0 }}
+              transition={{ duration: 0.8 * Math.max(0.8, scale), delay: 2.4, ease: 'easeOut' }}
+            />
           </div>
         </div>
       )}
+
     </div>
   );
 };

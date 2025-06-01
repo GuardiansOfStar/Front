@@ -16,7 +16,6 @@ const accident = '/assets/images/grandfather_field_accident.png';
 const dangerWarning = '/assets/images/danger_warning.png';
 const successCircle = '/assets/images/success_circle.png';
 const starCharacter = '/assets/images/star_character.png';
-const grandfaSuccess = '/assets/images/mission4_success_grandfather_cart.png';
 const motorcycle = '/assets/images/mission4_motorcycle.png';
 
 // 게임 단계 정의
@@ -339,7 +338,7 @@ const HarvestQuest = () => {
               {!fallbackImage ? (
                 <>
                 <motion.img
-                  src={grandfaSuccess}
+                  src={characterImages.mission4Success}
                   alt="수레 끄시는 할아버지" 
                   className="absolute object-contain z-40"
                   style={{

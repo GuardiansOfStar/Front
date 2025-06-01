@@ -23,13 +23,11 @@ const ScenarioItem = ({ scenario, isCurrentSelection }: ScenarioProps) => {
 
     const handleClick = () => {
         if (scenario.locked) {
-            // 잠긴 시나리오는 클릭해도 반응하지 않음
             return;
         }
         
-        // 선택 효과 후 캐릭터 선택 페이지로 이동
         setTimeout(() => {
-            navigate(`/character-select?sscenario=${scenario.id}`);
+            navigate(`/character-select?scenario=${scenario.id}`);
         }, 800);
     };
 

@@ -2,7 +2,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import HomeButton from '../../components/ui/HomeButton';
 import GameTitle from '../../components/ui/GameTitle';
 import { useScale } from '../../hooks/useScale';
 import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attempts';
@@ -25,6 +24,7 @@ const dangerWarning = '/assets/images/danger_warning.png';
 const successCircle = '/assets/images/success_circle.png';
 const starCharacter = '/assets/images/star_character.png';
 const nextButton = '/assets/images/next_button.png';
+const confirmButton = 'assets/images/confirm_button.png';
 
 // 게임 단계 정의
 type GamePhase = 
@@ -119,20 +119,6 @@ const ReturnQuest = () => {
     setCurrentExactHour(hour);
   }, [scale, scaledButtonSize]);
 
-  // 위치로부터 시간 계산 함수 - 스케일 적용
-  const calculateHourFromPosition = useCallback((position: number): number => {
-    if (!clocksRef.current) return 7;
-    
-    const clocksWidth = clocksRef.current.offsetWidth;
-    const sideMargin = clocksWidth * 0.1 * scale;
-    const availableWidth = clocksWidth - (sideMargin * 2);
-    
-    const ratio = Math.max(0, Math.min(1, (position - sideMargin) / availableWidth));
-    const exactHour = 5 + (ratio * 4);
-    
-    return Math.round(exactHour);
-  }, [scale]);
-
   // 시간별 배경색을 부드럽게 보간하는 함수
   const getInterpolatedBackgroundColor = (exactHour: number): string => {
     const hour = Math.floor(exactHour);
@@ -191,8 +177,11 @@ const ReturnQuest = () => {
     const sideMargin = clocksWidth * 0.1 * scale;
     const availableWidth = clocksWidth - (sideMargin * 2);
     
-    const ratio = Math.max(0, Math.min(1, (position - sideMargin) / availableWidth));
-    return 5 + (ratio * 4);
+    // 더 부드러운 비율 계산
+    const ratio = (position - sideMargin) / availableWidth;
+    const clampedRatio = Math.max(0, Math.min(1, ratio));
+    
+    return 5 + (clampedRatio * 4);
   }, [scale]);
 
   // 클릭 핸들러 - 스케일 적용
@@ -205,7 +194,9 @@ const ReturnQuest = () => {
     const rect = clocksElement.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
     
-    const targetHour = calculateHourFromPosition(clickX);
+    // 클릭한 위치에서 가장 가까운 시간으로 즉시 스냅
+    const exactHour = calculateExactHourFromPosition(clickX);
+    const targetHour = Math.round(exactHour);
     
     setIsAnimating(true);
     setSelectedHour(targetHour);
@@ -215,7 +206,7 @@ const ReturnQuest = () => {
       updateDragButtonPosition(targetHour);
       setTimeout(() => setIsAnimating(false), 300 * Math.max(0.8, scale));
     }, 50 * Math.max(0.8, scale));
-  }, [isDragging, isAnimating, calculateHourFromPosition, updateDragButtonPosition, scale]);
+  }, [isDragging, isAnimating, calculateExactHourFromPosition, updateDragButtonPosition, scale]);
 
   // 드래그 시작 핸들러 - 스케일 적용
   const handleDragStart = useCallback((clientX: number) => {
@@ -231,20 +222,27 @@ const ReturnQuest = () => {
     
     const clocksWidth = clocksRef.current.offsetWidth;
     const sideMargin = clocksWidth * 0.1 * scale;
+    const buttonWidth = scaledButtonSize;
+    
+    // 드래그 범위를 더 넓게 설정 (버튼이 완전히 벗어나지 않도록)
+    const minPosition = sideMargin - (buttonWidth * 0.3);
+    const maxPosition = clocksWidth - sideMargin + (buttonWidth * 0.3);
     
     let newPosition = clientX - dragStartX;
-    newPosition = Math.max(sideMargin, Math.min(clocksWidth - sideMargin, newPosition));
+    newPosition = Math.max(minPosition, Math.min(maxPosition, newPosition));
     
     setDragButtonPosition(newPosition);
     
+    // 실시간으로 정확한 시간 계산 (소수점 포함)
     const exactHour = calculateExactHourFromPosition(newPosition);
     setCurrentExactHour(exactHour);
     
-    const newHour = Math.round(exactHour);
-    if (newHour !== selectedHour) {
-      setSelectedHour(newHour);
+    // 표시용 시간은 반올림하되, 드래그 중에는 업데이트 빈도를 줄임
+    const roundedHour = Math.round(exactHour);
+    if (roundedHour !== selectedHour && Math.abs(exactHour - roundedHour) < 0.3) {
+      setSelectedHour(roundedHour);
     }
-  }, [isDragging, dragStartX, selectedHour, calculateExactHourFromPosition, scale]);
+  }, [isDragging, dragStartX, selectedHour, calculateExactHourFromPosition, scale, scaledButtonSize]);
 
   // 드래그 종료 핸들러 - 스케일 적용
   const handleDragEnd = useCallback(() => {
@@ -253,15 +251,19 @@ const ReturnQuest = () => {
     setIsDragging(false);
     setIsAnimating(true);
     
-    const targetHour = calculateHourFromPosition(dragButtonPosition);
+    // 현재 드래그 위치에서 가장 가까운 시간 계산
+    const exactHour = calculateExactHourFromPosition(dragButtonPosition);
+    const targetHour = Math.round(exactHour); // 가장 가까운 정수 시간으로 스냅
+    
     setSelectedHour(targetHour);
     setCurrentExactHour(targetHour);
     
+    // 부드러운 스냅 애니메이션
     setTimeout(() => {
       updateDragButtonPosition(targetHour);
       setTimeout(() => setIsAnimating(false), 300 * Math.max(0.8, scale));
     }, 50 * Math.max(0.8, scale));
-  }, [isDragging, dragButtonPosition, calculateHourFromPosition, updateDragButtonPosition, scale]);
+  }, [isDragging, dragButtonPosition, calculateExactHourFromPosition, updateDragButtonPosition, scale]);
 
   // 마우스 이벤트 핸들러
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -346,29 +348,6 @@ const ReturnQuest = () => {
 
         const messageTimer = setTimeout(() => {
           setShowSuccessMessage(true);
-
-          const scoreTimer = setTimeout(() => {
-            // API 호출
-            const sessionId = localStorage.getItem('session_id')!;
-            const payload: AttemptPayload = {
-              attempt_number: 1,
-              score_awarded: 20,
-              selected_option: selectedHour.toString(),
-              is_correct: true,
-              response_time: 0,
-            };
-
-            postQuestAttempt(sessionId, "Return", payload)
-              .then((res) => {
-                console.log("✅ 시도 기록 완료:", res.data.attempt_id);
-                updateQuestScore("Return", 20);
-              })
-              .catch(err => console.error("❌ 시도 기록 실패", err));
-
-            navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=20&correct=true`);
-          }, getScaledDuration(5000));
-
-          return () => clearTimeout(scoreTimer);
         }, getScaledDuration(1000));
 
         return () => clearTimeout(messageTimer);
@@ -398,38 +377,55 @@ const ReturnQuest = () => {
       timer = setTimeout(() => {
         setShowWarning(true);
       }, getScaledDuration(2000));
-      
-      const scoreTimer = setTimeout(() => {
-        // API 호출
-        const sessionId = localStorage.getItem('session_id')!;
-        const payload: AttemptPayload = {
-          attempt_number: 1,
-          score_awarded: 10,
-          selected_option: selectedHour.toString(),
-          is_correct: false,
-          response_time: 0,
-        };
-
-        postQuestAttempt(sessionId, "Return", payload)
-          .then((res) => {
-            console.log('✅ 시도 기록 완료:', res.data.attempt_id);
-            updateQuestScore("Return", 10);
-          })
-          .catch((err) => {console.error('❌ 시도 기록 실패', err);});
-
-        navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=10&correct=false`);
-      }, getScaledDuration(8000));
-      
-      return () => {
-        if (timer) clearTimeout(timer);
-        clearTimeout(scoreTimer);
-      };
     }
     
     return () => {
       if (timer) clearTimeout(timer);
     };
-  }, [gamePhase, navigate, scenarioId, questId, selectedHour, scale]);
+  }, [gamePhase, scale]);
+
+  // 확인 버튼 클릭 핸들러
+  const handleConfirmClick = () => {
+    if (gamePhase === 'successResult' && showSuccessMessage) {
+      // API 호출
+      const sessionId = localStorage.getItem('session_id')!;
+      const payload: AttemptPayload = {
+        attempt_number: 1,
+        score_awarded: 20,
+        selected_option: selectedHour.toString(),
+        is_correct: true,
+        response_time: 0,
+      };
+
+      postQuestAttempt(sessionId, "Return", payload)
+        .then((res) => {
+          console.log("✅ 시도 기록 완료:", res.data.attempt_id);
+          updateQuestScore("Return", 20);
+        })
+        .catch(err => console.error("❌ 시도 기록 실패", err));
+
+      navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=20&correct=true`);
+    } else if (gamePhase === 'failResult' && showWarning) {
+      // API 호출
+      const sessionId = localStorage.getItem('session_id')!;
+      const payload: AttemptPayload = {
+        attempt_number: 1,
+        score_awarded: 10,
+        selected_option: selectedHour.toString(),
+        is_correct: false,
+        response_time: 0,
+      };
+
+      postQuestAttempt(sessionId, "Return", payload)
+        .then((res) => {
+          console.log('✅ 시도 기록 완료:', res.data.attempt_id);
+          updateQuestScore("Return", 10);
+        })
+        .catch((err) => {console.error('❌ 시도 기록 실패', err);});
+
+      navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=10&correct=false`);
+    }
+  };
 
   // 게임 시작 핸들러
   const handleStartGame = () => {
@@ -476,7 +472,6 @@ const ReturnQuest = () => {
             height: `calc(80px * ${scale})`
           }}
         >
-          <HomeButton />
         </div>
       )}
 
@@ -495,8 +490,8 @@ const ReturnQuest = () => {
               src={sunsetSceneSun}
               alt="해"
               style={{
-                width: `calc(256px * ${scale})`,
-                height: `calc(256px * ${scale})`
+                width: `calc(660px * ${scale})`,
+                height: `calc(612px * ${scale})`
               }}
               initial={{ 
                 x: `calc(400px * ${scale})`,
@@ -549,8 +544,8 @@ const ReturnQuest = () => {
               src={sunsetSceneSun}
               alt="해"
               style={{
-                width: `calc(256px * ${scale})`,
-                height: `calc(256px * ${scale})`,
+                width: `calc(660px * ${scale})`,
+                height: `calc(612px * ${scale})`,
                 transform: `translate(0px, ${80 * scale}px)`
               }}
             />
@@ -576,21 +571,23 @@ const ReturnQuest = () => {
               >
                 <GameTitle 
                   text="귀가 시간 정하기" 
-                  fontSize={`calc(6rem * ${scale})`} 
+                  fontSize={`${64 * scale}px`} 
                   strokeWidth={`calc(10px * ${scale})`} 
                 />
               </div>
               
               <div 
-                className="bg-white/90 border-8 border-green-600 rounded-xl text-center"
+                className="bg-white/90 rounded-xl text-center"
                 style={{ 
                   padding: `calc(40px * ${scale})`,
-                  marginBottom: `calc(64px * ${scale})`
+                  marginBottom: `calc(64px * ${scale})`,
+                  border: `10px solid #0DA429`,
+                  borderRadius: `calc(52px * ${scale})`
                 }}
               >
                 <p 
-                  className="font-black text-black leading-loose"
-                  style={{ fontSize: `calc(2.5rem * ${scale})` }}
+                  className="font-black text-black"
+                  style={{ fontSize: `${52 * scale}px` }}
                 >
                   해가 지기 시작해요<br/>
                   <span className="text-red-600">언제쯤</span><br/>
@@ -609,7 +606,7 @@ const ReturnQuest = () => {
               alt="다음"
               onClick={handleNextPhase}
               style={{
-                width: `calc(208px * ${scale})`,
+                width: `calc(200px * ${scale})`,
                 height: 'auto'
               }}
               className="cursor-pointer hover:scale-105 transition-transform"
@@ -636,21 +633,21 @@ const ReturnQuest = () => {
             <button
               onClick={handleStartGame}
               disabled={isDragging || isAnimating}
-              className="bg-green-600 hover:bg-green-700 text-white font-black rounded-xl border-4 border-white disabled:opacity-50 disabled:cursor-not-allowed shadow-lg transition-colors duration-300"
+              className="bg-[#0DA429] hover:bg-green-700 text-white font-black rounded-lg border-4 border-white disabled:opacity-50 disabled:cursor-not-allowed shadow-lg transition-colors duration-300"
               style={{
-                fontSize: `calc(2.5rem * ${scale})`,
-                paddingTop: `calc(16px * ${scale})`,
-                paddingBottom: `calc(16px * ${scale})`,
+                fontSize: `calc(46px * ${scale})`,
+                paddingTop: `calc(8px * ${scale})`,
+                paddingBottom: `calc(8px * ${scale})`,
                 paddingLeft: `calc(32px * ${scale})`,
                 paddingRight: `calc(32px * ${scale})`
               }}
             >
-              {selectedHour}시에 귀가
+              {selectedHour}시 귀가
             </button>
           </div>
           
           {/* 시계 드래그 영역 */}
-          <div className="absolute bottom-0 left-0 right-0 w-full z-10">
+          <div className="absolute bottom-2 left-0 right-0 w-full z-10">
             <div 
               ref={clocksRef}
               className="relative w-full"
@@ -668,7 +665,9 @@ const ReturnQuest = () => {
               {/* 통합된 클릭/드래그 영역 */}
               <div
                 className="absolute inset-0 cursor-grab active:cursor-grabbing"
-                style={{ zIndex: 25 }}
+                style={{zIndex: 25,
+
+                }}
                 onMouseDown={(e) => {
                   const rect = clocksRef.current?.getBoundingClientRect();
                   if (!rect) return;
@@ -719,14 +718,17 @@ const ReturnQuest = () => {
                 ref={dragButtonRef}
                 src={dragButton}
                 alt="드래그 버튼"
-                className={`absolute transition-all duration-300 select-none pointer-events-none
-                  ${isDragging ? 'scale-110' : 'hover:scale-105'}
-                  ${isAnimating ? 'transition-all duration-300 ease-out' : ''}`}
+                className={`absolute transition-all select-none pointer-events-none
+                  ${isDragging ? 'scale-110 drop-shadow-lg' : 'hover:scale-105'}
+                  ${isAnimating && !isDragging ? 'transition-all duration-300 ease-out' : ''}
+                  ${isDragging ? 'transition-none' : ''}`}
                 style={{
                   width: `calc(81px * ${scale})`,
                   height: `calc(108px * ${scale})`,
-                  left: `${dragButtonPosition * scale}px`,
-                  top: '72%',
+                  left: `${dragButtonPosition}px`,
+                  top: '48%',
+                  transform: 'translateX(-50%)',
+                  filter: isDragging ? 'brightness(1.1)' : 'none',
                 }}
                 draggable={false}
               />
@@ -803,7 +805,8 @@ const ReturnQuest = () => {
               className="bg-green-600 bg-opacity-70 border-green-700 border-8 rounded-3xl w-[75%] mx-auto text-center relative"
               style={{ 
                 padding: `calc(48px * ${scale})`,
-                marginTop: `calc(40px * ${scale})`
+                marginTop: `calc(25% * ${scale})`,
+                marginBottom: `calc(32px * ${scale})`
               }}
               initial={{ opacity: 0, scale: 0.8, y: `calc(30px * ${scale})` }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -811,7 +814,7 @@ const ReturnQuest = () => {
             >
               <p 
                 className="font-black text-white leading-relaxed"
-                style={{ fontSize: `calc(3rem * ${scale})` }}
+                style={{ fontSize: `calc(56px * ${scale})` }}
               >
                 해가 지기 전이<br/>
                 집 가기 딱 좋은 시간이에요
@@ -822,15 +825,36 @@ const ReturnQuest = () => {
                 alt="별별이"
                 className="absolute z-40"
                 style={{
-                  bottom: `calc(-80px * ${scale})`,
-                  left: `calc(-60px * ${scale})`,
-                  width: `calc(200px * ${scale})`
+                  bottom: `calc(-100px * ${scale})`,
+                  left: `calc(-120px * ${scale})`,
+                  width: `calc(246px * ${scale})`
                 }}
                 initial={{ opacity: 0, x: `calc(-30px * ${scale})`, y: `calc(10px * ${scale})` }}
                 animate={{ opacity: 1, x: 0, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.6, ease: 'easeOut' }}
               />
             </motion.div>
+
+            {/* 확인 버튼 추가 */}
+            <motion.button
+              onClick={handleConfirmClick}
+              className="cursor-pointer hover:scale-105 transition-transform duration-200 border-0 outline-none bg-transparent p-0"
+              style={{
+                marginTop: `calc(40px * ${scale})`,
+                width: `calc(200px * ${scale})`,
+                height: 'auto',
+                marginBottom: `calc(20px * ${scale})`
+              }}
+              initial={{ opacity: 0, y: `calc(20px * ${scale})` }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
+            >
+              <img 
+                src={confirmButton} 
+                alt="확인 버튼" 
+                className="w-full h-auto"
+              />
+            </motion.button>
           </div>
         </div>
       )}
@@ -906,7 +930,7 @@ const ReturnQuest = () => {
           {showWarning && (
             <motion.div
               className="absolute inset-0 bg-[#FFF9C4]/60 flex flex-col items-center justify-end z-10"
-              style={{ paddingBottom: `calc(128px * ${scale})` }}
+              style={{ paddingBottom: `calc(40px * ${scale})` }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8 }}
@@ -924,14 +948,14 @@ const ReturnQuest = () => {
               />
               
               <motion.div
-                className="w-[80%] bg-white bg-opacity-90 border-red-600 border-8 rounded-xl text-center"
+                className="w-[80%] bg-white bg-opacity-90 border-[#EE404C] border-8 rounded-xl text-center"
                 style={{ padding: `calc(32px * ${scale})` }}
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
                 <h2
-                  className="text-red-600 font-black"
+                  className="text-[#EE404C] font-black"
                   style={{ 
                     fontSize: `calc(4rem * ${scale})`,
                     marginBottom: `calc(16px * ${scale})`
@@ -947,6 +971,27 @@ const ReturnQuest = () => {
                   해가 지기 전에 집으로 돌아가요
                 </p>
               </motion.div>
+
+              {/* 확인 버튼 추가 */}
+              <motion.button
+                onClick={handleConfirmClick}
+                className="cursor-pointer hover:scale-105 transition-transform duration-200 border-0 outline-none bg-transparent p-0"
+                style={{
+                  marginTop: `calc(40px * ${scale})`,
+                  width: `calc(200px * ${scale})`,
+                  height: 'auto',
+                  marginBottom: `calc(20px * ${scale})`
+                }}
+                initial={{ opacity: 0, y: `calc(20px * ${scale})` }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
+              >
+                <img 
+                  src={confirmButton} 
+                  alt="확인 버튼" 
+                  className="w-full h-auto"
+                />
+              </motion.button>
             </motion.div>
           )}
         </div>

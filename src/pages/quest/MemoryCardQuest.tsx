@@ -194,7 +194,7 @@ const MemoryCardQuest: React.FC = () => {
     if (gamePhase === 'intro1') {
       autoTransitionTimerRef.current = window.setTimeout(() => {
         setGamePhase('intro2');
-      }, getScaledDuration(2000)); 
+      }, getScaledDuration(2500)); 
     } 
     else if (gamePhase === 'wrongMatchFeedback') {
       autoTransitionTimerRef.current = window.setTimeout(() => {
@@ -536,38 +536,52 @@ const MemoryCardQuest: React.FC = () => {
 
       {/* intro1 */}
       {gamePhase === 'intro1' && (
-        <motion.div 
-          className="absolute inset-0 flex flex-col items-center justify-center z-10"
-          initial={{opacity: 0}}
-          animate={{opacity: 1}}
+      <motion.div 
+        className="absolute inset-0 flex flex-col items-center justify-center z-10"
+        initial={{opacity: 0}}
+        animate={{opacity: 1}}
+        transition={{duration: 0.8 * Math.max(0.8, scale)}}
+      >
+        <motion.div
+          style={{ marginTop: `calc(96px * ${scale})` }}
+          className="text-center"
+          initial={{y: `calc(-20px * ${scale})`}}
+          animate={{y: 0}}
           transition={{duration: 0.8 * Math.max(0.8, scale)}}
         >
-          <motion.div
-            style={{ marginTop: `calc(96px * ${scale})` }}
-            className="text-center"
-            initial={{y: `calc(-20px * ${scale})`}}
-            animate={{y: 0}}
-            transition={{duration: 0.8 * Math.max(0.8, scale)}}
-          >
-            <GameTitle 
-              text="주행 준비하기" 
-              fontSize={`${5.5 * scale}rem`}
-              strokeWidth={`calc(12px * ${scale})`} 
-            />
-          </motion.div>
+          <GameTitle 
+            text="주행 준비하기" 
+            fontSize={`${5.5 * scale}rem`}
+            strokeWidth={`calc(12px * ${scale})`} 
+          />
+        </motion.div>
+        
+        {/* 캐릭터 이미지 컨테이너 - 패딩 축소 및 중앙 정렬 강화 */}
+        <div 
+          className="relative flex items-center justify-center"
+          style={{
+            width: `calc(350px * ${scale})`,
+            height: `calc(500px * ${scale})`,
+            marginTop: `calc(2px * ${scale})`
+          }}
+        >
           <motion.img
-            src={gameCharacter}
+            src={characterImages.withoutHelmet}
             alt="캐릭터"
+            className="max-w-full max-h-full object-contain pointer-events-none"
             style={{
-              width: `calc(340px * ${scale})`,
-              height: 'auto',
-              marginTop: `calc(2px * ${scale})`
+              display: 'block',
+              margin: '0 auto',
+              width: `calc(400px * ${scale})`,
+              height: 'auto'
             }}
             initial={{scale: 0.8, opacity: 0}}
             animate={{scale: 1, opacity: 1}}
             transition={{duration: 0.8 * Math.max(0.8, scale), ease: 'easeOut'}}
+            draggable={false}
           />
-        </motion.div>
+        </div>
+      </motion.div>
       )}
 
       {gamePhase === 'intro2' && (

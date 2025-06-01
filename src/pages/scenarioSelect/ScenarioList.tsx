@@ -187,8 +187,8 @@ const ScenarioList = () => {
         
         // 부드러운 확정 애니메이션 후 이동
         setTimeout(() => {
-            navigate(`/character-select?scenario=${scenario.id}`); // sscenario -> scenario 수정
-        }, 300 * Math.max(0.8, scale)); // 스케일 적용된 지연시간
+            navigate(`/character-select?scenario=${scenario.id}`);
+        }, 1200 * Math.max(0.8, scale));
     };
 
     return (
