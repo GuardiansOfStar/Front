@@ -12,7 +12,15 @@ const Memory = () => {
 
   const sessionId = localStorage.getItem("session_id") || "";
 
-  // 하나 선택-> 3초 후 자동 이동
+  const options = [
+    { img: "/assets/images/quest1.png", label: "안전모 쓰기",      questId: "helmet"   },
+    { img: "/assets/images/quest2.png", label: "구덩이 피하기",    questId: "pothole"  },
+    { img: "/assets/images/quest3.png", label: "막걸리 치우기",    questId: "Makgeolli" },
+    { img: "/assets/images/quest4.png", label: "무거운 짐 싣기",    questId: "Harvest"  },
+    { img: "/assets/images/quest5.png", label: "귀가시간 정하기", questId: "Gohome"    },
+  ];
+
+  // 하나 선택 -> 1.5초 후 자동 이동
   useEffect(() => {
     if (selectedIndexes.length === 1) {
       const chosenIndex = selectedIndexes[0];
@@ -23,33 +31,26 @@ const Memory = () => {
       updateSessionScene(sessionId, chosenQuestId)
         .then((res) => {
           console.log("[Memory] updateSessionScene 성공:", res.data);
-          // 4) 1.5초 뒤에 /survey 로 이동
-          const timer = setTimeout(() => {
-            navigate(`/survey`);
-          }, 1500);
-          return () => clearTimeout(timer);
         })
         .catch((err) => {
           console.error("[Memory] updateSessionScene 실패:", err);
-          // 실패해도 다음 화면으로 넘기고 싶으면 바로 navigate 호출
-          navigate(`/survey`);
         });
+
+      // 1.5초 뒤에 /survey 로 이동
+      const timer = setTimeout(() => {
+        navigate(`/survey`);
+      }, 1500);
+
+      // cleanup function
+      return () => clearTimeout(timer);
     }
-  }, [selectedIndexes, navigate]);
+  }, [selectedIndexes, navigate, sessionId]);
 
   const toggleSelection = (index: number) => {
     setSelectedIndexes((prev) =>
       prev.includes(index) ? prev.filter((i) => i !== index) : [index] // 하나만 선택 가능
     );
   };
-
-  const options = [
-     { img: "/assets/images/quest1.png", label: "안전모 쓰기",      questId: "helmet"   },
-    { img: "/assets/images/quest2.png", label: "구덩이 피하기",    questId: "pothole"  },
-    { img: "/assets/images/quest3.png", label: "막걸리 치우기",    questId: "Makgeolli" },
-    { img: "/assets/images/quest4.png", label: "무거운 짐 싣기",    questId: "Harvest"  },
-    { img: "/assets/images/quest5.png", label: "귀가시간 정하기", questId: "Gohome"    },
-  ];
 
   const topRow = options.slice(0, 2);
   const bottomRow = options.slice(2);
@@ -66,14 +67,12 @@ const Memory = () => {
         <img
           src={option.img}
           alt={option.label}
-          className={`object-cover transition ${
-            isSelected ? "border-red-500" : "border-transparent"
-          }`}
+          className="object-cover transition"
           style={{
             width: `calc(280px * ${scale})`,
             height: `calc(210px * ${scale})`,
             borderRadius: `calc(30px * ${scale})`,
-            borderWidth: isSelected ? `calc(10px * ${scale})` : '0px',
+            border: `calc(10px * ${scale}) solid ${isSelected ? "#EF4444" : "#0E8E12"}`,
             marginBottom: `calc(4px * ${scale})`
           }}
         />
