@@ -37,30 +37,6 @@ const ProloguePage = () => {
     setScenarioId(id);
     console.log("id : ", id);
 
-    const alreadyHasUser = localStorage.getItem("user_id");
-    const alreadyHasSession = localStorage.getItem("session_id");
-    console.log("(O) user_id : ", alreadyHasUser);
-    console.log("(O) session_id : ", alreadyHasSession);
-    // 한 번만 생성
-    if (id && !alreadyHasUser && !alreadyHasSession) {
-      createGuestUser("0") // 마을 정보 반영 -> settingPage 
-        .then((userRes) => {
-          const userId = userRes.data.user_id;
-          console.log("!!!", userRes.data);
-          console.log( "user_id : ", userId);
-          localStorage.setItem("user_id", userId);
-          return createSession(userId);
-        })
-        .then((sessionRes) => {
-          const sessionId = sessionRes.data.session_id;
-          localStorage.setItem("session_id", sessionId);
-          console.log("✅ 사용자 및 세션 생성 완료", { sessionId });
-        })
-        .catch((err) => {
-          console.error("❌ 사용자 또는 세션 생성 실패", err);
-        });
-    }
-
     // map 단계에서 2초 후 메시지 표시
     if (step === 'map') {
       const timer = setTimeout(() => {
@@ -79,6 +55,32 @@ const ProloguePage = () => {
       return () => clearTimeout(timer);
     }
   }, [location, step]);
+
+  useEffect(() =>{
+    const alreadyHasUser = localStorage.getItem("user_id");
+    const alreadyHasSession = localStorage.getItem("session_id");
+    console.log("(O) user_id : ", alreadyHasUser);
+    console.log("(O) session_id : ", alreadyHasSession);
+    // 한 번만 생성
+    if (!alreadyHasUser && !alreadyHasSession) {
+      createGuestUser("0") // 마을 정보 반영 -> settingPage 
+        .then((userRes) => {
+          const userId = userRes.data.user_id;
+          console.log("!!!", userRes.data);
+          console.log( "user_id : ", userId);
+          localStorage.setItem("user_id", userId);
+          return createSession(userId);
+        })
+        .then((sessionRes) => {
+          const sessionId = sessionRes.data.session_id;
+          localStorage.setItem("session_id", sessionId);
+          console.log("✅ 사용자 및 세션 생성 완료", { sessionId });
+        })
+        .catch((err) => {
+          console.error("❌ 사용자 또는 세션 생성 실패", err);
+        });
+    }
+  }, []);
 
   // 다음 단계로 이동 핸들러
   const handleNextStep = () => {

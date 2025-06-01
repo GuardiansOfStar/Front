@@ -6,7 +6,7 @@ import HarvestBox from './HarvestBox';
 import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attempts';
 import GameTitle from '../../components/ui/GameTitle';
 import { useScale } from '../../hooks/useScale';
-import { useScore } from '../../context/ScoreContext';
+// import { useScore } from '../../context/ScoreContext';
 
 // 이미지 임포트
 const fieldHarvestBoxes = '/assets/images/work_complete_with_applebox.png';
@@ -44,7 +44,7 @@ const HarvestQuest = () => {
   const [showIntroText, setShowIntroText] = useState(false);
   const [hideSuccessImages, setHideSuccessImages] = useState(false);
   const scale = useScale();
-  const { updateQuestScore } = useScore();
+  // const { updateQuestScore } = useScore();
 
   // 스케일 적용된 클릭 영역 크기
   const scaledClickAreaPadding = 20 * scale;
@@ -116,7 +116,7 @@ const HarvestQuest = () => {
     postQuestAttempt(sessionId, qId, payload)
       .then((res) => {
         console.log('✅ 시도 기록 완료:', res.data.attempt_id);
-        updateQuestScore("Harvest", scoreAwarded);
+        //updateQuestScore("Harvest", scoreAwarded);
       })
       .catch((err) => {console.error('❌ 시도 기록 실패', err);});
 
