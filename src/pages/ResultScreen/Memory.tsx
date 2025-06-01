@@ -3,19 +3,37 @@ import { useNavigate } from "react-router-dom";
 import { useScale } from "../../hooks/useScale";
 import Background from "../../components/ui/Background";
 import GameTitle from "../../components/ui/GameTitle";
+import { updateSessionScene } from "../../services/endpoints/session";
 
 const Memory = () => {
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
   const navigate = useNavigate();
   const scale = useScale();
 
+  const sessionId = localStorage.getItem("session_id") || "";
+
   // 하나 선택-> 3초 후 자동 이동
   useEffect(() => {
     if (selectedIndexes.length === 1) {
-      const timer = setTimeout(() => {
-        navigate("/survey");
-      }, 1500);
-      return () => clearTimeout(timer);
+      const chosenIndex = selectedIndexes[0];
+      const chosenQuestId = options[chosenIndex].questId;
+      console.log("chosenQuestId : ", chosenQuestId);
+
+      // API : favorite_scene만 먼저 PATCH
+      updateSessionScene(sessionId, chosenQuestId)
+        .then((res) => {
+          console.log("[Memory] updateSessionScene 성공:", res.data);
+          // 4) 1.5초 뒤에 /survey 로 이동
+          const timer = setTimeout(() => {
+            navigate(`/survey`);
+          }, 1500);
+          return () => clearTimeout(timer);
+        })
+        .catch((err) => {
+          console.error("[Memory] updateSessionScene 실패:", err);
+          // 실패해도 다음 화면으로 넘기고 싶으면 바로 navigate 호출
+          navigate(`/survey`);
+        });
     }
   }, [selectedIndexes, navigate]);
 
@@ -26,11 +44,11 @@ const Memory = () => {
   };
 
   const options = [
-    { img: "/assets/images/quest1.png", label: "안전모 쓰기" },
-    { img: "/assets/images/quest2.png", label: "구덩이 피하기" },
-    { img: "/assets/images/quest3.png", label: "막걸리 치우기" },
-    { img: "/assets/images/quest4.png", label: "무거운 짐 싣기" },
-    { img: "/assets/images/quest5.png", label: "귀가시간 정하기" },
+     { img: "/assets/images/quest1.png", label: "안전모 쓰기",      questId: "helmet"   },
+    { img: "/assets/images/quest2.png", label: "구덩이 피하기",    questId: "pothole"  },
+    { img: "/assets/images/quest3.png", label: "막걸리 치우기",    questId: "Makgeolli" },
+    { img: "/assets/images/quest4.png", label: "무거운 짐 싣기",    questId: "Harvest"  },
+    { img: "/assets/images/quest5.png", label: "귀가시간 정하기", questId: "Gohome"    },
   ];
 
   const topRow = options.slice(0, 2);

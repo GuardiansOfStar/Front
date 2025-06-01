@@ -5,6 +5,7 @@ import Background from '../../components/ui/Background';
 import Star from './Star'; 
 import GameTitle from '../../components/ui/GameTitle';
 import BackButton from '../../components/ui/BackButton';
+import { updateSessionRating } from "../../services/endpoints/session";
 
 const starCharacter = '/assets/images/star_character.png';
 const submitButton = '/assets/images/submit_button.png';
@@ -15,6 +16,36 @@ const StarSurvey = () => {
 
   // 5개의 ⭐ 중 몇 개가 선택되었는지를 관리하는 상태 (초기값: 5)
   const [selectedStar, setSelectedStar] = useState(0);
+
+  // 로딩 상태 관리
+  const [loading, setLoading] = useState(false);
+
+  // 로컬스토리지에서 session_id 읽기 (createSession 완료 시 저장했다고 가정)
+  const sessionId = localStorage.getItem("session_id") || "";
+
+
+   // “제출” 버튼 클릭 시 호출
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      console.log("[StarSurvey] PATCH satisfaction_rating →", {
+        session_id: sessionId,
+        satisfaction_rating: selectedStar,
+      });
+
+      // 3. 서버에 satisfaction_rating(별점)만 업데이트
+      const res = await updateSessionRating(sessionId, selectedStar);
+      console.log("[StarSurvey] updateSessionRating 성공:", res.data);
+
+      // 4. 성공 후 랭킹 페이지로 이동
+      navigate("/rank");
+    } catch (err) {
+      console.error("[StarSurvey] 별점 저장 실패:", err);
+      navigate("/rank");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="relative w-full h-full">
@@ -108,7 +139,11 @@ const StarSurvey = () => {
       <img
         src={submitButton}
         alt="제출 버튼"
-        onClick={() => navigate('/rank')} 
+        onClick={() => {
+          if (!loading) {
+            handleSubmit();
+          }
+        }}
         className="absolute cursor-pointer hover:scale-105 transition-transform duration-300 z-50"
         style={{
           bottom: `calc(54px * ${scale})`,

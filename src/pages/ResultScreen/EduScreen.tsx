@@ -77,7 +77,7 @@ const EduScreen = () => {
   const rememberText =
     failedQuests.length > 0
       ? questMessages[failedQuests[0].quest_id].failure
-      : "기억할 퀘스트가 없어요";
+      : "항상 안전운전 해요!";
 
   // \n 문구를 <br/>로 렌더링
   const renderWithBreaks = (text: string) =>

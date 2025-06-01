@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-import { createGuestUser } from '../../services/endpoints/user';
+// import { createGuestUser } from '../../services/endpoints/user';
 import { createSession } from '../../services/endpoints/session';
 
 import { useScale } from '../../hooks/useScale';
@@ -57,28 +57,22 @@ const ProloguePage = () => {
   }, [location, step]);
 
   useEffect(() =>{
-    const alreadyHasUser = localStorage.getItem("user_id");
+    // const alreadyHasUser = localStorage.getItem("user_id");
     const alreadyHasSession = localStorage.getItem("session_id");
-    console.log("(O) user_id : ", alreadyHasUser);
+    const vid = localStorage.getItem("village_id");
+    // console.log("(O) user_id : ", alreadyHasUser);
     console.log("(O) session_id : ", alreadyHasSession);
     // 한 번만 생성
-    if (!alreadyHasUser && !alreadyHasSession) {
-      createGuestUser("0") // 마을 정보 반영 -> settingPage 
-        .then((userRes) => {
-          const userId = userRes.data.user_id;
-          console.log("!!!", userRes.data);
-          console.log( "user_id : ", userId);
-          localStorage.setItem("user_id", userId);
-          return createSession(userId);
-        })
-        .then((sessionRes) => {
-          const sessionId = sessionRes.data.session_id;
-          localStorage.setItem("session_id", sessionId);
-          console.log("✅ 사용자 및 세션 생성 완료", { sessionId });
-        })
-        .catch((err) => {
-          console.error("❌ 사용자 또는 세션 생성 실패", err);
-        });
+    if (!alreadyHasSession) {
+      createSession(vid!)
+      .then((sessionRes) => {
+        const sessionId = sessionRes.data.session_id;
+        localStorage.setItem("session_id", sessionId);
+        console.log("✅ 세션 생성 완료", { sessionId });
+      })
+      .catch((err) => {
+        console.error("❌ 세션 생성 실패", err);
+      });
     }
   }, []);
 
