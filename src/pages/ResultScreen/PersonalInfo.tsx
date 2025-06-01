@@ -1,14 +1,67 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useScale } from '../../hooks/useScale';
 import Background from '../../components/ui/Background';
 import NextButton from './NextButton';
 import HomeButton from '../../components/ui/HomeButton';
 import BackButton from '../../components/ui/BackButton';
+import { createUser } from '../../services/endpoints/user';
 
 const PersonalInfo = () => {
   const navigate = useNavigate();
   const scale = useScale();
+  
+  // 입력 상태 관리
+  const [name, setName] = useState('');
+  const [age, setAge] = useState<number | ''>('');
+  const [phone, setPhone] = useState('');
+  const [loading, setLoading] = useState(false);
 
+  // “다음” 버튼 클릭 시 호출
+  const handleSubmit = async () => {
+    // 필수값 검증
+    if (!name.trim()) {
+      alert('이름을 입력해주세요.');
+      return;
+    }
+    if (age === '' || age <= 0) {
+      alert('나이를 올바르게 입력해주세요.');
+      return;
+    }
+    if (!phone.trim()) {
+      alert('연락처를 입력해주세요.');
+      return;
+    }
+
+    // 로컬스토리지에서 village_id 읽기
+    const villageId = localStorage.getItem('village_id');
+
+    setLoading(true);
+    try {
+      // 3) createUser(villageId, { name, phone, age, is_guest: true })
+      const res = await createUser(villageId!, {
+        name,
+        phone,
+        age: Number(age),
+        is_guest: false, // 게스트 유저로 생성
+      });
+
+      console.log("[PersonalInfo] ← createUser() response.data:", res.data);
+
+      // 4) 서버 응답에서 user_id 뽑아서 로컬스토리지에 저장
+      const newUserId = res.data.user_id;
+      localStorage.setItem('user_id', newUserId);
+      console.log("[PersonalInfo] → Saved new user_id into localStorage:", newUserId);
+
+      // 5) 다음 화면으로 이동 (예: 메모리 페이지)
+      navigate('/memory');
+    } catch (err) {
+      console.error('사용자 생성 실패:', err);
+      alert('사용자 정보를 저장하는 데 실패했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="relative w-full h-full">
       <Background />
@@ -84,6 +137,8 @@ const PersonalInfo = () => {
           </label>
           <input
             type="text"
+            value={name}                      // value 속성 추가
+            onChange={(e) => setName(e.target.value)} // onChange 속성 추가
             className="absolute bg-white text-gray-800"
             style={{
               width: `calc(310px * ${scale})`,
@@ -124,6 +179,8 @@ const PersonalInfo = () => {
           </label>
           <input
             type="number"
+            value={age}  // value 속성 추가
+            onChange={(e) => setAge(e.target.value === '' ? '' : Number(e.target.value))} //onChange 추가
             className="absolute bg-white text-gray-800"
             style={{
               width: `calc(310px * ${scale})`,
@@ -165,6 +222,8 @@ const PersonalInfo = () => {
           </label>
           <input
             type="tel"
+            value={phone}                       // value 속성 추가
+            onChange={(e) => setPhone(e.target.value)} // onChange 속성 추가
             className="absolute bg-white text-gray-800"
             style={{
               width: `calc(310px * ${scale})`,
@@ -183,7 +242,10 @@ const PersonalInfo = () => {
         </div>
       </div>
       
-      <NextButton to="/memory" />
+      <NextButton
+        onClick={handleSubmit}
+        disabled={loading}
+      />
     </div>
   );
 };
