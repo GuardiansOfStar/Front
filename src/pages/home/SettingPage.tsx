@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Background from '../../components/ui/Background';
+import { createVillage } from '../../services/endpoints/village';
 
 const locationData = {
     서울특별시 : ["서울특별시 종로구", "서울특별시 중구", "서울특별시 용산구", "서울특별시 성동구", "서울특별시 광진구", "서울특별시 동대문구", "서울특별시 중랑구", "서울특별시 성북구", "서울특별시 강북구", "서울특별시 도봉구", "서울특별시 노원구", "서울특별시 은평구", "서울특별시 서대문구", "서울특별시 마포구", "서울특별시 양천구", "서울특별시 강서구", "서울특별시 구로구", "서울특별시 금천구", "서울특별시 영등포구", "서울특별시 동작구", "서울특별시 관악구", "서울특별시 서초구", "서울특별시 강남구", "서울특별시 송파구", "서울특별시 강동구"],
@@ -35,20 +36,30 @@ const SettingPage = () => {
     const sortedRegions = allRegions
         .filter(region => region.includes(inputValue))
         .sort((a, b) => a.localeCompare(b, 'ko'));
+    const handleSubmit = async() => {
+    if (selectedRegion) {
+        try {
+      // 1) 서버에 village 생성 또는 조회 후 village_id 반환
+      const villageId = (await createVillage(selectedRegion)).data.village_id;
 
-    const handleSubmit = () => {
-        if (selectedRegion) {
-        localStorage.setItem('selectedRegion', selectedRegion);
+      // 2) localStorage에 선택된 지역 이름 & 마을 id 저장
+      localStorage.setItem('selectedRegion', selectedRegion);
+      localStorage.setItem('village_id', villageId);
 
-        // ✅ 리스트에 중복 없이 추가
-        setRegisteredRegions(prev =>
-            prev.includes(selectedRegion) ? prev : [...prev, selectedRegion]
-        );
+      // 3) 등록 목록에 추가 (중복 없이)
+      setRegisteredRegions((prev) =>
+        prev.includes(selectedRegion) ? prev : [...prev, selectedRegion]
+      );
 
-        navigate('/');
-        } else {
-        alert('지역을 선택해주세요.');
-        }
+      // 4) village_id도 localStorage에 저장 (이미 getOrCreateVillage 내부에서 저장됨)
+      console.log('저장된 village_id:', villageId);
+
+      // 5) 설정 완료 후 메인 페이지로 이동
+      navigate('/');
+    } catch (err) {
+      console.error('마을 생성/조회 실패', err);
+    }
+    }
     };
 
     return (

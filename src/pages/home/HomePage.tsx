@@ -13,7 +13,6 @@ const HomePage = () => {
   useEffect(() => {
     localStorage.removeItem("session_id");
     localStorage.removeItem("user_id");
-    //마을 정보는 놔둘 예정
   }, []);
 
 
