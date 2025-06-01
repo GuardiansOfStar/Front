@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import GameTitle from '../../components/ui/GameTitle';
 import { useScale } from '../../hooks/useScale';
 import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attempts';
-// import { useScore } from '../../context/ScoreContext';
 import { useCharacter } from '../../context/CharacterContext';
 
 // 이미지 임포트
@@ -14,9 +13,6 @@ const homecomingTimeClocks = '/assets/images/homecoming_time_clocks.png';
 const dragButton = '/assets/images/drag_button.png';
 const sunsetSceneMountain = '/assets/images/sunset_scene_mountain.png';
 const sunsetSceneSun = '/assets/images/sunset_scene_sun.png';
-const mission5SuccessGrandfather = '/assets/images/mission5_success_grandfather.png';
-const mission5FailGrandfather = '/assets/images/mission5_fail_grandfather.png';
-const missionFailEveningDriving = '/assets/images/mission_fail_evening_driving_grandfather.png';
 const blurredVision = '/assets/images/blurred_vision.png';
 const goraniFlash = '/assets/images/gorani_flash.png';
 const goraniFace = '/assets/images/gorani_face.png';
@@ -24,21 +20,21 @@ const dangerWarning = '/assets/images/danger_warning.png';
 const successCircle = '/assets/images/success_circle.png';
 const starCharacter = '/assets/images/star_character.png';
 const nextButton = '/assets/images/next_button.png';
-const confirmButton = 'assets/images/confirm_button.png';
+const confirmButton = '/assets/images/confirm_button.png';
 
 // 게임 단계 정의
 type GamePhase = 
-  | 'sunsetAnimation'     // 해가 지는 애니메이션
-  | 'gameIntro'          // 귀가시간 정하기 게임 안내
-  | 'gamePlay'           // 귀가시간 정하기 게임
-  | 'successResult'      // 정답 결과 (5~7시)
-  | 'successMessage'     // 정답 메시지
-  | 'failSequence1'      // 오답 시퀀스 1 (야간 운전)
-  | 'failSequence2'      // 오답 시퀀스 2 (시야 흐림)
-  | 'failSequence3'      // 오답 시퀀스 3 (고라니 등장)
-  | 'failSequence4'      // 오답 시퀀스 4 (사고)
-  | 'failResult'         // 오답 결과 화면
-  | 'score';             // 점수 화면
+  | 'sunsetAnimation'
+  | 'gameIntro'
+  | 'gamePlay'
+  | 'successResult'
+  | 'successMessage'
+  | 'failSequence1'
+  | 'failSequence2'
+  | 'failSequence3'
+  | 'failSequence4'
+  | 'failResult'
+  | 'score';
 
 // 시간별 배경색 정의
 const getBackgroundColor = (hour: number): string => {
@@ -68,23 +64,15 @@ const ReturnQuest = () => {
   const [hideSuccessImages, setHideSuccessImages] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   
-  // 드래그 관련 상태
+  // 드래그 관련 상태 - 비율 기반으로 변경
   const [isDragging, setIsDragging] = useState(false);
-  const [dragStartX, setDragStartX] = useState(0);
-  const [dragButtonPosition, setDragButtonPosition] = useState(0);
+  const [dragStartRatio, setDragStartRatio] = useState(0);
+  const [dragButtonRatio, setDragButtonRatio] = useState(0.5); // 0~1 비율
   const [isAnimating, setIsAnimating] = useState(false);
   const [currentExactHour, setCurrentExactHour] = useState(7);
 
   const scale = useScale();
-  // const { updateQuestScore } = useScore();
-
-  // character context
   const { characterImages } = useCharacter();
-
-  // 스케일 적용된 값들
-  const scaledDragSensitivity = 1 * scale;
-  const scaledTouchRadius = 50 * scale;
-  const scaledButtonSize = 81 * scale;
 
   // URL 쿼리 파라미터 처리
   useEffect(() => {
@@ -95,29 +83,44 @@ const ReturnQuest = () => {
     setQuestId(qId || '5');
   }, [location]);
 
-  // 드래그 버튼 초기 위치 계산
+  // 시간을 비율로 변환 (5시=0, 9시=1)
+  const hourToRatio = useCallback((hour: number): number => {
+    return Math.max(0, Math.min(1, (hour - 5) / 4));
+  }, []);
+
+  // 비율을 시간으로 변환 (0=5시, 1=9시)
+  const ratioToHour = useCallback((ratio: number): number => {
+    return 5 + (ratio * 4);
+  }, []);
+
+  // 드래그 버튼 위치 업데이트 함수 - 비율 기반
+  const updateDragButtonPosition = useCallback((hour: number) => {
+    const ratio = hourToRatio(hour);
+    setDragButtonRatio(ratio);
+    setCurrentExactHour(hour);
+  }, [hourToRatio]);
+
+  // 초기 위치 설정
   useEffect(() => {
-    if (gamePhase === 'gamePlay' && clocksRef.current) {
+    if (gamePhase === 'gamePlay') {
       updateDragButtonPosition(selectedHour);
     }
-  }, [gamePhase, selectedHour]);
+  }, [gamePhase, selectedHour, updateDragButtonPosition]);
 
-  // 드래그 버튼 위치 업데이트 함수 - 스케일 적용
-  const updateDragButtonPosition = useCallback((hour: number) => {
-    if (!clocksRef.current) return;
+  // 클릭 위치를 비율로 변환
+  const getClickRatio = useCallback((clientX: number): number => {
+    if (!clocksRef.current) return 0.5;
     
-    const clocksWidth = clocksRef.current.offsetWidth;
-    const buttonWidth = scaledButtonSize;
+    const rect = clocksRef.current.getBoundingClientRect();
+    const relativeX = clientX - rect.left;
+    const ratio = relativeX / rect.width;
     
-    const sideMargin = clocksWidth * 0.1 * scale;
-    const availableWidth = clocksWidth - (sideMargin * 2);
+    // 사이드 마진 고려 (10% 여백)
+    const sideMarginRatio = 0.1;
+    const adjustedRatio = (ratio - sideMarginRatio) / (1 - sideMarginRatio * 2);
     
-    const hourIndex = hour - 5;
-    const position = sideMargin + (availableWidth * hourIndex / 4);
-    
-    setDragButtonPosition(position);
-    setCurrentExactHour(hour);
-  }, [scale, scaledButtonSize]);
+    return Math.max(0, Math.min(1, adjustedRatio));
+  }, []);
 
   // 시간별 배경색을 부드럽게 보간하는 함수
   const getInterpolatedBackgroundColor = (exactHour: number): string => {
@@ -170,33 +173,12 @@ const ReturnQuest = () => {
     return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
   };
 
-  const calculateExactHourFromPosition = useCallback((position: number): number => {
-    if (!clocksRef.current) return 7;
-    
-    const clocksWidth = clocksRef.current.offsetWidth;
-    const sideMargin = clocksWidth * 0.1 * scale;
-    const availableWidth = clocksWidth - (sideMargin * 2);
-    
-    // 더 부드러운 비율 계산
-    const ratio = (position - sideMargin) / availableWidth;
-    const clampedRatio = Math.max(0, Math.min(1, ratio));
-    
-    return 5 + (clampedRatio * 4);
-  }, [scale]);
-
-  // 클릭 핸들러 - 스케일 적용
+  // 클릭 핸들러 - 비율 기반
   const handleClockClick = useCallback((e: React.MouseEvent) => {
     if (isDragging || isAnimating) return;
     
-    const clocksElement = clocksRef.current;
-    if (!clocksElement) return;
-    
-    const rect = clocksElement.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    
-    // 클릭한 위치에서 가장 가까운 시간으로 즉시 스냅
-    const exactHour = calculateExactHourFromPosition(clickX);
-    const targetHour = Math.round(exactHour);
+    const clickRatio = getClickRatio(e.clientX);
+    const targetHour = Math.round(ratioToHour(clickRatio));
     
     setIsAnimating(true);
     setSelectedHour(targetHour);
@@ -206,64 +188,57 @@ const ReturnQuest = () => {
       updateDragButtonPosition(targetHour);
       setTimeout(() => setIsAnimating(false), 300 * Math.max(0.8, scale));
     }, 50 * Math.max(0.8, scale));
-  }, [isDragging, isAnimating, calculateExactHourFromPosition, updateDragButtonPosition, scale]);
+  }, [isDragging, isAnimating, getClickRatio, ratioToHour, updateDragButtonPosition, scale]);
 
-  // 드래그 시작 핸들러 - 스케일 적용
+  // 드래그 시작 핸들러
   const handleDragStart = useCallback((clientX: number) => {
     if (isAnimating) return;
     
+    const clickRatio = getClickRatio(clientX);
+    
     setIsDragging(true);
-    setDragStartX(clientX - dragButtonPosition);
-  }, [dragButtonPosition, isAnimating]);
+    setDragStartRatio(clickRatio - dragButtonRatio);
+  }, [dragButtonRatio, isAnimating, getClickRatio]);
 
-  // 드래그 중 핸들러 - 스케일 적용
+  // 드래그 중 핸들러
   const handleDragMove = useCallback((clientX: number) => {
-    if (!isDragging || !clocksRef.current) return;
+    if (!isDragging) return;
     
-    const clocksWidth = clocksRef.current.offsetWidth;
-    const sideMargin = clocksWidth * 0.1 * scale;
-    const buttonWidth = scaledButtonSize;
+    const currentRatio = getClickRatio(clientX);
+    const newButtonRatio = currentRatio - dragStartRatio;
     
-    // 드래그 범위를 더 넓게 설정 (버튼이 완전히 벗어나지 않도록)
-    const minPosition = sideMargin - (buttonWidth * 0.3);
-    const maxPosition = clocksWidth - sideMargin + (buttonWidth * 0.3);
+    // 범위 제한
+    const clampedRatio = Math.max(0, Math.min(1, newButtonRatio));
     
-    let newPosition = clientX - dragStartX;
-    newPosition = Math.max(minPosition, Math.min(maxPosition, newPosition));
+    setDragButtonRatio(clampedRatio);
     
-    setDragButtonPosition(newPosition);
-    
-    // 실시간으로 정확한 시간 계산 (소수점 포함)
-    const exactHour = calculateExactHourFromPosition(newPosition);
+    const exactHour = ratioToHour(clampedRatio);
     setCurrentExactHour(exactHour);
     
-    // 표시용 시간은 반올림하되, 드래그 중에는 업데이트 빈도를 줄임
     const roundedHour = Math.round(exactHour);
     if (roundedHour !== selectedHour && Math.abs(exactHour - roundedHour) < 0.3) {
       setSelectedHour(roundedHour);
     }
-  }, [isDragging, dragStartX, selectedHour, calculateExactHourFromPosition, scale, scaledButtonSize]);
+  }, [isDragging, dragStartRatio, selectedHour, getClickRatio, ratioToHour]);
 
-  // 드래그 종료 핸들러 - 스케일 적용
+  // 드래그 종료 핸들러
   const handleDragEnd = useCallback(() => {
     if (!isDragging) return;
     
     setIsDragging(false);
     setIsAnimating(true);
     
-    // 현재 드래그 위치에서 가장 가까운 시간 계산
-    const exactHour = calculateExactHourFromPosition(dragButtonPosition);
-    const targetHour = Math.round(exactHour); // 가장 가까운 정수 시간으로 스냅
+    const exactHour = ratioToHour(dragButtonRatio);
+    const targetHour = Math.round(exactHour);
     
     setSelectedHour(targetHour);
     setCurrentExactHour(targetHour);
     
-    // 부드러운 스냅 애니메이션
     setTimeout(() => {
       updateDragButtonPosition(targetHour);
       setTimeout(() => setIsAnimating(false), 300 * Math.max(0.8, scale));
     }, 50 * Math.max(0.8, scale));
-  }, [isDragging, dragButtonPosition, calculateExactHourFromPosition, updateDragButtonPosition, scale]);
+  }, [isDragging, dragButtonRatio, ratioToHour, updateDragButtonPosition, scale]);
 
   // 마우스 이벤트 핸들러
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -279,7 +254,7 @@ const ReturnQuest = () => {
     handleDragEnd();
   }, [handleDragEnd]);
 
-  // 터치 이벤트 핸들러 - 스케일 적용
+  // 터치 이벤트 핸들러
   const handleTouchStart = (e: React.TouchEvent) => {
     e.preventDefault();
     const touch = e.touches[0];
@@ -314,11 +289,10 @@ const ReturnQuest = () => {
     }
   }, [isDragging, handleMouseMove, handleMouseUp, handleTouchMove, handleTouchEnd]);
 
-  // 단계별 자동 진행 - 스케일 적용된 타이밍
+  // 단계별 자동 진행
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
     
-    // 스케일에 따른 타이밍 조정 함수
     const getScaledDuration = (baseDuration: number) => {
       return baseDuration * Math.max(0.8, scale);
     };
@@ -387,7 +361,6 @@ const ReturnQuest = () => {
   // 확인 버튼 클릭 핸들러
   const handleConfirmClick = () => {
     if (gamePhase === 'successResult' && showSuccessMessage) {
-      // API 호출
       const sessionId = localStorage.getItem('session_id')!;
       const payload: AttemptPayload = {
         attempt_number: 1,
@@ -400,13 +373,11 @@ const ReturnQuest = () => {
       postQuestAttempt(sessionId, "Return", payload)
         .then((res) => {
           console.log("✅ 시도 기록 완료:", res.data.attempt_id);
-          // updateQuestScore("Return", 20);
         })
         .catch(err => console.error("❌ 시도 기록 실패", err));
 
       navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=20&correct=true`);
     } else if (gamePhase === 'failResult' && showWarning) {
-      // API 호출
       const sessionId = localStorage.getItem('session_id')!;
       const payload: AttemptPayload = {
         attempt_number: 1,
@@ -419,7 +390,6 @@ const ReturnQuest = () => {
       postQuestAttempt(sessionId, "Return", payload)
         .then((res) => {
           console.log('✅ 시도 기록 완료:', res.data.attempt_id);
-          // updateQuestScore("Return", 10);
         })
         .catch((err) => {console.error('❌ 시도 기록 실패', err);});
 
@@ -443,10 +413,19 @@ const ReturnQuest = () => {
     }
   };
 
-  // 홈으로 이동 핸들러
-  const handleGoHome = () => {
-    navigate('/');
-  };
+  // 드래그 버튼의 실제 픽셀 위치 계산
+  const getDragButtonPixelPosition = useCallback(() => {
+    if (!clocksRef.current) return 0;
+    
+    const rect = clocksRef.current.getBoundingClientRect();
+    const sideMarginRatio = 0.1;
+    
+    // 비율을 실제 픽셀 위치로 변환
+    const usableWidth = rect.width * (1 - sideMarginRatio * 2);
+    const leftMargin = rect.width * sideMarginRatio;
+    
+    return leftMargin + (usableWidth * dragButtonRatio);
+  }, [dragButtonRatio]);
 
   return (
     <div className="relative w-full h-full overflow-hidden">
@@ -463,19 +442,6 @@ const ReturnQuest = () => {
           transitionDuration: `${200 * Math.max(0.8, scale)}ms`
         }}
       />
-
-      {gamePhase === 'gameIntro' && (
-        <div 
-          className="absolute z-[100]"
-          style={{
-            top: `calc(24px * ${scale})`,
-            right: `calc(24px * ${scale})`,
-            width: `calc(80px * ${scale})`,
-            height: `calc(80px * ${scale})`
-          }}
-        >
-        </div>
-      )}
 
       {/* 해가 지는 애니메이션 */}
       {gamePhase === 'sunsetAnimation' && (
@@ -620,14 +586,12 @@ const ReturnQuest = () => {
       {/* 게임 플레이 화면 */}
       {gamePhase === 'gamePlay' && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          {/* 배경 이미지 */}
           <img
             src={homecomingTimeSettingBackground}
             alt="귀가시간 설정 배경"
             className="absolute inset-0 w-full h-full object-cover z-0"
           />
 
-          {/* 확인 버튼 */}
           <div 
             className="flex justify-center z-20"
             style={{ marginTop: `calc(80px * ${scale})` }}
@@ -654,68 +618,51 @@ const ReturnQuest = () => {
               ref={clocksRef}
               className="relative w-full"
             >
-              {/* 시계 배경 이미지 */}
               <img
                 src={homecomingTimeClocks}
                 alt="시계들"
                 className="w-full h-auto object-cover pointer-events-none"
-                style={{ 
-                  aspectRatio: '976/215'
-                }}
+                style={{ aspectRatio: '976/215' }}
               />
               
-              {/* 통합된 클릭/드래그 영역 */}
+              {/* 클릭/드래그 영역 */}
               <div
                 className="absolute inset-0 cursor-grab active:cursor-grabbing"
-                style={{zIndex: 25,
-
-                }}
+                style={{ zIndex: 25 }}
                 onMouseDown={(e) => {
-                  const rect = clocksRef.current?.getBoundingClientRect();
-                  if (!rect) return;
+                  if (!clocksRef.current || !dragButtonRef.current) return;
                   
-                  const clickX = e.clientX - rect.left;
-                  const buttonRect = dragButtonRef.current?.getBoundingClientRect();
+                  const clickRatio = getClickRatio(e.clientX);
+                  const buttonRatio = dragButtonRatio;
+                  const tolerance = 0.1; // 버튼 주변 10% 영역
                   
-                  if (buttonRect) {
-                    const buttonCenterX = buttonRect.left + buttonRect.width / 2 - rect.left;
-                    const buttonRadius = 50 * scale;
-                    
-                    if (Math.abs(clickX - buttonCenterX) < buttonRadius) {
-                      handleMouseDown(e);
-                    } else {
-                      handleClockClick(e);
-                    }
+                  if (Math.abs(clickRatio - buttonRatio) < tolerance) {
+                    handleMouseDown(e);
                   } else {
                     handleClockClick(e);
                   }
                 }}
                 onTouchStart={(e) => {
-                  const rect = clocksRef.current?.getBoundingClientRect();
-                  if (!rect) return;
+                  if (!clocksRef.current || !dragButtonRef.current) return;
                   
                   const touch = e.touches[0];
-                  const touchX = touch.clientX - rect.left;
-                  const buttonRect = dragButtonRef.current?.getBoundingClientRect();
+                  const touchRatio = getClickRatio(touch.clientX);
+                  const buttonRatio = dragButtonRatio;
+                  const tolerance = 0.1;
                   
-                  if (buttonRect) {
-                    const buttonCenterX = buttonRect.left + buttonRect.width / 2 - rect.left;
-                    const buttonRadius = 50 * scale;
-                    
-                    if (Math.abs(touchX - buttonCenterX) < buttonRadius) {
-                      handleTouchStart(e);
-                    } else {
-                      const syntheticEvent = {
-                        clientX: touch.clientX,
-                        preventDefault: () => {},
-                      } as React.MouseEvent;
-                      handleClockClick(syntheticEvent);
-                    }
+                  if (Math.abs(touchRatio - buttonRatio) < tolerance) {
+                    handleTouchStart(e);
+                  } else {
+                    const syntheticEvent = {
+                      clientX: touch.clientX,
+                      preventDefault: () => {},
+                    } as React.MouseEvent;
+                    handleClockClick(syntheticEvent);
                   }
                 }}
               />
               
-              {/* 드래그 버튼 */}
+              {/* 드래그 버튼 - 비율 기반 위치 */}
               <img
                 ref={dragButtonRef}
                 src={dragButton}
@@ -727,7 +674,7 @@ const ReturnQuest = () => {
                 style={{
                   width: `calc(81px * ${scale})`,
                   height: `calc(108px * ${scale})`,
-                  left: `${dragButtonPosition}px`,
+                  left: `${(dragButtonRatio * 80 + 10)}%`, // 10% 좌측 여백, 80% 사용 영역
                   top: '48%',
                   transform: 'translateX(-50%)',
                   filter: isDragging ? 'brightness(1.1)' : 'none',
@@ -783,7 +730,6 @@ const ReturnQuest = () => {
 
       {gamePhase === 'successResult' && showSuccessMessage && (
         <div className="absolute inset-0">
-          {/* 배경 유지 */}
           <img
             src={homecomingTimeSettingBackground}
             alt="배경"
@@ -837,7 +783,6 @@ const ReturnQuest = () => {
               />
             </motion.div>
 
-            {/* 확인 버튼 추가 */}
             <motion.button
               onClick={handleConfirmClick}
               className="cursor-pointer hover:scale-105 transition-transform duration-200 border-0 outline-none bg-transparent p-0"
@@ -886,10 +831,8 @@ const ReturnQuest = () => {
 
       {gamePhase === 'failSequence3' && (
         <div className="absolute inset-0">
-          {/* 깜깜한 배경 */}
           <div className="absolute inset-0 bg-black z-0" />
           
-          {/* 플래시 깜빡임 효과 */}
           <motion.img
             src={goraniFlash}
             alt="플래시"
@@ -905,7 +848,6 @@ const ReturnQuest = () => {
             }}
           />
           
-          {/* 고라니 등장 - 마지막 플래시와 함께 */}
           <motion.img
             src={goraniFace}
             alt="고라니"
@@ -988,7 +930,6 @@ const ReturnQuest = () => {
                 </p>
               </motion.div>
 
-              {/* 확인 버튼 추가 */}
               <motion.button
                 onClick={handleConfirmClick}
                 className="cursor-pointer hover:scale-105 transition-transform duration-200 border-0 outline-none bg-transparent p-0"
