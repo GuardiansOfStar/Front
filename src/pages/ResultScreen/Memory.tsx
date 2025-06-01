@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useScale } from "../../hooks/useScale";
 import Background from "../../components/ui/Background";
@@ -7,6 +7,7 @@ import { updateSessionScene } from "../../services/endpoints/session";
 
 const Memory = () => {
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const scale = useScale();
 
@@ -20,36 +21,36 @@ const Memory = () => {
     { img: "/assets/images/quest5.png", label: "귀가시간 정하기", questId: "Gohome"    },
   ];
 
-  // 하나 선택 -> 1.5초 후 자동 이동
-  useEffect(() => {
-    if (selectedIndexes.length === 1) {
-      const chosenIndex = selectedIndexes[0];
-      const chosenQuestId = options[chosenIndex].questId;
-      console.log("chosenQuestId : ", chosenQuestId);
-
-      // API : favorite_scene만 먼저 PATCH
-      updateSessionScene(sessionId, chosenQuestId)
-        .then((res) => {
-          console.log("[Memory] updateSessionScene 성공:", res.data);
-        })
-        .catch((err) => {
-          console.error("[Memory] updateSessionScene 실패:", err);
-        });
-
-      // 1.5초 뒤에 /survey 로 이동
-      const timer = setTimeout(() => {
-        navigate(`/survey`);
-      }, 1500);
-
-      // cleanup function
-      return () => clearTimeout(timer);
-    }
-  }, [selectedIndexes, navigate, sessionId]);
-
   const toggleSelection = (index: number) => {
     setSelectedIndexes((prev) =>
       prev.includes(index) ? prev.filter((i) => i !== index) : [index] // 하나만 선택 가능
     );
+  };
+
+  const handleNextClick = () => {
+    if (selectedIndexes.length === 0) {
+      alert("장면을 선택해주세요!");
+      return;
+    }
+
+    if (isLoading) return; // 중복 클릭 방지
+
+    setIsLoading(true);
+    const chosenIndex = selectedIndexes[0];
+    const chosenQuestId = options[chosenIndex].questId;
+    console.log("chosenQuestId : ", chosenQuestId);
+
+    // API : favorite_scene만 먼저 PATCH
+    updateSessionScene(sessionId, chosenQuestId)
+      .then((res) => {
+        console.log("[Memory] updateSessionScene 성공:", res.data);
+        navigate(`/survey`);
+      })
+      .catch((err) => {
+        console.error("[Memory] updateSessionScene 실패:", err);
+        setIsLoading(false);
+        alert("오류가 발생했습니다. 다시 시도해주세요.");
+      });
   };
 
   const topRow = options.slice(0, 2);
@@ -101,7 +102,7 @@ const Memory = () => {
         <div 
           className="absolute"
           style={{
-            top: `calc(68px * ${scale})`,
+            top: `calc(30px * ${scale})`,
             left: `calc(166px * ${scale})`,
             width: `calc(692px * ${scale})`,
             height: `calc(60px * ${scale})`
@@ -119,7 +120,7 @@ const Memory = () => {
         <div 
           className="absolute flex justify-center"
           style={{
-            top: `calc(168px * ${scale})`,
+            top: `calc(125px * ${scale})`,
             left: `calc(213px * ${scale})`,
             gap: `calc(64px * ${scale})`
           }}
@@ -131,12 +132,35 @@ const Memory = () => {
         <div 
           className="absolute flex justify-center"
           style={{
-            top: `calc(462px * ${scale})`,
+            top: `calc(392px * ${scale})`,
             left: `calc(52px * ${scale})`,
             gap: `calc(40px * ${scale})`
           }}
         >
           {bottomRow.map((option, idx) => renderCard(option, idx + 2))}
+        </div>
+
+        {/* 다음 버튼 */}
+        <div
+          className="absolute flex justify-center z-50"
+          style={{
+            bottom: `calc(20px * ${scale})`,
+            left: '50%',
+            transform: 'translateX(-50%)'
+          }}
+        >
+          <img
+            src="/assets/images/next_button.png"
+            alt="다음"
+            onClick={handleNextClick}
+            className={`cursor-pointer transition-opacity z-50 ${
+              selectedIndexes.length === 0 || isLoading ? 'opacity-50' : 'opacity-100'
+            }`}
+            style={{
+              width: `calc(190px * ${scale})`,
+              height: `calc(90px * ${scale})`
+            }}
+          />
         </div>
       </div>
     </div>
