@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ScoreProvider } from './context/ScoreContext';
+// import { ScoreProvider } from './context/ScoreContext';
 import AspectRatioContainer from './components/layout/AspectRatioContainer';
 
 import HomePage from './pages/home/HomePage';
@@ -29,7 +29,7 @@ import VillageRank from './pages/ResultScreen/VillageRank';
 
 function App() {
   return (
-    <ScoreProvider>
+    //<ScoreProvider>
       <AspectRatioContainer fillMode="fit">
         <Routes>
           {/* 기본 화면들 */}
@@ -66,7 +66,7 @@ function App() {
           <Route path="/development-notice" element={<DevelopmentNotice />} />
         </Routes>
       </AspectRatioContainer>
-    </ScoreProvider>
+    //</ScoreProvider>
   );
 }
 

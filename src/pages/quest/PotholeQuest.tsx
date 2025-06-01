@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attempts';
 import { useScale } from '../../hooks/useScale';
 import GameTitle from '../../components/ui/GameTitle';
-import { useScore } from '../../context/ScoreContext';
+// import { useScore } from '../../context/ScoreContext';
 
 // 이미지 임포트
 const drivingRoad = '/assets/images/driving_road.png';
@@ -39,7 +39,7 @@ const PotholeQuest = () => {
   const [hideSuccessImages, setHideSuccessImages] = useState(false);
 
   const scale = useScale();
-  const { updateQuestScore } = useScore();
+  // const { updateQuestScore } = useScore();
 
   const scaledHoverScale = 1.05 + (0.02 * scale);
   // URL 쿼리 파라미터 처리
@@ -121,7 +121,7 @@ const PotholeQuest = () => {
     postQuestAttempt(sessionId, qId, payload)
       .then((res) => {
         console.log('✅ 시도 기록 완료:', res.data.attempt_id);
-        updateQuestScore("pothole", scoreAwarded);
+        // updateQuestScore("pothole", scoreAwarded);
       })
       .catch((err) => {console.error('❌ 시도 기록 실패', err);});
 
