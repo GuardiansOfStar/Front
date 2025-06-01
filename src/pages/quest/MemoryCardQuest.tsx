@@ -7,7 +7,7 @@ import { postQuestAttempt, AttemptPayload } from "../../services/endpoints/attem
 import GameTitle from '../../components/ui/GameTitle';
 import { useScale } from '../../hooks/useScale';
 // import { useScore } from '../../context/ScoreContext';
-import { useCharacter } from 'context/CharacterContext';
+import { useCharacter } from '../../context/CharacterContext';
 
 // 이미지 임포트
 const gameBackground = '/assets/images/pre_drive_background.png';
