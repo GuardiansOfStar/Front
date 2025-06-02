@@ -1,7 +1,5 @@
-// Front/src/pages/questFinish/CompletionBackground.tsx 수정
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useWindowSize } from 'react-use';
 import { useScale } from '../../hooks/useScale';
 import Confetti from 'react-confetti';
 
@@ -10,7 +8,6 @@ const motorcycle = '/assets/images/motorcycle.png';
 
 const CompletionBackground = () => {
     const navigate = useNavigate();
-    const { width, height } = useWindowSize();
     const scale = useScale();
     const [showConfetti] = useState(true);
     const [startAnimation, setStartAnimation] = useState(false);
@@ -61,10 +58,10 @@ const CompletionBackground = () => {
             
             {/* 컨페티 이펙트 */}
             {showConfetti && (
-                <div className="absolute top-0 left-0 w-screen z-50 pointer-events-none">
+                <div className="fixed top-0 left-0 w-screen h-screen z-50 pointer-events-none">
                     <Confetti
-                        width={width}
-                        height={height}
+                        width={window.innerWidth}
+                        height={window.innerHeight}
                         numberOfPieces={650 * Math.min(1.5, scale)} // 스케일에 따라 컨페티 수량 조정
                         gravity={0.1 * scale} // 중력도 스케일 적용
                         recycle={true}

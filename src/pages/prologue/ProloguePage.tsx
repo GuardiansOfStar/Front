@@ -299,14 +299,14 @@ const ProloguePage = () => {
 
   // 네비게이션 버튼 컴포넌트
   const NavigationButtons = () => {
-    const handleBackToScenarios = () => {
-      navigate('/scenarios');
+    const handleBackToCharacterSelect = () => {
+      navigate('/character-select');
     };
 
     return (
       <>
         {step === 'mission' && (
-          <BackButton onClick={handleBackToScenarios} />
+          <BackButton onClick={handleBackToCharacterSelect} />
         )}
       </>
     );
