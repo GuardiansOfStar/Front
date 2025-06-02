@@ -198,7 +198,7 @@ const PersonalInfo = () => {
           />
         </div>
 
-                {/* 전화번호 필드 */}
+        {/* 전화번호 필드 */}
         <div 
           className="absolute"
           style={{
@@ -223,7 +223,57 @@ const PersonalInfo = () => {
           <input
             type="tel"
             value={phone}                       // value 속성 추가
-            onChange={(e) => setPhone(e.target.value)} // onChange 속성 추가
+            onChange={(e) => {
+              /* 
+              전화번호 포맷팅 함수
+              '-'자동 생성
+              한국 전화번호 형식에 맞춤춤
+              */
+              const formatPhoneNumber = (value: string) => {
+                const numbersOnly = value.replace(/[^\d]/g, '');
+                
+                if (numbersOnly.length <= 3) {
+                  return numbersOnly;
+                } else if (numbersOnly.length <= 7) {
+                  if (numbersOnly.startsWith('02')) {
+                    return `${numbersOnly.slice(0, 2)}-${numbersOnly.slice(2)}`;
+                  } else {
+                    return `${numbersOnly.slice(0, 3)}-${numbersOnly.slice(3)}`;
+                  }
+                } else if (numbersOnly.length <= 11) {
+                  if (numbersOnly.startsWith('02')) {
+                    return `${numbersOnly.slice(0, 2)}-${numbersOnly.slice(2, 6)}-${numbersOnly.slice(6)}`;
+                  } else if (numbersOnly.startsWith('01')) {
+                    return `${numbersOnly.slice(0, 3)}-${numbersOnly.slice(3, 7)}-${numbersOnly.slice(7)}`;
+                  } else {
+                    if (numbersOnly.length === 10) {
+                      return `${numbersOnly.slice(0, 3)}-${numbersOnly.slice(3, 6)}-${numbersOnly.slice(6)}`;
+                    } else {
+                      return `${numbersOnly.slice(0, 3)}-${numbersOnly.slice(3, 7)}-${numbersOnly.slice(7)}`;
+                    }
+                  }
+                } else {
+                  const truncated = numbersOnly.slice(0, 11);
+                  if (truncated.startsWith('02')) {
+                    return `${truncated.slice(0, 2)}-${truncated.slice(2, 6)}-${truncated.slice(6)}`;
+                  } else {
+                    return `${truncated.slice(0, 3)}-${truncated.slice(3, 7)}-${truncated.slice(7)}`;
+                  }
+                }
+              };
+              
+              const formattedValue = formatPhoneNumber(e.target.value);
+              setPhone(formattedValue);
+            }}
+            onKeyDown={(e) => {
+              // 숫자만 입력 허용 (백스페이스, 방향키 등은 허용)
+              if (e.key === 'Backspace' || e.key === 'Delete') return;
+              
+              if (!/\d/.test(e.key) && 
+                  !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab', 'Enter'].includes(e.key)) {
+                e.preventDefault();
+              }
+            }}
             className="absolute bg-white text-gray-800"
             style={{
               width: `calc(310px * ${scale})`,

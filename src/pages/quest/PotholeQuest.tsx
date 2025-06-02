@@ -281,8 +281,8 @@ const PotholeQuest = () => {
               <p
                 className="text-black text-center font-black leading-relaxed"
                 style={{
-                  fontSize: `calc(2.2rem * ${scale})`,
-                  marginTop: `calc(32px * ${scale})`,
+                  fontSize: `calc(2.3rem * ${scale})`,
+                  marginTop: `calc(25px * ${scale})`,
                   letterSpacing: `calc(0.05em * ${scale})`
                 }}
               >
@@ -301,7 +301,7 @@ const PotholeQuest = () => {
                 padding: 0
               }}
             >
-              <button
+              <motion.button
                 className={`rounded-[20px] font-black text-black transition duration-300 cursor-pointer flex items-center justify-center
                   ${selectedOption === 'A' ? 
                     'bg-[#0DA429] bg-opacity-90 border-[#0DA429] scale-105' : 
@@ -320,15 +320,17 @@ const PotholeQuest = () => {
                 }}
                 onClick={() => handleOptionSelect('A')}
                 disabled={!!selectedOption}
+                animate={{ scale: [1, 1.1] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut",repeatType: "reverse" }}
               >
                 <div style={{ textAlign: 'center' }}>
                   <span style={{ color: '#B91C1C' }}>속도를 줄이고</span><br/>
                   구덩이를 피해<br/>
                   조심히 지나간다
                 </div>
-              </button>
+              </motion.button>
               
-              <button
+              <motion.button
                 className={`rounded-[20px] font-black text-black transition duration-300 cursor-pointer flex items-center justify-center
                   ${selectedOption === 'B' ? 
                     'bg-[#0DA429] bg-opacity-90 border-[#0DA429] scale-105' : 
@@ -346,11 +348,13 @@ const PotholeQuest = () => {
                 }}
                 onClick={() => handleOptionSelect('B')}
                 disabled={!!selectedOption}
+                animate={{ scale: [1.1, 1] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut",repeatType: "reverse" }}
               >
                 <div style={{ textAlign: 'center' }}>
                 빨리 지나가면 <br/>덜 흔들릴 것 같아 <br/><span style={{ color: '#B91C1C' }}>속도를 높여 지나간다</span>
                 </div>
-              </button>
+              </motion.button>
             </div>
           </div>
         </div>
