@@ -13,22 +13,22 @@ const rightArrowDark = '/assets/images/right_arrow_dark.png';
 const allScenarios = [
     { 
         id: 1, 
-        title: '시내 이륜차 점검 센터 가기', 
-        subtitle: '시내 이륜차 점검 센터 가기',
+        title: '시내 병원 진료 보는 날', 
+        subtitle: '시내 병원 진료 보는 날',
         image: '/assets/images/scenario2.png',
         locked: true
     },
     { 
         id: 2, 
-        title: '과수원 작업가는 날', 
-        subtitle: '과수원 작업가는 날',
+        title: '과수원 작업 하는 날', 
+        subtitle: '과수원 작업 하는 날',
         image: '/assets/images/scenario1.png',
         locked: false
     },
     { 
         id: 3, 
-        title: '시장가서 장 보는 날', 
-        subtitle: '시장가서 장 보는 날',
+        title: '시장에서 장 보는 날', 
+        subtitle: '시장에에서 장 보는 날',
         image: '/assets/images/scenario3.png',
         locked: true
     },
