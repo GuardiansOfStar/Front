@@ -286,7 +286,7 @@ const HarvestQuest = () => {
                 padding: 0
               }}
             >
-              <button
+              <motion.button
                 className={`rounded-[20px] font-black text-black transition duration-300 cursor-pointer
                   ${selectedOption === 'A' ? 
                     'bg-[#0DA429] bg-opacity-90 border-[#0DA429] scale-105' : 
@@ -305,11 +305,13 @@ const HarvestQuest = () => {
                 }}
                 onClick={() => handleOptionSelect('A')}
                 disabled={!!selectedOption}
+                animate={{ y: [30, -30] }}  
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut",repeatType: "reverse" }}
               >
                 과수원으로<br/><span style={{ color: '#B91C1C' }}>이륜차를 운전해</span><br/> 짐을 싣는다
-              </button>
+              </motion.button>
               
-              <button
+              <motion.button
                 className={`rounded-[20px] font-black text-black transition duration-300 cursor-pointer
                   ${selectedOption === 'B' ? 
                     'bg-[#0DA429] bg-opacity-90 border-[#0DA429] scale-105' : 
@@ -328,9 +330,11 @@ const HarvestQuest = () => {
                 }}
                 onClick={() => handleOptionSelect('B')}
                 disabled={!!selectedOption}
+                animate={{ y: [-30, 30] }}  
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut",repeatType: "reverse" }}
               >
                 <span style={{ color: '#B91C1C' }}>손수레를 이용해</span><br/> 이륜차까지<br/> 짐을 옮겨 싣는다
-              </button>
+              </motion.button>
             </div>
           </div>
         </div>
