@@ -229,7 +229,7 @@ const PersonalInfo = () => {
               '-'자동 생성
               한국 전화번호 형식에 맞춤춤
               */
-              const formatPhoneNumber = (value) => {
+              const formatPhoneNumber = (value: string) => {
                 const numbersOnly = value.replace(/[^\d]/g, '');
                 
                 if (numbersOnly.length <= 3) {
