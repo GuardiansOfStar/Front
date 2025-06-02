@@ -596,7 +596,7 @@ const ReturnQuest = () => {
             className="flex justify-center z-20"
             style={{ marginTop: `calc(80px * ${scale})` }}
           >
-            <button
+            <motion.button
               onClick={handleStartGame}
               disabled={isDragging || isAnimating}
               className="bg-[#0DA429] hover:bg-green-700 text-white font-black rounded-lg border-4 border-white disabled:opacity-50 disabled:cursor-not-allowed shadow-lg transition-colors duration-300"
@@ -605,11 +605,13 @@ const ReturnQuest = () => {
                 paddingTop: `calc(8px * ${scale})`,
                 paddingBottom: `calc(8px * ${scale})`,
                 paddingLeft: `calc(32px * ${scale})`,
-                paddingRight: `calc(32px * ${scale})`
+                paddingRight: `calc(32px * ${scale})`,
               }}
+              animate={{ scale: [1, 1.05] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut",repeatType: "reverse" }}
             >
               {selectedHour}시 귀가
-            </button>
+            </motion.button>
           </div>
           
           {/* 시계 드래그 영역 */}

@@ -44,7 +44,7 @@ const DrivingPrepPage = () => {
           return prev;
         }
         // 이동 속도 (픽셀 단위) - 스케일에 따라 조정
-        return prev + (5 * scale);
+        return prev + (8 * scale);
       });
     }, 16); // 약 60fps
     

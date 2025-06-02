@@ -38,6 +38,18 @@ const VillageRank = () => {
     };
   }, []);
 
+  /*list 단계에서 30초 후 홈 이동 -- 적용 안됨 (확인 바람!)
+  useEffect(() => {
+    if (phase === 'list') {
+      const homeTimer = setTimeout(() => {
+        navigate('/');
+      }, 10000); // 30초
+
+      return () => clearTimeout(homeTimer);
+    }
+  }, [phase, navigate]);
+  */
+
   return (
     <div className="relative w-full h-full">
       <div className="absolute inset-0 bg-[#FFF9C4]/70 z-10" />
