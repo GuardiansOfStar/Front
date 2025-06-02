@@ -599,13 +599,13 @@ const ReturnQuest = () => {
             <button
               onClick={handleStartGame}
               disabled={isDragging || isAnimating}
-              className="bg-[#0DA429] hover:bg-green-700 text-white font-black rounded-lg border-4 border-white disabled:opacity-50 disabled:cursor-not-allowed shadow-lg transition-colors duration-300"
+              className="bg-[#0DA429] hover:bg-green-700 text-white font-black rounded-lg border-4 border-white disabled:opacity-50 disabled:cursor-not-allowed shadow-lg transition-colors duration-300 animate-pulse"
               style={{
                 fontSize: `calc(46px * ${scale})`,
                 paddingTop: `calc(8px * ${scale})`,
                 paddingBottom: `calc(8px * ${scale})`,
                 paddingLeft: `calc(32px * ${scale})`,
-                paddingRight: `calc(32px * ${scale})`
+                paddingRight: `calc(32px * ${scale})`,
               }}
             >
               {selectedHour}시 귀가

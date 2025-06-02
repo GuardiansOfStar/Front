@@ -788,7 +788,7 @@ const MakgeolliQuest = () => {
                       <span className="text-green-600">잠깐!</span><br />
                       <span className="text-black"> 
                         막걸리의 유혹을 이겨내볼까요?<br />
-                        새참 속 막걸리를 치우러 가요.
+                        새참 속 막걸리를 치우러 가요
                       </span>
                     </>
                   ) : (

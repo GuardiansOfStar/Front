@@ -28,7 +28,7 @@ const allScenarios = [
     { 
         id: 3, 
         title: '시장에서 장 보는 날', 
-        subtitle: '시장에에서 장 보는 날',
+        subtitle: '시장에서 장 보는 날',
         image: '/assets/images/scenario3.png',
         locked: true
     },
