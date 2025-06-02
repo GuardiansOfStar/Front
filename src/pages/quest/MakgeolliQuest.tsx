@@ -164,7 +164,7 @@ const MakgeolliQuest = () => {
       
       timer = setTimeout(() => {
         setGamePhase('missionIntro');
-      }, getScaledDuration(5000));
+      }, getScaledDuration(3000));
     }
     else if (gamePhase === 'missionIntro') {
       setShowTrayBackground(false);
