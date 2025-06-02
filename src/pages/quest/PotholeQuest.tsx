@@ -281,8 +281,8 @@ const PotholeQuest = () => {
               <p
                 className="text-black text-center font-black leading-relaxed"
                 style={{
-                  fontSize: `calc(2.2rem * ${scale})`,
-                  marginTop: `calc(32px * ${scale})`,
+                  fontSize: `calc(2.3rem * ${scale})`,
+                  marginTop: `calc(25px * ${scale})`,
                   letterSpacing: `calc(0.05em * ${scale})`
                 }}
               >

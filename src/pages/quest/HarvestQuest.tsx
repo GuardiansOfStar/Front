@@ -266,8 +266,8 @@ const HarvestQuest = () => {
               <p
                 className="text-black text-center font-black leading-relaxed"
                 style={{
-                  fontSize: `calc(2.2rem * ${scale})`,
-                  marginTop: `calc(32px * ${scale})`,
+                  fontSize: `calc(2.5rem * ${scale})`,
+                  marginTop: `calc(25px * ${scale})`,
                   letterSpacing: `calc(0.05em * ${scale})`
                 }}
               >
