@@ -145,8 +145,6 @@ button:focus-visible {
   transform: rotateY(180deg);
 }
 
-/* src/index.css에 추가 */
-
 /* 반응형 기본 스타일 */
 .responsive-container {
   --base-scale: 1;
@@ -168,3 +166,8 @@ button:focus-visible {
 .responsive-p-4 { padding: calc(1rem * var(--scale, 1)); }
 .responsive-m-4 { margin: calc(1rem * var(--scale, 1)); }
 .responsive-gap-4 { gap: calc(1rem * var(--scale, 1)); }
+
+/* 기존 shake 애니메이션 아래에 추가 */
+.animate-shake {
+  animation: shake 0.5s ease-in-out 2;
+}

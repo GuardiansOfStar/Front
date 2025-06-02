@@ -67,17 +67,22 @@ const SuccessBackground = () => {
             
             {/* 컨페티 이펙트 */}
             {showConfetti && (
-                <div className="fixed top-0 left-0 w-screen h-screen z-50 pointer-events-none">
+                <div className="absolute top-0 left-0 w-full h-full z-50 pointer-events-none overflow-hidden">
                     <Confetti
-                        width={window.innerWidth}
-                        height={window.innerHeight}
-                        numberOfPieces={600 * Math.min(1.5, scale)} // 스케일에 따라 컨페티 수량 조정
-                        gravity={0.1 * scale} // 중력도 스케일 적용
-                        recycle={true}
+                    width={1024 * scale}
+                    height={768 * scale}
+                    numberOfPieces={600 * Math.min(1.5, scale)}
+                    gravity={0.1 * scale}
+                    recycle={true}
+                    confettiSource={{
+                        x: 0,
+                        y: 0,
+                        w: 1024 * scale,
+                        h: 100 * scale
+                    }}
                     />
                 </div>
-            )}
-
+                )}
             {/* 댄싱스타: 4초 후 등장 - 위치 조정됨 */}
             {showDancingStar && <DancingStar />}
         </div>

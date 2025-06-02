@@ -363,24 +363,6 @@ const PotholeQuest = () => {
       {/* 정답 결과 화면 */}
       {gamePhase === 'successResult' && !showSuccessMessage && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          {/* 배경 이미지 */}
-          <div className="absolute inset-0">
-            <div
-              className="transition-transform ease-out"
-              style={{
-                transform: 'translateY(-15%)',
-                transitionDuration: `${5000 * Math.max(0.8, scale)}ms`,
-                maxWidth: '100%',
-                willChange: 'transform',
-              }}
-            >
-              <img
-                src={drivingRoad}
-                alt="주행 배경"
-                className="w-full h-auto object-contain"
-              />
-            </div>
-          </div>
 
           {/* 배경 오버레이 */}
           <motion.div

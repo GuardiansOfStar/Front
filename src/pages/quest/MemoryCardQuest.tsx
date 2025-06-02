@@ -105,7 +105,6 @@ const MemoryCardQuest: React.FC = () => {
   const [cards, setCards] = useState<Card[]>([]);
   const [initialCardOrder, setInitialCardOrder] = useState<Card[]>([]);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
-  const [matchedPairs, setMatchedPairs] = useState<string[]>([]);
   const [attempts, setAttempts] = useState(0);
   const [gamePhase, setGamePhase] = useState<GamePhase>('intro1');
   const [feedbackMessage, setFeedbackMessage] = useState<string>('');
@@ -115,7 +114,8 @@ const MemoryCardQuest: React.FC = () => {
   const [showHintTitle, setShowHintTitle] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
   const [shouldShowHintMessage, setShouldShowHintMessage] = useState(false);
-  
+  const [shakingCards, setShakingCards] = useState<number[]>([]);
+
   const scale = useScale();
 
   // 타이머 refs
@@ -418,6 +418,8 @@ const MemoryCardQuest: React.FC = () => {
         } else {
           // 정답이 아닌 같은 쌍 선택
           window.setTimeout(() => {
+            setShakingCards([aId, bId]);
+
             setFeedbackMessage("앗, 준비한 선물이 아니에요!\n안전모가 그려진 카드 쌍을 찾아주세요!");
             setGamePhase('wrongMatchFeedback');
             
@@ -430,12 +432,15 @@ const MemoryCardQuest: React.FC = () => {
                 )
               );
               setFlippedCards([]);
+              setShakingCards([]);
             }, 1500 * Math.max(0.8, scale));
           }, 800 * Math.max(0.8, scale));
         }
       } else {
         // 서로 다른 쌍 선택
         window.setTimeout(() => {
+          setShakingCards([aId, bId]);
+
           setFeedbackMessage("앗, 서로 다른 그림이에요!\n안전모가 그려진 카드 쌍을 찾아주세요");
           setGamePhase('wrongPairFeedback');
           
@@ -448,6 +453,7 @@ const MemoryCardQuest: React.FC = () => {
               )
             );
             setFlippedCards([]);
+            setShakingCards([]);
           }, 1500 * Math.max(0.8, scale));
         }, 800 * Math.max(0.8, scale));
       }
@@ -758,7 +764,9 @@ const MemoryCardQuest: React.FC = () => {
                 return (
                   <div
                     key={card.id}
-                    className={`relative cursor-pointer transition-transform hover:scale-105`}
+                    className={`relative cursor-pointer transition-transform hover:scale-105 ${
+                      shakingCards.includes(card.id) ? 'animate-shake' : ''
+                    }`}
                     onClick={() => handleCardClick(card.id)}
                     style={{
                       width: `${containerSize.width}px`,
