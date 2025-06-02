@@ -733,7 +733,7 @@ const MakgeolliQuest = () => {
                 }}
                 onClick={() => handleOptionSelect('B')}
                 disabled={!!selectedOption}
-                animate={{ scale: [1, 1.1] }}
+                animate={{ scale: [1.1, 1] }}
                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut",repeatType: "reverse" }}
               >
                 <span className="text-center leading-tight">
