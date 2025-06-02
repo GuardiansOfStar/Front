@@ -305,8 +305,8 @@ const HarvestQuest = () => {
                 }}
                 onClick={() => handleOptionSelect('A')}
                 disabled={!!selectedOption}
-                animate={{ y: [30, -30] }}  
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut",repeatType: "reverse" }}
+                animate={{ scale: [1, 1.1] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut",repeatType: "reverse" }}
               >
                 과수원으로<br/><span style={{ color: '#B91C1C' }}>이륜차를 운전해</span><br/> 짐을 싣는다
               </motion.button>
@@ -330,8 +330,8 @@ const HarvestQuest = () => {
                 }}
                 onClick={() => handleOptionSelect('B')}
                 disabled={!!selectedOption}
-                animate={{ y: [-30, 30] }}  
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut",repeatType: "reverse" }}
+                animate={{ scale: [1.1, 1] }}  
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut",repeatType: "reverse" }}
               >
                 <span style={{ color: '#B91C1C' }}>손수레를 이용해</span><br/> 이륜차까지<br/> 짐을 옮겨 싣는다
               </motion.button>
