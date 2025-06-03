@@ -91,7 +91,7 @@ const SettingPage = () => {
 
         {/* 자동완성 목록 */}
         {showSuggestions && sortedRegions.length > 0 && (
-            <div className="absolute top-[270px] left-[191px] w-[641px] max-h-[450px] overflow-y-auto flex flex-col gap-4 z-40 bg-green-600 bg-opacity-25 rounded-[10px] p-8 shadow-lg">
+            <div className="absolute top-[260px] left-[191px] w-[641px] max-h-[450px] overflow-y-auto flex flex-col gap-4 z-40 bg-yellow-100 rounded-[10px] p-8 shadow-lg">
             {sortedRegions.map((region) => (
                 <button
                 key={region}
@@ -123,7 +123,7 @@ const SettingPage = () => {
                     key={region}
                     onClick={() => setSelectedRegion(region)}
                     className={`
-                        w-[120px] h-[67px]
+                        h-[67px]
                         ${selectedRegion === region ? 'bg-green-700' : 'bg-[rgba(11,159,38,0.5)]'}
                         border-[7px] border-[#0E8E12]
                         rounded-[20px]

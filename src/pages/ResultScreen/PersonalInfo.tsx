@@ -137,8 +137,11 @@ const PersonalInfo = () => {
           </label>
           <input
             type="text"
-            value={name}                      // value 속성 추가
-            onChange={(e) => setName(e.target.value)} // onChange 속성 추가
+            value={name}
+            onChange={(e) => {
+              const onlyKorean = e.target.value.replace(/[^가-힣]/g, "");
+              setName(onlyKorean);
+            }}
             className="absolute bg-white text-gray-800"
             style={{
               width: `calc(310px * ${scale})`,
@@ -198,7 +201,7 @@ const PersonalInfo = () => {
           />
         </div>
 
-                {/* 전화번호 필드 */}
+        {/* 전화번호 필드 */}
         <div 
           className="absolute"
           style={{
@@ -222,8 +225,19 @@ const PersonalInfo = () => {
           </label>
           <input
             type="tel"
-            value={phone}                       // value 속성 추가
-            onChange={(e) => setPhone(e.target.value)} // onChange 속성 추가
+            value={phone}
+            onChange={(e) => {
+              const digits = e.target.value.replace(/\D/g, "");
+              let formatted = digits;
+              if (digits.length < 4) {
+                formatted = digits;
+              } else if (digits.length < 8) {
+                formatted = `${digits.slice(0, 3)}-${digits.slice(3)}`;
+              } else {
+                formatted = `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7, 11)}`;
+              }
+              setPhone(formatted);
+            }}
             className="absolute bg-white text-gray-800"
             style={{
               width: `calc(310px * ${scale})`,
