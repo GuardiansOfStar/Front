@@ -116,7 +116,7 @@ const VillageRank = () => {
         </div>
 
         <div 
-          className="overflow-y-auto"
+          className="overflow-y-auto scroll-container"
           style={{
             width: `calc(770px * ${scale})`,
             height: `calc(299px * ${scale})`,

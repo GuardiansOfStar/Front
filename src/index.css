@@ -18,20 +18,20 @@ html, body, * {
 
 /* 1) 스크롤바 트랙(배경 부분)의 높이(가로 모드 기준) 지정 */
 .scroll-container::-webkit-scrollbar {
-  height: 8px; /* 스크롤바 “바닥” 높이: 8px 정도로 얇게 만듭니다. */
+  height: 8px; /* 스크롤바 “바닥” 높이: 8px 정도로 얇게 */
 }
 
 /* 2) 트랙의 배경(스크롤바가 지나가는 부분)을 투명 처리 */
 .scroll-container::-webkit-scrollbar-track {
-  background: transparent;  /* 트랙 자체는 투명하게 두고, 오직 손잡이만 보이게 설정 */
+  background-color: #5a5a5a;  /* 트랙 자체는 투명하게 두고, 오직 손잡이만 보이게 설정 */
 }
 
 /* 3) 스크롤바 “손잡이(thumb)” 모양 지정 */
 .scroll-container::-webkit-scrollbar-thumb {
-  background-color: #0DA429; /* 초록색 계열: #0DA429 (원하시는 색상 코드로 변경 가능) */
+  background-color: #d0d0d0; 
   border-radius: 4px;        /* 모서리를 살짝 둥글게 처리(반경 4px) */
   min-width: 80px;          /* 손잡이가 절대로 100px보다 작아지지 않도록 최소 너비 지정 */
-  /* thumb의 높이는 scrollbar 전체 높이에 맞춰 자동 조절됩니다 */
+  /* thumb의 높이는 scrollbar 전체 높이에 맞춰 자동 조절 */
 }
 
 /* 4) Firefox용 설정 (선택 사항) */
