@@ -8,6 +8,8 @@ export interface UserCreateData {
   phone: string;
   age: number;
   is_guest?: boolean;   // 게스트 여부 : 이전 데이터 제외ㅜㅜ
+  session_id: string;
+  score: number;
   
 }
 
@@ -25,6 +27,8 @@ export function createUser(
     phone: data.phone,
     age: data.age,
     is_guest: data.is_guest ?? false, // 기본값 false
+    session_id: data.session_id,
+    score: data.score,
   };
 
   return api.post<{
@@ -34,6 +38,8 @@ export function createUser(
     phone: string;
     age: number;
     village_id: string;
+    session_id: string;
+    score: number;
     created_at: { _seconds: number; _nanoseconds: number };
   }>("/users", payload);
 }

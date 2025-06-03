@@ -15,10 +15,6 @@ export interface RankingEntry {
   avg_score: number;
   rank: number;
 }
-export interface RankingResponse {
-  myVillage: RankingEntry | null;
-  allVillages: RankingEntry[];
-}
 
 /**
  * 마을 목록 조회
@@ -46,10 +42,11 @@ export function createVillage(villageName: string) {
 }
 
 /**
- * GET /villages/ranking?my_village_id={villageId}
+ * GET /villages/ranking
+ * - 모든 마을의 랭킹 배열(RankingEntry[])을 반환
+ * - 응답 배열을 받아서, 로컬스토리지에 있는 my_village_id와 매칭하여
+ *   myVillage와 allVillages로 분리하여 사용!
  */
-export function getVillageRanking(myVillageId: string) {
-  return api.get<RankingResponse>(
-    `/villages/ranking?my_village_id=${encodeURIComponent(myVillageId)}`
-  );
+export function getVillageRanking() {
+  return api.get<RankingEntry[]>("/villages/ranking");
 }
