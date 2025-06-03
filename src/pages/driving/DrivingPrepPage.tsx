@@ -29,22 +29,29 @@ const DrivingPrepPage = () => {
     const timer = setTimeout(() => {
       console.log("DrivingPrepPage - 미션 화면으로 이동:", { path: `/quest?scenario=${sId}&quest=${qId}` });
       navigate(`/quest?scenario=${sId}&quest=${qId}`);
-    }, 4000);
+    }, 2000);
     
     return () => clearTimeout(timer);
   }, [location, navigate]);
   
+  // ...existing code...
   // 이륜차 애니메이션
   useEffect(() => {
+    // 이륜차가 화면을 완전히 지나가는데 필요한 총 거리
+    const motorcycleWidth = 740 * scale;
+    const totalDistance = window.innerWidth + motorcycleWidth + 100; // 시작점(-100) + 화면폭 + 오토바이폭 + 여유
+    const animationDuration = 2000; // 2초
+    const speed = totalDistance / (animationDuration / 16); // 16ms마다 이동할 거리
+    
     const animationInterval = setInterval(() => {
       setMotorcyclePosition(prev => {
-        // 화면을 넘어가면 인터벌 클리어
-        if (prev > window.innerWidth) {
+        const newPosition = prev + speed;
+        // 화면을 완전히 벗어나면 인터벌 클리어
+        if (newPosition > window.innerWidth + motorcycleWidth) {
           clearInterval(animationInterval);
-          return prev;
+          return newPosition;
         }
-        // 이동 속도 (픽셀 단위) - 스케일에 따라 조정
-        return prev + (5 * scale);
+        return newPosition;
       });
     }, 16); // 약 60fps
     

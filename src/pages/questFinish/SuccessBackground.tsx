@@ -1,7 +1,5 @@
-// Front/src/pages/questFinish/SuccessBackground.tsx 수정
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useWindowSize } from 'react-use';
 import { useScale } from '../../hooks/useScale';
 import Confetti from 'react-confetti';
 import DancingStar from './DancingStar';
@@ -11,7 +9,6 @@ const motorcycle = '/assets/images/motorcycle.png';
 
 const SuccessBackground = () => {
     const navigate = useNavigate();
-    const { width, height } = useWindowSize();
     const scale = useScale();
     const [showConfetti] = useState(true);
     const [startAnimation, setStartAnimation] = useState(false);
@@ -70,15 +67,22 @@ const SuccessBackground = () => {
             
             {/* 컨페티 이펙트 */}
             {showConfetti && (
-                <Confetti
-                    width={width}
-                    height={height}
-                    numberOfPieces={600 * Math.min(1.5, scale)} // 스케일에 따라 컨페티 수량 조정
-                    gravity={0.1 * scale} // 중력도 스케일 적용
+                <div className="absolute top-0 left-0 w-full h-full z-50 pointer-events-none overflow-hidden">
+                    <Confetti
+                    width={1024 * scale}
+                    height={768 * scale}
+                    numberOfPieces={600 * Math.min(1.5, scale)}
+                    gravity={0.1 * scale}
                     recycle={true}
-                />
-            )}
-
+                    confettiSource={{
+                        x: 0,
+                        y: 0,
+                        w: 1024 * scale,
+                        h: 100 * scale
+                    }}
+                    />
+                </div>
+                )}
             {/* 댄싱스타: 4초 후 등장 - 위치 조정됨 */}
             {showDancingStar && <DancingStar />}
         </div>

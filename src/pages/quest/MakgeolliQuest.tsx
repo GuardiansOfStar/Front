@@ -164,7 +164,7 @@ const MakgeolliQuest = () => {
       
       timer = setTimeout(() => {
         setGamePhase('missionIntro');
-      }, getScaledDuration(5000));
+      }, getScaledDuration(3000));
     }
     else if (gamePhase === 'missionIntro') {
       setShowTrayBackground(false);
@@ -695,7 +695,7 @@ const MakgeolliQuest = () => {
                 gap: `calc(16px * ${scale})`
               }}
             >
-              <button
+              <motion.button
                 className={`rounded-[20px] font-black text-black transition duration-300 cursor-pointer flex items-center justify-center
                   ${selectedOption === 'A' ? 
                     'bg-[#0DA429] bg-opacity-90 border-[#0DA429] scale-105' : 
@@ -710,13 +710,15 @@ const MakgeolliQuest = () => {
                 }}
                 onClick={() => handleOptionSelect('A')}
                 disabled={!!selectedOption}
+                animate={{ scale: [1, 1.1] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut",repeatType: "reverse" }}
               >
                 <span className="text-center leading-tight">
                   작업중 <span style={{ color: '#B91C1C' }}>막걸리</span>는<br/>보약!<br/> <span style={{ color: '#B91C1C' }}>적당히 마신다</span>
                 </span>
-              </button>
+              </motion.button>
               
-              <button
+              <motion.button
                 className={`rounded-[20px] font-black text-black transition duration-300 cursor-pointer flex items-center justify-center
                   ${selectedOption === 'B' ? 
                     'bg-[#0DA429] bg-opacity-90 border-[#0DA429] scale-105' : 
@@ -731,11 +733,13 @@ const MakgeolliQuest = () => {
                 }}
                 onClick={() => handleOptionSelect('B')}
                 disabled={!!selectedOption}
+                animate={{ scale: [1.1, 1] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut",repeatType: "reverse" }}
               >
                 <span className="text-center leading-tight">
                   운전해야 하니<br/>막걸리는<br/><span style={{ color: '#B91C1C' }}>마시지 않는다</span>
                 </span>
-              </button>
+              </motion.button>
             </div>
           </div>
         </div>
@@ -788,7 +792,7 @@ const MakgeolliQuest = () => {
                       <span className="text-green-600">잠깐!</span><br />
                       <span className="text-black"> 
                         막걸리의 유혹을 이겨내볼까요?<br />
-                        새참 속 막걸리를 치우러 가요.
+                        새참 속 막걸리를 치우러 가요
                       </span>
                     </>
                   ) : (

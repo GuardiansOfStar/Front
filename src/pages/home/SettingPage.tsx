@@ -91,7 +91,7 @@ const SettingPage = () => {
 
         {/* 자동완성 목록 */}
         {showSuggestions && sortedRegions.length > 0 && (
-            <div className="absolute top-[260px] left-[191px] w-[641px] max-h-[450px] overflow-y-auto flex flex-col gap-4 z-40 bg-yellow-100 rounded-[10px] p-8 shadow-lg">
+            <div className="absolute top-[260px] left-[191px] w-[641px] max-h-[450px] overflow-y-auto flex flex-col gap-4 z-40 bg-[#FFF9C4] rounded-[10px] p-8 shadow-lg">
             {sortedRegions.map((region) => (
                 <button
                 key={region}
@@ -116,19 +116,19 @@ const SettingPage = () => {
             이미 등록된 지역 목록
             </div>
 
-            <div className="absolute left-[194px] top-[380px] max-w-[90%] w-[640px] overflow-x-auto">
+            <div className="absolute left-[194px] top-[380px] max-w-[90%] w-[640px] overflow-x-auto scroll-container">
                 <div className="flex gap-4">
                 {registeredRegions.map((region) => (
                     <button
                     key={region}
                     onClick={() => setSelectedRegion(region)}
                     className={`
-                        h-[67px]
                         ${selectedRegion === region ? 'bg-green-700' : 'bg-[rgba(11,159,38,0.5)]'}
                         border-[7px] border-[#0E8E12]
-                        rounded-[20px]
-                        text-white text-[20px] font-extrabold
-                        flex-shrink-0 whitespace-nowrap
+                        rounded-[28px] 
+                        flex items-center justify-center 
+                        text-white text-[33px] font-extrabold
+                        whitespace-nowrap px-3 py-1.5
                     `}
                     >
                     {region}
