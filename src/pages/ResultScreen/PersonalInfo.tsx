@@ -35,6 +35,11 @@ const PersonalInfo = () => {
 
     // 로컬스토리지에서 village_id 읽기
     const villageId = localStorage.getItem('village_id');
+    console.log("저장된 village_id : ", villageId);
+
+    const sessionId = localStorage.getItem('session_id')!;
+    const scoreStr = localStorage.getItem('total_score')!;
+    const score = Number(scoreStr);
 
     setLoading(true);
     try {
@@ -43,7 +48,9 @@ const PersonalInfo = () => {
         name,
         phone,
         age: Number(age),
-        is_guest: false, // 게스트 유저로 생성
+        is_guest: false, // 실제 유저로 생성
+        session_id: sessionId,
+        score: score
       });
 
       console.log("[PersonalInfo] ← createUser() response.data:", res.data);

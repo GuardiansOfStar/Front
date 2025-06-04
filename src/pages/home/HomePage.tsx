@@ -13,6 +13,7 @@ const HomePage = () => {
   useEffect(() => {
     localStorage.removeItem("session_id");
     localStorage.removeItem("user_id");
+    localStorage.removeItem("total_score");
   }, []);
 
 

@@ -32,6 +32,9 @@ const EduScreen = () => {
     getSession(sessionId)
       .then((res) => {
         console.log(res);
+        
+        localStorage.setItem('total_score', String(res.data.total_score));
+        console.log("[EduScreen] → Saved total_score into localStorage:", res.data.total_score);
 
         // 2) 원본 퀘스트 배열
       const allQuests = res.data.quests;
