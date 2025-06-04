@@ -50,6 +50,8 @@ class AudioManager {
             openBox: '/assets/sound/quest/q1_ta-da.mp3',
             //퀘스트3(막걸리게임) 관련 효과음
             makClick: '/assets/sound/quest/q3_mak_select.mp3',
+            //퀘스트5 관련 효과음
+            barClick: '/assets/sound/quest/q5_drag_click.mp3',
             //퀘스트 점수 효과음
             highScore: '/assets/sound/quest/q_score_up.mp3',
             lowScore: '/assets/sound/quest/q_score_down.mp3',
