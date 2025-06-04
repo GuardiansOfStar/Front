@@ -7,6 +7,7 @@ import { useScale } from '../../hooks/useScale';
 import GameTitle from '../../components/ui/GameTitle';
 // import { useScore } from '../../context/ScoreContext';
 import { useCharacter } from '../../context/CharacterContext';
+import { audioManager } from '../../utils/audioManager';
 
 // 이미지 임포트
 const drivingRoad = '/assets/images/driving_road.png';
@@ -106,6 +107,9 @@ const PotholeQuest = () => {
 
   // 선택지 선택 핸들러
   const handleOptionSelect = (option: 'A' | 'B') => {
+    //효과음 재생
+    audioManager.playQuestSelect();
+    
     setSelectedOption(option);
     
     // API 호출
@@ -139,9 +143,11 @@ const PotholeQuest = () => {
         setGamePhase('successResult');
         
         setTimeout(() => {
+          audioManager.playRightAnswer1();
           setHideSuccessImages(true);
           
           setTimeout(() => {
+            audioManager.playRightAnswer2();
             setShowSuccessMessage(true);
           }, getScaledDuration(1000));
         }, getScaledDuration(3000));
@@ -149,6 +155,7 @@ const PotholeQuest = () => {
     } else {
       // 오답 선택
       setTimeout(() => {
+        audioManager.playWrongAnswer();
         setGamePhase('fadeOut');
         setTimeout(() => {
           setGamePhase('failResult');
