@@ -103,7 +103,7 @@ const Certificate = () => {
         style={{
           width: `calc(293px * ${scale})`,
           left: `calc(365px * ${scale})`, // 중앙 정렬: (1024 - 293) / 2
-          bottom: `calc(0px * ${scale})`
+          bottom: `calc(50px * ${scale})`
         }}
       />
     </div>

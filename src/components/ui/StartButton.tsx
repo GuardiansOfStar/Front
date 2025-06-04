@@ -12,7 +12,7 @@ const StartButton = () => {
         onClick={() => navigate('/scenarios')}
         className="absolute cursor-pointer z-50 hover:scale-105 transition-transform duration-300"
         style={{
-          bottom: '10%',
+          bottom: '0%',
           left: '50%',
           transform: 'translateX(-50%)',
           width: '27%',

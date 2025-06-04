@@ -111,8 +111,8 @@ const Memory = () => {
           <GameTitle
             text="가장 기억에 남는 장면을 골라주세요"
             fontSize={`calc(50px * ${scale})`}
-            color="text-[#0E8E12]"
-            strokeWidth={`calc(6px * ${scale})`}
+            color="text-[#0DA429]"
+            strokeWidth={`calc(8px * ${scale})`}
           />
         </div>
 

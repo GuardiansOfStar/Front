@@ -241,8 +241,8 @@ const PotholeQuest = () => {
             >
               <GameTitle 
                 text="주행 시작" 
-                fontSize={`calc(5.5rem * ${scale})`}
-                strokeWidth={`calc(12px * ${scale})`}
+                fontSize={`calc(102px * ${scale})`}
+                strokeWidth={`calc(14px * ${scale})`}
               />
             </motion.div>
           )}
@@ -437,8 +437,9 @@ const PotholeQuest = () => {
             >
               <GameTitle 
                 text="정답입니다!" 
-                fontSize={`calc(4rem * ${scale})`}
+                fontSize={`calc(76px * ${scale})`}
                 strokeWidth={`calc(12px * ${scale})`}
+                color="text-[#0E8E12]"
               />
             </motion.div>
             
@@ -545,16 +546,18 @@ const PotholeQuest = () => {
               />
               
               <motion.div 
-                className="w-[80%] bg-white bg-opacity-80 border-red-600 border-8 rounded-xl text-center"
+                className="w-[80%] bg-white bg-opacity-80 border-[#EE404C] text-center"
                 style={{
-                  padding: `calc(32px * ${scale})`
+                  padding: `calc(32px * ${scale})`,
+                  borderWidth: `calc(12px * ${scale})`,
+                  borderRadius: `calc(36px * ${scale})`
                 }}
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.8 * Math.max(0.8, scale), delay: 0.4 * Math.max(0.8, scale) }}
               >
                 <h2 
-                  className="text-red-600 font-black"
+                  className="text-[#EE404C] font-black"
                   style={{ 
                     fontSize: `calc(4rem * ${scale})`,
                     marginBottom: `calc(16px * ${scale})`
@@ -564,7 +567,10 @@ const PotholeQuest = () => {
                 </h2>
                 <p 
                   className="font-black text-black"
-                  style={{ fontSize: `calc(2.5rem * ${scale})` }}
+                  style={{
+                    fontSize: `calc(48px * ${scale})`,
+                    letterSpacing: "0.05em"
+                }}
                 >
                   구덩이는 도로 위 함정과 같아요.<br />
                   속도를 줄이고 지나가야 안전해요.
