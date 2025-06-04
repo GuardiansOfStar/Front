@@ -82,6 +82,13 @@ const PotholeQuest = () => {
     }
   }, [gamePhase, scale]);
 
+  //퀘스트 등장 시 효과음 재생
+  useEffect(() => {
+    if (gamePhase === 'selection') {
+      audioManager.playQuestStart();
+    }
+  }, [gamePhase]);
+
   // failResult 단계에서 경고 메시지 표시
   useEffect(() => {
     if (gamePhase === 'failResult') {
@@ -140,10 +147,10 @@ const PotholeQuest = () => {
     if (option === 'A') {
       // 정답 선택
       setTimeout(() => {
+        audioManager.playRightAnswer1();
         setGamePhase('successResult');
         
         setTimeout(() => {
-          audioManager.playRightAnswer1();
           setHideSuccessImages(true);
           
           setTimeout(() => {
@@ -155,8 +162,9 @@ const PotholeQuest = () => {
     } else {
       // 오답 선택
       setTimeout(() => {
-        audioManager.playWrongAnswer();
+        audioManager.playSound('accidentMotor', 0.7);
         setGamePhase('fadeOut');
+
         setTimeout(() => {
           setGamePhase('failResult');
         }, getScaledDuration(1500));
