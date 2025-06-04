@@ -458,7 +458,7 @@ const ReturnQuest = () => {
               src={sunsetSceneSun}
               alt="해"
               style={{
-                width: `calc(660px * ${scale})`,
+                width: `calc(700px * ${scale})`,
                 height: `calc(612px * ${scale})`
               }}
               initial={{ 
@@ -512,7 +512,7 @@ const ReturnQuest = () => {
               src={sunsetSceneSun}
               alt="해"
               style={{
-                width: `calc(660px * ${scale})`,
+                width: `calc(700px * ${scale})`,
                 height: `calc(612px * ${scale})`,
                 transform: `translate(0px, ${80 * scale}px)`
               }}
@@ -545,7 +545,7 @@ const ReturnQuest = () => {
               </div>
               
               <div 
-                className="bg-white/90 rounded-xl text-center"
+                className="bg-[#FFFAFA]/75 rounded-xl text-center"
                 style={{ 
                   padding: `calc(40px * ${scale})`,
                   marginBottom: `calc(64px * ${scale})`,
@@ -599,13 +599,16 @@ const ReturnQuest = () => {
             <motion.button
               onClick={handleStartGame}
               disabled={isDragging || isAnimating}
-              className="bg-[#0DA429] hover:bg-green-700 text-white font-black rounded-lg border-4 border-white disabled:opacity-50 disabled:cursor-not-allowed shadow-lg transition-colors duration-300"
+              className="bg-[#0DA429] hover:bg-green-700 text-white font-black border-white disabled:opacity-50 disabled:cursor-not-allowed shadow-lg transition-colors duration-300"
               style={{
-                fontSize: `calc(46px * ${scale})`,
+                fontSize: `calc(48px * ${scale})`,
                 paddingTop: `calc(8px * ${scale})`,
                 paddingBottom: `calc(8px * ${scale})`,
-                paddingLeft: `calc(32px * ${scale})`,
-                paddingRight: `calc(32px * ${scale})`,
+                paddingLeft: `calc(24px * ${scale})`,
+                paddingRight: `calc(24px * ${scale})`,
+                letterSpacing: "0.05em",
+                borderWidth: `calc(6px * ${scale})`,
+                borderRadius: `calc(24px * ${scale})`
               }}
               animate={{ scale: [1, 1.05] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut",repeatType: "reverse" }}
@@ -743,20 +746,27 @@ const ReturnQuest = () => {
           <div className="absolute inset-0 flex flex-col items-center justify-center z-30">
             <motion.div 
               className="absolute left-0 right-0 flex justify-center items-center transform -translate-x-1/2"
-              style={{ top: `calc(20% * ${scale})` }}
+              style={{ top: `calc(15% * ${scale})` }}
               initial={{ opacity: 0, y: `calc(-30px * ${scale})` }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
             >
-              <GameTitle text="정답입니다!" fontSize="text-6xl" strokeWidth="12px" />
+              <GameTitle 
+                text="정답입니다!" 
+                fontSize={`calc(4rem * ${scale})`}
+                strokeWidth={`calc(12px * ${scale})`}
+                color="text-[#0E8E12]"
+              />
             </motion.div>
             
             <motion.div 
-              className="bg-green-600 bg-opacity-70 border-green-700 border-8 rounded-3xl w-[75%] mx-auto text-center relative"
+              className="bg-[#0DA429]/50 bg-opacity-70 border-[#0E8E12] w-[75%] mx-auto text-center relative"
               style={{ 
                 padding: `calc(48px * ${scale})`,
                 marginTop: `calc(25% * ${scale})`,
-                marginBottom: `calc(32px * ${scale})`
+                marginBottom: `calc(32px * ${scale})`,
+                borderWidth: `calc(12px * ${scale})`,
+                borderRadius: `calc(52px * ${scale})`
               }}
               initial={{ opacity: 0, scale: 0.8, y: `calc(30px * ${scale})` }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -764,7 +774,7 @@ const ReturnQuest = () => {
             >
               <p 
                 className="font-black text-white leading-relaxed"
-                style={{ fontSize: `calc(56px * ${scale})` }}
+                style={{ fontSize: `calc(60px * ${scale})` }}
               >
                 해가 지기 전이<br/>
                 집 가기 딱 좋은 시간이에요
@@ -908,8 +918,12 @@ const ReturnQuest = () => {
               />
               
               <motion.div
-                className="w-[80%] bg-white bg-opacity-90 border-[#EE404C] border-8 rounded-xl text-center"
-                style={{ padding: `calc(32px * ${scale})` }}
+                className="w-[80%] bg-white bg-opacity-90 border-[#EE404C] text-center"
+                style={{
+                  padding: `calc(32px * ${scale})`,
+                  borderWidth: `calc(12px * ${scale})`,
+                  borderRadius: `calc(36px * ${scale})`
+                }}
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
@@ -925,7 +939,10 @@ const ReturnQuest = () => {
                 </h2>
                 <p 
                   className="font-black text-black"
-                  style={{ fontSize: `calc(2.5rem * ${scale})` }}
+                  style={{
+                    fontSize: `calc(48px * ${scale})`,
+                    letterSpacing: "0.05em"
+                }}
                 >
                   야간 주행 시 시야 확보가 어려워요<br/>
                   해가 지기 전에 집으로 돌아가요

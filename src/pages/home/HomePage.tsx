@@ -97,7 +97,7 @@ const HomePage = () => {
       <img 
         src={team_name}
         alt="팀이름"
-        className="absolute bottom-[7%] right-[10%] w-[30%] z-10"
+        className="absolute bottom-[3%] right-[3%] w-[30%] z-10"
       />
     </div>
   );
