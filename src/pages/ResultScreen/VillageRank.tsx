@@ -48,6 +48,12 @@ const VillageRank = () => {
   }, []);
 
   useEffect(() => {
+    // 만약 village_id 가 없는 경우 (마을 설정 안한 경우)
+    // phase = 'list'로 만들어버리기!
+    if(!myVillage){
+      setPhase('list');
+      return;
+    }
     const timer1 = setTimeout(() => {
       setPhase('transition');
     }, 3000);
