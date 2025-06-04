@@ -22,6 +22,7 @@ class AudioManager {
             //공통 효과음
             buttonClick: '/assets/sound/common/button_click.mp3',
             message: '/assets/sound/common/message.mp3',
+            etcSound: '/assets/sound/common/basic_alarm.mp3',
 
             //프롤로그 효과음
             missionGuide: '/assets/sound/prologue/mission_guide.mp3',
@@ -44,6 +45,9 @@ class AudioManager {
             cardClick: '/assets/sound/quest/q1_card_select.mp3',
             wrongCard: '/assets/sound/quest/q1_card_fail.mp3',
             helmetOn: '/assets/sound/quest/q1_helmet_on.mp3',
+            revealAnswer: '/assets/sound/quest/q1_show_answer.mp3',
+            shakingBox: '/assets/sound/quest/q1_shaking_box.mp3',
+            openBox: '/assets/sound/quest/q1_ta-da.mp3',
             //퀘스트3(막걸리게임) 관련 효과음
             makClick: '/assets/sound/quest/q3_mak_select.mp3',
             //퀘스트 점수 효과음
