@@ -36,7 +36,7 @@ function App() {
        <AspectRatioContainer fillMode="fit">
          <Routes>
            {/* 기본 화면들 */}
-           <Route path="/" element={<ReturnQuest />} />
+           <Route path="/" element={<HomePage />} />
            <Route path="/settings" element={<SettingPage />} />
            <Route path="/scenarios" element={<ScenarioSelectPage />} />
            <Route path="/character-select" element={<CharacterSelectPage />} />

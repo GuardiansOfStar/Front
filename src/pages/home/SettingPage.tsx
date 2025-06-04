@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Background from '../../components/ui/Background';
 import { createVillage, getVillageRanking, RankingEntry } from '../../services/endpoints/village';
+import { audioManager } from '../../utils/audioManager';
 
 const locationData = {
     서울특별시 : ["서울특별시 종로구", "서울특별시 중구", "서울특별시 용산구", "서울특별시 성동구", "서울특별시 광진구", "서울특별시 동대문구", "서울특별시 중랑구", "서울특별시 성북구", "서울특별시 강북구", "서울특별시 도봉구", "서울특별시 노원구", "서울특별시 은평구", "서울특별시 서대문구", "서울특별시 마포구", "서울특별시 양천구", "서울특별시 강서구", "서울특별시 구로구", "서울특별시 금천구", "서울특별시 영등포구", "서울특별시 동작구", "서울특별시 관악구", "서울특별시 서초구", "서울특별시 강남구", "서울특별시 송파구", "서울특별시 강동구"],
@@ -65,29 +66,31 @@ const SettingPage = () => {
     fetchRegisteredRegions();
   }, []);
     const handleSubmit = async() => {
-    if (selectedRegion) {
+      //선택 버튼 효과음
+      audioManager.playButtonClick();
+      if (selectedRegion) {
         try {
-      // 1) 서버에 village 생성 또는 조회 후 village_id 반환
-      const villageId = (await createVillage(selectedRegion)).data.village_id;
+          // 1) 서버에 village 생성 또는 조회 후 village_id 반환
+          const villageId = (await createVillage(selectedRegion)).data.village_id;
 
-      // 2) localStorage에 선택된 지역 이름 & 마을 id 저장
-      localStorage.setItem('selectedRegion', selectedRegion);
-      localStorage.setItem('village_id', villageId);
+          // 2) localStorage에 선택된 지역 이름 & 마을 id 저장
+          localStorage.setItem('selectedRegion', selectedRegion);
+          localStorage.setItem('village_id', villageId);
 
-      // 3) 등록 목록에 추가 (중복 없이)
-      setRegisteredRegions((prev) =>
-        prev.includes(selectedRegion) ? prev : [...prev, selectedRegion]
-      );
+          // 3) 등록 목록에 추가 (중복 없이)
+          setRegisteredRegions((prev) =>
+            prev.includes(selectedRegion) ? prev : [...prev, selectedRegion]
+          );
 
-      // 4) village_id도 localStorage에 저장 (이미 getOrCreateVillage 내부에서 저장됨)
-      console.log('저장된 village_id:', villageId);
+          // 4) village_id도 localStorage에 저장 (이미 getOrCreateVillage 내부에서 저장됨)
+          console.log('저장된 village_id:', villageId);
 
-      // 5) 설정 완료 후 메인 페이지로 이동
-      navigate('/');
-    } catch (err) {
-      console.error('마을 생성/조회 실패', err);
-    }
-    }
+          // 5) 설정 완료 후 메인 페이지로 이동
+          navigate('/');
+        } catch (err) {
+          console.error('마을 생성/조회 실패', err);
+        }
+      }
     };
 
     return (

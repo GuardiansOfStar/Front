@@ -28,6 +28,7 @@ const DrivingPrepPage = () => {
     
     // 다음 화면으로 자동 이동 타이머
     const timer = setTimeout(() => {
+      audioManager.stopSound('motorcycle');
       console.log("DrivingPrepPage - 미션 화면으로 이동:", { path: `/quest?scenario=${sId}&quest=${qId}` });
       navigate(`/quest?scenario=${sId}&quest=${qId}`);
     }, 2000);
@@ -50,7 +51,7 @@ const DrivingPrepPage = () => {
     const animationInterval = setInterval(() => {
       setMotorcyclePosition(prev => {
         const newPosition = prev + speed;
-        // 화면을 완전히 벗어나면 인터벌 클리어
+        // 화면을 완전히 벗어나면 인터벌 클리어, 효과음 중단단
         if (newPosition > window.innerWidth + motorcycleWidth) {
           clearInterval(animationInterval);
           return newPosition;

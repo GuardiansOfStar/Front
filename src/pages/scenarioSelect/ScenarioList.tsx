@@ -103,7 +103,7 @@ const ScenarioList = () => {
     // 시나리오 터치/클릭 핸들러
     const handleScenarioTouch = (index: number) => {
         //선택 버튼 효과음
-        audioManager.playButtonClick();
+        audioManager.playSound('etcSound', 0.7);
         
         if (isDragging || dragDistance > 10 || isConfirming) return; // 확정 중에는 터치 무시
         
