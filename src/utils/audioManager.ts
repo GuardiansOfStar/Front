@@ -62,6 +62,7 @@ class AudioManager {
             working: '/assets/sound/transition/working.mp3',
 
             //결과 효과음
+            goalIn: 'assets/sound/result/goal_clap.wav',
             reportGeneral: '/assets/sound/result/report_general.mp3',
             reportPerfect: '/assets/sound/result/report_perfect.mp3'
         };

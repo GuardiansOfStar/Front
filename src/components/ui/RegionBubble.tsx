@@ -16,6 +16,7 @@ const RegionBubble = ({ show }: RegionBubbleProps) => {
     if (show) {
       //기본 알림음
       audioManager.playSound('etcSound', 0.5);
+      
       // 표시할 때: 렌더링 시작 후 애니메이션
       setShouldRender(true);
       const timer = setTimeout(() => {

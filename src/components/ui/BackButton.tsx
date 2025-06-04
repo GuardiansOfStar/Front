@@ -12,6 +12,7 @@ const BackButton = ({ onClick }: BackButtonProps) => {
     const scale = useScale();
 
     const handleBack = () => {
+        //선택 효과음
         audioManager.playButtonClick();
 
         if (onClick) {

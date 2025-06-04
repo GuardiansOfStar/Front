@@ -6,6 +6,7 @@ import NextButton from './NextButton';
 import HomeButton from '../../components/ui/HomeButton';
 import BackButton from '../../components/ui/BackButton';
 import { createUser } from '../../services/endpoints/user';
+import { audioManager } from '../../utils/audioManager';
 
 const PersonalInfo = () => {
   const navigate = useNavigate();
@@ -19,6 +20,9 @@ const PersonalInfo = () => {
 
   // “다음” 버튼 클릭 시 호출
   const handleSubmit = async () => {
+    //선택 효과음
+    audioManager.playButtonClick();
+    
     // 필수값 검증
     if (!name.trim()) {
       alert('이름을 입력해주세요.');

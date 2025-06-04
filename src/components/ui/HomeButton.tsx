@@ -9,9 +9,10 @@ function HomeButton () {
     const navigate = useNavigate();
     const scale = useScale();
 
+    //효과음을 위해 핸들러 추가
     const handleClick = () => {
-        audioManager.playButtonClick(); // 효과음 재생
-        navigate('/');                   // 네비게이션 추가
+        audioManager.playButtonClick(); 
+        navigate('/');
     };
 
     return (

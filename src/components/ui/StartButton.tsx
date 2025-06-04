@@ -7,10 +7,11 @@ const start_button = '/assets/images/start_button.png'
 const StartButton = () => {
     const navigate = useNavigate();
 
+    //효과음을 위해 핸들러 추가
     const handleClick = () => {
-      audioManager.playButtonClick(); // 효과음 재생
-      navigate('/scenarios');          // 네비게이션 추가
-  };
+      audioManager.playButtonClick();
+      navigate('/scenarios');
+    };
 
     return (
         <img
