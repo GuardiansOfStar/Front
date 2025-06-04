@@ -4,6 +4,7 @@ class AudioManager {
     private audioDestination: AudioDestinationNode; //최종 출력지
     private sounds: Record<string, string>; //효과음 네이밍
     private loadedAudioBuffers: Map<string, AudioBuffer> = new Map(); //로드된 오디오 파일 캐시 저장소
+    private currentSources: Map<string, AudioBufferSourceNode> = new Map(); //현재 재생중인 효과음 소스
 
     constructor() {
         this.audioContext = new AudioContext();
@@ -142,6 +143,14 @@ class AudioManager {
             sourceNode.buffer = audioBuffer;
             volumeNode.gain.value = volume; //개별 볼륨 -> 전체 볼륨
             
+            //현재 재생 중인 소스 저장
+            this.currentSources.set(soundName, sourceNode);
+
+            //재생 완료 시 Map에서 제거
+            sourceNode.onended = () => {
+                this.currentSources.delete(soundName);
+            };
+            
             // 오디오 파이프라인 연결
             sourceNode.connect(volumeNode); //재생기 -> 개별 볼륨
             volumeNode.connect(this.gainNode); //개별 볼륨 -> 전체 볼륨
@@ -150,6 +159,14 @@ class AudioManager {
             sourceNode.start();
         } catch (error) {
             console.error(`오디오 재생에 실패하였습니다.: ${soundName}`, error);
+        }
+    }
+
+    stopSound(soundName: string): void {
+        const sourceNode = this.currentSources.get(soundName);
+        if (sourceNode) {
+          sourceNode.stop();
+          this.currentSources.delete(soundName);
         }
     }
 
