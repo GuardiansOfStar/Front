@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Background from '../../components/ui/Background';
-import { createVillage } from '../../services/endpoints/village';
+import { createVillage, getVillageRanking, RankingEntry } from '../../services/endpoints/village';
 
 const locationData = {
     서울특별시 : ["서울특별시 종로구", "서울특별시 중구", "서울특별시 용산구", "서울특별시 성동구", "서울특별시 광진구", "서울특별시 동대문구", "서울특별시 중랑구", "서울특별시 성북구", "서울특별시 강북구", "서울특별시 도봉구", "서울특별시 노원구", "서울특별시 은평구", "서울특별시 서대문구", "서울특별시 마포구", "서울특별시 양천구", "서울특별시 강서구", "서울특별시 구로구", "서울특별시 금천구", "서울특별시 영등포구", "서울특별시 동작구", "서울특별시 관악구", "서울특별시 서초구", "서울특별시 강남구", "서울특별시 송파구", "서울특별시 강동구"],
@@ -27,15 +27,43 @@ const SettingPage = () => {
     const [inputValue, setInputValue] = useState('');
     const [selectedRegion, setSelectedRegion] = useState('');
     const [showSuggestions, setShowSuggestions] = useState(false);
-    const [registeredRegions, setRegisteredRegions] = useState([
-        '보성군', '보라카이', '담양군', '강릉시', '해남군', '목포시',
-    ]);
+    
+    const [registeredRegions, setRegisteredRegions] = useState<string[]>([]);
+    const [loadingRegions, setLoadingRegions] = useState(true);
+
     const navigate = useNavigate();
 
     const allRegions = Object.values(locationData).flat();
     const sortedRegions = allRegions
         .filter(region => region.includes(inputValue))
         .sort((a, b) => a.localeCompare(b, 'ko'));
+    
+    // 컴포넌트 마운트 시점에 /villages/ranking 호출
+    useEffect(() => {
+    const fetchRegisteredRegions = async () => {
+      try {
+        const res = await getVillageRanking();
+        // getVillageRanking() 리턴 타입: RankingEntry[]
+        const rankingList: RankingEntry[] = res.data;
+
+        // 1) "participants" 기준 내림차순으로 재정렬
+        const byParticipantsDesc = [...rankingList].sort((a, b) => b.participants - a.participants);
+
+        // 2) village_name만 추출해서 registeredRegions에 세팅
+        //    (이미 등록된 마을을 누르는 로직과 호환되도록, 단순 문자열 배열로 저장)
+        const names = byParticipantsDesc.map(entry => entry.village_name);
+
+        setRegisteredRegions(names);
+      } catch (err) {
+        console.error('마을 랭킹 조회 실패:', err);
+        setRegisteredRegions([]); // 실패 시 빈 배열
+      } finally {
+        setLoadingRegions(false);
+      }
+    };
+
+    fetchRegisteredRegions();
+  }, []);
     const handleSubmit = async() => {
     if (selectedRegion) {
         try {
