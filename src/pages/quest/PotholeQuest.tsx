@@ -61,9 +61,9 @@ const PotholeQuest = () => {
   // 주행 단계 타이밍 제어
   useEffect(() => {
     if (gamePhase === 'driving') {
-      //장면 전환 효과음
+      //장면 전환 효과음(주행 시작)
       audioManager.playsceneSwitch()
-      
+
       // 1초 후 애니메이션 시작
       const animationTimer = setTimeout(() => {
         setStartAnimation(true);
@@ -98,7 +98,9 @@ const PotholeQuest = () => {
   useEffect(() => {
     if (gamePhase === 'failResult') {
       const timer = setTimeout(() => {
+        //오답 효과음
         audioManager.playWrongAnswer();
+
         setShowWarning(true);
       }, 2000 * Math.max(0.8, scale));
 
@@ -111,7 +113,6 @@ const PotholeQuest = () => {
   const handleConfirmClick = () => {
     //선택 버튼 효과음
     audioManager.playButtonClick();
-
     if (gamePhase === 'successResult' && showSuccessMessage) {
       // 성공 메시지에서 확인 버튼 클릭 시
       navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=20&correct=true`);
@@ -181,10 +182,6 @@ const PotholeQuest = () => {
     }
   };
   
-  const handleGoHome = () => {
-    navigate('/');
-  };
-
   return (
     <div className="w-full h-full">
       {/* 배경 - 동적 스크롤 효과 */}

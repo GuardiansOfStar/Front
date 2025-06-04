@@ -8,6 +8,7 @@ import GameTitle from '../../components/ui/GameTitle';
 import { useScale } from '../../hooks/useScale';
 // import { useScore } from '../../context/ScoreContext';
 import { useCharacter } from '../../context/CharacterContext';
+import { audioManager } from '../../utils/audioManager';
 
 // 이미지 임포트
 const fieldHarvestBoxes = '/assets/images/work_complete_with_applebox.png';
@@ -87,8 +88,17 @@ const HarvestQuest = () => {
     
     return () => clearTimeout(timer);
   }, [location, scale]);
+
+  //퀘스트 등장 시 효과음 재생
+  useEffect(() => {
+    if (gamePhase === 'selection') {
+      audioManager.playQuestStart();
+    }
+  }, [gamePhase]);
   
   const handleConfirmClick = () => {
+    //선택 버튼 효과음
+    audioManager.playButtonClick();
     if (gamePhase === 'successResult' && showSuccessMessage) {
       // 성공 메시지에서 확인 버튼 클릭 시
       navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=20&correct=true`);
@@ -100,6 +110,9 @@ const HarvestQuest = () => {
 
   // 선택지 선택 핸들러 - 스케일 적용된 타이밍
   const handleOptionSelect = (option: 'A' | 'B') => {
+    //효과음 재생
+    audioManager.playQuestSelect();
+
     setSelectedOption(option);
     
     // API 호출
@@ -130,12 +143,14 @@ const HarvestQuest = () => {
     if (option === 'B') {
       // 정답 선택
       setTimeout(() => {
+        audioManager.playRightAnswer1();
         setGamePhase('successResult');
         
         setTimeout(() => {
           setHideSuccessImages(true);
           
           setTimeout(() => {
+            audioManager.playRightAnswer2();
             setShowSuccessMessage(true);
           }, getScaledDuration(1000));
         }, getScaledDuration(3000));
@@ -143,6 +158,7 @@ const HarvestQuest = () => {
     } else {
       // 오답 선택
       setTimeout(() => {
+        audioManager.playSound('accidentMotor', 0.7);
         setGamePhase('fadeOut');
         setTimeout(() => {
           setGamePhase('failResult');
@@ -155,6 +171,9 @@ const HarvestQuest = () => {
   useEffect(() => {
     if (gamePhase === 'failResult') {
       const timer = setTimeout(() => {
+        //오답 효과음
+        audioManager.playWrongAnswer();
+
         setShowWarning(true);
       }, 4000 * Math.max(0.8, scale));
 
@@ -207,34 +226,14 @@ const HarvestQuest = () => {
           className="absolute w-full h-full object-cover"
         />
           <HarvestBox /> 
-          {/*
-          showIntroText && (
-            <div className="absolute inset-0 flex items-center justify-center z-20">
-              <GameTitle text="작업 완료" fontSize="text-[5.25rem]" strokeWidth="12px" />
-            </div>
-          )*/}
         </>
       )}
 
       {/* 주행 화면 */}
       {gamePhase === 'driving' && (
         <div className="absolute inset-0 flex items-center justify-center z-10">
-          {/*<HarvestBox2 /> <div className="absolute z-20">
-            {renderTitleText('작업 완료')}
-          </div> */}
         </div>
-      )}
-      
-      {/* 수확 완료 화면 {gamePhase === 'harvestDone' && (
-        <div className="absolute inset-0 flex items-center justify-center z-10">
-          <div className="absolute z-20">
-            {renderTitleText('작업 완료')}
-          </div>
-        </div>
-      )} */}
-      
-
-      
+      )}   
 
       {/* 선택지 화면 */}
       {gamePhase === 'selection' && (
