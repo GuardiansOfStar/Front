@@ -140,6 +140,7 @@ const MakgeolliQuest = () => {
       //작업중 효과음
       audioManager.playSound('working', 1);
       timer = setTimeout(() => {
+        audioManager.stopSound('working');
         setGamePhase('mealLadyArrival');
       }, getScaledDuration(5000));
     }
@@ -205,6 +206,11 @@ const MakgeolliQuest = () => {
     else if (gamePhase === 'success' || gamePhase === 'timeOver') {
       //정답 효과음 재생
       audioManager.playRightAnswer1();
+
+      // 2초 후 긍정 피드백 효과음 재생
+      setTimeout(() => {
+      audioManager.playRightAnswer2();
+      }, 2000 * Math.max(0.8, scale));
 
       setShowTrayBackground(false);
       
