@@ -56,9 +56,14 @@ const PotholeQuest = () => {
     setQuestId(qId || '2');
   }, [location]);
 
+
+
   // 주행 단계 타이밍 제어
   useEffect(() => {
     if (gamePhase === 'driving') {
+      //장면 전환 효과음
+      audioManager.playsceneSwitch()
+      
       // 1초 후 애니메이션 시작
       const animationTimer = setTimeout(() => {
         setStartAnimation(true);
