@@ -589,7 +589,7 @@ const MemoryCardQuest: React.FC = () => {
           left: `calc(16px * ${scale})`
         }}
       >
-        <BackButton />
+        <BackButton onClick={() => navigate('/prologue')} />
       </div>
 
       {/* intro1 */}

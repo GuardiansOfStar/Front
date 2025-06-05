@@ -73,10 +73,15 @@ const PersonalInfo = () => {
       setLoading(false);
     }
   };
+
+  const handleBackToCertificate = () => {
+    navigate('/certificate');
+  };
+
   return (
     <div className="relative w-full h-full">
       <Background />
-      <BackButton />
+      <BackButton onClick={handleBackToCertificate} />
       <HomeButton />
 
       {/* 타이틀 */}

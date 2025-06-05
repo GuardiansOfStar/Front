@@ -333,10 +333,10 @@ const ProloguePage = () => {
     </div>
   );
 
-  // 네비게이션 버튼 컴포넌트
+  // NavigationButtons 컴포넌트 내부 수정
   const NavigationButtons = () => {
     const handleBackToCharacterSelect = () => {
-      navigate('/');
+      navigate(`/character-select?scenario=${scenarioId}`);
     };
 
     return (
