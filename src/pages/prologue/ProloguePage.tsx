@@ -323,7 +323,7 @@ const ProloguePage = () => {
           style={{
             borderWidth: `calc(12px * ${scale})`,
             borderRadius: `calc(52px * ${scale})`,
-            padding: `calc(64px * ${scale})`,
+            padding: `calc(48px * ${scale})`,
             paddingTop: `calc(80px * ${scale})`,
             marginBottom: `${20 * scale}px`,
           }}
