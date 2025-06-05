@@ -580,7 +580,7 @@ const MakgeolliQuest = () => {
             <motion.div 
               className="bg-white/90 border-8 border-[#0E8E12] text-center shadow-lg"
               style={{
-                width: `calc(834px * ${scale})`,
+                width: `calc(820px * ${scale})`,
                 padding: `calc(28px * ${scale})`,
                 borderRadius: `calc(48px * ${scale})`,
                 borderWidth: `calc(12px * ${scale})`
@@ -588,8 +588,8 @@ const MakgeolliQuest = () => {
               transition={{ duration: 0.2 }}
             >
               <motion.p 
-                className="font-black text-[#0E8E12] tracking-wider"
-                style={{ fontSize: `calc(3.2rem * ${scale})` }}
+                className="font-black text-[#0E8E12]"
+                style={{ fontSize: `calc(56px * ${scale})` }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ 
@@ -827,7 +827,7 @@ const MakgeolliQuest = () => {
                 >
                   {selectedOption === 'A' ? (
                     <>
-                      <span className="text-green-600">잠깐!</span><br />
+                      <span className="text-[#0DA429]">잠깐!</span><br />
                       <span className="text-black"> 
                         막걸리의 유혹을 이겨내볼까요?<br />
                         새참 속 막걸리를 치우러 가요
@@ -835,7 +835,7 @@ const MakgeolliQuest = () => {
                     </>
                   ) : (
                     <>
-                      <span className="text-green-600">유혹을 참아내다니 멋져요!</span><br />
+                      <span className="text-[#0DA429]">유혹을 참아내다니 멋져요!</span><br />
                       <span className="text-black">
                         다른 작업자들도 먹지 않도록<br />
                         막걸리를 모두 치워보아요.

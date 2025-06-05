@@ -114,15 +114,33 @@ const EduScreen = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          gap: `calc(30px * ${scale})`,
+
         }}
       >
         <GameTitle 
-          text={scoreText}
+          text="안전 점수"
           fontSize={`calc(80px * ${scale})`}
           color="text-white"
-          strokeWidth={`calc(18px * ${scale})`}
+          strokeWidth={`calc(16px * ${scale})`}
           strokeColor="#0DA429"
-          className="leading-none tracking-wider"
+          letterSpacing='0.05em'
+        />
+        <GameTitle 
+          text={loading ? '...' : error ? '!' : `${sessionData?.total_score ?? 0}`}
+          fontSize={`calc(100px * ${scale})`}
+          color="text-white"
+          strokeWidth={`calc(16px * ${scale})`}
+          strokeColor="#0DA429"
+        />
+        <GameTitle 
+          text="점"
+          fontSize={`calc(80px * ${scale})`}
+          color="text-white"
+          strokeWidth={`calc(16px * ${scale})`}
+          strokeColor="#0DA429"
+          letterSpacing='0.05em'
+
         />
       </div>
 
@@ -168,7 +186,7 @@ const EduScreen = () => {
             style={{ 
               fontSize: `calc(50px * ${scale})`,
               margin: 0,
-              color: '#059669'
+              color: '#0DA429'
             }}
           >
             칭찬해요
@@ -230,7 +248,7 @@ const EduScreen = () => {
             style={{ 
               fontSize: `calc(50px * ${scale})`,
               margin: 0,
-              color: '#DC2626'
+              color: '#E24C4B'
             }}
           >
             기억해요

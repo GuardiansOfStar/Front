@@ -2,9 +2,6 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 
-// ngrok 호스트를 명시하거나 와일드카드로 전체 허용 가능
-const allowedHosts = ['.ngrok-free.app'] 
-
 export default defineConfig({
   plugins: [react()],
   base: '/', 
@@ -17,8 +14,23 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: true,
     sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          motion: ['framer-motion'],
+          audio: ['howler'],
+          utils: ['axios'],
+          ui: ['react-confetti']
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1000
   },
   server: {
-    allowedHosts,
+    allowedHosts: ['.ngrok-free.app'],
   },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom', 'framer-motion']
+  }
 })
