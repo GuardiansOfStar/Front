@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 // import { ScoreProvider } from './context/ScoreContext';
 import { CharacterProvider } from './context/CharacterContext';
 import AspectRatioContainer from './components/layout/AspectRatioContainer';
+import { useDragPrevention } from './hooks/useDragPrevention';
 
 import HomePage from './pages/home/HomePage';
 import SettingPage from './pages/home/SettingPage';
@@ -30,6 +31,9 @@ import PerfectScore from './pages/ResultScreen/PerfectScore';
 import VillageRank from './pages/ResultScreen/VillageRank';
 
 function App() {
+
+  useDragPrevention();
+
  return (
    //<ScoreProvider>
      <CharacterProvider>
