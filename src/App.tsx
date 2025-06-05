@@ -54,7 +54,7 @@ function App() {
            </Route>
            
            {/* 주행 관련 화면들 + 두 번째 BGM 구역*/}
-           <Route element={<QuestLayout />}>
+           {/* <Route element={<QuestLayout />}> */}
             <Route path="/prologue" element={<ProloguePage />} />
             <Route path="/driving-prep" element={<DrivingPrepPage />} />
             <Route path="/quest" element={<MemoryCardQuest />} />
@@ -69,7 +69,7 @@ function App() {
             <Route path="/success" element={<SuccessBackground />} />
             <Route path="/completion" element={<CompletionBackground />} />
             <Route path='/perfect' element={<PerfectScore/>} />
-           </Route>
+           {/* </Route> */}
            
            {/* 결과 및 수료 관련 화면들 */}
            <Route element={<ResultLayout />}>
