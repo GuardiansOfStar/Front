@@ -255,7 +255,17 @@ const EduScreen = () => {
       <img
         src={next_button}
         alt="다음 버튼"
-        onClick={() => navigate('/certificate')}
+        onClick={() => {
+          const villageId = localStorage.getItem('village_id');
+          if(!villageId){
+            // villageId가 null인 경우 바로 마을 랭킹으로 이동
+            navigate('/rank');
+          }else{
+            // villageId가 있다면 기존처럼 certificate 이동!
+            navigate('/certificate');
+          }
+        }
+        }
         className="absolute cursor-pointer z-40 hover:scale-105 transition-transform duration-300"
         style={{
           bottom: `calc(20px * ${scale})`,

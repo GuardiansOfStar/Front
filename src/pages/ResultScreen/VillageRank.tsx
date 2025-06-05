@@ -48,6 +48,12 @@ const VillageRank = () => {
   }, []);
 
   useEffect(() => {
+    // 만약 village_id 가 없는 경우 (마을 설정 안한 경우)
+    // phase = 'list'로 만들어버리기!
+    if(!myVillage){
+      setPhase('list');
+      return;
+    }
     const timer1 = setTimeout(() => {
       setPhase('transition');
     }, 3000);
@@ -81,36 +87,32 @@ return (
       <HomeButton />
 
       {/* 제목 */}
+      <div className="absolute inset-x-0 z-20 flex justify-center" style={{ top: `calc(123px * ${scale})` }}>
       <div
-        className="absolute bg-green-600 border-green-700 text-white font-black text-center z-20"
+        className="text-white font-black text-center flex items-center justify-center"
         style={{
           width: `calc(718px * ${scale})`,
           height: `calc(120px * ${scale})`,
-          left: `calc(153px * ${scale})`,
-          top: `calc(123px * ${scale})`,
           borderWidth: `calc(8px * ${scale})`,
           borderStyle: 'solid',
           borderColor: '#0E8E12',
           borderRadius: `calc(30px * ${scale})`,
           backgroundColor: '#0DA429',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
           fontSize: `calc(60px * ${scale})`,
           lineHeight: `calc(72px * ${scale})`
         }}
       >
         우리 마을 안전 등수
       </div>
+    </div>
 
       {/* 리스트 프레임 (항상 보임) */}
-      <div
-        className="absolute bg-green-700 bg-opacity-50 border-green-700 shadow-lg flex flex-col items-center justify-start z-20"
+      <div className="absolute inset-x-0 z-20 flex justify-center" style={{ top: `calc(276px * ${scale})` }}>
+        <div
+        className="bg-green-700 bg-opacity-50 border-green-700 shadow-lg flex flex-col items-center justify-start"
         style={{
-          width: `calc(844px * ${scale})`,
+          width: `calc(834px * ${scale})`,
           height: `calc(437px * ${scale})`,
-          left: `calc(90px * ${scale})`,
-          top: `calc(276px * ${scale})`,
           borderWidth: `calc(10px * ${scale})`,
           borderStyle: 'solid',
           borderColor: '#0E8E12',
@@ -122,126 +124,127 @@ return (
           paddingRight: `calc(24px * ${scale})`
         }}
       >
-        {/* 테이블 헤더 (항상 보임) */}
-        <div
-          className="w-full text-center text-white font-black"
-          style={{
-            fontSize: `calc(35px * ${scale})`,
-            lineHeight: `calc(70px * ${scale})`,
-            paddingTop: `calc(8px * ${scale})`
-          }}
-        >
-          <div className="flex justify-around">
-            <div className="w-[25%]">등수</div>
-            <div className="w-[25%]">마을 이름</div>
-            <div className="w-[25%]">참여자 수</div>
-            <div className="w-[25%]">안전 점수</div>
+          {/* 테이블 헤더 (항상 보임) */}
+          <div
+            className="w-full text-center text-white font-black"
+            style={{
+              fontSize: `calc(35px * ${scale})`,
+              lineHeight: `calc(70px * ${scale})`,
+              paddingTop: `calc(8px * ${scale})`
+            }}
+          >
+            <div className="flex justify-around">
+              <div className="w-[10%]">등수</div>
+              <div className="w-[35%]">마을 이름</div>
+              <div className="w-[25%]">참여자 수</div>
+              <div className="w-[25%]">안전 점수</div>
+            </div>
           </div>
-        </div>
 
-        {/* 실제 데이터 리스트 */}
-        <div
-          className="overflow-y-auto scroll-container"
-          style={{
-            width: `calc(770px * ${scale})`,
-            height: `calc(299px * ${scale})`,
-            backgroundColor: 'rgba(14, 142, 18, 0.2)',
-            borderRadius: `calc(20px * ${scale})`,
-            marginTop: `calc(8px * ${scale})`
-          }}
-        >
-          <div className="w-full">
-            {loadingData ? (
-              <div
-                className="text-white font-black flex items-center justify-center"
-                style={{
-                  height: `calc(299px * ${scale})`,
-                  fontSize: `calc(30px * ${scale})`
-                }}
-              >
-                로딩 중...
-              </div>
-            ) : allVillages.length === 0 ? (
-              <div
-                className="text-white font-black flex items-center justify-center"
-                style={{
-                  height: `calc(299px * ${scale})`,
-                  fontSize: `calc(30px * ${scale})`
-                }}
-              >
-                데이터가 없습니다.
-              </div>
-            ) : (
-              allVillages.map((village, idx) => (
+          {/* 실제 데이터 리스트 */}
+          <div
+            className="overflow-y-auto scroll-container"
+            style={{
+              width: `calc(770px * ${scale})`,
+              height: `calc(299px * ${scale})`,
+              backgroundColor: 'rgba(14, 142, 18, 0.2)',
+              borderRadius: `calc(20px * ${scale})`,
+              marginTop: `calc(8px * ${scale})`
+            }}
+          >
+            <div className="w-full">
+              {loadingData ? (
                 <div
-                  key={village.village_id}
-                  className={`text-white font-black border-b flex justify-around items-center transition-all duration-500 ${
-                    myVillage && village.rank === myVillage.rank
-                      ? 'bg-green-600 shadow-lg scale-105'
-                      : 'hover:bg-green-600'
-                  } ${
-                    phase === 'highlight' && (!myVillage || village.rank !== myVillage.rank)
-                      ? 'opacity-0'
-                      : phase === 'list'
-                      ? 'opacity-100'
-                      : myVillage && village.rank === myVillage.rank
-                      ? 'opacity-100 animate-pulse'
-                      : 'opacity-0'
-                  }`}
+                  className="text-white font-black flex items-center justify-center"
                   style={{
-                    fontSize: `calc(30px * ${scale})`,
-                    paddingTop: `calc(20px * ${scale})`,
-                    paddingBottom: `calc(20px * ${scale})`,
-                    borderBottomWidth: `calc(1px * ${scale})`,
-                    borderBottomColor: 'rgba(255, 255, 255, 0.3)',
-                    transform:
-                      phase === 'list' ||
-                      (myVillage && village.rank === myVillage.rank)
-                        ? 'translateX(0)'
-                        : 'translateX(-100%)',
-                    transition:
-                      myVillage && village.rank === myVillage.rank
-                        ? 'all 0.5s ease-out'
-                        : `all ${0.3 + idx * 0.1}s ease-out ${
-                            phase === 'list' ? idx * 100 : 0
-                          }ms`
+                    height: `calc(299px * ${scale})`,
+                    fontSize: `calc(30px * ${scale})`
                   }}
                 >
-                  {/* 등수 아이콘 */}
-                  <div className="w-[25%] text-center">
-                    {village.rank <= 3 ? (
-                      <img
-                        src={`/assets/images/medal_${
-                          village.rank === 1
-                            ? 'first'
-                            : village.rank === 2
-                            ? 'second'
-                            : 'third'
-                        }.png`}
-                        alt={`${village.rank}등`}
-                        style={{
-                          height: `calc(48px * ${scale})`,
-                          margin: '0 auto'
-                        }}
-                      />
-                    ) : (
-                      village.rank
-                    )}
-                  </div>
-
-                  {/* 마을 이름 */}
-                  <div className="w-[25%] text-center">{village.village_name}</div>
-
-                  {/* 참여자 수 */}
-                  <div className="w-[25%] text-center">
-                    {village.participants}명
-                  </div>
-
-                  {/* 안전 점수 (평균) */}
-                  <div className="w-[25%] text-center">{village.avg_score}점</div>
+                  로딩 중...
                 </div>
-              ))
-            )}
+              ) : allVillages.length === 0 ? (
+                <div
+                  className="text-white font-black flex items-center justify-center"
+                  style={{
+                    height: `calc(299px * ${scale})`,
+                    fontSize: `calc(30px * ${scale})`
+                  }}
+                >
+                  데이터가 없습니다.
+                </div>
+              ) : (
+                allVillages.map((village, idx) => (
+                  <div
+                    key={village.village_id}
+                    className={`text-white font-black border-b flex justify-around items-center transition-all duration-500 ${
+                      myVillage && village.rank === myVillage.rank
+                        ? 'bg-green-600 shadow-lg scale-105'
+                        : 'hover:bg-green-600'
+                    } ${
+                      phase === 'highlight' && (!myVillage || village.rank !== myVillage.rank)
+                        ? 'opacity-0'
+                        : phase === 'list'
+                        ? 'opacity-100'
+                        : myVillage && village.rank === myVillage.rank
+                        ? 'opacity-100 animate-pulse'
+                        : 'opacity-0'
+                    }`}
+                    style={{
+                      fontSize: `calc(30px * ${scale})`,
+                      paddingTop: `calc(20px * ${scale})`,
+                      paddingBottom: `calc(20px * ${scale})`,
+                      borderBottomWidth: `calc(1px * ${scale})`,
+                      borderBottomColor: 'rgba(255, 255, 255, 0.3)',
+                      transform:
+                        phase === 'list' ||
+                        (myVillage && village.rank === myVillage.rank)
+                          ? 'translateX(0)'
+                          : 'translateX(-100%)',
+                      transition:
+                        myVillage && village.rank === myVillage.rank
+                          ? 'all 0.5s ease-out'
+                          : `all ${0.3 + idx * 0.1}s ease-out ${
+                              phase === 'list' ? idx * 100 : 0
+                            }ms`
+                    }}
+                  >
+                    {/* 등수 아이콘 */}
+                    <div className="w-[10%] text-center">
+                      {village.rank <= 3 ? (
+                        <img
+                          src={`/assets/images/medal_${
+                            village.rank === 1
+                              ? 'first'
+                              : village.rank === 2
+                              ? 'second'
+                              : 'third'
+                          }.png`}
+                          alt={`${village.rank}등`}
+                          style={{
+                            height: `calc(48px * ${scale})`,
+                            margin: '0 auto'
+                          }}
+                        />
+                      ) : (
+                        village.rank
+                      )}
+                    </div>
+
+                    {/* 마을 이름 */}
+                    <div className="w-[35%] text-center">{village.village_name}</div>
+
+                    {/* 참여자 수 */}
+                    <div className="w-[25%] text-center">
+                      {village.participants}명
+                    </div>
+
+                    {/* 안전 점수 (평균) */}
+                    <div className="w-[25%] text-center">{village.avg_score}점</div>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
       </div>

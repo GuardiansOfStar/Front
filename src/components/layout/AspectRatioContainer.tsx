@@ -10,7 +10,7 @@ interface AspectRatioContainerProps {
 const AspectRatioContainer = ({ 
   children, 
   targetRatio = 4/3,
-  fillMode = 'fit' // 'fill'에서 'fit'로 변경
+  fillMode = 'fit'
 }: AspectRatioContainerProps) => {
   const [containerSize, setContainerSize] = useState({ width: 1024, height: 768 });
   const [scale, setScale] = useState(1);
@@ -31,7 +31,6 @@ const AspectRatioContainer = ({
         newHeight = windowWidth / targetRatio;
       }
       
-      // 스케일 계산 추가
       newScale = Math.min(newWidth / 1024, newHeight / 768);
       
       setContainerSize({ width: newWidth, height: newHeight });
@@ -43,25 +42,48 @@ const AspectRatioContainer = ({
     return () => window.removeEventListener('resize', calculateSize);
   }, [targetRatio]);
 
+  // 드래그 방지 이벤트 핸들러
+  const preventDragEvents = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+  };
+
+  const preventContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    return false;
+  };
+
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-gray-100 overflow-hidden">
+    <div 
+      className="w-full h-screen flex items-center justify-center bg-gray-100 overflow-hidden no-drag"
+      onDragStart={preventDragEvents}
+      onDrag={preventDragEvents}
+      onDragEnd={preventDragEvents}
+      onContextMenu={preventContextMenu}
+    >
       <div 
-        className="relative bg-white shadow-lg overflow-hidden"
+        className="relative bg-white shadow-lg overflow-hidden no-drag"
         style={{ 
           width: `${containerSize.width}px`,
           height: `${containerSize.height}px`,
         }}
+        onDragStart={preventDragEvents}
+        onDrag={preventDragEvents}
+        onDragEnd={preventDragEvents}
       >
         <div 
-          className="relative"
+          className="relative no-drag"
           style={{
             width: '1024px',
             height: '768px',
             transform: `scale(${scale})`,
             transformOrigin: 'top left',
-            // CSS 변수로 스케일 전달
             '--scale': scale.toString(),
           } as React.CSSProperties}
+          onDragStart={preventDragEvents}
+          onDrag={preventDragEvents}
+          onDragEnd={preventDragEvents}
         >
           {children}
         </div>

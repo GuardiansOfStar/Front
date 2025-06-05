@@ -419,6 +419,7 @@ const HarvestQuest = () => {
                 text="정답입니다!" 
                 fontSize={`calc(4rem * ${scale})`}
                 strokeWidth={`calc(12px * ${scale})`}
+                color="text-[#0E8E12]"
               />
             </motion.div>
 
@@ -439,7 +440,7 @@ const HarvestQuest = () => {
             >
             <p 
                 className="font-black text-white"
-                style={{ fontSize: `calc(3rem * ${scale})` }}
+                style={{ fontSize: `calc(60px * ${scale})` }}
             >
               당신의 안전과<br/> 소중한 자산을 보호하는 <br/> 현명한 선택이에요
             </p>
@@ -525,16 +526,18 @@ const HarvestQuest = () => {
               />
               
               <motion.div 
-                className="w-[80%] bg-white bg-opacity-80 border-red-600 border-8 rounded-xl text-center"
+                className="w-[80%] bg-white bg-opacity-80 border-[#EE404C] text-center"
                 style={{
-                  padding: `calc(32px * ${scale})`
+                  padding: `calc(32px * ${scale})`,
+                  borderWidth: `calc(12px * ${scale})`,
+                  borderRadius: `calc(36px * ${scale})`
                 }}
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.8 * Math.max(0.8, scale), delay: 0.4 * Math.max(0.8, scale) }}
               >
                 <h2 
-                  className="font-black text-red-600"
+                  className="font-black text-[#EE404C]"
                   style={{ 
                     fontSize: `calc(4rem * ${scale})`,
                     marginBottom: `calc(16px * ${scale})`
@@ -544,7 +547,10 @@ const HarvestQuest = () => {
                 </h2>
                 <p 
                   className="font-black text-black"
-                  style={{ fontSize: `calc(2.5rem * ${scale})` }}
+                  style={{
+                    fontSize: `calc(48px * ${scale})`,
+                    letterSpacing: "0.05em"
+                }}
                 >
                   뿌리에 걸려 낙상할 수 있어요<br />
                   이륜차는 도로에 두고 짐을 옮겨요
