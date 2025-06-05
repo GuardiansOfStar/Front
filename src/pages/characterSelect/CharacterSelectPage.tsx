@@ -42,8 +42,8 @@ const CharacterSelectPage = () => {
   const scenarioId = searchParams.get('scenario');
   
   const handleCharacterSelect = (index: number) => {
-    //선택 버튼 효과음
-    audioManager.playButtonClick();
+    //기본 알림음
+    audioManager.playSound('etcSound', 0.5);
 
     if (isConfirming) return;
     
@@ -54,8 +54,6 @@ const CharacterSelectPage = () => {
     setCharacter(selectedCharacter.id);
     
     setTimeout(() => {
-      //기본 알림음
-      audioManager.playSound('etcSound', 0.5);
       navigate(`/prologue?scenario=${scenarioId}`);
     }, 1200);
   };
