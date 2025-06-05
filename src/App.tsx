@@ -44,12 +44,7 @@ function App() {
      <CharacterProvider>
        <AspectRatioContainer fillMode="fit">
          <Routes>
-           {/* 기본 화면들 */}
-           <Route path="/" element={<HomePage />} />
-           <Route path="/settings" element={<SettingPage />} />
-           <Route path="/scenarios" element={<ScenarioSelectPage />} />
-           <Route path="/character-select" element={<CharacterSelectPage />} />
-           <Route path="/prologue" element={<ProloguePage />} />
+           
            {/* 기본 화면들 + 첫 BGM 구역*/}
            <Route element={<StartPrologueLayout />}>
             <Route path="/" element={<HomePage />} />
