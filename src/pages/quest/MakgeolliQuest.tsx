@@ -967,30 +967,8 @@ const MakgeolliQuest = () => {
             </>,
             "z-30"
           )}
-          
-          {/* 게임 안내 텍스트 */}
-          <div 
-            className="absolute bg-white bg-opacity-90 border-4 border-green-600 rounded-xl shadow-lg z-50"
-            style={{
-              top: `calc(16px * ${scale})`,
-              left: `calc(16px * ${scale})`,
-              padding: `calc(16px * ${scale})`,
-              maxWidth: `calc(512px * ${scale})`
-            }}
-          >
-            <p 
-              className="text-green-700 font-bold text-center"
-              style={{ fontSize: `calc(1.25rem * ${scale})` }}
-            >
-              {foundCount === 0 
-                ? "화면에서 막걸리 5개를 모두 찾아 치워주세요!" 
-                : foundCount === 4
-                ? "4개 찾았어요! 1개 더 찾아주세요!"
-                : `${foundCount}개 찾았어요! ${5-foundCount}개 더 찾아주세요!`}
-            </p>
           </div>
-        </div>
-      )}
+        )}
       
       {/* 성공 화면 */}
       {gamePhase === 'success' && (
