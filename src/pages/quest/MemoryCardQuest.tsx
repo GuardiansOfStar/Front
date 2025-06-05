@@ -10,6 +10,7 @@ import { useScale } from '../../hooks/useScale';
 import { useCharacter } from '../../context/CharacterContext';
 import { audioManager } from '../../utils/audioManager';
 
+
 // 이미지 임포트
 const gameBackground = '/assets/images/pre_drive_background.png';
 const gameCharacter = '/assets/images/game_character.png';
@@ -134,8 +135,9 @@ const MemoryCardQuest: React.FC = () => {
   // const { updateQuestScore } = useScore();
 
   // character context
-  const { characterImages } = useCharacter();
-
+  const { selectedCharacter, characterImages } = useCharacter();
+  const characterLabel = selectedCharacter === 'grandfather' ? '할아버지' : '할머니';
+  
   // URL 쿼리 파라미터
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -675,7 +677,7 @@ const MemoryCardQuest: React.FC = () => {
               className="font-black text-black"
               style={{ fontSize: `calc(2.7rem * ${scale})` }}
             >
-              할아버지,<br />
+              {characterLabel},<br />
               운전하시기 전에 중요한 선물이 있어요!
             </p>
           </div>

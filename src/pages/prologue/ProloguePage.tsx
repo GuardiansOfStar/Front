@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import { createSession } from '../../services/endpoints/session';
 
 import { useScale } from '../../hooks/useScale';
+import { useCharacter } from '../../context/CharacterContext';
 
 import { audioManager } from '../../utils/audioManager';
 
@@ -31,6 +32,9 @@ const ProloguePage = () => {
   const [step, setStep] = useState<PrologueStep>('mission');
   const [scenarioId, setScenarioId] = useState<string | null>(null);
   const [showMessage, setShowMessage] = useState(false);
+  const { selectedCharacter } = useCharacter();
+  const characterLabel = selectedCharacter === 'grandfather' ? '할아버지' : '할머니';
+
   
   // URL 쿼리 파라미터에서 시나리오 ID 가져오기
   useEffect(() => {
@@ -321,7 +325,7 @@ const ProloguePage = () => {
             className="font-black text-black"
             style={{ fontSize: `${2.6 * scale}rem` }}
           >
-            무엇보다 할아버지가 제일 소중해요!<br />
+            무엇보다 {characterLabel}가 제일 소중해요!<br />
             조심히 다녀오세요!
           </p>
         </div>
