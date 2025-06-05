@@ -345,9 +345,7 @@ const ScenarioList = () => {
                 
                 {/* subtitle 박스 */}
                 <div 
-                    className={`rounded-lg text-center overflow-hidden pointer-events-none text-white font-black whitespace-nowrap transition-all duration-500 ${
-                        isConfirming ? 'animate-subtitleGlow' : ''
-                    }`}
+                    className="rounded-lg text-center overflow-hidden pointer-events-none text-white font-black whitespace-nowrap transition-all duration-500"
                     style={{ 
                         width: `${SCENARIO_WIDTH + 68 * scale}px`,
                         backgroundColor: allScenarios[selectedScenarioIndex].locked ? '#718096' : '#0DA429',
@@ -360,10 +358,9 @@ const ScenarioList = () => {
                         paddingTop: `calc(8px * ${scale})`,
                         paddingBottom: `calc(8px * ${scale})`,
                         boxShadow: isConfirming ? `0 0 ${20 * scale}px rgba(13, 164, 41, 0.5)` : 'none',
-                        transform: isConfirming ? `scale(${SELECTED_SCALE * 0.95})` : 'scale(1)',
                         transitionDuration: `${500 * Math.max(0.8, scale)}ms`
                     }}
-                >
+                    >
                     <p 
                         className="truncate"
                         style={{ fontSize: `calc(1.55rem * ${scale})` }}

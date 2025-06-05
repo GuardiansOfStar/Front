@@ -1,8 +1,10 @@
 // Front/src/App.tsx
+import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-// import { ScoreProvider } from './context/ScoreContext';
 import { CharacterProvider } from './context/CharacterContext';
 import AspectRatioContainer from './components/layout/AspectRatioContainer';
+import LoadingScreen from './components/ui/LoadingScreen';
+import { CRITICAL_IMAGES } from './utils/imagePreloader';
 import { useDragPrevention } from './hooks/useDragPrevention';
 
 // 배경음 전용
@@ -36,11 +38,24 @@ import PerfectScore from './pages/ResultScreen/PerfectScore';
 import VillageRank from './pages/ResultScreen/VillageRank';
 
 function App() {
-
+  const [isLoaded, setIsLoaded] = useState(false);
   useDragPrevention();
 
+  if (!isLoaded) {
+    return (
+      <CharacterProvider>
+        <AspectRatioContainer fillMode="fit">
+          <LoadingScreen
+            images={CRITICAL_IMAGES}
+            onLoadComplete={() => setIsLoaded(true)}
+            minLoadTime={2000}
+          />
+        </AspectRatioContainer>
+      </CharacterProvider>
+    );
+  }
+
  return (
-   //<ScoreProvider>
      <CharacterProvider>
        <AspectRatioContainer fillMode="fit">
          <Routes>
@@ -87,7 +102,6 @@ function App() {
          </Routes>
        </AspectRatioContainer>
      </CharacterProvider>
-   //</ScoreProvider>
  );
 }
 
