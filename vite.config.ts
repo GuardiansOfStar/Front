@@ -1,19 +1,10 @@
+// vite.config.ts 수정
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import path from 'path'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/', 
-  resolve: {
-    alias: {
-      assets: path.resolve(__dirname, 'src/assets'),
-    },
-  },
   build: {
-    outDir: 'dist',
-    emptyOutDir: true,
-    sourcemap: false,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -27,9 +18,14 @@ export default defineConfig({
     },
     chunkSizeWarningLimit: 1000
   },
+  
+  // 이미지 최적화
+  assetsInclude: ['**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.gif', '**/*.svg'],
+  
   server: {
     allowedHosts: ['.ngrok-free.app'],
   },
+  
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom', 'framer-motion']
   }
