@@ -8,6 +8,8 @@ import { createSession } from '../../services/endpoints/session';
 
 import { useScale } from '../../hooks/useScale';
 
+import { audioManager } from '../../utils/audioManager';
+
 // 이미지 임포트
 const scenario1FullMap = '/assets/images/scenario1_full_map.png';
 const starCharacter = '/assets/images/star_character.png';
@@ -40,6 +42,8 @@ const ProloguePage = () => {
     // map 단계에서 2초 후 메시지 표시
     if (step === 'map') {
       const timer = setTimeout(() => {
+        //약도 문구 효과음
+        audioManager.playSound('mapGuide', 0.7);
         setShowMessage(true);
       }, 2000);
       
@@ -48,6 +52,7 @@ const ProloguePage = () => {
 
     // letterMessage 단계에서 2초 후 encouragement로 자동 전환
     if (step === 'letterMessage') {
+      audioManager.playMessageAlarm();
       const timer = setTimeout(() => {
         setStep('encouragement');
       }, 2000);
@@ -55,6 +60,13 @@ const ProloguePage = () => {
       return () => clearTimeout(timer);
     }
   }, [location, step]);
+
+  //미션 제공 효과음
+  useEffect(() => {
+    if (step === 'mission') {
+      audioManager.playSound('missionGuide', 0.7);
+    }
+  },[step]);
 
   useEffect(() =>{
     // const alreadyHasUser = localStorage.getItem("user_id");
@@ -92,6 +104,9 @@ const ProloguePage = () => {
 
   // 주행 준비 페이지로 이동
   const handleDepartClick = () => {
+    //기본 알림음
+    audioManager.playSound('etcSound', 0.5);
+
     console.log("ProloguePage - 출발하기 버튼 클릭: 주행 준비 페이지로 이동", { scenarioId });
     navigate(`/driving-prep?scenario=${scenarioId}&nextQuest=1`);
   };

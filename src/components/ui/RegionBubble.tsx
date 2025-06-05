@@ -1,6 +1,7 @@
 // Front/src/components/ui/RegionBubble.tsx
 import { useState, useEffect } from 'react';
 import { useScale } from '../../hooks/useScale';
+import { audioManager } from '../../utils/audioManager';
 
 interface RegionBubbleProps {
   show: boolean;
@@ -13,6 +14,9 @@ const RegionBubble = ({ show }: RegionBubbleProps) => {
 
   useEffect(() => {
     if (show) {
+      //기본 알림음
+      audioManager.playSound('etcSound', 0.5);
+      
       // 표시할 때: 렌더링 시작 후 애니메이션
       setShouldRender(true);
       const timer = setTimeout(() => {

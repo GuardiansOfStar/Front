@@ -8,6 +8,7 @@ import GameTitle from '../../components/ui/GameTitle';
 import { useScale } from '../../hooks/useScale';
 // import { useScore } from '../../context/ScoreContext';
 import { useCharacter } from '../../context/CharacterContext';
+import { audioManager } from '../../utils/audioManager';
 
 // 이미지 임포트
 const gameBackground = '/assets/images/pre_drive_background.png';
@@ -337,6 +338,48 @@ const MemoryCardQuest: React.FC = () => {
     };
   }, [gamePhase, scale]);
 
+  //효과음 재생
+  useEffect(() => {
+    if (gamePhase === 'intro1') {
+      //장면 전환 효과음(주행 준비하기)
+      audioManager.playsceneSwitch()
+    } else if (gamePhase === 'intro2') {
+      //손자손녀메세지 효과음
+      audioManager.playMessageAlarm();
+    } else if (gamePhase === 'intro3') {
+      //퀘스트 등장 효과음
+      audioManager.playQuestStart();
+    } else if (gamePhase === 'wrongPairFeedback' || gamePhase === 'wrongMatchFeedback') {
+      //카드 실패 효과음
+      audioManager.playSound('wrongCard',0.7);
+    } else if (gamePhase === 'game'|| gamePhase === 'showCards' || gamePhase === 'reshowCards') {
+      //카드 뒤집기 효과음
+      audioManager.playSound('flipCards',0.7);
+    } else if (gamePhase === 'tooManyAttempts' || gamePhase === 'showRemainingTries') {
+      //기본 알림 효과음
+      audioManager.playSound('etcSound',0.7);
+    } else if (gamePhase === 'showAnswer') {
+      //시도 횟수 초과_정답 공개 효과음
+      audioManager.playSound('revealAnswer',0.7);
+    } else if (gamePhase === 'foundMatch') {
+      //정답 효과음
+      audioManager.playRightAnswer1();
+    } else if (gamePhase === 'helmetEquipped') {
+      //안전모 착용
+      audioManager.playSound('helmetOn',0.7);
+    }else if (gamePhase === 'showGift') {
+      //선물 상자 흔들기
+      audioManager.playSound('shakingBox',0.7);
+    }
+  }, [gamePhase]);
+
+  useEffect(() => {
+    if (giftAnimationStage === 2) {
+      // 상자 열린 효과음
+      audioManager.playSound('openBox',0.7);
+    }
+  }, [giftAnimationStage]);
+
   // 카드 초기화 함수
   const initializeCards = () => {
     const types = [
@@ -383,6 +426,9 @@ const MemoryCardQuest: React.FC = () => {
     if (gamePhase !== 'game') return;
     const card = cards.find(c => c.id === id);
     if (!card || card.isFlipped || card.isMatched) return;
+
+    //카드 클릭 효과음음
+    audioManager.playSound('cardClick',0.7);
 
     setCards(prev =>
       prev.map(c =>
@@ -462,6 +508,8 @@ const MemoryCardQuest: React.FC = () => {
 
   // 다음 단계로 이동 핸들러
   const handleNextPhase = () => {
+    //다음 버튼 효과음
+    audioManager.playButtonClick();
     if (gamePhase === 'intro2' && !showMessage) return;
     setShowMessage(false);
     if (gamePhase === 'intro1')      setGamePhase('intro2');
@@ -470,6 +518,8 @@ const MemoryCardQuest: React.FC = () => {
   };
 
   const handleConfirm = () => {
+    //선택 버튼 효과음
+    audioManager.playButtonClick();
     if (gamePhase === 'foundMatch') {
       setGamePhase('showGift');
     } else if (gamePhase === 'showAnswer') {

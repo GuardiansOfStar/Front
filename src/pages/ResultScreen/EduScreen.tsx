@@ -5,6 +5,8 @@ import Background from '../../components/ui/Background';
 import GameTitle from '../../components/ui/GameTitle';
 import { getSession,  SessionDetail, QuestResult } from "../../services/endpoints/session";
 import { questMessages } from "../../constants/questMessages";
+import { audioManager } from '../../utils/audioManager';
+
 
 const ALLOWED_QUEST_IDS = ["pothole", "helmet", "Makgeolli", "Return", "Harvest"];
 // 이후 시나리오 추가시 각 퀘스트 키워드 추출해서 구성하도록 해야...함! 
@@ -21,6 +23,9 @@ const EduScreen = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    //결과 효과음
+    audioManager.playSound('reportGeneral', 0.8);
+
     const sessionId = localStorage.getItem('session_id');
     console.log("session! : ", sessionId);
     if (!sessionId) {

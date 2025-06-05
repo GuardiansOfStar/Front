@@ -4,13 +4,15 @@ import { useScale } from "../../hooks/useScale";
 import Background from "../../components/ui/Background";
 import GameTitle from "../../components/ui/GameTitle";
 import { updateSessionScene } from "../../services/endpoints/session";
+import { audioManager } from '../../utils/audioManager';
+
 
 const Memory = () => {
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const scale = useScale();
-
+  
   const sessionId = localStorage.getItem("session_id") || "";
 
   const options = [
@@ -22,12 +24,16 @@ const Memory = () => {
   ];
 
   const toggleSelection = (index: number) => {
+    //선택 효과음
+    audioManager.playButtonClick();
     setSelectedIndexes((prev) =>
       prev.includes(index) ? prev.filter((i) => i !== index) : [index] // 하나만 선택 가능
     );
   };
 
   const handleNextClick = () => {
+    //선택 효과음
+    audioManager.playButtonClick();
     if (selectedIndexes.length === 0) {
       alert("장면을 선택해주세요!");
       return;

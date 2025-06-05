@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useScale } from '../../hooks/useScale';
 import Confetti from 'react-confetti';
 import DancingStar from './DancingStar';
+import { audioManager } from '../../utils/audioManager';
+
 
 const success_background = '/assets/images/success_background_long.png';
 const motorcycle = '/assets/images/motorcycle.png';
@@ -17,6 +19,9 @@ const SuccessBackground = () => {
 
     useEffect(() => {
         // 애니메이션 시작
+        
+        //환호성 효과음
+        audioManager.playSound('goalIn', 0.8);
         setStartAnimation(true);
 
         // 4초 뒤 댄싱스타 등장 및 오토바이 페이드아웃 (스케일에 따라 시간 조정)

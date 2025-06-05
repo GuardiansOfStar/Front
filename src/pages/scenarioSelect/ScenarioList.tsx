@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useScale } from '../../hooks/useScale';
+import { audioManager } from '../../utils/audioManager';
 
 // 이미지 임포트
 const leftArrowLight = '/assets/images/left_arrow_light.png';
@@ -101,6 +102,9 @@ const ScenarioList = () => {
     
     // 시나리오 터치/클릭 핸들러
     const handleScenarioTouch = (index: number) => {
+        //선택 버튼 효과음
+        audioManager.playButtonClick();
+        
         if (isDragging || dragDistance > 10 || isConfirming) return; // 확정 중에는 터치 무시
         
         if (index === selectedScenarioIndex) {

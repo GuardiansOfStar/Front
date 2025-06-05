@@ -7,6 +7,7 @@ import { useScale } from '../../hooks/useScale';
 import GameTitle from '../../components/ui/GameTitle';
 // import { useScore } from '../../context/ScoreContext';
 import { useCharacter } from '../../context/CharacterContext';
+import { audioManager } from '../../utils/audioManager';
 
 // 이미지 임포트
 const drivingRoad = '/assets/images/driving_road.png';
@@ -55,9 +56,14 @@ const PotholeQuest = () => {
     setQuestId(qId || '2');
   }, [location]);
 
+
+
   // 주행 단계 타이밍 제어
   useEffect(() => {
     if (gamePhase === 'driving') {
+      //장면 전환 효과음(주행 시작)
+      audioManager.playsceneSwitch()
+
       // 1초 후 애니메이션 시작
       const animationTimer = setTimeout(() => {
         setStartAnimation(true);
@@ -81,10 +87,20 @@ const PotholeQuest = () => {
     }
   }, [gamePhase, scale]);
 
+  //퀘스트 등장 시 효과음 재생
+  useEffect(() => {
+    if (gamePhase === 'selection') {
+      audioManager.playQuestStart();
+    }
+  }, [gamePhase]);
+
   // failResult 단계에서 경고 메시지 표시
   useEffect(() => {
     if (gamePhase === 'failResult') {
       const timer = setTimeout(() => {
+        //오답 효과음
+        audioManager.playWrongAnswer();
+
         setShowWarning(true);
       }, 2000 * Math.max(0.8, scale));
 
@@ -95,6 +111,8 @@ const PotholeQuest = () => {
   }, [gamePhase, scale]);
 
   const handleConfirmClick = () => {
+    //선택 버튼 효과음
+    audioManager.playButtonClick();
     if (gamePhase === 'successResult' && showSuccessMessage) {
       // 성공 메시지에서 확인 버튼 클릭 시
       navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=20&correct=true`);
@@ -106,6 +124,9 @@ const PotholeQuest = () => {
 
   // 선택지 선택 핸들러
   const handleOptionSelect = (option: 'A' | 'B') => {
+    //효과음 재생
+    audioManager.playQuestSelect();
+    
     setSelectedOption(option);
     
     // API 호출
@@ -136,12 +157,14 @@ const PotholeQuest = () => {
     if (option === 'A') {
       // 정답 선택
       setTimeout(() => {
+        audioManager.playRightAnswer1();
         setGamePhase('successResult');
         
         setTimeout(() => {
           setHideSuccessImages(true);
           
           setTimeout(() => {
+            audioManager.playRightAnswer2();
             setShowSuccessMessage(true);
           }, getScaledDuration(1000));
         }, getScaledDuration(3000));
@@ -149,7 +172,9 @@ const PotholeQuest = () => {
     } else {
       // 오답 선택
       setTimeout(() => {
+        audioManager.playSound('accidentMotor', 0.7);
         setGamePhase('fadeOut');
+
         setTimeout(() => {
           setGamePhase('failResult');
         }, getScaledDuration(1500));
@@ -157,10 +182,6 @@ const PotholeQuest = () => {
     }
   };
   
-  const handleGoHome = () => {
-    navigate('/');
-  };
-
   return (
     <div className="w-full h-full">
       {/* 배경 - 동적 스크롤 효과 */}

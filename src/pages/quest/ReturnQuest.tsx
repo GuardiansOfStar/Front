@@ -6,6 +6,7 @@ import GameTitle from '../../components/ui/GameTitle';
 import { useScale } from '../../hooks/useScale';
 import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attempts';
 import { useCharacter } from '../../context/CharacterContext';
+import { audioManager } from '../../utils/audioManager';
 
 // 이미지 임포트
 const homecomingTimeSettingBackground = '/assets/images/homecoming_time_setting_tree_road.png';
@@ -242,6 +243,9 @@ const ReturnQuest = () => {
 
   // 마우스 이벤트 핸들러
   const handleMouseDown = (e: React.MouseEvent) => {
+    //드래그 클릭 효과음
+    audioManager.playSound('barClick',0.5);
+
     e.preventDefault();
     handleDragStart(e.clientX);
   };
@@ -251,11 +255,16 @@ const ReturnQuest = () => {
   }, [handleDragMove]);
 
   const handleMouseUp = useCallback(() => {
+    //드래그 클릭 효과음
+    audioManager.playSound('barClick',0.5);
     handleDragEnd();
   }, [handleDragEnd]);
 
   // 터치 이벤트 핸들러
   const handleTouchStart = (e: React.TouchEvent) => {
+    //드래그 클릭 효과음
+    audioManager.playSound('barClick',0.5);
+
     e.preventDefault();
     const touch = e.touches[0];
     handleDragStart(touch.clientX);
@@ -269,6 +278,8 @@ const ReturnQuest = () => {
   }, [handleDragMove]);
 
   const handleTouchEnd = useCallback(() => {
+    //드래그 클릭 효과음
+    audioManager.playSound('barClick',0.5);
     handleDragEnd();
   }, [handleDragEnd]);
 
@@ -303,10 +314,14 @@ const ReturnQuest = () => {
       }, getScaledDuration(100));
       
       const titleTimer = setTimeout(() => {
+        //장면 전환 효과음(해가 지고 있어요)
+        audioManager.playsceneSwitch()
         setShowTitle(true);
       }, getScaledDuration(4000));
       
       const nextTimer = setTimeout(() => {
+        //퀘스트 등장 효과음
+        audioManager.playQuestStart();
         setGamePhase('gameIntro');
       }, getScaledDuration(6000));
       
@@ -317,10 +332,13 @@ const ReturnQuest = () => {
       };
     }
     else if (gamePhase === 'successResult') {
+      //정답 효과음
+      audioManager.playRightAnswer1();
       timer = setTimeout(() => {
         setHideSuccessImages(true);
 
         const messageTimer = setTimeout(() => {
+          audioManager.playRightAnswer2();
           setShowSuccessMessage(true);
         }, getScaledDuration(1000));
 
@@ -328,6 +346,9 @@ const ReturnQuest = () => {
       }, getScaledDuration(3000));
     }
     else if (gamePhase === 'failSequence1') {
+      //사고 전 긴장 효과음
+      audioManager.playSound('accidentBefore', 0.7);
+
       timer = setTimeout(() => {
         setGamePhase('failSequence2');
       }, getScaledDuration(2000));
@@ -338,17 +359,23 @@ const ReturnQuest = () => {
       }, getScaledDuration(2000));
     }
     else if (gamePhase === 'failSequence3') {
+      //고라니 울음 소리
+      audioManager.playSound('accidentGorani', 0.8);
+
       timer = setTimeout(() => {
         setGamePhase('failSequence4');
       }, getScaledDuration(2000));
     }
     else if (gamePhase === 'failSequence4') {
       timer = setTimeout(() => {
+        audioManager.stopSound('accidentGorani');
         setGamePhase('failResult');
       }, getScaledDuration(2000));
     }
     else if (gamePhase === 'failResult') {
       timer = setTimeout(() => {
+        //오답 효과음
+        audioManager.playWrongAnswer();
         setShowWarning(true);
       }, getScaledDuration(2000));
     }
@@ -360,6 +387,9 @@ const ReturnQuest = () => {
 
   // 확인 버튼 클릭 핸들러
   const handleConfirmClick = () => {
+    //선택 버튼 효과음
+    audioManager.playButtonClick();
+
     if (gamePhase === 'successResult' && showSuccessMessage) {
       const sessionId = localStorage.getItem('session_id')!;
       const payload: AttemptPayload = {
@@ -399,6 +429,9 @@ const ReturnQuest = () => {
 
   // 게임 시작 핸들러
   const handleStartGame = () => {
+    //퀘스트 선택 효과음
+    audioManager.playQuestSelect();
+
     if (selectedHour >= 5 && selectedHour <= 7) {
       setGamePhase('successResult');
     } else {
@@ -408,6 +441,9 @@ const ReturnQuest = () => {
 
   // 다음 단계로 이동 핸들러
   const handleNextPhase = () => {
+    //다음 버튼 효과음
+    audioManager.playButtonClick();
+
     if (gamePhase === 'gameIntro') {
       setGamePhase('gamePlay');
     }

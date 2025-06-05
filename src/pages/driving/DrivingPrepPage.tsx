@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useScale } from '../../hooks/useScale';
+import { audioManager } from '../../utils/audioManager';
 
 // 이미지 임포트
 const drivingBackground = '/assets/images/background.png';
@@ -37,6 +38,9 @@ const DrivingPrepPage = () => {
   // ...existing code...
   // 이륜차 애니메이션
   useEffect(() => {
+    //효과음 재생
+    audioManager.playSound('motorcycle', 1.0);
+
     // 이륜차가 화면을 완전히 지나가는데 필요한 총 거리
     const motorcycleWidth = 740 * scale;
     const totalDistance = window.innerWidth + motorcycleWidth + 100; // 시작점(-100) + 화면폭 + 오토바이폭 + 여유
