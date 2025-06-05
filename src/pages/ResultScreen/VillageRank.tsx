@@ -68,17 +68,6 @@ const VillageRank = () => {
     };
   }, []);
 
-  /*list 단계에서 30초 후 홈 이동 -- 적용 안됨 (확인 바람!)
-  useEffect(() => {
-    if (phase === 'list') {
-      const homeTimer = setTimeout(() => {
-        navigate('/');
-      }, 10000); // 30초
-
-      return () => clearTimeout(homeTimer);
-    }
-  }, [phase, navigate]);
-  */
 return (
     <div className="relative w-full h-full">
       {/* 반투명 오버레이 */}
@@ -92,8 +81,8 @@ return (
         className="text-white font-black text-center flex items-center justify-center"
         style={{
           width: `calc(718px * ${scale})`,
-          height: `calc(120px * ${scale})`,
-          borderWidth: `calc(8px * ${scale})`,
+          height: `calc(110px * ${scale})`,
+          borderWidth: `calc(10px * ${scale})`,
           borderStyle: 'solid',
           borderColor: '#0E8E12',
           borderRadius: `calc(30px * ${scale})`,
@@ -109,7 +98,7 @@ return (
       {/* 리스트 프레임 (항상 보임) */}
       <div className="absolute inset-x-0 z-20 flex justify-center" style={{ top: `calc(276px * ${scale})` }}>
         <div
-        className="bg-green-700 bg-opacity-50 border-green-700 shadow-lg flex flex-col items-center justify-start"
+        className="bg-green-700 bg-opacity-50 border-[#0E8E12] shadow-lg flex flex-col items-center justify-start"
         style={{
           width: `calc(834px * ${scale})`,
           height: `calc(437px * ${scale})`,

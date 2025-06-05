@@ -134,20 +134,22 @@ const ProloguePage = () => {
       >
         <GameTitle 
           text="과수원 작업 하는 날" 
-          fontSize="72px" 
+          fontSize="64px" 
           strokeWidth="12px"
           letterSpacing="0.05em"
         />
       </h1>
       <div 
-        className="relative bg-[#0DA429] bg-opacity-80 border-[#0E8E12] w-4/5 max-w-4xl mx-auto animate-[fadeIn_1200ms_ease-out]"
+        className="relative bg-[#0DA429] bg-opacity-80 border-[#0E8E12]/80 w-4/5 max-w-4xl mx-auto animate-[fadeIn_1200ms_ease-out]"
         style={{
           borderWidth: `calc(8px * ${scale})`,
           paddingTop: `${scale * 72}px`,
           paddingBottom: `${scale * 72}px`,
           borderRadius: `calc(36px * ${scale})`,
           paddingLeft: `calc(32px * ${scale})`,
-          paddingRight: `calc(32px * ${scale})`
+          paddingRight: `calc(32px * ${scale})`,
+          marginBottom: `${60 * scale}px`,
+
         }}
       >
         <p 
@@ -167,9 +169,9 @@ const ProloguePage = () => {
           alt="별별이 캐릭터" 
           className="absolute animate-[fadeIn_1500ms_ease-out]"
           style={{
-            bottom: `calc(-96px * ${scale})`,
-            left: `calc(-96px * ${scale})`,
-            width: `calc(192px * ${scale})`,
+            bottom: `calc(-102px * ${scale})`,
+            left: `calc(-102px * ${scale})`,
+            width: `calc(239px * ${scale})`,
             height: 'auto',
             zIndex: 20
           }}
@@ -188,11 +190,15 @@ const ProloguePage = () => {
             style={{ maxWidth: `calc(1024px * ${scale})` }}
           >
             <motion.div 
-              className="bg-[#FFFAFA] bg-opacity-90 border-[#0E8212] rounded-xl w-full mx-auto text-center"
+              className="bg-[#FFFAFA] bg-opacity-90 border-[#0E8212] rounded-xl mx-auto text-center"
               style={{
-                borderWidth: `calc(8px * ${scale})`,
-                borderRadius: `calc(24px * ${scale})`,
-                padding: `calc(32px * ${scale})`
+                borderWidth: `calc(10px * ${scale})`,
+                borderRadius: `calc(30px * ${scale})`,
+                paddingTop: `calc(40px * ${scale})`,
+                paddingBottom: `calc(40px * ${scale})`,
+                paddingLeft: `calc(24px * ${scale})`,
+                paddingRight: `calc(24px * ${scale})`,
+                width: `calc(754px * ${scale})`,
               }}
               initial={{ opacity: 0, y: `calc(20px * ${scale})` }}
               animate={{ opacity: 1, y: 0 }}
@@ -202,7 +208,7 @@ const ProloguePage = () => {
                 <p 
                   className="text-black font-black"
                   style={{
-                    fontSize: `${2.1 * scale}rem`,
+                    fontSize: `${36 * scale}px`,
                     letterSpacing: `${0.07 * scale}em`
                   }}
                 >
@@ -215,9 +221,9 @@ const ProloguePage = () => {
                   className="absolute"
                   style={{
                     bottom: `calc(-80px * ${scale})`,
-                    left: `calc(-160px * ${scale})`,
-                    width: `calc(212px * ${scale})`,
-                    height: `calc(212px * ${scale})`
+                    left: `calc(-180px * ${scale})`,
+                    width: `calc(239px * ${scale})`,
+                    height: 'auto',
                   }}
                 />
               </div>
@@ -318,12 +324,13 @@ const ProloguePage = () => {
             borderWidth: `calc(12px * ${scale})`,
             borderRadius: `calc(52px * ${scale})`,
             padding: `calc(64px * ${scale})`,
-            paddingTop: `calc(80px * ${scale})`
+            paddingTop: `calc(80px * ${scale})`,
+            marginBottom: `${20 * scale}px`,
           }}
         >
           <p 
             className="font-black text-black"
-            style={{ fontSize: `${2.6 * scale}rem` }}
+            style={{ fontSize: `${48 * scale}px` }}
           >
             무엇보다 {characterLabel}가 제일 소중해요!<br />
             조심히 다녀오세요!
@@ -343,6 +350,23 @@ const ProloguePage = () => {
       <>
         {step === 'mission' && (
           <BackButton onClick={handleBackToCharacterSelect} />
+        )}
+        
+        {/* encouragement 단계에서만 홈 버튼 표시 */}
+        {step === 'encouragement' && (
+          <img
+            src={homeButton}
+            alt="홈으로"
+            onClick={handleGoHome}
+            className="absolute cursor-pointer hover:scale-105 transition-transform"
+            style={{ 
+              top: `calc(48px * ${scale})`,
+              right: `calc(48px * ${scale})`,
+              width: `calc(120px * ${scale})`,
+              height: 'auto',
+              zIndex: 60
+            }}
+          />
         )}
       </>
     );

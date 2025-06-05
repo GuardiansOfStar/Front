@@ -293,8 +293,8 @@ const PotholeQuest = () => {
               <h2 
                 className="font-black text-[#0DA429] text-center"
                 style={{ 
-                  fontSize: `calc(3.5rem * ${scale})`,
-                  marginTop: `calc(-8px * ${scale})`
+                  fontSize: `calc(64px * ${scale})`,
+                  marginTop: `calc(-4px * ${scale})`
                 }}
               >
                 구덩이 조심
@@ -302,9 +302,8 @@ const PotholeQuest = () => {
               <p
                 className="text-black text-center font-black leading-relaxed"
                 style={{
-                  fontSize: `calc(2.3rem * ${scale})`,
-                  marginTop: `calc(25px * ${scale})`,
-                  letterSpacing: `calc(0.05em * ${scale})`
+                  fontSize: `calc(44px * ${scale})`,
+                  marginTop: `calc(16px * ${scale})`,
                 }}
               >
                 앞에 큰 <span style={{ color: '#B91C1C' }}>구덩이</span>가 있어요!<br/>

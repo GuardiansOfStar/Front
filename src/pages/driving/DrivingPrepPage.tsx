@@ -83,8 +83,8 @@ const DrivingPrepPage = () => {
         style={{ 
           position: 'absolute',
           left: `${motorcyclePosition * scale}px`,
-          bottom: `calc(-10% * ${scale})`,
-          width: `calc(740px * ${scale})`,
+          bottom: `calc(0% * ${scale})`,
+          width: `calc(649px * ${scale})`,
           height: 'auto',
         }}
       />
