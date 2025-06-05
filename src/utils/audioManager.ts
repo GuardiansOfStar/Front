@@ -27,7 +27,7 @@ class AudioManager {
             //프롤로그 효과음
             missionGuide: '/assets/sound/prologue/mission_guide.mp3',
             mapGuide: '/assets/sound/prologue/map_guide.mp3',
-            motorcycle: '/assets/sound/prologue/bring_motorcycle.mp3',
+            setMotor: '/assets/sound/prologue/bring_motorcycle.mp3',
 
             //퀘스트 효과음
             beginQuest: '/assets/sound/quest/appear_quest.wav',
@@ -129,7 +129,7 @@ class AudioManager {
     }
 
     //효과음 재생 (볼륨: 0-무음 ~ 1-100%)
-    async playSound(soundName: string, volume: number = 1): Promise<void> {
+    async playSound(soundName: string, volume: number = 1): Promise<void> {        
         const audioUrl = this.sounds[soundName];
         
         if (!audioUrl) {
@@ -170,10 +170,15 @@ class AudioManager {
     }
 
     stopSound(soundName: string): void {
+        console.log(`🛑 stopSound 호출됨: ${soundName}`);
         const sourceNode = this.currentSources.get(soundName);
         if (sourceNode) {
-          sourceNode.stop();
-          this.currentSources.delete(soundName);
+            console.log(`✅ ${soundName} sourceNode 찾음, 중단 시도`);
+            sourceNode.stop();
+            this.currentSources.delete(soundName);
+            console.log(`✅ ${soundName} 중단 완료`);
+        } else {
+            console.log(`❌ ${soundName} sourceNode 없음`);
         }
     }
 

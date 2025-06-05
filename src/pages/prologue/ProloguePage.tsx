@@ -52,19 +52,25 @@ const ProloguePage = () => {
 
     // letterMessage 단계에서 3초 후 encouragement로 자동 전환
     if (step === 'letterMessage') {
-      audioManager.playMessageAlarm();
+      const soundtimer = setTimeout(() => {
+        audioManager.playMessageAlarm();
+      }, 500);
+
       const timer = setTimeout(() => {
         setStep('encouragement');
       }, 3000);
       
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(soundtimer);
+        clearTimeout(timer);
+      }
     }
   }, [location, step]);
 
   //미션 제공 효과음
   useEffect(() => {
     if (step === 'mission') {
-      audioManager.playSound('missionGuide', 0.7);
+      audioManager.playSound('missionGuide', 0.5);
     }
   },[step]);
 
@@ -90,6 +96,9 @@ const ProloguePage = () => {
 
   // 다음 단계로 이동 핸들러
   const handleNextStep = () => {
+    //선택 효과음
+    audioManager.playButtonClick();
+
     if (step === 'mission') {
       setStep('map');
     } else if (step === 'map' && showMessage) {

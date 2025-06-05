@@ -21,37 +21,41 @@ const DrivingPrepPage = () => {
     const searchParams = new URLSearchParams(location.search);
     const sId = searchParams.get('scenario');
     const qId = searchParams.get('nextQuest');
+
     setScenarioId(sId);
     setNextQuestId(qId);
     
     console.log("DrivingPrepPage - 주행 준비 중:", { scenarioId: sId, nextQuestId: qId });
-    
+
+    audioManager.playSound('setMotor', 0.8);
+
     // 다음 화면으로 자동 이동 타이머
     const timer = setTimeout(() => {
-      audioManager.stopSound('motorcycle');
+      audioManager.stopSound('setMotor');
       console.log("DrivingPrepPage - 미션 화면으로 이동:", { path: `/quest?scenario=${sId}&quest=${qId}` });
       navigate(`/quest?scenario=${sId}&quest=${qId}`);
-    }, 2000);
+    }, 3000);
     
-    return () => clearTimeout(timer);
+    return () => { 
+      clearTimeout(timer);
+      audioManager.stopSound('setMotor');
+    };
   }, [location, navigate]);
   
   // ...existing code...
   // 이륜차 애니메이션
   useEffect(() => {
-    //효과음 재생
-    audioManager.playSound('motorcycle', 1.0);
 
     // 이륜차가 화면을 완전히 지나가는데 필요한 총 거리
     const motorcycleWidth = 740 * scale;
     const totalDistance = window.innerWidth + motorcycleWidth + 100; // 시작점(-100) + 화면폭 + 오토바이폭 + 여유
-    const animationDuration = 2000; // 2초
+    const animationDuration = 4000; // 4초
     const speed = totalDistance / (animationDuration / 16); // 16ms마다 이동할 거리
     
     const animationInterval = setInterval(() => {
       setMotorcyclePosition(prev => {
         const newPosition = prev + speed;
-        // 화면을 완전히 벗어나면 인터벌 클리어, 효과음 중단단
+        // 화면을 완전히 벗어나면 인터벌 클리어
         if (newPosition > window.innerWidth + motorcycleWidth) {
           clearInterval(animationInterval);
           return newPosition;
