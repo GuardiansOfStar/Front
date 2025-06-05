@@ -336,7 +336,7 @@ const ProloguePage = () => {
   // 네비게이션 버튼 컴포넌트
   const NavigationButtons = () => {
     const handleBackToCharacterSelect = () => {
-      navigate('/character-select');
+      navigate('/');
     };
 
     return (
