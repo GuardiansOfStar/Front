@@ -5,6 +5,7 @@ import { useCharacter } from '../../context/CharacterContext';
 import Background from '../../components/ui/Background';
 import BackButton from '../../components/ui/BackButton';
 import GameTitle from '../../components/ui/GameTitle';
+import { audioManager } from '../../utils/audioManager';
 
 const grandfatherCharacter = '/assets/images/game_character_grandfather.png';
 const grandmotherCharacter = '/assets/images/game_character_grandmother.png';
@@ -41,6 +42,9 @@ const CharacterSelectPage = () => {
   const scenarioId = searchParams.get('scenario');
   
   const handleCharacterSelect = (index: number) => {
+    //선택 버튼 효과음
+    audioManager.playButtonClick();
+
     if (isConfirming) return;
     
     setSelectedCharacterIndex(index);
@@ -50,11 +54,15 @@ const CharacterSelectPage = () => {
     setCharacter(selectedCharacter.id);
     
     setTimeout(() => {
+      //기본 알림음
+      audioManager.playSound('etcSound', 0.5);
       navigate(`/prologue?scenario=${scenarioId}`);
     }, 1200);
   };
 
   const handleBackToScenarios = () => {
+    //선택 버튼 효과음
+    audioManager.playButtonClick();
     navigate('/scenarios');
   };
 

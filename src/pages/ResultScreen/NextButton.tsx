@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useScale } from '../../hooks/useScale';
+import { audioManager } from '../../utils/audioManager';
 
 const next_button = '/assets/images/next_button.png'
 
@@ -19,13 +20,15 @@ const NextButton: React.FC<NextButtonProps> = ({
     const scale = useScale();
 
     const handleClick = () => {
-    if (disabled) return;      // 비활성화된 상태라면 아무 동작도 하지 않음
-    if (onClick) {
-      onClick();               // onClick 콜백이 있으면 그것만 실행
-    } else {
-      navigate(to);            // 아니면 to 경로로 네비게이트
-    }
-  };
+      //선택 효과음
+      audioManager.playButtonClick();
+      if (disabled) return;      // 비활성화된 상태라면 아무 동작도 하지 않음
+      if (onClick) {
+        onClick();               // onClick 콜백이 있으면 그것만 실행
+      } else {
+        navigate(to);            // 아니면 to 경로로 네비게이트
+      }
+    };
 
     return (
         <img

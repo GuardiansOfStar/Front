@@ -1,4 +1,6 @@
 import { useScale } from '../../hooks/useScale';
+import { audioManager } from '../../utils/audioManager';
+
 
 const back_button = '/assets/images/back_button.png'
 
@@ -10,6 +12,9 @@ const BackButton = ({ onClick }: BackButtonProps) => {
     const scale = useScale();
 
     const handleBack = () => {
+        //선택 효과음
+        audioManager.playButtonClick();
+
         if (onClick) {
             onClick();
         } else {

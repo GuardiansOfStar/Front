@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useScale } from '../../hooks/useScale';
 import Confetti from 'react-confetti';
+import { audioManager } from '../../utils/audioManager';
 import { getSession } from '../../services/endpoints/session';
 
 const completion_background = '/assets/images/completion_background_long.png';
@@ -18,6 +19,9 @@ const CompletionBackground = () => {
 
     useEffect(() => {
         // 컴포넌트 마운트 시 애니메이션 시작
+        //환호성 효과음
+        audioManager.playSound('goalIn', 0.8);
+
         setStartAnimation(true);
         console.log("CompletionBackground - 애니메이션 시작");
 

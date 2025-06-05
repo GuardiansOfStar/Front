@@ -7,6 +7,7 @@ import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attem
 import GameTitle from '../../components/ui/GameTitle';
 import { useScale } from '../../hooks/useScale';
 // import { useScore } from '../../context/ScoreContext';
+import { audioManager } from '../../utils/audioManager';
 
 // 이미지 임포트
 const orchardWorkBackground = '/assets/images/mission3_working_screen.png';
@@ -129,16 +130,23 @@ const MakgeolliQuest = () => {
       }, getScaledDuration(5000));
     }
     else if (gamePhase === 'fieldArrival') {
+      //장면 전환 효과음(과수원 도착)
+      audioManager.playsceneSwitch()
       timer = setTimeout(() => {
         setGamePhase('working');
       }, getScaledDuration(3000));
     }
     else if (gamePhase === 'working') {
+      //작업중 효과음
+      audioManager.playSound('working', 1);
       timer = setTimeout(() => {
+        audioManager.stopSound('working');
         setGamePhase('mealLadyArrival');
       }, getScaledDuration(5000));
     }
     else if (gamePhase === 'mealLadyArrival') {
+      //효과음(새참 아주머니 등장)
+      audioManager.playMessageAlarm()
       const mealLadyAnimation = setInterval(() => {
         setMealLadyOpacity(prev => {
           if (prev >= 1) {
@@ -156,6 +164,9 @@ const MakgeolliQuest = () => {
       return () => clearInterval(mealLadyAnimation);
     }
     else if (gamePhase === 'mealTray') {
+      //장면 전환 효과음(새참 먹는 시간)
+      audioManager.playsceneSwitch()
+
       setShowTrayBackground(true);
       
       if (trayItems.length === 0) {
@@ -167,6 +178,8 @@ const MakgeolliQuest = () => {
       }, getScaledDuration(3000));
     }
     else if (gamePhase === 'missionIntro') {
+      //퀘스트 등장 효과음
+      audioManager.playQuestStart();
       setShowTrayBackground(false);
     }
     else if (gamePhase === 'gamePlay') {
@@ -191,6 +204,14 @@ const MakgeolliQuest = () => {
       };
     }
     else if (gamePhase === 'success' || gamePhase === 'timeOver') {
+      //정답 효과음 재생
+      audioManager.playRightAnswer1();
+
+      // 2초 후 긍정 피드백 효과음 재생
+      setTimeout(() => {
+      audioManager.playRightAnswer2();
+      }, 2000 * Math.max(0.8, scale));
+
       setShowTrayBackground(false);
       
       if (gamePhase === 'success' && gameStartTime) {
@@ -275,6 +296,8 @@ const MakgeolliQuest = () => {
   };
 
   const handleConfirmClick = () => {
+    //선택 버튼 효과음
+    audioManager.playButtonClick();
     if (gamePhase === 'success' || gamePhase === 'timeOver') {
       navigate(`/score?scenario=${scenarioId}&quest=${questId}&score=${gameScore}&correct=true`);
     }
@@ -326,6 +349,9 @@ const MakgeolliQuest = () => {
 
   // 옵션 선택 핸들러
   const handleOptionSelect = (option: 'A' | 'B') => {
+    //선택지 선택 효과음
+    audioManager.playQuestSelect();
+
     setSelectedOption(option);
     setShowTrayBackground(false);
     
@@ -338,6 +364,9 @@ const MakgeolliQuest = () => {
   const handleItemClick = (id: number) => {
     const item = makgeolliItems.find(e => e.id === id);
     if (!item || item.found || item.type !== 'makgeolli') return;
+
+    // 막걸리 클릭 효과음 재생
+    audioManager.playSound('makClick', 0.7);
     
     setMakgeolliItems(prev => prev.map(e => e.id === id ? {...e, found: true} : e));
     
@@ -355,6 +384,9 @@ const MakgeolliQuest = () => {
 
   // 다음 단계로 이동 핸들러
   const handleNextPhase = () => {
+    //다음 버튼 효과음
+    audioManager.playButtonClick();
+
     if (gamePhase === 'mealLadyIntro') {
       initTrayItems();
       setGamePhase('mealTray');

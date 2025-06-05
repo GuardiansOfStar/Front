@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useScale } from '../../hooks/useScale';
+import { audioManager } from '../../utils/audioManager';
 
 const NUM_BOXES = 4;
 
@@ -28,6 +29,17 @@ const HarvestBox = () => {
 
         return () => timers.forEach(clearTimeout);
     }, [scale]); // scale을 dependency에 추가
+
+    // 사과박스 쌓는 효과음
+    useEffect(() => {
+        // 새로 나타난 박스 개수 확인
+        const visibleCount = visibleBoxes.filter(Boolean).length;
+        
+        // 박스가 하나 이상 나타났을 때만 효과음 재생
+        if (visibleCount > 0) {
+            audioManager.playSound('appleBox', 0.7);
+        }
+    }, [visibleBoxes]); // visibleBoxes 변화 감지
 
     return (
         <div className="w-full h-full">

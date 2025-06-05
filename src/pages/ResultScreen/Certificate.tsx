@@ -6,6 +6,8 @@ import { useScale } from '../../hooks/useScale';
 
 import Background from '../../components/ui/Background';
 
+import { audioManager } from '../../utils/audioManager';
+
 const smiling_grandchildren = '/assets/images/grandchildren.png'
 const get_certificate = '/assets/images/get_certificate.png'
 const drive_end_button = '/assets/images/drive_end_button.png'
@@ -13,6 +15,18 @@ const drive_end_button = '/assets/images/drive_end_button.png'
 const Certificate = () => {
   const navigate = useNavigate();
   const scale = useScale();
+
+  //효과음을 위해 핸들러 추가
+  const handleDriveEnd = () => {
+    audioManager.playButtonClick();
+    navigate('/');
+  };
+
+  //효과음을 위해 핸들러 추가
+  const handleGetCertificate = () => {
+    audioManager.playButtonClick();
+    navigate('/info');
+  };
 
   /*
   // session end api
@@ -46,7 +60,7 @@ const Certificate = () => {
           right: `calc(4% * ${scale})`,
           width: `calc(11% * ${scale})`
         }}
-        onClick={() => navigate('/')}
+        onClick={handleDriveEnd}
       />
       
       {/* 손자손녀 이미지 */}
@@ -98,7 +112,7 @@ const Certificate = () => {
       <img
         src={get_certificate}
         alt="수료증 받기 버튼"
-        onClick={() => navigate('/info')}
+        onClick={handleGetCertificate}
         className="absolute cursor-pointer z-50 hover:scale-105 transition-transform duration-300"
         style={{
           width: `calc(293px * ${scale})`,

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 //import { useWindowSize } from 'react-use';
 //import Confetti from 'react-confetti';
+import { audioManager } from '../../utils/audioManager';
+
 
 const success_background = '/assets/images/scenario_success_confetti.png';
 const awards = '/assets/images/perfect_score_certificate.png';
@@ -15,6 +17,8 @@ const PerfectScore = () => {
     const [showAwards, setShowAwards] = useState(false);
 
     useEffect(() => {
+        //결과 효과음
+        audioManager.playSound('reportGeneral', 0.8);
         // 애니메이션 타이밍
         setTimeout(() => setShowCongrats(true), 300);   // 약간의 딜레이 후
         setTimeout(() => setShowAwards(true), 1500);    // 축하 후 등장
