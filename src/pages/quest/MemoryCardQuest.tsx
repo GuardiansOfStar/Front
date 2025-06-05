@@ -252,7 +252,7 @@ const MemoryCardQuest: React.FC = () => {
       autoTransitionTimerRef.current = window.setTimeout(() => {
         setCards(prev => prev.map(c => ({ ...c, isFlipped: false })));
         setGamePhase('game');
-      }, getScaledDuration(3000));
+      }, getScaledDuration(1500));
     }
     else if (gamePhase === 'tooManyAttempts') {
       autoTransitionTimerRef.current = window.setTimeout(() => {
@@ -607,8 +607,9 @@ const MemoryCardQuest: React.FC = () => {
         >
           <GameTitle 
             text="주행 준비하기" 
-            fontSize={`${5.5 * scale}rem`}
-            strokeWidth={`calc(12px * ${scale})`} 
+            fontSize="92px" 
+            strokeWidth="14px"
+            letterSpacing="0.04em"
           />
         </motion.div>
         
@@ -685,7 +686,7 @@ const MemoryCardQuest: React.FC = () => {
       {gamePhase === 'intro3' && (
         <motion.div
           className="absolute inset-0 flex flex-col items-center justify-start"
-          style={{ paddingTop: `calc(80px * ${scale})` }}
+          style={{ paddingTop: `calc(120px * ${scale})` }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 * Math.max(0.8, scale) }}
@@ -705,13 +706,14 @@ const MemoryCardQuest: React.FC = () => {
             >
               <GameTitle 
                   text="손주가 준비한 선물 찾기" 
-                  fontSize={`calc(3rem * ${scale})`} 
+                  fontSize="60px"
                   strokeWidth={`calc(6px * ${scale})`} 
                 />
             </h2>
             <div 
-              className="bg-white/80 border-8 border-green-600 text-center"
+              className="bg-white/80 border-[#0DA429]/75 text-center"
               style={{
+                borderWidth: `calc(12px * ${scale})`,
                 paddingTop: `calc(52px * ${scale})`,
                 paddingBottom: `calc(52px * ${scale})`,
                 paddingLeft: `calc(32px * ${scale})`,
@@ -754,14 +756,12 @@ const MemoryCardQuest: React.FC = () => {
           }}
         >
           <div className="w-full h-full flex flex-col items-center justify-start">
-            {/* 시도 횟수 - 제거됨 */}
             
             {/* 타이틀 영역 */}
             <div 
               className="flex items-center justify-center"
               style={{ 
                 height: `calc(30px * ${scale})`,
-                marginBottom: `calc(2px * ${scale})`,
                 marginTop: `calc(48px * ${scale})`
               }}
             >
@@ -769,14 +769,14 @@ const MemoryCardQuest: React.FC = () => {
                 {(gamePhase === 'reshowCards' || gamePhase === 'showRemainingTries') ? (
                   <GameTitle 
                     text="카드 전체를 다시 보여 드릴게요" 
-                    fontSize={`calc(2.2rem * ${scale})`} 
-                    strokeWidth={`calc(4px * ${scale})`} 
+                    fontSize="42px"
+                    strokeWidth="4px"
                   />
                 ) : (
                   <GameTitle 
                     text="힌트: 머리를 보호해주는 선물은 무엇일까요?" 
-                    fontSize={`calc(2.2rem * ${scale})`} 
-                    strokeWidth={`calc(4px * ${scale})`} 
+                    fontSize="42px"
+                    strokeWidth="4px"
                   />
                 )}
               </div>
@@ -945,9 +945,11 @@ const MemoryCardQuest: React.FC = () => {
       {gamePhase === 'showRemainingTries' && (
         <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
           <div 
-            className="bg-green-600 border-8 border-green-700 rounded-xl text-center shadow-lg"
+            className="bg-[#0DA429] border-[#0E8E12] rounded-xl text-center shadow-lg"
             style={{
-              padding: `calc(16px * ${scale})`,
+              borderWidth: "12px",
+              borderRadius: `calc(32px * ${scale})`,
+              padding: `calc(8px * ${scale})`,
               maxWidth: `calc(440px * ${scale})`,
               width: '100%'
             }}
@@ -1200,8 +1202,8 @@ const MemoryCardQuest: React.FC = () => {
           >
             <GameTitle 
               text="안전모를 착용했어요" 
-              fontSize={`${5.0 * scale}rem`}
-              strokeWidth={`calc(12px * ${scale})`} 
+              fontSize="88px"
+              strokeWidth="14px"
             />
           </div>
           <motion.img

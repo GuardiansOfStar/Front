@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useScale } from '../../hooks/useScale';
 import Confetti from 'react-confetti';
 import { audioManager } from '../../utils/audioManager';
+import { getSession } from '../../services/endpoints/session';
 
 const completion_background = '/assets/images/completion_background_long.png';
 const motorcycle = '/assets/images/motorcycle.png';
@@ -13,6 +14,9 @@ const CompletionBackground = () => {
     const [showConfetti] = useState(true);
     const [startAnimation, setStartAnimation] = useState(false);
 
+    // 타이머 식별자를 보관하기 위해 ref 사용
+    const navigationTimerRef = useRef<number | undefined>(undefined);
+
     useEffect(() => {
         // 컴포넌트 마운트 시 애니메이션 시작
         //환호성 효과음
@@ -21,16 +25,51 @@ const CompletionBackground = () => {
         setStartAnimation(true);
         console.log("CompletionBackground - 애니메이션 시작");
 
-        // 8초 후 결과 화면으로 자동 이동 (스케일에 따라 시간 조정)
-        const navigationTimer = setTimeout(() => {
-            console.log("CompletionBackground - 결과 화면으로 이동");
-            navigate('/result');
-        }, 8000 * Math.max(0.8, scale));
+        // 100점 확인하기 위해 sessionId로 확인!
+        const sessionId = localStorage.getItem('session_id');
+        let totalScore: number | null = null;
 
-        return () => {
-            clearTimeout(navigationTimer);
-        };
-    }, [navigate, scale]);
+        if (sessionId) {
+      getSession(sessionId)
+        .then((res) => {
+          totalScore = res.data.total_score;
+          console.log('[CompletionBackground] total_score:', totalScore);
+        })
+        .catch((err) => {
+          console.error('[CompletionBackground] getSession 오류:', err);
+          totalScore = null;
+        })
+        .finally(() => {
+          // 3) 8초 뒤에 분기 처리
+          navigationTimerRef.current = window.setTimeout(() => {
+            console.log(
+              'CompletionBackground - 8초 경과, totalScore →',
+              totalScore
+            );
+            if (totalScore === 100) {
+              navigate('/perfect');
+            } else {
+              navigate('/result');
+            }
+          }, 8000 * Math.max(0.8, scale));
+        });
+    } else {
+      // session_id가 없으면 (그럴 일이 없어야 하지만), 8초 뒤에 바로 /result로 이동
+      navigationTimerRef.current = window.setTimeout(() => {
+        console.log(
+          'CompletionBackground - session_id 없음, 8초 뒤 /result로 이동'
+        );
+        navigate('/result');
+      }, 8000 * Math.max(0.8, scale));
+    }
+
+    // cleanup: 언마운트될 때 타이머 해제
+    return () => {
+      if (navigationTimerRef.current) {
+        clearTimeout(navigationTimerRef.current);
+      }
+    };
+  }, [navigate, scale]);
 
     return (
         <div className="relative w-full h-full overflow-hidden">

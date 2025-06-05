@@ -50,7 +50,7 @@ const ProloguePage = () => {
       return () => clearTimeout(timer);
     }
 
-    // letterMessage 단계에서 3초 후 encouragement로 자동 전환
+    // letterMessage 단계에서 2초 후 encouragement로 자동 전환
     if (step === 'letterMessage') {
       const soundtimer = setTimeout(() => {
         audioManager.playMessageAlarm();
@@ -58,7 +58,7 @@ const ProloguePage = () => {
 
       const timer = setTimeout(() => {
         setStep('encouragement');
-      }, 3000);
+      }, 2000);
       
       return () => {
         clearTimeout(soundtimer);
@@ -124,16 +124,19 @@ const ProloguePage = () => {
   const MissionContent = () => (
     <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
       <h1 
-        className="text-green-600 font-black animate-[fadeIn_800ms_ease-out]"
         style={{ 
-          fontSize: `calc(6xl * ${scale})`,
-          marginBottom: `${60 * scale}px`
+          marginBottom: `${52 * scale}px`
         }}
       >
-        <GameTitle text="과수원 작업 하는 날" fontSize="text-6xl" strokeWidth="8px"/>
+        <GameTitle 
+          text="과수원 작업 하는 날" 
+          fontSize="72px" 
+          strokeWidth="12px"
+          letterSpacing="0.05em"
+        />
       </h1>
       <div 
-        className="relative bg-green-600 bg-opacity-80 border-green-600 w-4/5 max-w-4xl mx-auto animate-[fadeIn_1200ms_ease-out]"
+        className="relative bg-[#0DA429] bg-opacity-80 border-[#0E8E12] w-4/5 max-w-4xl mx-auto animate-[fadeIn_1200ms_ease-out]"
         style={{
           borderWidth: `calc(8px * ${scale})`,
           paddingTop: `${scale * 72}px`,
@@ -181,7 +184,7 @@ const ProloguePage = () => {
             style={{ maxWidth: `calc(1024px * ${scale})` }}
           >
             <motion.div 
-              className="bg-white bg-opacity-90 border-green-600 rounded-xl w-full mx-auto text-center"
+              className="bg-[#FFFAFA] bg-opacity-90 border-[#0E8212] rounded-xl w-full mx-auto text-center"
               style={{
                 borderWidth: `calc(8px * ${scale})`,
                 borderRadius: `calc(24px * ${scale})`,
@@ -237,7 +240,12 @@ const ProloguePage = () => {
           borderRadius: `calc(20px * ${scale})`
         }}
       >
-        <GameTitle text="응원 메시지가 도착했어요!" fontSize="text-5xl" strokeWidth="8px" />
+        <GameTitle 
+          text="응원 메시지가 도착했어요!" 
+          fontSize="55px" 
+          strokeWidth="12px"
+          letterSpacing="0.05em"
+        />
       </motion.div>
       
       {/* 편지 봉투 애니메이션 - 중앙 정렬 수정 */}
@@ -301,10 +309,10 @@ const ProloguePage = () => {
         />
         
         <div 
-          className="bg-white bg-opacity-90 border-green-600 rounded-xl w-full text-center"
+          className="bg-[#FFFAFA] bg-opacity-90 border-[#0E8212]/80 rounded-xl w-full text-center"
           style={{
-            borderWidth: `calc(8px * ${scale})`,
-            borderRadius: `calc(36px * ${scale})`,
+            borderWidth: `calc(12px * ${scale})`,
+            borderRadius: `calc(52px * ${scale})`,
             padding: `calc(64px * ${scale})`,
             paddingTop: `calc(80px * ${scale})`
           }}
@@ -392,7 +400,7 @@ const ProloguePage = () => {
             onClick={step === 'encouragement' ? handleDepartClick : handleNextStep}
             className="h-auto cursor-pointer hover:scale-105 transition-transform"
             style={{ 
-              width: step === 'encouragement' ? `calc(240px * ${scale})` : `calc(192px * ${scale})` 
+              width: step === 'encouragement' ? `calc(320px * ${scale})` : `calc(192px * ${scale})` 
             }}
           />
         </div>

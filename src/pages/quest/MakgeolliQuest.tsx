@@ -77,11 +77,11 @@ const TRAY_ITEM_POSITIONS: { type: TrayItem['type'], xRatio: number, yRatio: num
 
 // 상수 - 숨겨진 막걸리 위치 정의 (상대적 비율)
 const HIDDEN_MAKGEOLLI_POSITIONS: { xRatio: number, yRatio: number, rotation: number, scale: number, zIndex: number }[] = [
-  { xRatio: 0.8, yRatio: 0.56, rotation: -90, scale: 2.4, zIndex: 5 },
-  { xRatio: 0.40, yRatio: 0.61, rotation: 0, scale: 2.4, zIndex: 7 },
-  { xRatio: 0.23, yRatio: 0.76, rotation: -10, scale: 1.8, zIndex: 2 },
-  { xRatio: 0.66, yRatio: 0.80, rotation: 15, scale: 2.0, zIndex: 3 },
-  { xRatio: 0.85, yRatio: 0.35, rotation: 0, scale: 3.0, zIndex: 4 },
+  { xRatio: 0.8, yRatio: 0.56, rotation: 0, scale: 2.2, zIndex: 5 }, // 하나는 위 배치와 완전 동일한 거 하나
+  { xRatio: 0.40, yRatio: 0.58, rotation: 0, scale: 2.2, zIndex: 5 }, // 중앙 막걸리
+  { xRatio: 0.13, yRatio: 0.82, rotation: -60, scale: 2.2, zIndex: 7 }, // 왼쪽 아래에 누워있는 거 하나
+  { xRatio: 0.29, yRatio: 0.46, rotation: 0, scale: 2.2, zIndex: 4 }, // 중앙 막걸리의 왼쪽
+  { xRatio: 0.66, yRatio: 0.45, rotation: 40, scale: 1.6, zIndex: 5 }, // 오른쪽으로 누워있는 쌩뚱맞은 곳 하나
 ];
 
 const MakgeolliQuest = () => {
@@ -450,8 +450,8 @@ const MakgeolliQuest = () => {
         <div className="absolute inset-0 flex items-center justify-center">
           <GameTitle 
             text="과수원 도착" 
-            fontSize={`calc(5rem * ${scale})`}
-            strokeWidth={`calc(12px * ${scale})`}
+            fontSize={`calc(102px * ${scale})`}
+            strokeWidth={`calc(14px * ${scale})`}
           />
         </div>
       )}
@@ -460,10 +460,11 @@ const MakgeolliQuest = () => {
       {gamePhase === 'working' && (
         <div className="absolute inset-0 flex items-center justify-center z-50">
           <div 
-            className="bg-green-600/90 border-green-700 rounded-full text-center"
+            className="bg-[#0DA429] border-[#0E8E12] text-center"
             style={{
-              borderWidth: `calc(12px * ${scale})`,
-              width: `calc(600px * ${scale})`,
+              borderWidth: `calc(22px * ${scale})`,
+              borderRadius: `calc(100px * ${scale})`,
+              width: `calc(612px * ${scale})`,
               paddingLeft: `calc(48px * ${scale})`,
               paddingRight: `calc(48px * ${scale})`,
               paddingTop: `calc(16px * ${scale})`,
@@ -471,10 +472,13 @@ const MakgeolliQuest = () => {
             }}
           >
             <h1 
-              className="font-black text-white text-center tracking-wide"
-              style={{ fontSize: `calc(6rem * ${scale})` }}
+              className="font-black text-white text-center"
+              style={{
+                fontSize: `calc(120px * ${scale})`,
+                letterSpacing: "0.1em"
+              }}
             >
-              작업 중
+              작업중
             </h1>
           </div>
           
@@ -671,8 +675,8 @@ const MakgeolliQuest = () => {
               <div className="absolute left-0 right-0 flex items-center justify-center z-50" style={{ top: `calc(230px * ${scale})` }}>
                 <GameTitle 
                   text="새참 먹는 시간" 
-                  fontSize={`calc(96px * ${scale})`}
-                  strokeWidth={`calc(12px * ${scale})`}
+                  fontSize={`calc(106px * ${scale})`}
+                  strokeWidth={`calc(14px * ${scale})`}
                 />
               </div>
             </>
@@ -693,20 +697,21 @@ const MakgeolliQuest = () => {
             <div style={{ marginBottom: `calc(24px * ${scale})` }}>
               <GameTitle 
                 text="새참을 먹어요" 
-                fontSize={`${scale * 56}px`}
+                fontSize={`${scale * 60}px`}
                 strokeWidth={`calc(10px * ${scale})`}
               />
             </div>
             
             {/* 선택지 설명 */}
             <div 
-              className="bg-[#FFFAFA] bg-opacity-75 border-[#0DA429] rounded-[30px] flex flex-col justify-center items-center text-center"
+              className="bg-[#FFFAFA] bg-opacity-75 border-[#0DA429] flex flex-col justify-center items-center text-center"
               style={{
                 width: `calc(735px * ${scale})`,
                 height: `calc(280px * ${scale})`,
                 borderWidth: `calc(10px * ${scale})`,
                 padding: `calc(24px * ${scale})`,
-                marginBottom: `calc(32px * ${scale})`
+                marginBottom: `calc(32px * ${scale})`,
+                borderRadius: `calc(40px * ${scale})`
               }}
             >
               <p 
@@ -801,13 +806,14 @@ const MakgeolliQuest = () => {
                 strokeWidth={`calc(10px * ${scale})`}
               />
               <div 
-                className="bg-white/80 border-8 border-green-600 w-full text-center"
+                className="bg-white/80 border-[#0DA429]/75 w-full text-center"
                 style={{ 
+                  borderWidth: `calc(12px * ${scale})`,
                   borderRadius: `calc(48px * ${scale})`,
-                  paddingLeft: `calc(12px * ${scale})`,
-                  paddingRight: `calc(12px * ${scale})`,
-                  paddingTop: `calc(36px * ${scale})`,
-                  paddingBottom: `calc(36px * ${scale})`,
+                  paddingLeft: `calc(8px * ${scale})`,
+                  paddingRight: `calc(8px * ${scale})`,
+                  paddingTop: `calc(24px * ${scale})`,
+                  paddingBottom: `calc(48px * ${scale})`,
                   marginBottom: `calc(16px * ${scale})`,
                   marginTop: `calc(24px * ${scale})`
                 }}
@@ -815,7 +821,7 @@ const MakgeolliQuest = () => {
                 <p 
                   className="font-black text-center leading-relaxed"
                   style={{
-                    fontSize: `calc(2.8rem * ${scale})`,
+                    fontSize: `calc(53px * ${scale})`,
                     lineHeight: 1.8
                 }}
                 >
@@ -862,7 +868,7 @@ const MakgeolliQuest = () => {
         <div className="absolute inset-0 flex items-center justify-center">
           {/* 남은 막걸리 카운터 */}
           <div 
-            className="absolute bg-green-600/70 rounded-xl flex items-center z-50 shadow-lg"
+            className="absolute bg-[#0DA429]/80 rounded-xl flex items-center z-50 shadow-lg"
             style={{
               top: `calc(32px * ${scale})`,
               right: `calc(32px * ${scale})`,
@@ -872,8 +878,9 @@ const MakgeolliQuest = () => {
             <span 
               className="text-white font-black"
               style={{ 
-                fontSize: `calc(1.875rem * ${scale})`,
-                marginRight: `calc(12px * ${scale})`
+                fontSize: `calc(36px * ${scale})`,
+                marginRight: `calc(12px * ${scale})`,
+                letterSpacing: "0.05em"
               }}
             >
               남은 막걸리
@@ -884,7 +891,7 @@ const MakgeolliQuest = () => {
               style={{
                 width: `calc(48px * ${scale})`,
                 height: `calc(48px * ${scale})`,
-                marginRight: `calc(8px * ${scale})`
+                marginRight: `calc(8px * ${scale})`,
               }}
             />
             <span 
@@ -1014,7 +1021,7 @@ const MakgeolliQuest = () => {
             >
               <GameTitle 
                 text="막걸리 치우기 성공!" 
-                fontSize={`${64 * scale}px`}
+                fontSize={`${72 * scale}px`}
                 strokeWidth={`calc(12px * ${scale})`}
                 color="text-[#0E8E12]"
               />
@@ -1037,7 +1044,7 @@ const MakgeolliQuest = () => {
             >
               <p 
                 className="font-black text-white leading-relaxed"
-                style={{ fontSize: `${60 * scale}px` }}
+                style={{ fontSize: `${64 * scale}px` }}
               >
                 음주운전을 예방한 당신이<br />
                 마을의 영웅이에요
