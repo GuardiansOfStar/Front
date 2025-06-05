@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Background from '../../components/ui/Background';
 import HomeButton from '../../components/ui/HomeButton';
 import { useScale } from '../../hooks/useScale';
+import { audioManager } from '../../utils/audioManager';
 
 // 이미지 임포트
 const grandchildrenHappy = '/assets/images/grandchildren_happy.png';
@@ -32,14 +33,22 @@ const ScorePage = () => {
     console.log("ScorePage - 받은 파라미터:", { score: scoreParam, correct: correctParam, scenario: sId, quest: qId });
     
     const finalScore = scoreParam ? parseInt(scoreParam) : 0;
+    const isAnswerCorrect = correctParam === 'true'; //효과음을 위해 변수 추가가
+
     setScore(finalScore);
-    setIsCorrect(correctParam === 'true');
+    setIsCorrect(isAnswerCorrect);
     setScenarioId(sId);
     setQuestId(qId);
     
     // 500ms 후 점수 애니메이션 시작
     setTimeout(() => {
       setShowScore(true);
+
+      if (isAnswerCorrect) {
+        audioManager.playSound('highScore', 0.8);
+      } else {
+        audioManager.playSound('lowScore', 0.8);
+      }
       
       // 점수 카운팅 애니메이션
       let currentScore = 0;
