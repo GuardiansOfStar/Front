@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useScale } from '../../hooks/useScale';
 import { audioManager } from '../../utils/audioManager';
+import EnhancedOptimizedImage from '../../components/ui/EnhancedOptimizedImage';
 
 const next_button = '/assets/images/next_button.png'
 

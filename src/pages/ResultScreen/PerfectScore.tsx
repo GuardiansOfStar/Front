@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import EnhancedOptimizedImage from '../../components/ui/EnhancedOptimizedImage';
 //import { useWindowSize } from 'react-use';
 //import Confetti from 'react-confetti';
 import { audioManager } from '../../utils/audioManager';

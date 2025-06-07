@@ -4,11 +4,14 @@ import CharacterAnimation from './CharacterAnimation';
 import StartButton from '../../components/ui/StartButton';
 import RegionBubble from '../../components/ui/RegionBubble';
 import SettingButton from '../../components/ui/SettingButton';
+import EnhancedOptimizedImage from '../../components/ui/EnhancedOptimizedImage';
+import { useEnhancedPagePreloader } from '../../hooks/useEnhancedPagePreloader';
 
 const title = '/assets/images/title.png';
 const team_name = '/assets/images/team_name.png'
 
 const HomePage = () => {
+  useEnhancedPagePreloader('prologue');
   // localStorage에 저장했던 session_id, user_id 초기화!
   useEffect(() => {
     localStorage.removeItem("session_id");
@@ -70,7 +73,7 @@ const HomePage = () => {
         w-auto px-4 py-2 bg-green-400 bg-opacity-10 rounded-[20px] z-50 shadow-md">
         
         {/* ✅ GPS 이미지 */}
-        <img
+        <EnhancedOptimizedImage
           src="/assets/images/gps_icon.png"
           alt="gps 아이콘"
           className="w-[40px]"
@@ -85,7 +88,7 @@ const HomePage = () => {
 
       <RegionBubble show={showBubble} />
 
-      <img 
+      <EnhancedOptimizedImage
         src={title}
         alt="제목"
         className="absolute top-[10%] left-1/2 transform -translate-x-1/2 w-[65%] drop-shadow-xl z-10"
@@ -94,7 +97,7 @@ const HomePage = () => {
       <CharacterAnimation onAnimationComplete={handleAnimationComplete} />
       <StartButton />
 
-      <img 
+      <EnhancedOptimizedImage
         src={team_name}
         alt="팀이름"
         className="absolute bottom-[3%] right-[3%] w-[30%] z-10"

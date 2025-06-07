@@ -4,6 +4,7 @@ import { useScale } from '../../hooks/useScale';
 import Confetti from 'react-confetti';
 import DancingStar from './DancingStar';
 import { audioManager } from '../../utils/audioManager';
+import EnhancedOptimizedImage from '../../components/ui/EnhancedOptimizedImage';
 
 
 const success_background = '/assets/images/success_background_long.png';

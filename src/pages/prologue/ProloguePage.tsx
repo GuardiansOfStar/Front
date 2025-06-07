@@ -11,6 +11,9 @@ import { useCharacter } from '../../context/CharacterContext';
 
 import { audioManager } from '../../utils/audioManager';
 
+import EnhancedOptimizedImage from '../../components/ui/EnhancedOptimizedImage';
+import { useEnhancedPagePreloader } from '../../hooks/useEnhancedPagePreloader';
+
 // 이미지 임포트
 const scenario1FullMap = '/assets/images/scenario1_full_map.png';
 const starCharacter = '/assets/images/star_character.png';
@@ -35,6 +38,7 @@ const ProloguePage = () => {
   const { selectedCharacter } = useCharacter();
   const characterLabel = selectedCharacter === 'grandfather' ? '할아버지' : '할머니';
 
+  useEnhancedPagePreloader('quest1');
   
   // URL 쿼리 파라미터에서 시나리오 ID 가져오기
   useEffect(() => {
@@ -164,7 +168,7 @@ const ProloguePage = () => {
           집으로 안전하게 돌아오세요
         </p>
         
-        <img 
+        <EnhancedOptimizedImage
           src={starCharacter}
           alt="별별이 캐릭터" 
           className="absolute animate-[fadeIn_1500ms_ease-out]"
@@ -215,7 +219,7 @@ const ProloguePage = () => {
                   이륜차 운전 중 여러 상황이 벌어져요!<br />
                   안전 운전에 유의하여 문제를 해결해보아요
                 </p>
-                <img 
+                <EnhancedOptimizedImage
                   src={starCharacter}
                   alt="별별이 캐릭터" 
                   className="absolute"
@@ -307,7 +311,7 @@ const ProloguePage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <img 
+        <EnhancedOptimizedImage
           src={grandchildren} 
           alt="손자손녀" 
           className="absolute left-1/2 transform -translate-x-1/2 z-20"
@@ -354,7 +358,7 @@ const ProloguePage = () => {
         
         {/* encouragement 단계에서만 홈 버튼 표시 */}
         {step === 'encouragement' && (
-          <img
+          <EnhancedOptimizedImage
             src={homeButton}
             alt="홈으로"
             onClick={handleGoHome}
@@ -379,9 +383,10 @@ const ProloguePage = () => {
       {/* 배경 이미지 */}
       <div className="absolute inset-0">
           {step === 'mission' ? (
-            <img
+            <EnhancedOptimizedImage
               src="/assets/images/background.png"
               alt="미션 배경"
+              priority="critical"
               className="absolute inset-0 w-full h-full object-cover z-0"
             />
           ) : (
@@ -412,25 +417,46 @@ const ProloguePage = () => {
       {step === 'letterMessage' && <LetterMessageContent />}
       {step === 'encouragement' && <EncouragementContent />}
       
-      {/* 버튼 렌더링 - 모든 단계에서 동일한 위치와 크기 */}
+      {/* 버튼 렌더링 - 수정된 부분 */}
       {(step === 'mission' || 
         (step === 'map' && showMessage) || 
         step === 'encouragement') && (
         <div 
           className="absolute left-0 right-0 flex justify-center items-center z-50"
           style={{ 
-            bottom: step === 'encouragement' ? `calc(-20px * ${scale})` : `calc(48px * ${scale})` 
+            // 수정: encouragement에서도 양수 값으로 변경
+            bottom: step === 'encouragement' ? `calc(-10px * ${scale})` : `calc(48px * ${scale})` 
           }}
         >
-          <img
+          
+          <EnhancedOptimizedImage
             src={step === 'encouragement' ? departButton : nextButton}
             alt={step === 'encouragement' ? '출발하기' : '다음'}
             onClick={step === 'encouragement' ? handleDepartClick : handleNextStep}
+            priority="high" // 수정: priority 추가
             className="h-auto cursor-pointer hover:scale-105 transition-transform"
             style={{ 
               width: step === 'encouragement' ? `calc(320px * ${scale})` : `calc(192px * ${scale})` 
             }}
+            onLoad={() => {
+              if (step === 'encouragement') {
+                console.log('[ProloguePage] 출발하기 버튼 이미지 로딩 완료');
+              }
+            }}
+            onError={(error) => {
+              if (step === 'encouragement') {
+                console.error('[ProloguePage] 출발하기 버튼 이미지 로딩 실패:', error);
+              }
+            }}
           />
+        </div>
+      )}
+      
+      {/* 추가: 디버깅용 현재 단계 표시 */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="absolute top-4 left-4 bg-black bg-opacity-50 text-white p-2 rounded z-[100]">
+          Current Step: {step}
+          {step === 'encouragement' && <div>출발하기 버튼이 표시되어야 함</div>}
         </div>
       )}
     </div>

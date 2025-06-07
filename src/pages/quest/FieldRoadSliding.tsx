@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useScale } from '../../hooks/useScale';
 import GameTitle from '../../components/ui/GameTitle';
 import { audioManager } from '../../utils/audioManager';
+import EnhancedOptimizedImage from '../../components/ui/EnhancedOptimizedImage';
 
 const fieldRoad = '/assets/images/orchard_driving_road.png';
 const motorcycle = '/assets/images/motorcycle.png';
