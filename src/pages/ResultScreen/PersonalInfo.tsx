@@ -78,6 +78,10 @@ const PersonalInfo = () => {
     navigate('/certificate');
   };
 
+  const [isComposing, setIsComposing] = useState(false);
+  const filterHangul = (v: string) => v.replace(/[^가-힣]/g, '');
+
+
   return (
     <div className="relative w-full h-full">
       <Background />
@@ -154,9 +158,23 @@ const PersonalInfo = () => {
           <input
             type="text"
             value={name}
-            onChange={(e) => {
-              const onlyKorean = e.target.value.replace(/[^가-힣]/g, "");
-              setName(onlyKorean);
+            // 한글 조합 시작 시 플래그 세팅
+            onCompositionStart={() => setIsComposing(true)}
+            // 한글 조합이 끝난 시점에만 필터 적용
+            onCompositionEnd={e => {
+              setIsComposing(false);
+              setName(filterHangul(e.currentTarget.value));
+            }}
+            // 조합 중이 아닐 때만 즉시 필터링
+            onChange={e => {
+              const val = e.target.value;
+              if (isComposing) {
+                // 조합 중간 단계: 그대로 반영해줘야 IME 박스가 보입니다
+                setName(val);
+              } else {
+                // 조합이 끝난 상태: 한글 외 문자 제거
+                setName(filterHangul(val));
+              }
             }}
             className="absolute bg-white text-gray-800"
             style={{
@@ -199,7 +217,20 @@ const PersonalInfo = () => {
           <input
             type="number"
             value={age}  // value 속성 추가
-            onChange={(e) => setAge(e.target.value === '' ? '' : Number(e.target.value))} //onChange 추가
+            onChange={e => {
+            // 입력값 중 숫자만 남기기
+            const onlyNums = e.target.value.replace(/\D/g, '');
+            setAge(onlyNums === '' ? '' : Number(onlyNums));
+            }}
+            onKeyDown={e => {
+              // 백스페이스·Delete·화살표·Tab은 허용
+              if (
+                !/[0-9]/.test(e.key) &&
+                !['Backspace','Delete','ArrowLeft','ArrowRight','Tab'].includes(e.key)
+              ) {
+                e.preventDefault();
+              }
+            }}
             className="absolute bg-white text-gray-800"
             style={{
               width: `calc(310px * ${scale})`,

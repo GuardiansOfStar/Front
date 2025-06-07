@@ -783,8 +783,10 @@ const ReturnQuest = () => {
           
           <div className="absolute inset-0 flex flex-col items-center justify-center z-30">
             <motion.div 
-              className="absolute left-0 right-0 flex justify-center items-center transform -translate-x-1/2"
-              style={{ top: `calc(15% * ${scale})` }}
+              className="absolute left-0 right-0 flex justify-center items-center"
+              style={{ 
+                top: `calc(15% * ${scale})`
+              }}
               initial={{ opacity: 0, y: `calc(-30px * ${scale})` }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
