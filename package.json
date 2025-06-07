@@ -5,11 +5,15 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:check": "tsc --noEmit && vite build",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "preview": "vite preview",
     "optimize-images": "node scripts/optimize-images.js",
     "update-images": "node scripts/update-images.js",
-    "analyze-bundle": "npm run build && npx vite-bundle-analyzer dist"
+    "analyze-bundle": "npm run build && npx vite-bundle-analyzer dist",
+    "type-check": "tsc --noEmit",
+    "vercel-build": "npm run build"
   },
   "dependencies": {
     "@use-gesture/react": "^10.3.1",
