@@ -44,11 +44,6 @@
       "dest": "/index.html"
     }
   ],
-  "functions": {
-    "app/api/**": {
-      "maxDuration": 30
-    }
-  },
   "regions": ["icn1"],
   "framework": "vite"
 }
