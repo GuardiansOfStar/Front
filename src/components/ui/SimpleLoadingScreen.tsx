@@ -16,11 +16,11 @@ const SimpleLoadingScreen = ({
   const [isComplete, setIsComplete] = useState(false);
   const scale = useScale();
 
+  // src/components/ui/SimpleLoadingScreen.tsx - 로딩 체크 로직만 수정
   useEffect(() => {
     const startTime = Date.now();
     let progressValue = 0;
 
-    // 진행률 애니메이션
     const progressInterval = setInterval(() => {
       if (progressValue < 90) {
         progressValue += Math.random() * 10;
@@ -28,16 +28,16 @@ const SimpleLoadingScreen = ({
       }
     }, 100);
 
-    // Critical 이미지 로딩 확인
     const checkLoading = () => {
-      const loadedCount = CRITICAL_IMAGES.filter(src => 
+      // Critical 이미지 로딩 확인
+      const criticalLoaded = CRITICAL_IMAGES.filter(src => 
         simpleImagePreloader.isLoaded(src)
       ).length;
       
-      const loadProgress = (loadedCount / CRITICAL_IMAGES.length) * 100;
+      const loadProgress = (criticalLoaded / CRITICAL_IMAGES.length) * 100;
       const elapsed = Date.now() - startTime;
       
-      console.log(`[SimpleLoadingScreen] 로딩 진행: ${loadedCount}/${CRITICAL_IMAGES.length} (${loadProgress.toFixed(1)}%)`);
+      console.log(`[LoadingScreen] 진행: ${criticalLoaded}/${CRITICAL_IMAGES.length} (${loadProgress.toFixed(1)}%)`);
       
       if (loadProgress >= 100 && elapsed >= minLoadTime) {
         clearInterval(progressInterval);
@@ -53,15 +53,15 @@ const SimpleLoadingScreen = ({
 
     const checkInterval = setInterval(checkLoading, 100);
 
-    // 최대 대기 시간 (5초)
+    // 최대 대기 시간
     const maxTimeout = setTimeout(() => {
-      console.warn('[SimpleLoadingScreen] 최대 대기 시간 초과, 강제 완료');
+      console.warn('[LoadingScreen] 최대 대기 시간 초과');
       clearInterval(progressInterval);
       clearInterval(checkInterval);
       setProgress(100);
       setIsComplete(true);
       onLoadComplete();
-    }, 5000);
+    }, 6000);
 
     return () => {
       clearInterval(progressInterval);

@@ -11,6 +11,8 @@ import { audioManager } from '../../utils/audioManager';
 
 import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
+import { simpleImagePreloader } from '../../utils/simpleImagePreloader';
+
 // 이미지 임포트
 const drivingRoad = '/assets/images/driving_road.png';
 const motorcycle = '/assets/images/motorcycle.png';
@@ -112,6 +114,18 @@ const PotholeQuest = () => {
       setShowWarning(false);
     }
   }, [gamePhase, scale]);
+
+  useEffect(() => {
+    // 포트홀 퀘스트 이미지 프리로드
+    simpleImagePreloader.preloadImages([
+      drivingRoad,
+      motorcycle,
+      smallPothole,
+      potholeAccident,
+      dangerWarning,
+      successCircle
+    ]);
+  }, []);
 
   const handleConfirmClick = () => {
     //선택 버튼 효과음

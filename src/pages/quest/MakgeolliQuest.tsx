@@ -10,6 +10,8 @@ import { useScale } from '../../hooks/useScale';
 import { audioManager } from '../../utils/audioManager';
 import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
+import { simpleImagePreloader } from '../../utils/simpleImagePreloader';
+
 // 이미지 임포트
 const orchardWorkBackground = '/assets/images/mission3_working_screen.png';
 const mealLadyBackground = '/assets/images/meal_lady_background.png';
@@ -285,6 +287,22 @@ const MakgeolliQuest = () => {
       })
       .catch(err => console.error("❌ 시도 기록 실패", err));
   }, [gamePhase]);
+
+  useEffect(() => {
+    // 막걸리 퀘스트 이미지 프리로드
+    simpleImagePreloader.preloadImages([
+      orchardWorkBackground,
+      mealLadyBackground,
+      sparrow,
+      mealLady,
+      makgeolliGameTray,
+      makgeolliCup,
+      kimchi,
+      noodles,
+      makgeolli,
+      mission3Success
+    ]);
+  }, []);
 
   // 트레이 아이템 초기화 함수
   const initTrayItems = () => {

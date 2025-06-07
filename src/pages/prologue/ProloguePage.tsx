@@ -13,6 +13,8 @@ import { audioManager } from '../../utils/audioManager';
 
 import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
+import { simpleImagePreloader } from '../../utils/simpleImagePreloader';
+
 // 이미지 임포트
 const scenario1FullMap = '/assets/images/scenario1_full_map.png';
 const starCharacter = '/assets/images/star_character.png';
@@ -97,6 +99,14 @@ const ProloguePage = () => {
         console.error("❌ 세션 생성 실패", err);
       });
     }
+  }, []);
+
+  useEffect(() => {
+    // 프롤로그 페이지 이미지 프리로드
+    simpleImagePreloader.preloadImages([
+      '/assets/images/scenario1_full_map.png',
+      '/assets/images/depart_button.png'
+    ]);
   }, []);
 
   // 다음 단계로 이동 핸들러
@@ -300,7 +310,9 @@ const ProloguePage = () => {
 
   // 격려 메시지 컨텐츠
   const EncouragementContent = () => (
-    <div className="absolute inset-0 flex items-center justify-center z-20">
+    <div className="absolute inset-0 flex items-start justify-center z-20" style={{ 
+      paddingTop: `calc(250px * ${scale})` // 이 값을 조정하여 원하는 만큼 아래로 내림
+    }}>
       <motion.div 
         className="relative w-4/5"
         style={{ maxWidth: `calc(1024px * ${scale})` }}
@@ -421,7 +433,7 @@ const ProloguePage = () => {
           className="absolute left-0 right-0 flex justify-center items-center z-50"
           style={{ 
             // 수정: encouragement에서도 양수 값으로 변경
-            bottom: step === 'encouragement' ? `calc(-10px * ${scale})` : `calc(48px * ${scale})` 
+            bottom: step === 'encouragement' ? `calc(-50px * ${scale})` : `calc(48px * ${scale})` 
           }}
         >
           

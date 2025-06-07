@@ -1,9 +1,21 @@
-// src/utils/simpleImagePreloader.ts - 근본적 재설계
+// src/utils/simpleImagePreloader.ts - 기존 파일 완전 교체
 export const CRITICAL_IMAGES = [
   '/assets/images/background.png',
   '/assets/images/star_character.png',
   '/assets/images/title.png',
   '/assets/images/start_button.png'
+];
+
+export const HIGH_PRIORITY_IMAGES = [
+  '/assets/images/home_button.png',
+  '/assets/images/back_button.png',
+  '/assets/images/next_button.png',
+  '/assets/images/confirm_button.png',
+  '/assets/images/scenario1.png',
+  '/assets/images/scenario2.png',
+  '/assets/images/scenario3.png',
+  '/assets/images/game_character_grandfather.png',
+  '/assets/images/game_character_grandmother.png'
 ];
 
 interface ImageCache {
@@ -17,68 +29,90 @@ interface ImageCache {
 class SimpleImagePreloader {
   private cache: ImageCache = {};
   private loadPromises: Map<string, Promise<HTMLImageElement>> = new Map();
+  private loadQueue: string[] = [];
+  private isProcessing = false;
 
   constructor() {
     this.preloadCriticalImages();
+    setTimeout(() => this.preloadHighPriorityImages(), 1000);
   }
 
   private async preloadCriticalImages() {
-    console.log('[SimpleImagePreloader] Critical 이미지 즉시 로딩 시작');
-    
+    console.log('[Preloader] Critical 이미지 로딩 시작');
     const promises = CRITICAL_IMAGES.map(src => this.loadImage(src));
+    await Promise.allSettled(promises);
+    console.log('[Preloader] Critical 이미지 로딩 완료');
+  }
+
+  private async preloadHighPriorityImages() {
+    console.log('[Preloader] High priority 이미지 백그라운드 로딩');
+    this.loadQueue.push(...HIGH_PRIORITY_IMAGES);
+    this.processQueue();
+  }
+
+  private async processQueue() {
+    if (this.isProcessing || this.loadQueue.length === 0) return;
     
-    try {
-      await Promise.allSettled(promises);
-      console.log('[SimpleImagePreloader] Critical 이미지 로딩 완료');
-    } catch (error) {
-      console.warn('[SimpleImagePreloader] 일부 critical 이미지 로딩 실패:', error);
+    this.isProcessing = true;
+    while (this.loadQueue.length > 0) {
+      const src = this.loadQueue.shift()!;
+      try {
+        await this.loadImage(src);
+        await new Promise(resolve => setTimeout(resolve, 100)); // 100ms 간격
+      } catch (error) {
+        console.warn(`[Preloader] 백그라운드 로딩 실패: ${src}`);
+      }
     }
+    this.isProcessing = false;
   }
 
   async loadImage(src: string): Promise<HTMLImageElement> {
-    // 캐시에서 이미 로드된 이미지 반환
     if (this.cache[src]?.loaded) {
       return this.cache[src].element;
     }
 
-    // 진행 중인 로딩이 있으면 대기
     if (this.loadPromises.has(src)) {
       return this.loadPromises.get(src)!;
     }
 
     const promise = new Promise<HTMLImageElement>((resolve, reject) => {
       const img = new Image();
-      
-      // 중요: crossOrigin 설정 제거 (CORS 문제 방지)
       img.loading = 'eager';
-      img.decoding = 'sync'; // 중요: 동기 디코딩으로 변경
+      img.decoding = 'sync';
       
       const timeoutId = setTimeout(() => {
-        console.warn(`[SimpleImagePreloader] 타임아웃: ${src}`);
-        this.cache[src] = { element: img, loaded: false, error: true };
-        reject(new Error(`Image load timeout: ${src}`));
-      }, 8000);
+        reject(new Error(`Timeout: ${src}`));
+      }, 10000);
 
       img.onload = () => {
         clearTimeout(timeoutId);
         this.cache[src] = { element: img, loaded: true, error: false };
-        console.log(`[SimpleImagePreloader] 로딩 성공: ${src}`);
+        console.log(`[Preloader] 로딩 성공: ${src}`);
         resolve(img);
       };
 
       img.onerror = (error) => {
         clearTimeout(timeoutId);
         this.cache[src] = { element: img, loaded: false, error: true };
-        console.error(`[SimpleImagePreloader] 로딩 실패: ${src}`, error);
         reject(error);
       };
 
-      // 중요: src 설정을 마지막에
       img.src = src;
     });
 
     this.loadPromises.set(src, promise);
     return promise;
+  }
+
+  // 페이지별 이미지 프리로드
+  preloadImages(imageSrcs: string[]) {
+    console.log(`[Preloader] 수동 프리로드: ${imageSrcs.length}개`);
+    imageSrcs.forEach(src => {
+      if (!this.cache[src] && !this.loadQueue.includes(src)) {
+        this.loadQueue.push(src);
+      }
+    });
+    this.processQueue();
   }
 
   isLoaded(src: string): boolean {
