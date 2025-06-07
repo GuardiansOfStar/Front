@@ -9,8 +9,9 @@ import { useScale } from '../../hooks/useScale';
 // import { useScore } from '../../context/ScoreContext';
 import { useCharacter } from '../../context/CharacterContext';
 import { audioManager } from '../../utils/audioManager';
-import EnhancedOptimizedImage from '../../components/ui/EnhancedOptimizedImage';
+import MotionEnhancedImage from '../../components/ui/MotionEnhancedImage';
 import { useEnhancedPagePreloader } from '../../hooks/useEnhancedPagePreloader';
+import EnhancedLoadingScreen from 'components/ui/EnhancedLoadingScreen';
 
 // 이미지 임포트
 const fieldHarvestBoxes = '/assets/images/work_complete_with_applebox.png';
@@ -209,7 +210,7 @@ const HarvestQuest = () => {
     <div className="w-full h-full">
       {/* 배경 */}
       {(gamePhase !== 'intro' && gamePhase !== 'fadeOut' && gamePhase !== 'failResult'&& gamePhase !== 'score' ) && (
-        <EnhancedOptimizedImage
+        <MotionEnhancedImage
           src={fieldHarvestBoxes}
           alt="수확완료 화면"
           className="absolute w-full h-full object-cover"
@@ -224,7 +225,7 @@ const HarvestQuest = () => {
       {/* 인트로 화면 */}
       {gamePhase === 'intro' && (
         <>
-          <EnhancedOptimizedImage
+          <MotionEnhancedImage
           src={field}
           alt="수확 전 화면"
           className="absolute w-full h-full object-cover"
@@ -393,7 +394,7 @@ const HarvestQuest = () => {
                     x: { duration: 10 * Math.max(0.8, scale), repeat: 0 }
                   }}
                 />
-                <EnhancedOptimizedImage
+                <MotionEnhancedImage
                   src={motorcycle}
                   alt="오토바이"
                   className="absolute object-contain z-50"
@@ -408,7 +409,7 @@ const HarvestQuest = () => {
                 />
                 </>
               ) : (
-                <EnhancedOptimizedImage
+                <MotionEnhancedImage
                   src="/assets/images/character_with_helmet.png"  
                   alt="헬멧 쓴 캐릭터" 
                   className="object-contain"
@@ -481,7 +482,7 @@ const HarvestQuest = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
             >
-              <EnhancedOptimizedImage
+              <MotionEnhancedImage
                 src={confirmButton} 
                 alt="확인 버튼" 
                 className="w-full h-auto"
@@ -519,7 +520,7 @@ const HarvestQuest = () => {
       {/* 오답 결과 화면 */}
       {gamePhase === 'failResult' && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <EnhancedOptimizedImage
+          <MotionEnhancedImage
             src={characterImages.fieldAccident}
             alt="사고 장면"
             className="absolute inset-0 w-full h-full object-cover"
@@ -591,7 +592,7 @@ const HarvestQuest = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
             >
-              <EnhancedOptimizedImage
+              <MotionEnhancedImage
                 src={confirmButton} 
                 alt="확인 버튼" 
                 className="w-full h-auto"
