@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Background from '../../components/ui/Background';
 import { createVillage, getVillageRanking, RankingEntry } from '../../services/endpoints/village';
 import { audioManager } from '../../utils/audioManager';
-import EnhancedOptimizedImage from '../../components/ui/EnhancedOptimizedImage';
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 const locationData = {
     서울특별시 : ["서울특별시 종로구", "서울특별시 중구", "서울특별시 용산구", "서울특별시 성동구", "서울특별시 광진구", "서울특별시 동대문구", "서울특별시 중랑구", "서울특별시 성북구", "서울특별시 강북구", "서울특별시 도봉구", "서울특별시 노원구", "서울특별시 은평구", "서울특별시 서대문구", "서울특별시 마포구", "서울특별시 양천구", "서울특별시 강서구", "서울특별시 구로구", "서울특별시 금천구", "서울특별시 영등포구", "서울특별시 동작구", "서울특별시 관악구", "서울특별시 서초구", "서울특별시 강남구", "서울특별시 송파구", "서울특별시 강동구"],
@@ -110,7 +110,6 @@ const SettingPage = () => {
         <EnhancedOptimizedImage
             src="/assets/images/exit_button.png"
             alt="나가기 버튼"
-            priority="normal"
             onClick={handleExit}
             className="absolute top-[10px] left-[10px] w-[100px] h-auto z-50 cursor-pointer hover:scale-90 transition-transform duration-200"
         />
@@ -183,7 +182,6 @@ const SettingPage = () => {
         <EnhancedOptimizedImage
             src="/assets/images/select_button_dark.png"
             alt="선택하기 버튼"
-            priority="normal"
             className="absolute bottom-[70px] left-1/2 transform -translate-x-1/2 
                         w-[234px] h-auto z-30 cursor-pointer hover:scale-90 transition-transform duration-200"
             onClick={handleSubmit}

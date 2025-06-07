@@ -9,8 +9,7 @@ import { useScale } from '../../hooks/useScale';
 // import { useScore } from '../../context/ScoreContext';
 import { useCharacter } from '../../context/CharacterContext';
 import { audioManager } from '../../utils/audioManager';
-import EnhancedOptimizedImage from '../../components/ui/EnhancedOptimizedImage';
-import { useEnhancedPagePreloader } from '../../hooks/useEnhancedPagePreloader';
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 // 이미지 임포트
 const gameBackground = '/assets/images/pre_drive_background.png';
@@ -101,8 +100,6 @@ type GamePhase =
 const MemoryCardQuest: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
-  useEnhancedPagePreloader('quest2');
 
   // state
   const [scenarioId, setScenarioId] = useState<string | null>(null);

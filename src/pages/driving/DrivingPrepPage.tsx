@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useScale } from '../../hooks/useScale';
 import { audioManager } from '../../utils/audioManager';
-import EnhancedOptimizedImage from '../../components/ui/EnhancedOptimizedImage';
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 // 이미지 임포트
 const drivingBackground = '/assets/images/background.png';

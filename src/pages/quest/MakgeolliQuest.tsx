@@ -8,8 +8,7 @@ import GameTitle from '../../components/ui/GameTitle';
 import { useScale } from '../../hooks/useScale';
 // import { useScore } from '../../context/ScoreContext';
 import { audioManager } from '../../utils/audioManager';
-import EnhancedOptimizedImage from '../../components/ui/EnhancedOptimizedImage';
-import { useEnhancedPagePreloader } from '../../hooks/useEnhancedPagePreloader';
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 // 이미지 임포트
 const orchardWorkBackground = '/assets/images/mission3_working_screen.png';
@@ -90,7 +89,6 @@ const MakgeolliQuest = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEnhancedPagePreloader('quest4');
 
   const trayContainerRef = useRef<HTMLDivElement>(null);
 
@@ -541,7 +539,6 @@ const MakgeolliQuest = () => {
               <EnhancedOptimizedImage
                 src="/assets/images/meal_lady.png"
                 alt="새참 아주머니"
-                priority="high"
                 className="w-auto h-auto max-h-[120vh] object-contain object-bottom"
                 style={{ 
                   opacity: mealLadyOpacity,
@@ -573,7 +570,6 @@ const MakgeolliQuest = () => {
               <EnhancedOptimizedImage
                 src="/assets/images/meal_lady.png"
                 alt="새참 아주머니"
-                priority="high"
                 className="w-auto h-auto max-h-[120vh] object-contain object-bottom"
                 style={{ 
                   opacity: mealLadyOpacity,
@@ -882,7 +878,6 @@ const MakgeolliQuest = () => {
             <EnhancedOptimizedImage
               src="/assets/images/start_button.png"
               alt="시작하기"
-              priority="high"
               onClick={handleNextPhase}
               style={{
                 width: `calc(300px * ${scale})`,

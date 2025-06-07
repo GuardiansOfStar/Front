@@ -1,5 +1,5 @@
 import { motion, MotionProps } from 'framer-motion';
-import EnhancedOptimizedImage from './EnhancedOptimizedImage';
+import EnhancedOptimizedImage from './ReliableImage';
 
 interface MotionEnhancedImageProps {
   src: string;
@@ -38,7 +38,6 @@ const MotionEnhancedImage = ({
     >
       <EnhancedOptimizedImage
         src={src} alt={alt} className={className} style={style}
-        fallback={fallback} priority={priority} skeleton={skeleton}
         onLoad={onLoad} onError={onError} onClick={onClick}
       />
     </motion.div>

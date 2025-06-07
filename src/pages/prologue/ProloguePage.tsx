@@ -11,8 +11,7 @@ import { useCharacter } from '../../context/CharacterContext';
 
 import { audioManager } from '../../utils/audioManager';
 
-import EnhancedOptimizedImage from '../../components/ui/EnhancedOptimizedImage';
-import { useEnhancedPagePreloader } from '../../hooks/useEnhancedPagePreloader';
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 // 이미지 임포트
 const scenario1FullMap = '/assets/images/scenario1_full_map.png';
@@ -37,8 +36,6 @@ const ProloguePage = () => {
   const [showMessage, setShowMessage] = useState(false);
   const { selectedCharacter } = useCharacter();
   const characterLabel = selectedCharacter === 'grandfather' ? '할아버지' : '할머니';
-
-  useEnhancedPagePreloader('quest1');
   
   // URL 쿼리 파라미터에서 시나리오 ID 가져오기
   useEffect(() => {
@@ -386,7 +383,6 @@ const ProloguePage = () => {
             <EnhancedOptimizedImage
               src="/assets/images/background.png"
               alt="미션 배경"
-              priority="critical"
               className="absolute inset-0 w-full h-full object-cover z-0"
             />
           ) : (
@@ -433,7 +429,6 @@ const ProloguePage = () => {
             src={step === 'encouragement' ? departButton : nextButton}
             alt={step === 'encouragement' ? '출발하기' : '다음'}
             onClick={step === 'encouragement' ? handleDepartClick : handleNextStep}
-            priority="high" // 수정: priority 추가
             className="h-auto cursor-pointer hover:scale-105 transition-transform"
             style={{ 
               width: step === 'encouragement' ? `calc(320px * ${scale})` : `calc(192px * ${scale})` 

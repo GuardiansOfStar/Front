@@ -4,14 +4,12 @@ import CharacterAnimation from './CharacterAnimation';
 import StartButton from '../../components/ui/StartButton';
 import RegionBubble from '../../components/ui/RegionBubble';
 import SettingButton from '../../components/ui/SettingButton';
-import EnhancedOptimizedImage from '../../components/ui/EnhancedOptimizedImage';
-import { useEnhancedPagePreloader } from '../../hooks/useEnhancedPagePreloader';
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 const title = '/assets/images/title.png';
 const team_name = '/assets/images/team_name.png'
 
 const HomePage = () => {
-  useEnhancedPagePreloader('prologue');
   // localStorage에 저장했던 session_id, user_id 초기화!
   useEffect(() => {
     localStorage.removeItem("session_id");

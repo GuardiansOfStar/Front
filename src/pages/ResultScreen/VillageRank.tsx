@@ -4,7 +4,7 @@ import { useScale } from '../../hooks/useScale';
 import Background from '../../components/ui/Background';
 import HomeButton from '../../components/ui/HomeButton';
 import { getVillageRanking, RankingEntry } from '../../services/endpoints/village';
-import EnhancedOptimizedImage from '../../components/ui/EnhancedOptimizedImage';
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 const VillageRank = () => {
   const navigate = useNavigate();
@@ -218,7 +218,6 @@ return (
                               : 'third'
                           }.png`}
                           alt={`${village.rank}등`}
-                          priority="normal"
                           style={{
                             height: `calc(48px * ${scale})`,
                             width: 'auto',
@@ -276,7 +275,6 @@ return (
               <EnhancedOptimizedImage
                 src="/assets/images/medal_first.png"
                 alt="1등"
-                priority="normal"
                 style={{
                   height: `calc(64px * ${scale})`,
                   width: 'auto',
@@ -287,7 +285,6 @@ return (
               <EnhancedOptimizedImage
                 src="/assets/images/medal_second.png"
                 alt="2등"
-                priority="normal"
                 style={{
                   height: `calc(64px * ${scale})`,
                   width: 'auto',
@@ -298,7 +295,6 @@ return (
               <EnhancedOptimizedImage
                 src="/assets/images/medal_third.png"
                 alt="3등"
-                priority="normal"
                 style={{
                   height: `calc(64px * ${scale})`,
                   width: 'auto',

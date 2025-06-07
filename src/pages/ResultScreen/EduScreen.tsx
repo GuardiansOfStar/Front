@@ -6,7 +6,7 @@ import GameTitle from '../../components/ui/GameTitle';
 import { getSession,  SessionDetail, QuestResult } from "../../services/endpoints/session";
 import { questMessages } from "../../constants/questMessages";
 import { audioManager } from '../../utils/audioManager';
-import EnhancedOptimizedImage from '../../components/ui/EnhancedOptimizedImage';
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 const ALLOWED_QUEST_IDS = ["pothole", "helmet", "Makgeolli", "Return", "Harvest"];
 // 이후 시나리오 추가시 각 퀘스트 키워드 추출해서 구성하도록 해야...함! 
@@ -185,7 +185,6 @@ const EduScreen = () => {
           <EnhancedOptimizedImage
             src="/assets/images/clap.png"
             alt="박수"
-            priority="normal"
             style={{
               width: `calc(50px * ${scale})`,
               height: 'auto'
@@ -248,7 +247,6 @@ const EduScreen = () => {
           <EnhancedOptimizedImage
             src="/assets/images/check.png"
             alt="체크"
-            priority="normal"
             style={{
               width: `calc(50px * ${scale})`,
               height: 'auto'
@@ -283,7 +281,6 @@ const EduScreen = () => {
       <EnhancedOptimizedImage
         src="/assets/images/next_button.png"
         alt="다음 버튼"
-        priority="high"
         onClick={handleNextClick}
         className="absolute cursor-pointer z-40 hover:scale-105 transition-transform duration-300"
         style={{

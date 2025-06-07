@@ -5,7 +5,7 @@ import Background from "../../components/ui/Background";
 import GameTitle from "../../components/ui/GameTitle";
 import { updateSessionScene } from "../../services/endpoints/session";
 import { audioManager } from '../../utils/audioManager';
-import EnhancedOptimizedImage from '../../components/ui/EnhancedOptimizedImage';
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 const Memory = () => {
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
@@ -74,7 +74,6 @@ const Memory = () => {
         <EnhancedOptimizedImage
           src={option.img}
           alt={option.label}
-          priority="normal"
           className="object-cover transition"
           style={{
             width: `calc(280px * ${scale})`,
@@ -159,7 +158,6 @@ const Memory = () => {
           <EnhancedOptimizedImage
             src="/assets/images/next_button.png"
             alt="다음"
-            priority="high"
             className="cursor-pointer hover:scale-95 transition-transform duration-200"
             style={{
               width: `calc(190px * ${scale})`,

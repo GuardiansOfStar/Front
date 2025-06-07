@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useScale } from '../hooks/useScale';
 import Background from '../components/ui/Background';
 import BackButton from '../components/ui/BackButton';
-import EnhancedOptimizedImage from '../components/ui/EnhancedOptimizedImage';
+import EnhancedOptimizedImage from '../components/ui/ReliableImage';
 
 const DevelopmentNotice = () => {
   const navigate = useNavigate();
@@ -65,7 +65,6 @@ const DevelopmentNotice = () => {
         <EnhancedOptimizedImage
           src="/assets/images/star_character.png"
           alt="별별이 캐릭터"
-          priority="normal"
           className="absolute"
           style={{
             bottom: `calc(40px * ${scale})`,

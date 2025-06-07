@@ -9,8 +9,7 @@ import GameTitle from '../../components/ui/GameTitle';
 import { useCharacter } from '../../context/CharacterContext';
 import { audioManager } from '../../utils/audioManager';
 
-import EnhancedOptimizedImage from '../../components/ui/EnhancedOptimizedImage';
-import { useEnhancedPagePreloader } from '../../hooks/useEnhancedPagePreloader';
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 // 이미지 임포트
 const drivingRoad = '/assets/images/driving_road.png';
@@ -33,8 +32,6 @@ type GamePhase =
 const PotholeQuest = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
-  useEnhancedPagePreloader('quest3');
 
   const [scenarioId, setScenarioId] = useState<string | null>(null);
   const [questId, setQuestId] = useState<string | null>(null);

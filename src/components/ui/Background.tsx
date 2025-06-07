@@ -1,6 +1,6 @@
 // src/components/ui/Background.tsx
 import { useScale } from '../../hooks/useScale';
-import EnhancedOptimizedImage from './EnhancedOptimizedImage';
+import EnhancedOptimizedImage from './ReliableImage';
 
 const Background = () => {
   const scale = useScale();
@@ -9,7 +9,6 @@ const Background = () => {
     <EnhancedOptimizedImage
       src="/assets/images/background.png"
       alt="배경"
-      priority="critical"
       className="w-full h-full"
       style={{
         backgroundSize: 'cover',

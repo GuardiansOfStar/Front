@@ -10,8 +10,7 @@ import { useScale } from '../../hooks/useScale';
 import { useCharacter } from '../../context/CharacterContext';
 import { audioManager } from '../../utils/audioManager';
 import MotionEnhancedImage from '../../components/ui/MotionEnhancedImage';
-import { useEnhancedPagePreloader } from '../../hooks/useEnhancedPagePreloader';
-import EnhancedLoadingScreen from 'components/ui/EnhancedLoadingScreen';
+import EnhancedLoadingScreen from 'components/ui/SimpleLoadingScreen';
 
 // 이미지 임포트
 const fieldHarvestBoxes = '/assets/images/work_complete_with_applebox.png';
@@ -37,8 +36,6 @@ type GamePhase =
 const HarvestQuest = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
-  useEnhancedPagePreloader('quest5');
 
   const [scenarioId, setScenarioId] = useState<string | null>(null);
   const [questId, setQuestId] = useState<string | null>(null);

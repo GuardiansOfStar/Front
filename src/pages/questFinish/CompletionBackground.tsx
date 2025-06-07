@@ -4,7 +4,7 @@ import { useScale } from '../../hooks/useScale';
 import Confetti from 'react-confetti';
 import { audioManager } from '../../utils/audioManager';
 import { getSession } from '../../services/endpoints/session';
-import EnhancedOptimizedImage from '../../components/ui/EnhancedOptimizedImage';
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 const completion_background = '/assets/images/completion_background_long.png';
 const motorcycle = '/assets/images/motorcycle.png';

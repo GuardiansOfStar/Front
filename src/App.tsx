@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { CharacterProvider } from './context/CharacterContext';
 import AspectRatioContainer from './components/layout/AspectRatioContainer';
-import EnhancedLoadingScreen from './components/ui/EnhancedLoadingScreen';
+import EnhancedLoadingScreen from './components/ui/SimpleLoadingScreen';
 import { useDragPrevention } from './hooks/useDragPrevention';
 
 // 레이아웃 컴포넌트들
