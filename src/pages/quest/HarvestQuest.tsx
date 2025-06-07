@@ -360,7 +360,7 @@ const HarvestQuest = () => {
                 <>
                 <motion.img
                   src={characterImages.mission4Success}
-                  alt="수레 끄시는 할아버지" 
+                  alt="수레 끄시는 어르신신" 
                   className="absolute object-contain z-40"
                   style={{
                     left: `calc(20% * ${scale})`,
@@ -370,14 +370,12 @@ const HarvestQuest = () => {
                   onError={handleImageError}
                   // 1) 시작 상태: 작게, 투명, 화면 왼쪽(-50px) 밖에서
                   initial={{ scale: 0.8, opacity: 0, x: -80 }}
-
                   // 2) 조건에 따라 보여줄 때(show) vs 숨길 때(hide) 목표 상태 지정
                   animate={
                     hideSuccessImages
-                      ? { scale: 0.5, opacity: 0, x: -50 }                        // 사라질 땐 다시 작아지면서 왼쪽으로
-                      : { scale: 1, opacity: 1, x: `calc(35px * ${scale})` }    // 보일 땐 제자리에서 커지면서 오른쪽(35px*scale) 으로
+                      ? { scale: 0.5, opacity: 0, x: 20 }                        // 사라질 땐 다시 작아지면서 왼쪽으로
+                      : { scale: 1, opacity: 1, x: `calc(20px * ${scale})` }    // 보일 땐 제자리에서 커지면서 오른쪽(35px*scale) 으로
                   }
-
                   // 3) 각 속성별 transition 세부 조정
                   transition={{
                     // scale, opacity는 기존 처럼 easeIn/out, duration, delay 분리
@@ -387,9 +385,8 @@ const HarvestQuest = () => {
                     opacity: hideSuccessImages
                       ? { duration: 0.8, ease: 'easeIn' }
                       : { duration: 1,   delay: 0.3, ease: 'easeOut' },
-
                     // x축 이동은 mission4Success 로직을 재사용
-                    x: { duration: 2 * Math.max(0.8, scale), repeat: 0 }
+                    x: { duration: 10 * Math.max(0.8, scale), repeat: 0 }
                   }}
                 />
                 <motion.img 
@@ -424,7 +421,6 @@ const HarvestQuest = () => {
       
       {/* 정답 후 성공 메시지 화면 */}
       {gamePhase === 'successResult' && showSuccessMessage && (
-
         <div className="absolute inset-0 flex flex-col items-center justify-center z-30">
           {/* 중앙 상단에 정답입니다! */}
             <motion.div 
