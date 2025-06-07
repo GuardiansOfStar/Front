@@ -9,6 +9,8 @@ import { useScale } from '../../hooks/useScale';
 // import { useScore } from '../../context/ScoreContext';
 import { useCharacter } from '../../context/CharacterContext';
 import { audioManager } from '../../utils/audioManager';
+import EnhancedOptimizedImage from '../../components/ui/EnhancedOptimizedImage';
+import { useEnhancedPagePreloader } from '../../hooks/useEnhancedPagePreloader';
 
 // 이미지 임포트
 const fieldHarvestBoxes = '/assets/images/work_complete_with_applebox.png';
@@ -19,7 +21,6 @@ const successCircle = '/assets/images/success_circle.png';
 const starCharacter = '/assets/images/star_character.png';
 const motorcycle = '/assets/images/mission4_motorcycle.png';
 const confirmButton = '/assets/images/confirm_button.png';
-
 
 // 게임 단계 정의
 type GamePhase = 
@@ -35,6 +36,9 @@ type GamePhase =
 const HarvestQuest = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEnhancedPagePreloader('quest5');
+
   const [scenarioId, setScenarioId] = useState<string | null>(null);
   const [questId, setQuestId] = useState<string | null>(null);
   const [gamePhase, setGamePhase] = useState<GamePhase>('intro');
@@ -205,7 +209,7 @@ const HarvestQuest = () => {
     <div className="w-full h-full">
       {/* 배경 */}
       {(gamePhase !== 'intro' && gamePhase !== 'fadeOut' && gamePhase !== 'failResult'&& gamePhase !== 'score' ) && (
-        <img
+        <EnhancedOptimizedImage
           src={fieldHarvestBoxes}
           alt="수확완료 화면"
           className="absolute w-full h-full object-cover"
@@ -220,7 +224,7 @@ const HarvestQuest = () => {
       {/* 인트로 화면 */}
       {gamePhase === 'intro' && (
         <>
-          <img
+          <EnhancedOptimizedImage
           src={field}
           alt="수확 전 화면"
           className="absolute w-full h-full object-cover"
@@ -374,7 +378,7 @@ const HarvestQuest = () => {
                     repeat: 0,
                   }}
                 />
-                <img 
+                <EnhancedOptimizedImage
                   src={motorcycle}
                   alt="오토바이"
                   className="absolute object-contain z-50"
@@ -386,7 +390,7 @@ const HarvestQuest = () => {
                 />
                 </>
               ) : (
-                <img 
+                <EnhancedOptimizedImage
                   src="/assets/images/character_with_helmet.png"  
                   alt="헬멧 쓴 캐릭터" 
                   className="object-contain"
@@ -460,7 +464,7 @@ const HarvestQuest = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
             >
-              <img 
+              <EnhancedOptimizedImage
                 src={confirmButton} 
                 alt="확인 버튼" 
                 className="w-full h-auto"
@@ -498,7 +502,7 @@ const HarvestQuest = () => {
       {/* 오답 결과 화면 */}
       {gamePhase === 'failResult' && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <img
+          <EnhancedOptimizedImage
             src={characterImages.fieldAccident}
             alt="사고 장면"
             className="absolute inset-0 w-full h-full object-cover"
@@ -570,7 +574,7 @@ const HarvestQuest = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
             >
-              <img 
+              <EnhancedOptimizedImage
                 src={confirmButton} 
                 alt="확인 버튼" 
                 className="w-full h-auto"

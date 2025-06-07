@@ -4,6 +4,7 @@ import { useScale } from '../../hooks/useScale';
 import Background from '../../components/ui/Background';
 import HomeButton from '../../components/ui/HomeButton';
 import { getVillageRanking, RankingEntry } from '../../services/endpoints/village';
+import EnhancedOptimizedImage from '../../components/ui/EnhancedOptimizedImage';
 
 const VillageRank = () => {
   const navigate = useNavigate();
@@ -208,7 +209,7 @@ return (
                     {/* 등수 아이콘 */}
                     <div className="w-[10%] text-center">
                       {village.rank <= 3 ? (
-                        <img
+                        <EnhancedOptimizedImage
                           src={`/assets/images/medal_${
                             village.rank === 1
                               ? 'first'
@@ -217,8 +218,10 @@ return (
                               : 'third'
                           }.png`}
                           alt={`${village.rank}등`}
+                          priority="normal"
                           style={{
                             height: `calc(48px * ${scale})`,
+                            width: 'auto',
                             margin: '0 auto'
                           }}
                         />
@@ -270,29 +273,35 @@ return (
           {/* 강조 카드 내부 */}
           <div className="w-[10%] text-center">
             {myVillage.rank === 1 ? (
-              <img
+              <EnhancedOptimizedImage
                 src="/assets/images/medal_first.png"
                 alt="1등"
+                priority="normal"
                 style={{
                   height: `calc(64px * ${scale})`,
+                  width: 'auto',
                   margin: '0 auto'
                 }}
               />
             ) : myVillage.rank === 2 ? (
-              <img
+              <EnhancedOptimizedImage
                 src="/assets/images/medal_second.png"
                 alt="2등"
+                priority="normal"
                 style={{
                   height: `calc(64px * ${scale})`,
+                  width: 'auto',
                   margin: '0 auto'
                 }}
               />
             ) : myVillage.rank === 3 ? (
-              <img
+              <EnhancedOptimizedImage
                 src="/assets/images/medal_third.png"
                 alt="3등"
+                priority="normal"
                 style={{
                   height: `calc(64px * ${scale})`,
+                  width: 'auto',
                   margin: '0 auto'
                 }}
               />

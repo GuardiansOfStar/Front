@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useScale } from '../../hooks/useScale';
 import Background from '../../components/ui/Background';
+import EnhancedOptimizedImage from '../../components/ui/EnhancedOptimizedImage';
 import Star from './Star'; 
 import GameTitle from '../../components/ui/GameTitle';
 import BackButton from '../../components/ui/BackButton';

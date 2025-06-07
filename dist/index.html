@@ -1,14 +1,37 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
+    
+    <!-- Critical 이미지 우선 preload (crossorigin 추가) -->
+    <link rel="preload" href="/assets/images/background.png" as="image" type="image/png" crossorigin="anonymous" />
+    <link rel="preload" href="/assets/images/star_character.png" as="image" type="image/png" crossorigin="anonymous" />
+    <link rel="preload" href="/assets/images/title.png" as="image" type="image/png" crossorigin="anonymous" />
+    <link rel="preload" href="/assets/images/start_button.png" as="image" type="image/png" crossorigin="anonymous" />
+    
+    <!-- 폰트 preload -->
     <link rel="preload" href="/assets/fonts/Pretendard-Regular.woff" as="font" type="font/woff" crossorigin>
     <link rel="preload" href="/assets/fonts/Pretendard-Bold.woff" as="font" type="font/woff" crossorigin>
+    
+    <!-- Performance 최적화 -->
+    <link rel="dns-prefetch" href="//assets" />
+    <meta name="format-detection" content="telephone=no" />
+    
+    <!-- Vercel 특화 최적화 -->
+    <meta httpEquiv="Cache-Control" content="public, max-age=31536000, immutable" />
+    
     <link rel="icon" type="image/svg+xml" href="/starstar_favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />    
     <title>별 따라 안전운전!</title>
-    <script type="module" crossorigin src="/assets/index-Dl2iVb5U.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DUupuDZD.css">
+    <script type="module" crossorigin src="/assets/js/index-QBtx62mR.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/js/vendor-AYjf9MJ1.js">
+    <link rel="modulepreload" crossorigin href="/assets/js/audio-vendor-CiVAe4KV.js">
+    <link rel="modulepreload" crossorigin href="/assets/js/react-vendor-C7MAbkji.js">
+    <link rel="modulepreload" crossorigin href="/assets/js/utils-D4i3jrqG.js">
+    <link rel="modulepreload" crossorigin href="/assets/js/motion-vendor-2w7QZIZu.js">
+    <link rel="modulepreload" crossorigin href="/assets/js/quest-pages-AZtI27oR.js">
+    <link rel="modulepreload" crossorigin href="/assets/js/result-pages-DXjLTeED.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-BjjjdiIr.css">
   </head>
   <body>
     <div id="root"></div>

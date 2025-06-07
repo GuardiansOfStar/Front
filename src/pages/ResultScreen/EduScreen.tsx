@@ -6,12 +6,10 @@ import GameTitle from '../../components/ui/GameTitle';
 import { getSession,  SessionDetail, QuestResult } from "../../services/endpoints/session";
 import { questMessages } from "../../constants/questMessages";
 import { audioManager } from '../../utils/audioManager';
-
+import EnhancedOptimizedImage from '../../components/ui/EnhancedOptimizedImage';
 
 const ALLOWED_QUEST_IDS = ["pothole", "helmet", "Makgeolli", "Return", "Harvest"];
 // 이후 시나리오 추가시 각 퀘스트 키워드 추출해서 구성하도록 해야...함! 
-
-const next_button = '/assets/images/next_button.png';
 
 const EduScreen = () => {
   const navigate = useNavigate();
@@ -77,7 +75,6 @@ const EduScreen = () => {
   console.log("sq : ", successQuests);
   console.log("fq : ", failedQuests);
 
-
   const praiseText =
     successQuests.length > 0
       ? questMessages[successQuests[0].quest_id].success
@@ -95,6 +92,20 @@ const EduScreen = () => {
         <br />
       </span>
     ));
+
+  const handleNextClick = () => {
+    //선택 효과음
+    audioManager.playButtonClick();
+    
+    const villageId = localStorage.getItem('village_id');
+    if(!villageId){
+      // villageId가 null인 경우 바로 마을 랭킹으로 이동
+      navigate('/rank');
+    }else{
+      // villageId가 있다면 기존처럼 certificate 이동!
+      navigate('/certificate');
+    }
+  };
 
   return (
     <div className="relative w-full h-full">
@@ -115,7 +126,6 @@ const EduScreen = () => {
           alignItems: 'center',
           justifyContent: 'center',
           gap: `calc(30px * ${scale})`,
-
         }}
       >
         <GameTitle 
@@ -140,11 +150,10 @@ const EduScreen = () => {
           strokeWidth={`calc(16px * ${scale})`}
           strokeColor="#0DA429"
           letterSpacing='0.05em'
-
         />
       </div>
 
-            {/* 칭찬해요 카드 */}
+      {/* 칭찬해요 카드 */}
       <div 
         className="absolute z-30"
         style={{
@@ -173,12 +182,13 @@ const EduScreen = () => {
             width: '100%'
           }}
         >
-          <img
+          <EnhancedOptimizedImage
             src="/assets/images/clap.png"
             alt="박수"
+            priority="normal"
             style={{
               width: `calc(50px * ${scale})`,
-              height: `calc(50px * ${scale})`
+              height: 'auto'
             }}
           />
           <h3 
@@ -235,12 +245,13 @@ const EduScreen = () => {
             width: '100%'
           }}
         >
-          <img
+          <EnhancedOptimizedImage
             src="/assets/images/check.png"
             alt="체크"
+            priority="normal"
             style={{
               width: `calc(50px * ${scale})`,
-              height: `calc(50px * ${scale})`
+              height: 'auto'
             }}
           />
           <h3 
@@ -261,8 +272,7 @@ const EduScreen = () => {
             fontSize: `calc(45px * ${scale})`,
             color: '#000000',
             lineHeight: '1.5',
-            margin: 3,
-            
+            margin: 3
           }}
         >
           {renderWithBreaks(rememberText)}
@@ -270,26 +280,18 @@ const EduScreen = () => {
       </div>
       
       {/* 다음 버튼 */}
-      <img
-        src={next_button}
+      <EnhancedOptimizedImage
+        src="/assets/images/next_button.png"
         alt="다음 버튼"
-        onClick={() => {
-          const villageId = localStorage.getItem('village_id');
-          if(!villageId){
-            // villageId가 null인 경우 바로 마을 랭킹으로 이동
-            navigate('/rank');
-          }else{
-            // villageId가 있다면 기존처럼 certificate 이동!
-            navigate('/certificate');
-          }
-        }
-        }
+        priority="high"
+        onClick={handleNextClick}
         className="absolute cursor-pointer z-40 hover:scale-105 transition-transform duration-300"
         style={{
           bottom: `calc(20px * ${scale})`,
           left: '50%',
           transform: 'translateX(-50%)',
-          width: `calc(180px * ${scale})`
+          width: `calc(180px * ${scale})`,
+          height: 'auto'
         }}
       />
     </div>

@@ -4,6 +4,7 @@ import { useScale } from '../../hooks/useScale';
 import Confetti from 'react-confetti';
 import { audioManager } from '../../utils/audioManager';
 import { getSession } from '../../services/endpoints/session';
+import EnhancedOptimizedImage from '../../components/ui/EnhancedOptimizedImage';
 
 const completion_background = '/assets/images/completion_background_long.png';
 const motorcycle = '/assets/images/motorcycle.png';
@@ -94,9 +95,10 @@ const CompletionBackground = () => {
                 alt="이륜차" 
                 className="absolute bottom-0 left-1/2 transform -translate-x-1/2 mx-auto object-contain"
                 style={{
-                    width: `calc(75% * ${scale})`,
-                    maxHeight: `calc(60% * ${scale})`
-                }}
+                width: `calc(100% * ${scale})`,
+                maxHeight: `calc(70vh * ${scale})`,
+                zIndex: 10
+              }}
             />
             
             {/* 컨페티 이펙트 */}

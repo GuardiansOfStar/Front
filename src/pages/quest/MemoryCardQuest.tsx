@@ -9,7 +9,8 @@ import { useScale } from '../../hooks/useScale';
 // import { useScore } from '../../context/ScoreContext';
 import { useCharacter } from '../../context/CharacterContext';
 import { audioManager } from '../../utils/audioManager';
-
+import EnhancedOptimizedImage from '../../components/ui/EnhancedOptimizedImage';
+import { useEnhancedPagePreloader } from '../../hooks/useEnhancedPagePreloader';
 
 // 이미지 임포트
 const gameBackground = '/assets/images/pre_drive_background.png';
@@ -100,6 +101,8 @@ type GamePhase =
 const MemoryCardQuest: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEnhancedPagePreloader('quest2');
 
   // state
   const [scenarioId, setScenarioId] = useState<string | null>(null);
@@ -557,7 +560,7 @@ const MemoryCardQuest: React.FC = () => {
   return (
     <div className="relative w-full h-full">
       {/* 배경 */}
-      <img src={gameBackground} alt="게임 배경" className="absolute w-full h-full object-cover" />
+      <EnhancedOptimizedImage src={gameBackground} alt="게임 배경" className="absolute w-full h-full object-cover" />
       {renderBackdrop()}
 
       {/* 서서히 페이드인되는 백드롭 */}
@@ -651,7 +654,7 @@ const MemoryCardQuest: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 * Math.max(0.8, scale) }}
         >
-          <img
+          <EnhancedOptimizedImage
             src={grandchildren}
             alt="손자손녀"
             style={{
@@ -838,7 +841,7 @@ const MemoryCardQuest: React.FC = () => {
                         transform: 'rotateY(180deg)',
                       }}
                     >
-                      <img
+                      <EnhancedOptimizedImage
                         src={card.image}
                         alt={card.type}
                         className="w-full h-full object-contain"
@@ -860,7 +863,7 @@ const MemoryCardQuest: React.FC = () => {
                         backfaceVisibility: 'hidden',
                       }}
                     >
-                      <img
+                      <EnhancedOptimizedImage
                         src={cardBack}
                         alt="카드 뒷면"
                         className="w-full h-full object-contain"
@@ -1233,7 +1236,7 @@ const MemoryCardQuest: React.FC = () => {
           className="absolute left-0 right-0 flex justify-center z-10"
           style={{ bottom: `calc(32px * ${scale})` }}
         >
-          <img
+          <EnhancedOptimizedImage
             src={nextButton}
             alt="다음"
             onClick={handleNextPhase}
@@ -1249,7 +1252,7 @@ const MemoryCardQuest: React.FC = () => {
           className="absolute left-0 right-0 flex justify-center z-10"
           style={{ bottom: `calc(32px * ${scale})` }}
         >
-          <img
+          <EnhancedOptimizedImage
             src={confirmButton}
             alt="확인"
             onClick={handleConfirm}
