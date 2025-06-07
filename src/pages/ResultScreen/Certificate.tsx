@@ -53,6 +53,7 @@ const Certificate = () => {
   return (
     <div className="relative w-full h-full">
       <Background />
+      <div className="absolute inset-0 bg-[#FFF9C4]/70 z-0" />
       {/* 운전 종료 버튼 (기존 HomeButton 위치) */}
       <img
         src={drive_end_button}
