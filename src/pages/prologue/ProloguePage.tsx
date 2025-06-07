@@ -447,13 +447,13 @@ const ProloguePage = () => {
         </div>
       )}
       
-      {/* 추가: 디버깅용 현재 단계 표시 */}
+      {/* 추가: 디버깅용 현재 단계 표시
       {process.env.NODE_ENV === 'development' && (
         <div className="absolute top-4 left-4 bg-black bg-opacity-50 text-white p-2 rounded z-[100]">
           Current Step: {step}
           {step === 'encouragement' && <div>출발하기 버튼이 표시되어야 함</div>}
         </div>
-      )}
+      )} */}
     </div>
   );
 };

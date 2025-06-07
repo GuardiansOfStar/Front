@@ -391,19 +391,21 @@ const HarvestQuest = () => {
                     x: { duration: 10 * Math.max(0.8, scale), repeat: 0 }
                   }}
                 />
-                <MotionEnhancedImage
-                  src={motorcycle}
-                  alt="오토바이"
-                  className="absolute object-contain z-50"
-                  style={{
-                    right: `calc(22% * ${scale})`,
-                    width: `calc(323px * ${scale})`
-                  }}
-                  onError={handleImageError}
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={hideSuccessImages ? { scale: 0.5, opacity: 0 } : { scale: 1, opacity: 1 }}
-                  transition={hideSuccessImages ? { duration: 0.8, ease: 'easeIn' } : { duration: 1, delay: 0.3, ease: 'easeOut' }}
-                />
+                  <motion.img
+                    src={motorcycle}
+                    alt="오토바이"
+                    className="absolute object-contain z-50"
+                    style={{
+                      right: `calc(22% * ${scale})`,
+                      top: `calc(15% * ${scale})`,
+                      transform: 'translateY(-50%)',
+                      width: `calc(323px * ${scale})`
+                    }}
+                    onError={handleImageError}
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={hideSuccessImages ? { scale: 0.5, opacity: 0 } : { scale: 1, opacity: 1 }}
+                    transition={hideSuccessImages ? { duration: 0.8, ease: 'easeIn' } : { duration: 1, delay: 0.3, ease: 'easeOut' }}
+                  />
                 </>
               ) : (
                 <MotionEnhancedImage
