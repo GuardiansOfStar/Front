@@ -3,7 +3,7 @@ name: Deploy to Vercel
 on:
   push:
     branches:
-      - main
+      - main  # 배포 트리거 브랜치
 
 jobs:
   deploy:
@@ -12,24 +12,12 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build project
-        run: npm run build
-
       - name: Install Vercel CLI
-        run: npm install -g vercel@latest
+        run: npm install -g vercel
 
       - name: Deploy to Vercel
-        run: vercel --prod --yes --token=$VERCEL_TOKEN
+        run: vercel --prod --yes --token=$VERCEL_TOKEN --name=starfollow-ddrive
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          ORG_ID: ${{ secrets.ORG_ID }}
+          PROJECT_ID: ${{ secrets.PROJECT_ID }}
