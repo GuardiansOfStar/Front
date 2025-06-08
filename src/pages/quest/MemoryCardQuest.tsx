@@ -149,7 +149,7 @@ const MemoryCardQuest: React.FC = () => {
   useEffect(() => {
     initBgm('sparrow_land');
     //console.log("init bgm");
-
+    
     return () => {
     unloadBgm('sparrow_land');
     //console.log("unload bgm on unmount");
