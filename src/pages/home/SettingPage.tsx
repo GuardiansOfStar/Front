@@ -102,7 +102,11 @@ const SettingPage = () => {
         <img
             src="/assets/images/exit_button.png"
             alt="나가기 버튼"
-            onClick={() => navigate('/')}
+            onClick={() => {
+              //선택 버튼 효과음
+              audioManager.playButtonClick();
+              navigate('/')
+            }}
             className="absolute top-[10px] left-[10px] w-[100px] h-auto z-50 cursor-pointer hover:scale-90 transition-transform duration-200"
         />
 
