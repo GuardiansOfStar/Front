@@ -28,9 +28,14 @@ export async function initBgm(bgmType: BgmType) {
 
 export function playBgm(bgmType: BgmType) {
   const player = bgmPlayers[bgmType];
-  if (!player) return;
+  if (!player) 
+    {
+      // console.log("no!");
+      return;
+    }
   if (!player.playing()) {
     player.play();
+    // console.log("playBgm called");
   }
 }
 

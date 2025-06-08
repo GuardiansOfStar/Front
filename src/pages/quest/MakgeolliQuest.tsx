@@ -9,6 +9,7 @@ import { useScale } from '../../hooks/useScale';
 // import { useScore } from '../../context/ScoreContext';
 import { audioManager } from '../../utils/audioManager';
 import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
+import { initBgm, playBgm, stopBgm, unloadBgm } from '../../utils/backgroundMusic';
 
 import { simpleImagePreloader } from '../../utils/simpleImagePreloader';
 
@@ -119,6 +120,39 @@ const MakgeolliQuest = () => {
     setScenarioId(sId);
     setQuestId('3');
   }, [location]);
+
+ // 1) 마운트 시 단 한 번 BGM 초기화, 언마운트 시 해제
+  //
+  useEffect(() => {
+    (async () => {
+      await initBgm('del_rio_bravo');
+      //console.log('init del_rio_bravo bgm');
+      // 초기 페이즈가 roadToField 면 바로 재생
+      if (gamePhase === 'roadToField') {
+        playBgm('del_rio_bravo');
+        //console.log('play del_rio_bravo on mount');
+      }
+    })();
+
+    return () => {
+      unloadBgm('del_rio_bravo');
+      //console.log('unload del_rio_bravo bgm on unmount');
+    };
+  }, []);
+
+  //
+  // 2) gamePhase 변화에 따른 play/stop
+  //
+  useEffect(() => {
+    if (gamePhase === 'roadToField' || gamePhase === 'gamePlay') {
+      playBgm('del_rio_bravo');
+      //console.log('play del_rio_bravo on phase:', gamePhase);
+    }
+    if (gamePhase === 'mealLadyArrival' || gamePhase === 'score') {
+      stopBgm('del_rio_bravo');
+      //console.log('stop del_rio_bravo on phase:', gamePhase);
+    }
+  }, [gamePhase]);
 
   // 단계별 자동 진행 - 스케일 적용된 타이밍
   useEffect(() => {

@@ -10,6 +10,7 @@ import { useScale } from '../../hooks/useScale';
 import { useCharacter } from '../../context/CharacterContext';
 import { audioManager } from '../../utils/audioManager';
 import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
+import { initBgm, playBgm, stopBgm, unloadBgm } from '../../utils/backgroundMusic';
 
 // 이미지 임포트
 const gameBackground = '/assets/images/pre_drive_background.png';
@@ -144,6 +145,28 @@ const MemoryCardQuest: React.FC = () => {
     setScenarioId(params.get('scenario'));
     setQuestId(params.get('quest') || '1');
   }, [location]);
+
+  useEffect(() => {
+    initBgm('sparrow_land');
+    //console.log("init bgm");
+
+    return () => {
+    unloadBgm('sparrow_land');
+    //console.log("unload bgm on unmount");
+    };
+  }, []);
+
+  // ———— BGM 제어 ————
+  useEffect(() => {
+    if (gamePhase === 'showCards') {
+      //console.log("play bgm");
+      playBgm('sparrow_land');
+    }
+    if (gamePhase === 'showGift' || gamePhase === 'openGift') {
+      //console.log("stop1 bgm");
+      stopBgm('sparrow_land');
+    }
+  }, [gamePhase]);
 
   // 최초 게임 시작 시에만 카드 초기화
   useEffect(() => {
