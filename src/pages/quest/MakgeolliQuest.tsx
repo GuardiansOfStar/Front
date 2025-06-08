@@ -549,6 +549,7 @@ const MakgeolliQuest = () => {
             className="absolute"
             style={{
               top: `calc(27% * ${scale})`,
+              left: 0 ,
               width: `calc(150px * ${scale})`,
               height: 'auto'
             }}
