@@ -3,17 +3,50 @@
   <head>
     <meta charset="UTF-8" />
     
-    <!-- Critical 이미지만 preload (crossorigin 제거) -->
-    <link rel="preload" href="/assets/images/background.png" as="image" type="image/png" />
-    <link rel="preload" href="/assets/images/star_character.png" as="image" type="image/png" />
-    <link rel="preload" href="/assets/images/title.png" as="image" type="image/png" />
-    <link rel="preload" href="/assets/images/start_button.png" as="image" type="image/png" />
-    
-    <!-- 폰트 preload -->
-    <!-- <link rel="preload" href="/assets/fonts/Pretendard-Regular.woff" as="font" type="font/woff" crossorigin> -->
-    <!-- <link rel="preload" href="/assets/fonts/Pretendard-Bold.woff" as="font" type="font/woff" crossorigin>
-    <link rel="preload" href="/assets/fonts/Pretendard-Black.woff" as="font" type="font/woff" crossorigin>
-    <link rel="preload" href="/assets/fonts/Pretendard-ExtraBold.woff" as="font" type="font/woff" crossorigin> -->
+    <!-- WebP 지원 감지 및 Critical 이미지 preload -->
+    <script>
+      // WebP 지원 감지
+      function supportsWebP() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 1;
+        canvas.height = 1;
+        return canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+      }
+      
+      // Critical 이미지 preload (WebP 우선)
+      const criticalImages = [
+        'background', 'star_character', 'title', 'start_button'
+      ];
+      
+      if (supportsWebP()) {
+        criticalImages.forEach(name => {
+          const link = document.createElement('link');
+          link.rel = 'preload';
+          link.as = 'image';
+          link.type = 'image/webp';
+          link.href = `/assets/images/${name}.webp`;
+          link.onerror = () => {
+            // WebP 실패시 PNG로 fallback
+            const fallback = document.createElement('link');
+            fallback.rel = 'preload';
+            fallback.as = 'image';
+            fallback.type = 'image/png';
+            fallback.href = `/assets/images/${name}.png`;
+            document.head.appendChild(fallback);
+          };
+          document.head.appendChild(link);
+        });
+      } else {
+        criticalImages.forEach(name => {
+          const link = document.createElement('link');
+          link.rel = 'preload';
+          link.as = 'image';
+          link.type = 'image/png';
+          link.href = `/assets/images/${name}.png`;
+          document.head.appendChild(link);
+        });
+      }
+    </script>
     
     <!-- Performance 최적화 -->
     <link rel="dns-prefetch" href="//vercel.app" />
@@ -29,11 +62,12 @@
     
     <!-- Critical CSS inlined -->
     <style>
-      /* 이미지 로딩 최적화 */
+      /* 이미지 로딩 최적화 강화 */
       img {
-        image-rendering: auto;
-        image-rendering: crisp-edges;
         image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+        content-visibility: auto;
+        contain-intrinsic-size: 1px 500px;
       }
       
       /* 초기 로딩 스타일 */
@@ -50,6 +84,7 @@
       /* 애니메이션 최적화 */
       .animate-bounce {
         animation: bounce 1s infinite;
+        will-change: transform;
       }
       
       @keyframes bounce {
@@ -62,16 +97,44 @@
           animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
         }
       }
+      
+      /* 로딩 스켈레톤 최적화 */
+      .image-skeleton {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+      }
+      
+      @keyframes loading {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+      }
+      
+      /* WebP 지원 최적화 */
+      .webp img[src$=".png"] {
+        display: none;
+      }
+      
+      .webp img[src$=".webp"] {
+        display: block;
+      }
+      
+      /* GPU 가속 */
+      .gpu-accelerated {
+        transform: translateZ(0);
+        backface-visibility: hidden;
+        will-change: transform;
+      }
     </style>
-    <script type="module" crossorigin src="/assets/js/index-Bp1E9FSM.js"></script>
+    <script type="module" crossorigin src="/assets/js/index-CVe_gMgK.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/js/audio-vendor-CiVAe4KV.js">
     <link rel="modulepreload" crossorigin href="/assets/js/vendor-AYjf9MJ1.js">
     <link rel="modulepreload" crossorigin href="/assets/js/react-vendor-CK-HCiH-.js">
-    <link rel="modulepreload" crossorigin href="/assets/js/utils-CJt89CjJ.js">
+    <link rel="modulepreload" crossorigin href="/assets/js/utils-D-qkQDDA.js">
     <link rel="modulepreload" crossorigin href="/assets/js/motion-vendor-CnQVYRIF.js">
-    <link rel="modulepreload" crossorigin href="/assets/js/quest-pages-BsdCTYk6.js">
-    <link rel="modulepreload" crossorigin href="/assets/js/result-pages-3EQuDBRb.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-DnEwWf5o.css">
+    <link rel="modulepreload" crossorigin href="/assets/js/quest-pages-BPIE_Y3T.js">
+    <link rel="modulepreload" crossorigin href="/assets/js/result-pages-l3DY8cq9.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-BIVqL8Y8.css">
   </head>
   <body>
     <div id="root"></div>

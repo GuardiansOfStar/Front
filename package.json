@@ -9,11 +9,11 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "preview": "vite preview",
-    "optimize-images": "node scripts/optimize-images.js",
-    "update-images": "node scripts/update-images.js",
-    "analyze-bundle": "npm run build && npx vite-bundle-analyzer dist",
-    "type-check": "tsc --noEmit",
-    "vercel-build": "npm run build"
+    "optimize-webp": "node scripts/optimize-images-webp.js",
+    "build:webp": "npm run optimize-webp && npm run build",
+    "test-webp": "npm run build:webp && npm run preview",
+    "deploy": "npm run build:webp && vercel --prod",
+    "vercel-build": "npm run optimize-webp && npm run build"
   },
   "dependencies": {
     "@use-gesture/react": "^10.3.1",

@@ -1,4 +1,4 @@
-// vite.config.ts - 완전 수정 버전
+// vite.config.ts - 이미지 최적화 중심 수정
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
@@ -42,7 +42,8 @@ export default defineConfig({
           const info = assetInfo.name?.split('.') || [];
           const extType = info[info.length - 1];
           
-          if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(extType)) {
+          // 이미지 파일명에 컨텐츠 해시 포함하여 캐시 최적화
+          if (/png|jpe?g|svg|gif|tiff|bmp|ico|webp/i.test(extType)) {
             return `assets/images/[name]-[hash][extname]`;
           }
           
@@ -72,7 +73,8 @@ export default defineConfig({
     },
     
     sourcemap: false,
-    assetsInlineLimit: 4096
+    // 이미지 인라인 임계값 증가 (4KB → 8KB)
+    assetsInlineLimit: 8192
   },
   
   server: {
@@ -122,6 +124,7 @@ export default defineConfig({
     devSourcemap: false
   },
   
+  // 이미지 최적화 플러그인 설정
   experimental: {
     renderBuiltUrl(filename, { hostType }) {
       if (hostType === 'js') {
@@ -129,5 +132,10 @@ export default defineConfig({
       }
       return { relative: true };
     }
+  },
+  
+  // 이미지 로딩 최적화
+  define: {
+    __SUPPORTS_WEBP__: 'true'
   }
 })
