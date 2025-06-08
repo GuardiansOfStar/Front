@@ -188,7 +188,7 @@ const MakgeolliQuest = () => {
     }
     else if (gamePhase === 'mealLadyArrival') {
     // 새참 아주머니 등장 효과음
-    audioManager.playMessageAlarm();
+    audioManager.playQuestStart();
     
     // mealLadyOpacity 초기화 및 점진적 증가
     setMealLadyOpacity(0);
@@ -209,6 +209,9 @@ const MakgeolliQuest = () => {
     }, getScaledDuration(2000)); // 2초로 단축
     
     return () => clearInterval(mealLadyAnimation);
+  } else if (gamePhase === 'mealLadyIntro') {
+    //메세지 알람 효과음
+    audioManager.playMessageAlarm();
   }
     else if (gamePhase === 'mealTray') {
       //장면 전환 효과음(새참 먹는 시간)
@@ -229,6 +232,10 @@ const MakgeolliQuest = () => {
       audioManager.playQuestStart();
       
       setShowTrayBackground(false);
+    }
+    else if (gamePhase === 'gameInstruction') {
+      //퀘스트 등장 효과음
+      audioManager.playSound('etcSound',0.7);
     }
     else if (gamePhase === 'gamePlay') {
       setGameStartTime(Date.now());
@@ -907,7 +914,7 @@ const MakgeolliQuest = () => {
                 >
                   {selectedOption === 'A' ? (
                     <>
-                      <span className="text-[#0DA429]">잠깐!</span><br />
+                      <span className="text-[#B91C1C]">잠깐!</span><br />
                       <span className="text-black"> 
                         막걸리의 유혹을 이겨내볼까요?<br />
                         새참 속 막걸리를 치우러 가요
