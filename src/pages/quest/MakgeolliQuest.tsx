@@ -1242,7 +1242,6 @@ const MakgeolliQuest = () => {
           </div>
         </div>
       )}
-
     </div>
   );
 };
