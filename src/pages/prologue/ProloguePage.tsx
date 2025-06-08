@@ -443,7 +443,8 @@ const ProloguePage = () => {
             onClick={step === 'encouragement' ? handleDepartClick : handleNextStep}
             className="h-auto cursor-pointer hover:scale-105 transition-transform"
             style={{ 
-              width: step === 'encouragement' ? `calc(320px * ${scale})` : `calc(192px * ${scale})` 
+              width: step === 'encouragement' ? `calc(320px * ${scale})` : `calc(192px * ${scale})`,
+              minHeight: `calc(48px * ${scale})`
             }}
             onLoad={() => {
               if (step === 'encouragement') {
