@@ -72,7 +72,7 @@ const VillageRank = () => {
   useEffect(() => {
     const homeTimer = setTimeout(() => {
       navigate('/');
-    }, 10000); // 10초
+    }, 30000); // 10초
     return () => clearTimeout(homeTimer);
   }, [navigate]);
 
