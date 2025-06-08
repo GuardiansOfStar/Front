@@ -358,8 +358,11 @@ const ScenarioList = () => {
                         width: `${SCENARIO_WIDTH + 68 * scale}px`,
                         backgroundColor: allScenarios[selectedScenarioIndex].locked ? '#718096' : '#0DA429',
                         transformOrigin: 'top',
+                        transform: isConfirming
+                          ? `scale(${SELECTED_SCALE * 1.15* 0.85})`  // 확정 중엔 크게
+                        : `scale(${SELECTED_SCALE* 0.85})`,
                         boxSizing: 'border-box',
-                        marginTop: `calc(16px * ${scale})`,
+                        marginTop: `calc(23px * ${scale})`,
                         marginBottom: `calc(5px * ${scale})`,
                         paddingLeft: `calc(24px * ${scale})`,
                         paddingRight: `calc(24px * ${scale})`,
