@@ -31,8 +31,8 @@ const DrivingPrepPage = () => {
 
     // 다음 화면으로 자동 이동 타이머
     const timer = setTimeout(() => {
-      audioManager.stopSound('setMotor');
       console.log("DrivingPrepPage - 미션 화면으로 이동:", { path: `/quest?scenario=${sId}&quest=${qId}` });
+      audioManager.stopSound('setMotor');
       navigate(`/quest?scenario=${sId}&quest=${qId}`);
     }, 3000);
     
@@ -45,7 +45,6 @@ const DrivingPrepPage = () => {
   // ...existing code...
   // 이륜차 애니메이션
   useEffect(() => {
-
     // 이륜차가 화면을 완전히 지나가는데 필요한 총 거리
     const motorcycleWidth = 740 * scale;
     const totalDistance = window.innerWidth + motorcycleWidth + 100; // 시작점(-100) + 화면폭 + 오토바이폭 + 여유

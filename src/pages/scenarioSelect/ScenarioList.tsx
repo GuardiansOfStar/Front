@@ -102,7 +102,7 @@ const ScenarioList = () => {
     
     // 시나리오 터치/클릭 핸들러
     const handleScenarioTouch = (index: number) => {
-        //선택 버튼 효과음
+        //시나리오 선택 버튼 효과음
         if (!allScenarios[index].locked) {
             audioManager.playSound('etcSound', 0.7);
         }
@@ -169,6 +169,8 @@ const ScenarioList = () => {
     
     // 왼쪽 버튼 클릭 핸들러
     const handleLeftClick = () => {
+        //선택 버튼 효과음
+        audioManager.playButtonClick();
         if (selectedScenarioIndex > 0 && !isConfirming) {
             setSelectedScenarioIndex(prev => prev - 1);
         }
@@ -176,6 +178,8 @@ const ScenarioList = () => {
 
     // 오른쪽 버튼 클릭 핸들러
     const handleRightClick = () => {
+        //선택 버튼 효과음
+        audioManager.playButtonClick();
         if (selectedScenarioIndex < allScenarios.length - 1 && !isConfirming) {
             setSelectedScenarioIndex(prev => prev + 1);
         }
