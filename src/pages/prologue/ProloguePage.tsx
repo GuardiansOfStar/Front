@@ -14,6 +14,7 @@ import { audioManager } from '../../utils/audioManager';
 import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 import { simpleImagePreloader } from '../../utils/simpleImagePreloader';
+import { stopBgm } from '../../utils/backgroundMusic';
 
 // 이미지 임포트
 const scenario1FullMap = '/assets/images/scenario1_full_map.png';
@@ -74,6 +75,12 @@ const ProloguePage = () => {
     }
   }, [location, step]);
 
+  useEffect(() => {
+    if (step === 'letterMessage') {
+      stopBgm('sparrow_land');
+    }
+  }, [step]);
+  
   //미션 제공 효과음
   useEffect(() => {
     if (step === 'mission') {

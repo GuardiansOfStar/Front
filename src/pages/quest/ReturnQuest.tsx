@@ -8,6 +8,7 @@ import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attem
 import { useCharacter } from '../../context/CharacterContext';
 import { audioManager } from '../../utils/audioManager';
 import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
+import { initBgm, playBgm, stopBgm, unloadBgm } from '../../utils/backgroundMusic';
 
 // 이미지 임포트
 const homecomingTimeSettingBackground = '/assets/images/homecoming_time_setting_tree_road.png';
@@ -85,6 +86,34 @@ const ReturnQuest = () => {
     setScenarioId(sId);
     setQuestId(qId || '5');
   }, [location]);
+
+   // 1) 마운트 시 단 한 번 BGM 초기화, 언마운트 시 해제
+  //
+  useEffect(() => {
+    (async () => {
+      await initBgm('del_rio_bravo');
+      //console.log('init del_rio_bravo bgm');
+      if (gamePhase === 'sunsetAnimation') {
+        playBgm('del_rio_bravo');
+        //console.log('play del_rio_bravo on mount');
+      }
+    })();
+
+    return () => {
+      unloadBgm('del_rio_bravo');
+      //console.log('unload del_rio_bravo bgm on unmount');
+    };
+  }, []);
+
+  //
+  // 2) gamePhase 변화에 따른 play/stop
+  //
+  useEffect(() => {
+    if (gamePhase === 'failSequence1'  || gamePhase === 'successResult' ) {
+      stopBgm('del_rio_bravo');
+      //console.log('stop del_rio_bravo on phase:', gamePhase);
+    }
+  }, [gamePhase]);
 
   // 시간을 비율로 변환 (5시=0, 9시=1)
   const hourToRatio = useCallback((hour: number): number => {
