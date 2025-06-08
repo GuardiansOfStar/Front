@@ -62,7 +62,7 @@ const CharacterSelectPage = () => {
   const handleBackToScenarios = () => {
     //선택 버튼 효과음
     audioManager.playButtonClick();
-    navigate('/scenarios');
+    navigate('/scenario-select');
   };
 
   return (

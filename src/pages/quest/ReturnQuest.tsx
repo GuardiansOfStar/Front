@@ -378,7 +378,7 @@ const ReturnQuest = () => {
     }
     else if (gamePhase === 'failSequence1') {
       //사고 전 긴장 효과음
-      audioManager.playSound('accidentBefore', 0.7);
+      audioManager.playSound('accidentBefore', 1.0);
 
       timer = setTimeout(() => {
         setGamePhase('failSequence2');
@@ -391,7 +391,7 @@ const ReturnQuest = () => {
     }
     else if (gamePhase === 'failSequence3') {
       //고라니 울음 소리
-      audioManager.playSound('accidentGorani', 0.8);
+      audioManager.playSound('accidentGorani', 1.0);
 
       timer = setTimeout(() => {
         setGamePhase('failSequence4');

@@ -9,8 +9,8 @@ import { useScale } from '../../hooks/useScale';
 // import { useScore } from '../../context/ScoreContext';
 import { useCharacter } from '../../context/CharacterContext';
 import { audioManager } from '../../utils/audioManager';
-import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 import { initBgm, playBgm, stopBgm, unloadBgm } from '../../utils/backgroundMusic';
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 // 이미지 임포트
 const gameBackground = '/assets/images/pre_drive_background.png';
@@ -394,14 +394,14 @@ const MemoryCardQuest: React.FC = () => {
       audioManager.playSound('helmetOn',0.7);
     }else if (gamePhase === 'showGift') {
       //선물 상자 흔들기
-      audioManager.playSound('shakingBox',0.7);
+      audioManager.playSound('shakingBox',1.0);
     }
   }, [gamePhase]);
 
   useEffect(() => {
     if (giftAnimationStage === 2) {
       // 상자 열린 효과음
-      audioManager.playSound('openBox',0.7);
+      audioManager.playSound('openBox',0.9);
     }
   }, [giftAnimationStage]);
 
@@ -452,7 +452,7 @@ const MemoryCardQuest: React.FC = () => {
     const card = cards.find(c => c.id === id);
     if (!card || card.isFlipped || card.isMatched) return;
 
-    //카드 클릭 효과음음
+    //카드 클릭 효과음
     audioManager.playSound('cardClick',0.7);
 
     setCards(prev =>

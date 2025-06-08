@@ -222,7 +222,7 @@ const PotholeQuest = () => {
     } else {
       // 오답 선택
       setTimeout(() => {
-        audioManager.playSound('accidentMotor', 0.7);
+        audioManager.playSound('accidentMotor', 1.0);
         setGamePhase('fadeOut');
 
         setTimeout(() => {

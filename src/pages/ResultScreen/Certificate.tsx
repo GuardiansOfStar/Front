@@ -18,6 +18,11 @@ const Certificate = () => {
   const navigate = useNavigate();
   const scale = useScale();
 
+  //음성 메세지 추가
+  useEffect(() => {
+    audioManager.playSound('childThanks', 0.5);
+  },);
+
   //효과음을 위해 핸들러 추가
   const handleDriveEnd = () => {
     audioManager.playButtonClick();

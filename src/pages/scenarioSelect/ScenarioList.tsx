@@ -110,8 +110,10 @@ const ScenarioList = () => {
     
     // 시나리오 터치/클릭 핸들러
     const handleScenarioTouch = (index: number) => {
-        //선택 버튼 효과음
-        audioManager.playSound('etcSound', 0.7);
+        //시나리오 선택 버튼 효과음
+        if (!allScenarios[index].locked) {
+            audioManager.playSound('etcSound', 0.7);
+        }
         
         if (isDragging || dragDistance > 10 || isConfirming) return; // 확정 중에는 터치 무시
         
@@ -175,6 +177,8 @@ const ScenarioList = () => {
     
     // 왼쪽 버튼 클릭 핸들러
     const handleLeftClick = () => {
+        //선택 버튼 효과음
+        audioManager.playButtonClick();
         if (selectedScenarioIndex > 0 && !isConfirming) {
             setSelectedScenarioIndex(prev => prev - 1);
         }
@@ -182,6 +186,8 @@ const ScenarioList = () => {
 
     // 오른쪽 버튼 클릭 핸들러
     const handleRightClick = () => {
+        //선택 버튼 효과음
+        audioManager.playButtonClick();
         if (selectedScenarioIndex < allScenarios.length - 1 && !isConfirming) {
             setSelectedScenarioIndex(prev => prev + 1);
         }
@@ -358,8 +364,9 @@ const ScenarioList = () => {
                         width: `${SCENARIO_WIDTH + 68 * scale}px`,
                         backgroundColor: allScenarios[selectedScenarioIndex].locked ? '#718096' : '#0DA429',
                         transformOrigin: 'top',
+                        transform: `scale(${SELECTED_SCALE* 0.85})`, // isConfirming 조건 제거
                         boxSizing: 'border-box',
-                        marginTop: `calc(16px * ${scale})`,
+                        marginTop: `calc(23px * ${scale})`,
                         marginBottom: `calc(5px * ${scale})`,
                         paddingLeft: `calc(24px * ${scale})`,
                         paddingRight: `calc(24px * ${scale})`,

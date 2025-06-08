@@ -9,6 +9,7 @@ import { useScale } from '../../hooks/useScale';
 // import { useScore } from '../../context/ScoreContext';
 import { audioManager } from '../../utils/audioManager';
 import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
+
 import { initBgm, playBgm, stopBgm, unloadBgm } from '../../utils/backgroundMusic';
 
 import { simpleImagePreloader } from '../../utils/simpleImagePreloader';
@@ -171,6 +172,7 @@ const MakgeolliQuest = () => {
     else if (gamePhase === 'fieldArrival') {
       //장면 전환 효과음(과수원 도착)
       audioManager.playsceneSwitch()
+
       timer = setTimeout(() => {
         setGamePhase('working');
       }, getScaledDuration(3000));
@@ -178,6 +180,7 @@ const MakgeolliQuest = () => {
     else if (gamePhase === 'working') {
       //작업중 효과음
       audioManager.playSound('working', 1);
+      
       timer = setTimeout(() => {
         audioManager.stopSound('working');
         setGamePhase('mealLadyArrival');
@@ -185,7 +188,7 @@ const MakgeolliQuest = () => {
     }
     else if (gamePhase === 'mealLadyArrival') {
     // 새참 아주머니 등장 효과음
-    audioManager.playMessageAlarm();
+    audioManager.playQuestStart();
     
     // mealLadyOpacity 초기화 및 점진적 증가
     setMealLadyOpacity(0);
@@ -206,6 +209,9 @@ const MakgeolliQuest = () => {
     }, getScaledDuration(2000)); // 2초로 단축
     
     return () => clearInterval(mealLadyAnimation);
+  } else if (gamePhase === 'mealLadyIntro') {
+    //메세지 알람 효과음
+    audioManager.playMessageAlarm();
   }
     else if (gamePhase === 'mealTray') {
       //장면 전환 효과음(새참 먹는 시간)
@@ -224,7 +230,12 @@ const MakgeolliQuest = () => {
     else if (gamePhase === 'missionIntro') {
       //퀘스트 등장 효과음
       audioManager.playQuestStart();
+      
       setShowTrayBackground(false);
+    }
+    else if (gamePhase === 'gameInstruction') {
+      //퀘스트 등장 효과음
+      audioManager.playSound('etcSound',0.7);
     }
     else if (gamePhase === 'gamePlay') {
       setGameStartTime(Date.now());
@@ -549,6 +560,7 @@ const MakgeolliQuest = () => {
             className="absolute"
             style={{
               top: `calc(27% * ${scale})`,
+              left: 0 ,
               width: `calc(150px * ${scale})`,
               height: 'auto'
             }}
@@ -902,7 +914,7 @@ const MakgeolliQuest = () => {
                 >
                   {selectedOption === 'A' ? (
                     <>
-                      <span className="text-[#0DA429]">잠깐!</span><br />
+                      <span className="text-[#B91C1C]">잠깐!</span><br />
                       <span className="text-black"> 
                         막걸리의 유혹을 이겨내볼까요?<br />
                         새참 속 막걸리를 치우러 가요
@@ -1241,7 +1253,6 @@ const MakgeolliQuest = () => {
           </div>
         </div>
       )}
-
     </div>
   );
 };
