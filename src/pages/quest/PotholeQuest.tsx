@@ -8,6 +8,7 @@ import GameTitle from '../../components/ui/GameTitle';
 // import { useScore } from '../../context/ScoreContext';
 import { useCharacter } from '../../context/CharacterContext';
 import { audioManager } from '../../utils/audioManager';
+import { initBgm, playBgm, stopBgm, unloadBgm } from '../../utils/backgroundMusic';
 
 import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
@@ -61,6 +62,38 @@ const PotholeQuest = () => {
     setQuestId(qId || '2');
   }, [location]);
 
+  // 1) 최초 마운트 시 BGM 로드
+  useEffect(() => {
+    (async () => {
+      await initBgm('del_rio_bravo');
+      //console.log('init bgm');
+
+      // 마운트 직후 driving 단계라면 재생
+      if (gamePhase === 'driving') {
+        //console.log('주행 시작 bgm');
+        playBgm('del_rio_bravo');
+      }
+    })();
+
+    // 언마운트 시 해제
+    return () => {
+      unloadBgm('del_rio_bravo');
+      //console.log('unload bgm on unmount');
+    };
+  }, []); // 한 번만 실행
+
+  // 2) gamePhase 가 바뀔 때마다 재생/정지
+  useEffect(() => {
+    if (gamePhase === 'driving') {
+      playBgm('del_rio_bravo');
+      //console.log('play bgm on driving phase');
+    }
+    if (gamePhase === 'successResult' || gamePhase === 'fadeOut' || gamePhase === 'failResult') {
+      stopBgm('del_rio_bravo');
+      //console.log('stop bgm on end phases');
+    }
+  }, [gamePhase]);
+
 
 
   // 주행 단계 타이밍 제어
@@ -68,7 +101,7 @@ const PotholeQuest = () => {
     if (gamePhase === 'driving') {
       //장면 전환 효과음(주행 시작)
       audioManager.playsceneSwitch()
-
+      
       // 1초 후 애니메이션 시작
       const animationTimer = setTimeout(() => {
         setStartAnimation(true);
