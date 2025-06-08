@@ -28,6 +28,8 @@ class AudioManager {
             missionGuide: '/assets/sound/prologue/mission_guide.mp3',
             mapGuide: '/assets/sound/prologue/map_guide.mp3',
             setMotor: '/assets/sound/prologue/bring_motorcycle.mp3',
+            childGrandMother: '/assets/sound/prologue/child_grandmother.wav',
+            childGrandFather: '/assets/sound/prologue/child_grandfather.wav',
 
             //퀘스트 효과음
             beginQuest: '/assets/sound/quest/appear_quest.wav',
@@ -62,9 +64,10 @@ class AudioManager {
             working: '/assets/sound/transition/working.mp3',
 
             //결과 효과음
-            goalIn: 'assets/sound/result/goal_clap.wav',
+            goalIn: 'assets/sound/result/goal_clap.mp3',
             reportGeneral: '/assets/sound/result/report_general.mp3',
-            reportPerfect: '/assets/sound/result/report_perfect.mp3'
+            reportPerfect: '/assets/sound/result/report_perfect.mp3',
+            childThanks: 'assets/sound/result/child_thx.wav'
         };
     }
 

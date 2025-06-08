@@ -67,9 +67,11 @@ const ProloguePage = () => {
     }
   }, [location, step]);
 
-  //미션 제공 효과음
+  //효과음
   useEffect(() => {
     if (step === 'mission') {
+      audioManager.playSound('missionGuide', 0.5);
+    } else if (step === 'encouragement') {
       audioManager.playSound('missionGuide', 0.5);
     }
   },[step]);
