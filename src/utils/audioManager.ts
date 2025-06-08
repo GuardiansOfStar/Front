@@ -25,18 +25,18 @@ class AudioManager {
             etcSound: '/assets/sound/common/basic_alarm.mp3',
 
             //프롤로그 효과음
-            missionGuide: '/assets/sound/prologue/mission_guide.mp3',
+            missionGuide: '/assets/sound/prologue/mission_guide.wav',
             mapGuide: '/assets/sound/prologue/map_guide.mp3',
             setMotor: '/assets/sound/prologue/bring_motorcycle.mp3',
             childGrandMother: '/assets/sound/prologue/child_grandmother.wav',
             childGrandFather: '/assets/sound/prologue/child_grandfather.wav',
 
             //퀘스트 효과음
-            beginQuest: '/assets/sound/quest/appear_quest.wav',
+            beginQuest: '/assets/sound/quest/quest_start.wav',
             selectAnswer: '/assets/sound/quest/select_answer.mp3',
             //퀘스트 정답 효과음
             rightAnswer: '/assets/sound/quest/right_answer.mp3',
-            goodFeedback: '/assets/sound/quest/good_feedback.mp3',
+            goodFeedback: '/assets/sound/quest/good_feedback.wav',
             //퀘스트 오답 효과음
             accidentMotor: '/assets/sound/quest/q2(4)_acc_simul.mp3',
             accidentBefore: '/assets/sound/quest/q5_before_acc.mp3',
@@ -55,13 +55,13 @@ class AudioManager {
             //퀘스트5 관련 효과음
             barClick: '/assets/sound/quest/q5_drag_click.mp3',
             //퀘스트 점수 효과음
-            highScore: '/assets/sound/quest/q_score_up.mp3',
-            lowScore: '/assets/sound/quest/q_score_down.mp3',
+            highScore: '/assets/sound/quest/q_score_up.wav',
+            lowScore: '/assets/sound/quest/q_score_down.wav',
 
             //화면 전환 효과음
             sceneSwitch: '/assets/sound/transition/scene_switch.mp3',
             appleBox: '/assets/sound/transition/stacking_box.mp3',
-            working: '/assets/sound/transition/working.mp3',
+            working: '/assets/sound/transition/working_bird.mp3',
 
             //결과 효과음
             goalIn: 'assets/sound/result/goal_clap.mp3',

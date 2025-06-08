@@ -72,7 +72,7 @@ const ProloguePage = () => {
     if (step === 'mission') {
       audioManager.playSound('missionGuide', 0.5);
     } else if (step === 'encouragement') {
-      audioManager.playSound('missionGuide', 0.5);
+      audioManager.playSound('childGrandFather', 0.5);
     }
   },[step]);
 
