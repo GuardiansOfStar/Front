@@ -132,6 +132,7 @@ const MakgeolliQuest = () => {
     else if (gamePhase === 'fieldArrival') {
       //장면 전환 효과음(과수원 도착)
       audioManager.playsceneSwitch()
+
       timer = setTimeout(() => {
         setGamePhase('working');
       }, getScaledDuration(3000));
@@ -139,6 +140,7 @@ const MakgeolliQuest = () => {
     else if (gamePhase === 'working') {
       //작업중 효과음
       audioManager.playSound('working', 1);
+      
       timer = setTimeout(() => {
         audioManager.stopSound('working');
         setGamePhase('mealLadyArrival');
@@ -147,6 +149,7 @@ const MakgeolliQuest = () => {
     else if (gamePhase === 'mealLadyArrival') {
       //효과음(새참 아주머니 등장)
       audioManager.playMessageAlarm()
+
       const mealLadyAnimation = setInterval(() => {
         setMealLadyOpacity(prev => {
           if (prev >= 1) {
@@ -180,6 +183,7 @@ const MakgeolliQuest = () => {
     else if (gamePhase === 'missionIntro') {
       //퀘스트 등장 효과음
       audioManager.playQuestStart();
+      
       setShowTrayBackground(false);
     }
     else if (gamePhase === 'gamePlay') {
@@ -968,7 +972,7 @@ const MakgeolliQuest = () => {
             "z-30"
           )}
           
-          {/* 게임 안내 텍스트 */}
+          {/* 게임 안내 텍스트
           <div 
             className="absolute bg-white bg-opacity-90 border-4 border-green-600 rounded-xl shadow-lg z-50"
             style={{
@@ -988,7 +992,7 @@ const MakgeolliQuest = () => {
                 ? "4개 찾았어요! 1개 더 찾아주세요!"
                 : `${foundCount}개 찾았어요! ${5-foundCount}개 더 찾아주세요!`}
             </p>
-          </div>
+          </div>*/}
         </div>
       )}
       
