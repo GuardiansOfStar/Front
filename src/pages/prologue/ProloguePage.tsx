@@ -314,46 +314,47 @@ const ProloguePage = () => {
 
   // 격려 메시지 컨텐츠
   const EncouragementContent = () => (
-    <div className="absolute inset-0 flex items-start justify-center z-20" style={{ 
-      paddingTop: `calc(250px * ${scale})` // 이 값을 조정하여 원하는 만큼 아래로 내림
-    }}>
-      <motion.div 
-        className="relative w-4/5"
-        style={{ maxWidth: `calc(1024px * ${scale})` }}
-        initial={{ opacity: 0, y: `calc(20px * ${scale})` }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <EnhancedOptimizedImage
-          src={grandchildren} 
-          alt="손자손녀" 
-          className="absolute left-1/2 transform -translate-x-1/2 z-20"
-          style={{
-            top: `calc(-168px * ${scale})`,
-            width: `calc(380px * ${scale})`,
-            height: 'auto'
-          }}
-        />
-        
-        <div 
-          className="bg-[#FFFAFA] bg-opacity-90 border-[#0E8212]/80 rounded-xl w-full text-center"
-          style={{
-            borderWidth: `calc(12px * ${scale})`,
-            borderRadius: `calc(52px * ${scale})`,
-            padding: `calc(48px * ${scale})`,
-            paddingTop: `calc(80px * ${scale})`,
-            marginBottom: `${20 * scale}px`,
-          }}
+    <div className="absolute inset-0 flex flex-col justify-between z-20" 
+        style={{ paddingTop: `calc(120px * ${scale})`, paddingBottom: `calc(100px * ${scale})` }}>
+      {/* 컨텐츠 영역 - 중앙 정렬 */}
+      <div className="flex-1 flex items-center justify-center">
+        <motion.div 
+          className="relative w-4/5"
+          style={{ maxWidth: `calc(1024px * ${scale})` }}
+          initial={{ opacity: 0, y: `calc(20px * ${scale})` }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
         >
-          <p 
-            className="font-black text-black"
-            style={{ fontSize: `${48 * scale}px` }}
+          <EnhancedOptimizedImage
+            src={grandchildren} 
+            alt="손자손녀" 
+            className="absolute left-1/2 transform -translate-x-1/2 z-20"
+            style={{
+              top: `calc(-170px * ${scale})`,
+              width: `calc(380px * ${scale})`,
+              height: 'auto'
+            }}
+          />
+          
+          <div 
+            className="bg-[#FFFAFA] bg-opacity-90 border-[#0E8212]/80 rounded-xl w-full text-center"
+            style={{
+              borderWidth: `calc(12px * ${scale})`,
+              borderRadius: `calc(52px * ${scale})`,
+              padding: `calc(48px * ${scale})`,
+              paddingTop: `calc(80px * ${scale})`,
+            }}
           >
-            무엇보다 {characterLabel}가 제일 소중해요!<br />
-            조심히 다녀오세요!
-          </p>
-        </div>
-      </motion.div>
+            <p 
+              className="font-black text-black"
+              style={{ fontSize: `${48 * scale}px` }}
+            >
+              무엇보다 {characterLabel}가 제일 소중해요!<br />
+              조심히 다녀오세요!
+            </p>
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 
@@ -365,8 +366,68 @@ const ProloguePage = () => {
 
     return (
       <>
-        {step === 'mission' && (
-          <BackButton onClick={handleBackToCharacterSelect} />
+        {(step === 'mission' || 
+  (step === 'map' && showMessage)) && (
+          <div 
+            className="absolute left-0 right-0 flex justify-center items-center z-50"
+            style={{ 
+              bottom: `calc(48px * ${scale})`
+            }}
+          >
+            <EnhancedOptimizedImage
+              src={nextButton}
+              alt="다음"
+              onClick={handleNextStep}
+              className="h-auto cursor-pointer hover:scale-105 transition-transform"
+              style={{ 
+                width: `calc(192px * ${scale})`
+              }}
+            />
+          </div>
+        )}
+
+        {/* encouragement 단계 전용 버튼 */}
+        {step === 'encouragement' && (
+          <div 
+            className="absolute left-0 right-0 flex justify-center items-center z-50"
+            style={{ 
+              bottom: `calc(-32px * ${scale})`
+            }}
+          >
+            <EnhancedOptimizedImage
+              src={departButton}
+              alt="출발하기"
+              onClick={handleDepartClick}
+              className="h-auto cursor-pointer hover:scale-105 transition-transform"
+              style={{ 
+                width: `calc(320px * ${scale})`,
+                minHeight: `calc(48px * ${scale})`
+              }}
+              onLoad={() => {
+                console.log('[ProloguePage] 출발하기 버튼 이미지 로딩 완료');
+              }}
+              onError={(error) => {
+                console.error('[ProloguePage] 출발하기 버튼 이미지 로딩 실패:', error);
+              }}
+            />
+          </div>
+        )}
+        
+        {/* encouragement 단계에서만 홈 버튼 표시 */}
+        {step === 'encouragement' && (
+          <EnhancedOptimizedImage
+            src={homeButton}
+            alt="홈으로"
+            onClick={handleGoHome}
+            className="absolute cursor-pointer hover:scale-105 transition-transform"
+            style={{ 
+              top: `calc(48px * ${scale})`,
+              right: `calc(48px * ${scale})`,
+              width: `calc(120px * ${scale})`,
+              height: 'auto',
+              zIndex: 60
+            }}
+          />
         )}
         
         {/* encouragement 단계에서만 홈 버튼 표시 */}
@@ -428,40 +489,7 @@ const ProloguePage = () => {
       {step === 'map' && <MapContent />}
       {step === 'letterMessage' && <LetterMessageContent />}
       {step === 'encouragement' && <EncouragementContent />}
-      
-      {/* 버튼 렌더링 - 수정된 부분 */}
-      {(step === 'mission' || 
-        (step === 'map' && showMessage) || 
-        step === 'encouragement') && (
-        <div 
-          className="absolute left-0 right-0 flex justify-center items-center z-50"
-          style={{ 
-            // 수정: encouragement에서도 양수 값으로 변경
-            bottom: step === 'encouragement' ? `calc(-50px * ${scale})` : `calc(48px * ${scale})` 
-          }}
-        >
-          
-          <EnhancedOptimizedImage
-            src={step === 'encouragement' ? departButton : nextButton}
-            alt={step === 'encouragement' ? '출발하기' : '다음'}
-            onClick={step === 'encouragement' ? handleDepartClick : handleNextStep}
-            className="h-auto cursor-pointer hover:scale-105 transition-transform"
-            style={{ 
-              width: step === 'encouragement' ? `calc(320px * ${scale})` : `calc(192px * ${scale})` 
-            }}
-            onLoad={() => {
-              if (step === 'encouragement') {
-                console.log('[ProloguePage] 출발하기 버튼 이미지 로딩 완료');
-              }
-            }}
-            onError={(error) => {
-              if (step === 'encouragement') {
-                console.error('[ProloguePage] 출발하기 버튼 이미지 로딩 실패:', error);
-              }
-            }}
-          />
-        </div>
-      )}
+    
       
       {/* 추가: 디버깅용 현재 단계 표시
       {process.env.NODE_ENV === 'development' && (

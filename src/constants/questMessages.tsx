@@ -12,7 +12,7 @@ export const questMessages: Record<string, { success: string; failure: string }>
     failure: "달콤한 음주의 유혹\n당신이 막아주세요",
   },
   Return: {
-    success: "해가 지기 전\n집으로 가는 모습이\n듬직해요",
+    success: "해가 지기 전\n집으로 가는 모습이\n든든해요",
     failure: "야간 사고는\n예측할 수 없어\n더 위험해요",
   },
   Harvest: {

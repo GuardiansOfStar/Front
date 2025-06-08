@@ -364,8 +364,9 @@ const ScenarioList = () => {
                         width: `${SCENARIO_WIDTH + 68 * scale}px`,
                         backgroundColor: allScenarios[selectedScenarioIndex].locked ? '#718096' : '#0DA429',
                         transformOrigin: 'top',
+                        transform: `scale(${SELECTED_SCALE* 0.85})`, // isConfirming 조건 제거
                         boxSizing: 'border-box',
-                        marginTop: `calc(16px * ${scale})`,
+                        marginTop: `calc(23px * ${scale})`,
                         marginBottom: `calc(5px * ${scale})`,
                         paddingLeft: `calc(24px * ${scale})`,
                         paddingRight: `calc(24px * ${scale})`,

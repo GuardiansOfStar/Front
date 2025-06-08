@@ -7,8 +7,8 @@ import EnhancedLoadingScreen from './components/ui/SimpleLoadingScreen';
 import { useDragPrevention } from './hooks/useDragPrevention';
 
 // 레이아웃 컴포넌트들
-import StartPrologueLayout from './components/layout/StartPrologueLayout';
-import QuestLayout from './components/layout/QuestLayout';
+// import StartPrologueLayout from './components/layout/StartPrologueLayout';
+// import QuestLayout from './components/layout/QuestLayout';
 import ResultLayout from './components/layout/ResultLayout'
 
 // 페이지 컴포넌트들
@@ -53,7 +53,6 @@ function App() {
       <AspectRatioContainer>
         <Routes>
           {/* 시작 및 프롤로그 화면들 */}
-          <Route element={<StartPrologueLayout />}>
             <Route path="/" element={<Navigate to="/home" replace />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/setting" element={<SettingPage />} />
@@ -61,19 +60,19 @@ function App() {
             <Route path="/character-select" element={<CharacterSelectPage />} />
             <Route path="/prologue" element={<ProloguePage />} />
             <Route path="/driving-prep" element={<DrivingPrepPage />} />
-          </Route>
+          
 
           {/* 퀘스트 화면들 */}
-          <Route element={<QuestLayout />}>
             <Route path="/quest" element={<MemoryCardQuest />} />
             <Route path="/pothole-quest" element={<PotholeQuest />} />
             <Route path="/makgeolli-quest" element={<MakgeolliQuest/>} />
             <Route path="/harvest-quest" element={<HarvestQuest />} />
             <Route path="/return-quest" element={<ReturnQuest/>}/>
             <Route path="/score" element={<ScorePage />} />
-          </Route>
+          
            
           {/* 주행 완료 관련 화면들 */}
+          
           <Route path="/success" element={<SuccessBackground />} />
           <Route path="/completion" element={<CompletionBackground />} />
           <Route path='/perfect' element={<PerfectScore/>} />

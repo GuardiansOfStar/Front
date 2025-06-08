@@ -10,6 +10,8 @@ import { useScale } from '../../hooks/useScale';
 import { audioManager } from '../../utils/audioManager';
 import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
+import { initBgm, playBgm, stopBgm, unloadBgm } from '../../utils/backgroundMusic';
+
 import { simpleImagePreloader } from '../../utils/simpleImagePreloader';
 
 // 이미지 임포트
@@ -119,6 +121,39 @@ const MakgeolliQuest = () => {
     setScenarioId(sId);
     setQuestId('3');
   }, [location]);
+
+ // 1) 마운트 시 단 한 번 BGM 초기화, 언마운트 시 해제
+  //
+  useEffect(() => {
+    (async () => {
+      await initBgm('del_rio_bravo');
+      //console.log('init del_rio_bravo bgm');
+      // 초기 페이즈가 roadToField 면 바로 재생
+      if (gamePhase === 'roadToField') {
+        playBgm('del_rio_bravo');
+        //console.log('play del_rio_bravo on mount');
+      }
+    })();
+
+    return () => {
+      unloadBgm('del_rio_bravo');
+      //console.log('unload del_rio_bravo bgm on unmount');
+    };
+  }, []);
+
+  //
+  // 2) gamePhase 변화에 따른 play/stop
+  //
+  useEffect(() => {
+    if (gamePhase === 'roadToField' || gamePhase === 'gamePlay') {
+      playBgm('del_rio_bravo');
+      //console.log('play del_rio_bravo on phase:', gamePhase);
+    }
+    if (gamePhase === 'mealLadyArrival' || gamePhase === 'score') {
+      stopBgm('del_rio_bravo');
+      //console.log('stop del_rio_bravo on phase:', gamePhase);
+    }
+  }, [gamePhase]);
 
   // 단계별 자동 진행 - 스케일 적용된 타이밍
   useEffect(() => {
@@ -518,6 +553,7 @@ const MakgeolliQuest = () => {
             className="absolute"
             style={{
               top: `calc(27% * ${scale})`,
+              left: 0 ,
               width: `calc(150px * ${scale})`,
               height: 'auto'
             }}
@@ -1014,30 +1050,8 @@ const MakgeolliQuest = () => {
             </>,
             "z-30"
           )}
-          
-          {/* 게임 안내 텍스트 */}
-          <div 
-            className="absolute bg-white bg-opacity-90 border-4 border-green-600 rounded-xl shadow-lg z-50"
-            style={{
-              top: `calc(16px * ${scale})`,
-              left: `calc(16px * ${scale})`,
-              padding: `calc(16px * ${scale})`,
-              maxWidth: `calc(512px * ${scale})`
-            }}
-          >
-            <p 
-              className="text-green-700 font-bold text-center"
-              style={{ fontSize: `calc(1.25rem * ${scale})` }}
-            >
-              {foundCount === 0 
-                ? "화면에서 막걸리 5개를 모두 찾아 치워주세요!" 
-                : foundCount === 4
-                ? "4개 찾았어요! 1개 더 찾아주세요!"
-                : `${foundCount}개 찾았어요! ${5-foundCount}개 더 찾아주세요!`}
-            </p>
           </div>
-        </div>
-      )}
+        )}
       
       {/* 성공 화면 */}
       {gamePhase === 'success' && (
@@ -1232,7 +1246,6 @@ const MakgeolliQuest = () => {
           </div>
         </div>
       )}
-
     </div>
   );
 };
