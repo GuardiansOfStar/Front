@@ -9,6 +9,10 @@ import GameTitle from '../../components/ui/GameTitle';
 import { useCharacter } from '../../context/CharacterContext';
 import { audioManager } from '../../utils/audioManager';
 
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
+
+import { simpleImagePreloader } from '../../utils/simpleImagePreloader';
+
 // 이미지 임포트
 const drivingRoad = '/assets/images/driving_road.png';
 const motorcycle = '/assets/images/motorcycle.png';
@@ -30,6 +34,7 @@ type GamePhase =
 const PotholeQuest = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
   const [scenarioId, setScenarioId] = useState<string | null>(null);
   const [questId, setQuestId] = useState<string | null>(null);
   const [gamePhase, setGamePhase] = useState<GamePhase>('driving');
@@ -109,6 +114,18 @@ const PotholeQuest = () => {
       setShowWarning(false);
     }
   }, [gamePhase, scale]);
+
+  useEffect(() => {
+    // 포트홀 퀘스트 이미지 프리로드
+    simpleImagePreloader.preloadImages([
+      drivingRoad,
+      motorcycle,
+      smallPothole,
+      potholeAccident,
+      dangerWarning,
+      successCircle
+    ]);
+  }, []);
 
   const handleConfirmClick = () => {
     //선택 버튼 효과음
@@ -196,14 +213,14 @@ const PotholeQuest = () => {
             willChange: 'transform',
           }}
         >
-          <img
+          <EnhancedOptimizedImage
             src={drivingRoad}
             alt="주행 배경"
             className="w-full h-auto object-contain"
           />
           
           {/* 포트홀을 배경 이미지의 특정 위치에 미리 배치 */}
-          <img
+          <EnhancedOptimizedImage
             src={smallPothole}
             alt="포트홀"
             className="absolute"
@@ -236,7 +253,7 @@ const PotholeQuest = () => {
         <div className="absolute inset-0">
           {/* 오토바이 이미지 - 화면 하단 중앙, 크게 */}
           <div className="absolute bottom-0 w-full flex justify-center">
-            <img 
+            <EnhancedOptimizedImage
               src={motorcycle} 
               alt="이륜차" 
               className="object-contain object-bottom"
@@ -293,8 +310,8 @@ const PotholeQuest = () => {
               <h2 
                 className="font-black text-[#0DA429] text-center"
                 style={{ 
-                  fontSize: `calc(3.5rem * ${scale})`,
-                  marginTop: `calc(-8px * ${scale})`
+                  fontSize: `calc(64px * ${scale})`,
+                  marginTop: `calc(-4px * ${scale})`
                 }}
               >
                 구덩이 조심
@@ -302,9 +319,8 @@ const PotholeQuest = () => {
               <p
                 className="text-black text-center font-black leading-relaxed"
                 style={{
-                  fontSize: `calc(2.3rem * ${scale})`,
-                  marginTop: `calc(25px * ${scale})`,
-                  letterSpacing: `calc(0.05em * ${scale})`
+                  fontSize: `calc(44px * ${scale})`,
+                  marginTop: `calc(16px * ${scale})`,
                 }}
               >
                 앞에 큰 <span style={{ color: '#B91C1C' }}>구덩이</span>가 있어요!<br/>
@@ -434,7 +450,7 @@ const PotholeQuest = () => {
                 willChange: 'transform',
               }}
             >
-              <img
+              <EnhancedOptimizedImage
                 src={drivingRoad}
                 alt="주행 배경"
                 className="w-full h-auto object-contain"
@@ -501,7 +517,7 @@ const PotholeQuest = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
             >
-              <img 
+              <EnhancedOptimizedImage
                 src={confirmButton} 
                 alt="확인 버튼" 
                 className="w-full h-auto"
@@ -540,7 +556,7 @@ const PotholeQuest = () => {
       {/* 오답 결과 화면 */}
       {gamePhase === 'failResult' && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <img
+          <EnhancedOptimizedImage
             src={characterImages.potholeAccident}
             alt="사고 장면"
             className="absolute inset-0 w-full h-full object-cover"
@@ -612,7 +628,7 @@ const PotholeQuest = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
               >
-                <img 
+                <EnhancedOptimizedImage
                   src={confirmButton} 
                   alt="확인 버튼" 
                   className="w-full h-auto"

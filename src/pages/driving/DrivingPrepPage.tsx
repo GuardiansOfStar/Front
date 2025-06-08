@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useScale } from '../../hooks/useScale';
 import { audioManager } from '../../utils/audioManager';
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 // 이미지 임포트
 const drivingBackground = '/assets/images/background.png';
@@ -82,8 +83,8 @@ const DrivingPrepPage = () => {
         style={{ 
           position: 'absolute',
           left: `${motorcyclePosition * scale}px`,
-          bottom: `calc(-10% * ${scale})`,
-          width: `calc(740px * ${scale})`,
+          bottom: `calc(0% * ${scale})`,
+          width: `calc(649px * ${scale})`,
           height: 'auto',
         }}
       />

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useScale } from '../../hooks/useScale';
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 const star_character = '/assets/images/star_character.png'
 

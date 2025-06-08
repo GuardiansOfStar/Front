@@ -11,7 +11,7 @@ const SettingButton = () => {
     //효과음을 위해 핸들러 추가
     const handleClick = () => {
         audioManager.playButtonClick();
-        navigate('/settings');
+        navigate('/setting');
     };
 
     return (

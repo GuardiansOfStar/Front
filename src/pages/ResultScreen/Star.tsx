@@ -1,6 +1,7 @@
 // Star.tsx
 import React from 'react';
 import { audioManager } from '../../utils/audioManager';
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 // props로 채움 여부와 클릭 이벤트 받기
 interface StarProps {

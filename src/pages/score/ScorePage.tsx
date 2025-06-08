@@ -4,6 +4,7 @@ import Background from '../../components/ui/Background';
 import HomeButton from '../../components/ui/HomeButton';
 import { useScale } from '../../hooks/useScale';
 import { audioManager } from '../../utils/audioManager';
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 // 이미지 임포트
 const grandchildrenHappy = '/assets/images/grandchildren_happy.png';

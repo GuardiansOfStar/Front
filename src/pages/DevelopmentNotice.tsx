@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useScale } from '../hooks/useScale';
 import Background from '../components/ui/Background';
 import BackButton from '../components/ui/BackButton';
+import EnhancedOptimizedImage from '../components/ui/ReliableImage';
 
 const DevelopmentNotice = () => {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ const DevelopmentNotice = () => {
           <h1 
             className="font-black text-green-700"
             style={{ 
-              fontSize: `calc(4xl * ${scale})`,
+              fontSize: `calc(36px * ${scale})`, // 4xl = 36px
               marginBottom: `calc(24px * ${scale})`
             }}
           >
@@ -37,7 +38,7 @@ const DevelopmentNotice = () => {
           <p 
             className="text-green-800"
             style={{ 
-              fontSize: `calc(2xl * ${scale})`,
+              fontSize: `calc(24px * ${scale})`, // 2xl = 24px
               marginBottom: `calc(32px * ${scale})`
             }}
           >
@@ -54,21 +55,21 @@ const DevelopmentNotice = () => {
               paddingLeft: `calc(32px * ${scale})`,
               paddingRight: `calc(32px * ${scale})`,
               borderRadius: `calc(12px * ${scale})`,
-              fontSize: `calc(1.25rem * ${scale})`
+              fontSize: `calc(20px * ${scale})` // 1.25rem = 20px
             }}
           >
             홈으로 돌아가기
           </button>
         </div>
         
-        <img 
-          src="/assets/images/star_character.png" 
-          alt="별별이 캐릭터" 
+        <EnhancedOptimizedImage
+          src="/assets/images/star_character.png"
+          alt="별별이 캐릭터"
           className="absolute"
           style={{
             bottom: `calc(40px * ${scale})`,
             right: `calc(40px * ${scale})`,
-            width: `calc(128px * ${scale})`,
+            width: `calc(120px * ${scale})`,
             height: 'auto'
           }}
         />

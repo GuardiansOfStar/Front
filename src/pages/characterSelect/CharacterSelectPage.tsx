@@ -6,6 +6,7 @@ import Background from '../../components/ui/Background';
 import BackButton from '../../components/ui/BackButton';
 import GameTitle from '../../components/ui/GameTitle';
 import { audioManager } from '../../utils/audioManager';
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 const grandfatherCharacter = '/assets/images/game_character_grandfather.png';
 const grandmotherCharacter = '/assets/images/game_character_grandmother.png';

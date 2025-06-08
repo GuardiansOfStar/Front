@@ -7,6 +7,7 @@ import { useScale } from '../../hooks/useScale';
 import { postQuestAttempt, AttemptPayload } from '../../services/endpoints/attempts';
 import { useCharacter } from '../../context/CharacterContext';
 import { audioManager } from '../../utils/audioManager';
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 // 이미지 임포트
 const homecomingTimeSettingBackground = '/assets/images/homecoming_time_setting_tree_road.png';
@@ -52,6 +53,7 @@ const getBackgroundColor = (hour: number): string => {
 const ReturnQuest = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
   const clocksRef = useRef<HTMLDivElement>(null);
   const dragButtonRef = useRef<HTMLImageElement>(null);
   
@@ -482,7 +484,7 @@ const ReturnQuest = () => {
       {/* 해가 지는 애니메이션 */}
       {gamePhase === 'sunsetAnimation' && (
         <div className="absolute inset-0">
-          <img
+          <EnhancedOptimizedImage
             src={sunsetSceneMountain}
             alt="산"
             className="absolute bottom-0 w-full h-auto z-10"
@@ -536,7 +538,7 @@ const ReturnQuest = () => {
       {/* 게임 안내 화면 */}
       {gamePhase === 'gameIntro' && (
         <div className="absolute inset-0">
-          <img
+          <EnhancedOptimizedImage
             src={sunsetSceneMountain}
             alt="산"
             className="absolute bottom-0 w-full h-auto z-10"
@@ -544,7 +546,7 @@ const ReturnQuest = () => {
           />
           
           <div className="absolute inset-0 flex items-center justify-center z-0">
-            <img
+            <EnhancedOptimizedImage
               src={sunsetSceneSun}
               alt="해"
               style={{
@@ -605,7 +607,7 @@ const ReturnQuest = () => {
             className="absolute left-0 right-0 flex justify-center z-50"
             style={{ bottom: `calc(32px * ${scale})` }}
           >
-            <img
+            <EnhancedOptimizedImage
               src={nextButton}
               alt="다음"
               onClick={handleNextPhase}
@@ -622,7 +624,7 @@ const ReturnQuest = () => {
       {/* 게임 플레이 화면 */}
       {gamePhase === 'gamePlay' && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <img
+          <EnhancedOptimizedImage
             src={homecomingTimeSettingBackground}
             alt="귀가시간 설정 배경"
             className="absolute inset-0 w-full h-full object-cover z-0"
@@ -649,7 +651,7 @@ const ReturnQuest = () => {
               animate={{ scale: [1, 1.05] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut",repeatType: "reverse" }}
             >
-              {selectedHour}시 귀가
+              오후 {selectedHour}시 귀가
             </motion.button>
           </div>
           
@@ -659,7 +661,7 @@ const ReturnQuest = () => {
               ref={clocksRef}
               className="relative w-full"
             >
-              <img
+              <EnhancedOptimizedImage
                 src={homecomingTimeClocks}
                 alt="시계들"
                 className="w-full h-auto object-cover pointer-events-none"
@@ -730,7 +732,7 @@ const ReturnQuest = () => {
       {/* 정답 결과 화면 */}
       {gamePhase === 'successResult' && !showSuccessMessage && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <img
+          <EnhancedOptimizedImage
             src={homecomingTimeSettingBackground}
             alt="배경"
             className="absolute inset-0 w-full h-full object-cover"
@@ -771,7 +773,7 @@ const ReturnQuest = () => {
 
       {gamePhase === 'successResult' && showSuccessMessage && (
         <div className="absolute inset-0">
-          <img
+          <EnhancedOptimizedImage
             src={homecomingTimeSettingBackground}
             alt="배경"
             className="absolute inset-0 w-full h-full object-cover"
@@ -781,8 +783,10 @@ const ReturnQuest = () => {
           
           <div className="absolute inset-0 flex flex-col items-center justify-center z-30">
             <motion.div 
-              className="absolute left-0 right-0 flex justify-center items-center transform -translate-x-1/2"
-              style={{ top: `calc(15% * ${scale})` }}
+              className="absolute left-0 right-0 flex justify-center items-center"
+              style={{ 
+                top: `calc(15% * ${scale})`
+              }}
               initial={{ opacity: 0, y: `calc(-30px * ${scale})` }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
@@ -844,7 +848,7 @@ const ReturnQuest = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
             >
-              <img 
+              <EnhancedOptimizedImage
                 src={confirmButton} 
                 alt="확인 버튼" 
                 className="w-full h-auto"
@@ -927,7 +931,7 @@ const ReturnQuest = () => {
 
       {gamePhase === 'failResult' && (
         <div className="absolute inset-0">
-          <img
+          <EnhancedOptimizedImage
             src={characterImages.mission5Fail}
             alt="사고 배경"
             className="absolute inset-0 w-full h-full object-cover"
@@ -998,7 +1002,7 @@ const ReturnQuest = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
               >
-                <img 
+                <EnhancedOptimizedImage
                   src={confirmButton} 
                   alt="확인 버튼" 
                   className="w-full h-auto"

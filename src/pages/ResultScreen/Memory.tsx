@@ -5,7 +5,7 @@ import Background from "../../components/ui/Background";
 import GameTitle from "../../components/ui/GameTitle";
 import { updateSessionScene } from "../../services/endpoints/session";
 import { audioManager } from '../../utils/audioManager';
-
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 const Memory = () => {
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
@@ -71,7 +71,7 @@ const Memory = () => {
         onClick={() => toggleSelection(index)}
         className="flex flex-col items-center cursor-pointer transition z-30"
       >
-        <img
+        <EnhancedOptimizedImage
           src={option.img}
           alt={option.label}
           className="object-cover transition"
@@ -155,17 +155,15 @@ const Memory = () => {
             transform: 'translateX(-50%)'
           }}
         >
-          <img
+          <EnhancedOptimizedImage
             src="/assets/images/next_button.png"
             alt="다음"
-            onClick={handleNextClick}
-            className={`cursor-pointer transition-opacity z-50 ${
-              selectedIndexes.length === 0 || isLoading ? 'opacity-50' : 'opacity-100'
-            }`}
+            className="cursor-pointer hover:scale-95 transition-transform duration-200"
             style={{
               width: `calc(190px * ${scale})`,
-              height: `calc(90px * ${scale})`
+              height: 'auto'
             }}
+            onClick={handleNextClick}
           />
         </div>
       </div>

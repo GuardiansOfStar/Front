@@ -9,6 +9,8 @@ import { useScale } from '../../hooks/useScale';
 // import { useScore } from '../../context/ScoreContext';
 import { useCharacter } from '../../context/CharacterContext';
 import { audioManager } from '../../utils/audioManager';
+import MotionEnhancedImage from '../../components/ui/MotionEnhancedImage';
+import EnhancedLoadingScreen from 'components/ui/SimpleLoadingScreen';
 
 // 이미지 임포트
 const fieldHarvestBoxes = '/assets/images/work_complete_with_applebox.png';
@@ -19,7 +21,6 @@ const successCircle = '/assets/images/success_circle.png';
 const starCharacter = '/assets/images/star_character.png';
 const motorcycle = '/assets/images/mission4_motorcycle.png';
 const confirmButton = '/assets/images/confirm_button.png';
-
 
 // 게임 단계 정의
 type GamePhase = 
@@ -35,6 +36,7 @@ type GamePhase =
 const HarvestQuest = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
   const [scenarioId, setScenarioId] = useState<string | null>(null);
   const [questId, setQuestId] = useState<string | null>(null);
   const [gamePhase, setGamePhase] = useState<GamePhase>('intro');
@@ -205,7 +207,7 @@ const HarvestQuest = () => {
     <div className="w-full h-full">
       {/* 배경 */}
       {(gamePhase !== 'intro' && gamePhase !== 'fadeOut' && gamePhase !== 'failResult'&& gamePhase !== 'score' ) && (
-        <img
+        <MotionEnhancedImage
           src={fieldHarvestBoxes}
           alt="수확완료 화면"
           className="absolute w-full h-full object-cover"
@@ -220,7 +222,7 @@ const HarvestQuest = () => {
       {/* 인트로 화면 */}
       {gamePhase === 'intro' && (
         <>
-          <img
+          <MotionEnhancedImage
           src={field}
           alt="수확 전 화면"
           className="absolute w-full h-full object-cover"
@@ -360,7 +362,7 @@ const HarvestQuest = () => {
                 <>
                 <motion.img
                   src={characterImages.mission4Success}
-                  alt="수레 끄시는 할아버지" 
+                  alt="수레 끄시는 어르신신" 
                   className="absolute object-contain z-40"
                   style={{
                     left: `calc(20% * ${scale})`,
@@ -368,25 +370,45 @@ const HarvestQuest = () => {
                     height: 'auto'
                   }}
                   onError={handleImageError}
-                  animate={{ x: [0, `calc(35px * ${scale})`] }}
-                  transition={{ 
-                    duration: 2 * Math.max(0.8, scale),
-                    repeat: 0,
+                  // 1) 시작 상태: 작게, 투명, 화면 왼쪽(-50px) 밖에서
+                  initial={{ scale: 0.8, opacity: 0, x: -80 }}
+                  // 2) 조건에 따라 보여줄 때(show) vs 숨길 때(hide) 목표 상태 지정
+                  animate={
+                    hideSuccessImages
+                      ? { scale: 0.5, opacity: 0, x: 20 }                        // 사라질 땐 다시 작아지면서 왼쪽으로
+                      : { scale: 1, opacity: 1, x: `calc(20px * ${scale})` }    // 보일 땐 제자리에서 커지면서 오른쪽(35px*scale) 으로
+                  }
+                  // 3) 각 속성별 transition 세부 조정
+                  transition={{
+                    // scale, opacity는 기존 처럼 easeIn/out, duration, delay 분리
+                    scale:   hideSuccessImages
+                      ? { duration: 0.8, ease: 'easeIn' }
+                      : { duration: 1,   delay: 0.3, ease: 'easeOut' },
+                    opacity: hideSuccessImages
+                      ? { duration: 0.8, ease: 'easeIn' }
+                      : { duration: 1,   delay: 0.3, ease: 'easeOut' },
+                    // x축 이동은 mission4Success 로직을 재사용
+                    x: { duration: 10 * Math.max(0.8, scale), repeat: 0 }
                   }}
                 />
-                <img 
-                  src={motorcycle}
-                  alt="오토바이"
-                  className="absolute object-contain z-50"
-                  style={{
-                    right: `calc(22% * ${scale})`,
-                    width: `calc(323px * ${scale})`
-                  }}
-                  onError={handleImageError}
-                />
+                  <motion.img
+                    src={motorcycle}
+                    alt="오토바이"
+                    className="absolute object-contain z-50"
+                    style={{
+                      right: `calc(22% * ${scale})`,
+                      top: `calc(15% * ${scale})`,
+                      transform: 'translateY(-50%)',
+                      width: `calc(323px * ${scale})`
+                    }}
+                    onError={handleImageError}
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={hideSuccessImages ? { scale: 0.5, opacity: 0 } : { scale: 1, opacity: 1 }}
+                    transition={hideSuccessImages ? { duration: 0.8, ease: 'easeIn' } : { duration: 1, delay: 0.3, ease: 'easeOut' }}
+                  />
                 </>
               ) : (
-                <img 
+                <MotionEnhancedImage
                   src="/assets/images/character_with_helmet.png"  
                   alt="헬멧 쓴 캐릭터" 
                   className="object-contain"
@@ -403,7 +425,6 @@ const HarvestQuest = () => {
       
       {/* 정답 후 성공 메시지 화면 */}
       {gamePhase === 'successResult' && showSuccessMessage && (
-
         <div className="absolute inset-0 flex flex-col items-center justify-center z-30">
           {/* 중앙 상단에 정답입니다! */}
             <motion.div 
@@ -460,7 +481,7 @@ const HarvestQuest = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
             >
-              <img 
+              <MotionEnhancedImage
                 src={confirmButton} 
                 alt="확인 버튼" 
                 className="w-full h-auto"
@@ -498,7 +519,7 @@ const HarvestQuest = () => {
       {/* 오답 결과 화면 */}
       {gamePhase === 'failResult' && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <img
+          <MotionEnhancedImage
             src={characterImages.fieldAccident}
             alt="사고 장면"
             className="absolute inset-0 w-full h-full object-cover"
@@ -570,7 +591,7 @@ const HarvestQuest = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.8, ease: 'easeOut' }}
             >
-              <img 
+              <MotionEnhancedImage
                 src={confirmButton} 
                 alt="확인 버튼" 
                 className="w-full h-auto"

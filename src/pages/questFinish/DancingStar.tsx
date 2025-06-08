@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useScale } from '../../hooks/useScale';
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 // 이미지 목록
 const starImages = [

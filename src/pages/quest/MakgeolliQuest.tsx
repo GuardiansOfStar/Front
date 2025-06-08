@@ -8,6 +8,9 @@ import GameTitle from '../../components/ui/GameTitle';
 import { useScale } from '../../hooks/useScale';
 // import { useScore } from '../../context/ScoreContext';
 import { audioManager } from '../../utils/audioManager';
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
+
+import { simpleImagePreloader } from '../../utils/simpleImagePreloader';
 
 // 이미지 임포트
 const orchardWorkBackground = '/assets/images/mission3_working_screen.png';
@@ -87,6 +90,8 @@ const HIDDEN_MAKGEOLLI_POSITIONS: { xRatio: number, yRatio: number, rotation: nu
 const MakgeolliQuest = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+
   const trayContainerRef = useRef<HTMLDivElement>(null);
 
   const [scenarioId, setScenarioId] = useState<string | null>(null);
@@ -147,25 +152,29 @@ const MakgeolliQuest = () => {
       }, getScaledDuration(5000));
     }
     else if (gamePhase === 'mealLadyArrival') {
-      //효과음(새참 아주머니 등장)
-      audioManager.playMessageAlarm()
-
-      const mealLadyAnimation = setInterval(() => {
-        setMealLadyOpacity(prev => {
-          if (prev >= 1) {
-            clearInterval(mealLadyAnimation);
-            return 1;
-          }
-          return prev + (0.05 * Math.min(1.5, scale)); // 스케일에 따른 애니메이션 속도 조정
-        });
-      }, getScaledDuration(1000));
-      
-      timer = setTimeout(() => {
-        setGamePhase('mealLadyIntro');
-      }, getScaledDuration(1500));
-      
-      return () => clearInterval(mealLadyAnimation);
-    }
+    // 새참 아주머니 등장 효과음
+    audioManager.playMessageAlarm();
+    
+    // mealLadyOpacity 초기화 및 점진적 증가
+    setMealLadyOpacity(0);
+    
+    const mealLadyAnimation = setInterval(() => {
+      setMealLadyOpacity(prev => {
+        const newOpacity = prev + (0.05 * Math.min(1.5, scale));
+        if (newOpacity >= 1) {
+          clearInterval(mealLadyAnimation);
+          return 1;
+        }
+        return newOpacity;
+      });
+    }, 50); // 더 부드러운 애니메이션을 위해 50ms로 단축
+    
+    timer = setTimeout(() => {
+      setGamePhase('mealLadyIntro');
+    }, getScaledDuration(2000)); // 2초로 단축
+    
+    return () => clearInterval(mealLadyAnimation);
+  }
     else if (gamePhase === 'mealTray') {
       //장면 전환 효과음(새참 먹는 시간)
       audioManager.playsceneSwitch()
@@ -281,6 +290,22 @@ const MakgeolliQuest = () => {
       })
       .catch(err => console.error("❌ 시도 기록 실패", err));
   }, [gamePhase]);
+
+  useEffect(() => {
+    // 막걸리 퀘스트 이미지 프리로드
+    simpleImagePreloader.preloadImages([
+      orchardWorkBackground,
+      mealLadyBackground,
+      sparrow,
+      mealLady,
+      makgeolliGameTray,
+      makgeolliCup,
+      kimchi,
+      noodles,
+      makgeolli,
+      mission3Success
+    ]);
+  }, []);
 
   // 트레이 아이템 초기화 함수
   const initTrayItems = () => {
@@ -412,7 +437,7 @@ const MakgeolliQuest = () => {
         overflow: 'hidden'
       }}
     >
-      <img 
+      <EnhancedOptimizedImage
         src={makgeolliGameTray} 
         alt="트레이" 
         className="absolute inset-0 w-full h-full object-cover"
@@ -427,7 +452,7 @@ const MakgeolliQuest = () => {
       {gamePhase === 'roadToField' ? (
         <FieldRoadSliding />
       ) : (
-        <img
+        <EnhancedOptimizedImage
           src={getBackground()}
           alt="배경"
           className="absolute w-full h-full object-cover"
@@ -532,13 +557,17 @@ const MakgeolliQuest = () => {
                 alignItems: 'flex-end'
               }}
             >
-              <img
-                src={mealLady}
+              <EnhancedOptimizedImage
+                src="/assets/images/meal_lady.png"
                 alt="새참 아주머니"
                 className="w-auto h-auto max-h-[120vh] object-contain object-bottom"
                 style={{ 
+                  opacity: mealLadyOpacity,
                   marginBottom: '0',
-                  animation: `slideUp ${1 * Math.max(0.8, scale)}s ease-out forwards`
+                  transition: 'opacity 0.1s ease-out'
+                }}
+                onError={() => {
+                  console.error('새참 아주머니 이미지 로딩 실패');
                 }}
               />
             </div>
@@ -559,14 +588,23 @@ const MakgeolliQuest = () => {
                 alignItems: 'flex-end'
               }}
             >
-              <img
-                src={mealLady}
+              <EnhancedOptimizedImage
+                src="/assets/images/meal_lady.png"
                 alt="새참 아주머니"
                 className="w-auto h-auto max-h-[120vh] object-contain object-bottom"
+                style={{ 
+                  opacity: mealLadyOpacity,
+                  marginBottom: '0',
+                  transition: 'opacity 0.1s ease-out'
+                }}
+                onError={() => {
+                  console.error('새참 아주머니 이미지 로딩 실패');
+                }}
               />
             </div>
           </div>
-
+          
+          {/* 말풍선과 다음 버튼은 기존 코드 유지 */}
           <motion.div 
             className="absolute inset-0 flex justify-center z-20"
             style={{ 
@@ -584,7 +622,7 @@ const MakgeolliQuest = () => {
             <motion.div 
               className="bg-white/90 border-8 border-[#0E8E12] text-center shadow-lg"
               style={{
-                width: `calc(834px * ${scale})`,
+                width: `calc(820px * ${scale})`,
                 padding: `calc(28px * ${scale})`,
                 borderRadius: `calc(48px * ${scale})`,
                 borderWidth: `calc(12px * ${scale})`
@@ -592,8 +630,8 @@ const MakgeolliQuest = () => {
               transition={{ duration: 0.2 }}
             >
               <motion.p 
-                className="font-black text-[#0E8E12] tracking-wider"
-                style={{ fontSize: `calc(3.2rem * ${scale})` }}
+                className="font-black text-[#0E8E12]"
+                style={{ fontSize: `calc(56px * ${scale})` }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ 
@@ -638,6 +676,8 @@ const MakgeolliQuest = () => {
         </div>
       )}
 
+      console.log('현재 gamePhase:', gamePhase, 'mealLadyOpacity:', mealLadyOpacity);
+
       {/* 식사 트레이 표시 화면 */}
       {gamePhase === 'mealTray' && (
         <div className="absolute inset-0 flex items-center justify-center">
@@ -658,7 +698,7 @@ const MakgeolliQuest = () => {
                 const sizePercent = item.position.scale * 15 * scale;
 
                 return (
-                  <img
+                  <EnhancedOptimizedImage
                     key={item.id}
                     src={itemSrc}
                     alt={item.type}
@@ -827,11 +867,11 @@ const MakgeolliQuest = () => {
                   style={{
                     fontSize: `calc(53px * ${scale})`,
                     lineHeight: 1.8
-                }}
+                  }}
                 >
                   {selectedOption === 'A' ? (
                     <>
-                      <span className="text-green-600">잠깐!</span><br />
+                      <span className="text-[#0DA429]">잠깐!</span><br />
                       <span className="text-black"> 
                         막걸리의 유혹을 이겨내볼까요?<br />
                         새참 속 막걸리를 치우러 가요
@@ -839,7 +879,7 @@ const MakgeolliQuest = () => {
                     </>
                   ) : (
                     <>
-                      <span className="text-green-600">유혹을 참아내다니 멋져요!</span><br />
+                      <span className="text-[#0DA429]">유혹을 참아내다니 멋져요!</span><br />
                       <span className="text-black">
                         다른 작업자들도 먹지 않도록<br />
                         막걸리를 모두 치워보아요.
@@ -851,10 +891,13 @@ const MakgeolliQuest = () => {
             </motion.div>
           </motion.div>
           
-          {/* 시작 버튼 */}
-          <div className="absolute left-0 right-0 flex justify-center z-50" style={{ bottom: `calc(-50px * ${scale})` }}>
-            <img
-              src={startButton}
+          {/* 시작 버튼 - gameInstruction 블록 안에 포함 */}
+          <div 
+            className="absolute left-0 right-0 flex justify-center z-50" 
+            style={{ bottom: `calc(-60px * ${scale})` }}
+          >
+            <EnhancedOptimizedImage
+              src="/assets/images/start_button.png"
               alt="시작하기"
               onClick={handleNextPhase}
               style={{
@@ -889,7 +932,7 @@ const MakgeolliQuest = () => {
             >
               남은 막걸리
             </span>
-            <img
+            <EnhancedOptimizedImage
               src={makgeolli}
               alt="막걸리"
               style={{
@@ -925,7 +968,7 @@ const MakgeolliQuest = () => {
                 const sizePercent = item.position.scale * 15 * scale;
                 
                 return (
-                  <img
+                  <EnhancedOptimizedImage
                     key={item.id}
                     src={itemSrc}
                     alt={item.type}
@@ -951,7 +994,7 @@ const MakgeolliQuest = () => {
                 const sizePercent = item.position.scale * 15 * scale;
                 
                 return (
-                  <img
+                  <EnhancedOptimizedImage
                     key={item.id}
                     src={makgeolli}
                     alt="숨겨진 막걸리"
@@ -972,7 +1015,7 @@ const MakgeolliQuest = () => {
             "z-30"
           )}
           
-          {/* 게임 안내 텍스트
+          {/* 게임 안내 텍스트 */}
           <div 
             className="absolute bg-white bg-opacity-90 border-4 border-green-600 rounded-xl shadow-lg z-50"
             style={{
@@ -992,7 +1035,7 @@ const MakgeolliQuest = () => {
                 ? "4개 찾았어요! 1개 더 찾아주세요!"
                 : `${foundCount}개 찾았어요! ${5-foundCount}개 더 찾아주세요!`}
             </p>
-          </div>*/}
+          </div>
         </div>
       )}
       
@@ -1000,7 +1043,7 @@ const MakgeolliQuest = () => {
       {gamePhase === 'success' && (
         <div className="absolute inset-0">
           {/* 배경 이미지 유지 */}
-          <img
+          <EnhancedOptimizedImage
             src={mission3Success}
             alt="성공 배경"
             className="absolute inset-0 w-full h-full object-cover"
@@ -1069,7 +1112,7 @@ const MakgeolliQuest = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 * Math.max(0.8, scale), delay: 2.5, ease: 'easeOut' }}
             >
-              <img 
+              <EnhancedOptimizedImage
                 src={confirmButton} 
                 alt="확인 버튼" 
                 className="w-full h-auto"
@@ -1097,7 +1140,7 @@ const MakgeolliQuest = () => {
       {gamePhase === 'timeOver' && (
         <div className="absolute inset-0">
           {/* 배경 이미지 유지 */}
-          <img
+          <EnhancedOptimizedImage
             src={mission3Success}
             alt="배경"
             className="absolute inset-0 w-full h-full object-cover"
@@ -1166,7 +1209,7 @@ const MakgeolliQuest = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 * Math.max(0.8, scale), delay: 2.5, ease: 'easeOut' }}
             >
-              <img 
+              <EnhancedOptimizedImage
                 src={confirmButton} 
                 alt="확인 버튼" 
                 className="w-full h-auto"

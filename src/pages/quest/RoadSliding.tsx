@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useScale } from '../../hooks/useScale';
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 const background = '/assets/images/basic_road_long.png';
 const motorcycle = '/assets/images/motorcycle.png';

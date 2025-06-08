@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useScale } from '../../hooks/useScale';
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 // import { useScore } from '../../context/ScoreContext';
 //import { completeSession } from '../../services/endpoints/session';
 
 import Background from '../../components/ui/Background';
 
 import { audioManager } from '../../utils/audioManager';
+import { useCharacter } from '../../context/CharacterContext';
 
 const smiling_grandchildren = '/assets/images/grandchildren.png'
 const get_certificate = '/assets/images/get_certificate.png'
@@ -32,6 +34,8 @@ const Certificate = () => {
     audioManager.playButtonClick();
     navigate('/info');
   };
+  const { selectedCharacter } = useCharacter();
+  const characterLabel = selectedCharacter === 'grandfather' ? '할아버지' : '할머니';
 
   /*
   // session end api
@@ -55,6 +59,7 @@ const Certificate = () => {
   return (
     <div className="relative w-full h-full">
       <Background />
+      <div className="absolute inset-0 bg-[#FFF9C4]/70 z-0" />
       {/* 운전 종료 버튼 (기존 HomeButton 위치) */}
       <img
         src={drive_end_button}
@@ -109,7 +114,7 @@ const Certificate = () => {
           }}
         >
           무사히 돌아와줘서 고마워요<br />
-          안전운전하는 할아버지가 자랑스러워요
+          안전운전하는 {characterLabel}가 자랑스러워요
         </div>
       </div>
 

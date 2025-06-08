@@ -1,5 +1,6 @@
 // src/pages/scenarioSelect/ScenarioItem.tsx
 import { useNavigate } from 'react-router-dom';
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 interface ScenarioProps {
     scenario: {

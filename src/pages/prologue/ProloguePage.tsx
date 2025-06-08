@@ -7,8 +7,13 @@ import { motion } from 'framer-motion';
 import { createSession } from '../../services/endpoints/session';
 
 import { useScale } from '../../hooks/useScale';
+import { useCharacter } from '../../context/CharacterContext';
 
 import { audioManager } from '../../utils/audioManager';
+
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
+
+import { simpleImagePreloader } from '../../utils/simpleImagePreloader';
 
 // 이미지 임포트
 const scenario1FullMap = '/assets/images/scenario1_full_map.png';
@@ -31,6 +36,8 @@ const ProloguePage = () => {
   const [step, setStep] = useState<PrologueStep>('mission');
   const [scenarioId, setScenarioId] = useState<string | null>(null);
   const [showMessage, setShowMessage] = useState(false);
+  const { selectedCharacter } = useCharacter();
+  const characterLabel = selectedCharacter === 'grandfather' ? '할아버지' : '할머니';
   
   // URL 쿼리 파라미터에서 시나리오 ID 가져오기
   useEffect(() => {
@@ -71,8 +78,10 @@ const ProloguePage = () => {
   useEffect(() => {
     if (step === 'mission') {
       audioManager.playSound('missionGuide', 0.5);
-    } else if (step === 'encouragement') {
-      audioManager.playSound('childGrandFather', 0.5);
+    } else if (step === 'encouragement' && characterLabel === '할아버지') {
+        audioManager.playSound('childGrandFather', 0.5);
+    } else if (step === 'encouragement' && characterLabel === '할머니'){
+      audioManager.playSound('childGrandMother', 0.5);
     }
   },[step]);
 
@@ -94,6 +103,14 @@ const ProloguePage = () => {
         console.error("❌ 세션 생성 실패", err);
       });
     }
+  }, []);
+
+  useEffect(() => {
+    // 프롤로그 페이지 이미지 프리로드
+    simpleImagePreloader.preloadImages([
+      '/assets/images/scenario1_full_map.png',
+      '/assets/images/depart_button.png'
+    ]);
   }, []);
 
   // 다음 단계로 이동 핸들러
@@ -132,20 +149,22 @@ const ProloguePage = () => {
       >
         <GameTitle 
           text="과수원 작업 하는 날" 
-          fontSize="72px" 
+          fontSize="64px" 
           strokeWidth="12px"
           letterSpacing="0.05em"
         />
       </h1>
       <div 
-        className="relative bg-[#0DA429] bg-opacity-80 border-[#0E8E12] w-4/5 max-w-4xl mx-auto animate-[fadeIn_1200ms_ease-out]"
+        className="relative bg-[#0DA429] bg-opacity-80 border-[#0E8E12]/80 w-4/5 max-w-4xl mx-auto animate-[fadeIn_1200ms_ease-out]"
         style={{
           borderWidth: `calc(8px * ${scale})`,
           paddingTop: `${scale * 72}px`,
           paddingBottom: `${scale * 72}px`,
           borderRadius: `calc(36px * ${scale})`,
           paddingLeft: `calc(32px * ${scale})`,
-          paddingRight: `calc(32px * ${scale})`
+          paddingRight: `calc(32px * ${scale})`,
+          marginBottom: `${60 * scale}px`,
+
         }}
       >
         <p 
@@ -160,14 +179,14 @@ const ProloguePage = () => {
           집으로 안전하게 돌아오세요
         </p>
         
-        <img 
+        <EnhancedOptimizedImage
           src={starCharacter}
           alt="별별이 캐릭터" 
           className="absolute animate-[fadeIn_1500ms_ease-out]"
           style={{
-            bottom: `calc(-96px * ${scale})`,
-            left: `calc(-96px * ${scale})`,
-            width: `calc(192px * ${scale})`,
+            bottom: `calc(-102px * ${scale})`,
+            left: `calc(-102px * ${scale})`,
+            width: `calc(239px * ${scale})`,
             height: 'auto',
             zIndex: 20
           }}
@@ -186,11 +205,15 @@ const ProloguePage = () => {
             style={{ maxWidth: `calc(1024px * ${scale})` }}
           >
             <motion.div 
-              className="bg-[#FFFAFA] bg-opacity-90 border-[#0E8212] rounded-xl w-full mx-auto text-center"
+              className="bg-[#FFFAFA] bg-opacity-90 border-[#0E8212] rounded-xl mx-auto text-center"
               style={{
-                borderWidth: `calc(8px * ${scale})`,
-                borderRadius: `calc(24px * ${scale})`,
-                padding: `calc(32px * ${scale})`
+                borderWidth: `calc(10px * ${scale})`,
+                borderRadius: `calc(30px * ${scale})`,
+                paddingTop: `calc(40px * ${scale})`,
+                paddingBottom: `calc(40px * ${scale})`,
+                paddingLeft: `calc(24px * ${scale})`,
+                paddingRight: `calc(24px * ${scale})`,
+                width: `calc(754px * ${scale})`,
               }}
               initial={{ opacity: 0, y: `calc(20px * ${scale})` }}
               animate={{ opacity: 1, y: 0 }}
@@ -200,22 +223,22 @@ const ProloguePage = () => {
                 <p 
                   className="text-black font-black"
                   style={{
-                    fontSize: `${2.1 * scale}rem`,
+                    fontSize: `${36 * scale}px`,
                     letterSpacing: `${0.07 * scale}em`
                   }}
                 >
                   이륜차 운전 중 여러 상황이 벌어져요!<br />
                   안전 운전에 유의하여 문제를 해결해보아요
                 </p>
-                <img 
+                <EnhancedOptimizedImage
                   src={starCharacter}
                   alt="별별이 캐릭터" 
                   className="absolute"
                   style={{
                     bottom: `calc(-80px * ${scale})`,
-                    left: `calc(-160px * ${scale})`,
-                    width: `calc(212px * ${scale})`,
-                    height: `calc(212px * ${scale})`
+                    left: `calc(-180px * ${scale})`,
+                    width: `calc(239px * ${scale})`,
+                    height: 'auto',
                   }}
                 />
               </div>
@@ -291,7 +314,9 @@ const ProloguePage = () => {
 
   // 격려 메시지 컨텐츠
   const EncouragementContent = () => (
-    <div className="absolute inset-0 flex items-center justify-center z-20">
+    <div className="absolute inset-0 flex items-start justify-center z-20" style={{ 
+      paddingTop: `calc(250px * ${scale})` // 이 값을 조정하여 원하는 만큼 아래로 내림
+    }}>
       <motion.div 
         className="relative w-4/5"
         style={{ maxWidth: `calc(1024px * ${scale})` }}
@@ -299,7 +324,7 @@ const ProloguePage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <img 
+        <EnhancedOptimizedImage
           src={grandchildren} 
           alt="손자손녀" 
           className="absolute left-1/2 transform -translate-x-1/2 z-20"
@@ -315,15 +340,16 @@ const ProloguePage = () => {
           style={{
             borderWidth: `calc(12px * ${scale})`,
             borderRadius: `calc(52px * ${scale})`,
-            padding: `calc(64px * ${scale})`,
-            paddingTop: `calc(80px * ${scale})`
+            padding: `calc(48px * ${scale})`,
+            paddingTop: `calc(80px * ${scale})`,
+            marginBottom: `${20 * scale}px`,
           }}
         >
           <p 
             className="font-black text-black"
-            style={{ fontSize: `${2.6 * scale}rem` }}
+            style={{ fontSize: `${48 * scale}px` }}
           >
-            무엇보다 할아버지가 제일 소중해요!<br />
+            무엇보다 {characterLabel}가 제일 소중해요!<br />
             조심히 다녀오세요!
           </p>
         </div>
@@ -331,16 +357,33 @@ const ProloguePage = () => {
     </div>
   );
 
-  // 네비게이션 버튼 컴포넌트
+  // NavigationButtons 컴포넌트 내부 수정
   const NavigationButtons = () => {
     const handleBackToCharacterSelect = () => {
-      navigate('/character-select');
+      navigate(`/character-select?scenario=${scenarioId}`);
     };
 
     return (
       <>
         {step === 'mission' && (
           <BackButton onClick={handleBackToCharacterSelect} />
+        )}
+        
+        {/* encouragement 단계에서만 홈 버튼 표시 */}
+        {step === 'encouragement' && (
+          <EnhancedOptimizedImage
+            src={homeButton}
+            alt="홈으로"
+            onClick={handleGoHome}
+            className="absolute cursor-pointer hover:scale-105 transition-transform"
+            style={{ 
+              top: `calc(48px * ${scale})`,
+              right: `calc(48px * ${scale})`,
+              width: `calc(120px * ${scale})`,
+              height: 'auto',
+              zIndex: 60
+            }}
+          />
         )}
       </>
     );
@@ -353,7 +396,7 @@ const ProloguePage = () => {
       {/* 배경 이미지 */}
       <div className="absolute inset-0">
           {step === 'mission' ? (
-            <img
+            <EnhancedOptimizedImage
               src="/assets/images/background.png"
               alt="미션 배경"
               className="absolute inset-0 w-full h-full object-cover z-0"
@@ -386,17 +429,19 @@ const ProloguePage = () => {
       {step === 'letterMessage' && <LetterMessageContent />}
       {step === 'encouragement' && <EncouragementContent />}
       
-      {/* 버튼 렌더링 - 모든 단계에서 동일한 위치와 크기 */}
+      {/* 버튼 렌더링 - 수정된 부분 */}
       {(step === 'mission' || 
         (step === 'map' && showMessage) || 
         step === 'encouragement') && (
         <div 
           className="absolute left-0 right-0 flex justify-center items-center z-50"
           style={{ 
-            bottom: step === 'encouragement' ? `calc(-20px * ${scale})` : `calc(48px * ${scale})` 
+            // 수정: encouragement에서도 양수 값으로 변경
+            bottom: step === 'encouragement' ? `calc(-50px * ${scale})` : `calc(48px * ${scale})` 
           }}
         >
-          <img
+          
+          <EnhancedOptimizedImage
             src={step === 'encouragement' ? departButton : nextButton}
             alt={step === 'encouragement' ? '출발하기' : '다음'}
             onClick={step === 'encouragement' ? handleDepartClick : handleNextStep}
@@ -404,9 +449,27 @@ const ProloguePage = () => {
             style={{ 
               width: step === 'encouragement' ? `calc(320px * ${scale})` : `calc(192px * ${scale})` 
             }}
+            onLoad={() => {
+              if (step === 'encouragement') {
+                console.log('[ProloguePage] 출발하기 버튼 이미지 로딩 완료');
+              }
+            }}
+            onError={(error) => {
+              if (step === 'encouragement') {
+                console.error('[ProloguePage] 출발하기 버튼 이미지 로딩 실패:', error);
+              }
+            }}
           />
         </div>
       )}
+      
+      {/* 추가: 디버깅용 현재 단계 표시
+      {process.env.NODE_ENV === 'development' && (
+        <div className="absolute top-4 left-4 bg-black bg-opacity-50 text-white p-2 rounded z-[100]">
+          Current Step: {step}
+          {step === 'encouragement' && <div>출발하기 버튼이 표시되어야 함</div>}
+        </div>
+      )} */}
     </div>
   );
 };

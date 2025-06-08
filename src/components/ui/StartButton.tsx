@@ -10,7 +10,7 @@ const StartButton = () => {
     //효과음을 위해 핸들러 추가
     const handleClick = () => {
       audioManager.playButtonClick();
-      navigate('/scenarios');
+      navigate('/scenario-select');
     };
 
     return (

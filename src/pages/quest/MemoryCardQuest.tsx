@@ -9,6 +9,7 @@ import { useScale } from '../../hooks/useScale';
 // import { useScore } from '../../context/ScoreContext';
 import { useCharacter } from '../../context/CharacterContext';
 import { audioManager } from '../../utils/audioManager';
+import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 // 이미지 임포트
 const gameBackground = '/assets/images/pre_drive_background.png';
@@ -134,8 +135,9 @@ const MemoryCardQuest: React.FC = () => {
   // const { updateQuestScore } = useScore();
 
   // character context
-  const { characterImages } = useCharacter();
-
+  const { selectedCharacter, characterImages } = useCharacter();
+  const characterLabel = selectedCharacter === 'grandfather' ? '할아버지' : '할머니';
+  
   // URL 쿼리 파라미터
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -555,7 +557,7 @@ const MemoryCardQuest: React.FC = () => {
   return (
     <div className="relative w-full h-full">
       {/* 배경 */}
-      <img src={gameBackground} alt="게임 배경" className="absolute w-full h-full object-cover" />
+      <EnhancedOptimizedImage src={gameBackground} alt="게임 배경" className="absolute w-full h-full object-cover" />
       {renderBackdrop()}
 
       {/* 서서히 페이드인되는 백드롭 */}
@@ -587,7 +589,7 @@ const MemoryCardQuest: React.FC = () => {
           left: `calc(16px * ${scale})`
         }}
       >
-        <BackButton />
+        <BackButton onClick={() => navigate('/prologue')} />
       </div>
 
       {/* intro1 */}
@@ -649,7 +651,7 @@ const MemoryCardQuest: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 * Math.max(0.8, scale) }}
         >
-          <img
+          <EnhancedOptimizedImage
             src={grandchildren}
             alt="손자손녀"
             style={{
@@ -661,21 +663,23 @@ const MemoryCardQuest: React.FC = () => {
           />
 
           <div
-            className="bg-white/70 border-8 border-green-600 rounded-xl text-center"
+            className="bg-white/75 border-[#0DA429] text-center"
             style={{
-              paddingLeft: `calc(24px * ${scale})`,
-              paddingRight: `calc(24px * ${scale})`,
+              paddingLeft: `calc(16px * ${scale})`,
+              paddingRight: `calc(16px * ${scale})`,
               paddingTop: `calc(92px * ${scale})`,
               paddingBottom: `calc(92px * ${scale})`,
               width: '100%',
-              maxWidth: `calc(805px * ${scale})`
+              maxWidth: `calc(732px * ${scale})`,
+              borderRadius: `calc(30px * ${scale})`,
+              borderWidth: `calc(10px * ${scale})`
             }}
           >
             <p 
               className="font-black text-black"
-              style={{ fontSize: `calc(2.7rem * ${scale})` }}
+              style={{ fontSize: `calc(45px * ${scale})` }}
             >
-              할아버지,<br />
+              {characterLabel},<br />
               운전하시기 전에 중요한 선물이 있어요!
             </p>
           </div>
@@ -698,7 +702,7 @@ const MemoryCardQuest: React.FC = () => {
             transition={{ duration: 0.8 * Math.max(0.8, scale) }}
           >
             <h2 
-              className="font-black text-center text-green-600"
+              className="font-black text-center text-[#0DA429]"
               style={{ 
                 fontSize: `calc(3rem * ${scale})`,
                 marginBottom: `calc(32px * ${scale})`
@@ -718,24 +722,24 @@ const MemoryCardQuest: React.FC = () => {
                 paddingBottom: `calc(52px * ${scale})`,
                 paddingLeft: `calc(32px * ${scale})`,
                 paddingRight: `calc(32px * ${scale})`,
-                borderRadius: `calc(48px * ${scale})`,
+                borderRadius: `calc(40px * ${scale})`,
                 maxWidth: `calc(900px * ${scale})`,
                 width: '95%',
-                margin: '0 auto'  // 가운데 정렬 강제 적용
+                margin: '0 auto'
               }}
             >
               <p 
                 className="font-black text-black"
                 style={{ 
-                  fontSize: `calc(2.5rem * ${scale})`,
+                  fontSize: `calc(45px * ${scale})`,
                   marginBottom: `calc(48px * ${scale})`
                 }}
               >
                 선물은 과연 무엇일까요?<br />같은 그림의 카드 두 개를 찾아주세요!
               </p>
               <p 
-                className="font-black text-green-600"
-                style={{ fontSize: `calc(2.5rem * ${scale})` }}
+                className="font-black text-[#0DA429]"
+                style={{ fontSize: `calc(45px * ${scale})` }}
               >
                 힌트: 이 선물은 머리를 보호해줘요
               </p>
@@ -834,7 +838,7 @@ const MemoryCardQuest: React.FC = () => {
                         transform: 'rotateY(180deg)',
                       }}
                     >
-                      <img
+                      <EnhancedOptimizedImage
                         src={card.image}
                         alt={card.type}
                         className="w-full h-full object-contain"
@@ -856,7 +860,7 @@ const MemoryCardQuest: React.FC = () => {
                         backfaceVisibility: 'hidden',
                       }}
                     >
-                      <img
+                      <EnhancedOptimizedImage
                         src={cardBack}
                         alt="카드 뒷면"
                         className="w-full h-full object-contain"
@@ -890,7 +894,7 @@ const MemoryCardQuest: React.FC = () => {
             }}
           >
             <p 
-              className="font-black text-green-600 whitespace-pre-line"
+              className="font-black text-[#0DA429] whitespace-pre-line"
               style={{ fontSize: `${2.2 * scale}rem` }}
             >
               {feedbackMessage}
@@ -911,7 +915,7 @@ const MemoryCardQuest: React.FC = () => {
             }}
           >
             <p 
-              className="font-black text-green-600 whitespace-pre-line"
+              className="font-black text-[#0DA429] whitespace-pre-line"
               style={{ fontSize: `${2.2 * scale}rem` }}
             >
               {feedbackMessage}
@@ -932,7 +936,7 @@ const MemoryCardQuest: React.FC = () => {
             }}
           >
             <p 
-              className="font-black text-green-600 whitespace-pre-line"
+              className="font-black text-[#0DA429] whitespace-pre-line"
               style={{ fontSize: `${2.2 * scale}rem` }}
             >
               {feedbackMessage}
@@ -1008,7 +1012,7 @@ const MemoryCardQuest: React.FC = () => {
               transition={{ duration: 0.8 * Math.max(0.8, scale) }}
             >
               <motion.p 
-                className="font-black text-green-600"
+                className="font-black text-[#0DA429]"
                 style={{
                   fontSize: `calc(2.4rem * ${scale})`,
                   marginBottom: `calc(24px * ${scale})`
@@ -1046,7 +1050,7 @@ const MemoryCardQuest: React.FC = () => {
             style={{
               width: '80%',
               maxWidth: `calc(1024px * ${scale})`,
-              marginTop: `calc(-100px * ${scale})` // 이 값을 더 음수로 변경
+              marginTop: `calc(-70px * ${scale})`
             }}
             initial={{ y: `calc(-30px * ${scale})`, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -1056,9 +1060,9 @@ const MemoryCardQuest: React.FC = () => {
               src={grandchildren}
               alt="손자손녀"
               style={{
-                width: `calc(350px * ${scale})`,
+                width: `calc(377px * ${scale})`,
                 height: 'auto',
-                marginBottom: `calc(-48px * ${scale})`,
+                marginBottom: `calc(-56px * ${scale})`,
                 zIndex: 20
               }}
               initial={{ scale: 0.8, opacity: 0 }}
@@ -1066,21 +1070,23 @@ const MemoryCardQuest: React.FC = () => {
               transition={{ duration: 0.8 * Math.max(0.8, scale) }}
             />
             <motion.div 
-              className="bg-white bg-opacity-90 border-8 border-green-600 rounded-xl w-full text-center"
+              className="bg-[#FFFAFA] bg-opacity-75 border-[#0DA429] w-full text-center"
               style={{
                 padding: `calc(40px * ${scale})`,
                 paddingTop: `calc(48px * ${scale})`,
-                maxWidth: `calc(718px * ${scale})`
+                maxWidth: `calc(732px * ${scale})`,
+                borderWidth: `calc(10px * ${scale})`,
+                borderRadius: `calc(36px * ${scale})`
               }}
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.8 * Math.max(0.8, scale) }}
             >
               <motion.p 
-                className="font-black text-green-600"
+                className="font-black text-[#0DA429]"
                 style={{
-                  fontSize: `calc(2.4rem * ${scale})`,
-                  marginBottom: `calc(24px * ${scale})`
+                  fontSize: `calc(45px * ${scale})`,
+                  marginBottom: `calc(12px * ${scale})`
                 }}
                 initial={{ y: `calc(20px * ${scale})`, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -1090,7 +1096,7 @@ const MemoryCardQuest: React.FC = () => {
               </motion.p>
               <motion.p 
                 className="font-black text-black"
-                style={{ fontSize: `calc(2.4rem * ${scale})` }}
+                style={{ fontSize: `calc(45px * ${scale})` }}
                 initial={{ y: `calc(20px * ${scale})`, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.6 * Math.max(0.8, scale), delay: 0.5 * Math.max(0.8, scale) }}
@@ -1227,7 +1233,7 @@ const MemoryCardQuest: React.FC = () => {
           className="absolute left-0 right-0 flex justify-center z-10"
           style={{ bottom: `calc(32px * ${scale})` }}
         >
-          <img
+          <EnhancedOptimizedImage
             src={nextButton}
             alt="다음"
             onClick={handleNextPhase}
@@ -1243,7 +1249,7 @@ const MemoryCardQuest: React.FC = () => {
           className="absolute left-0 right-0 flex justify-center z-10"
           style={{ bottom: `calc(32px * ${scale})` }}
         >
-          <img
+          <EnhancedOptimizedImage
             src={confirmButton}
             alt="확인"
             onClick={handleConfirm}
