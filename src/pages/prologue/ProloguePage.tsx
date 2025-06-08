@@ -14,6 +14,7 @@ import { audioManager } from '../../utils/audioManager';
 import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 import { simpleImagePreloader } from '../../utils/simpleImagePreloader';
+import { stopBgm } from '../../utils/backgroundMusic';
 
 // 이미지 임포트
 const scenario1FullMap = '/assets/images/scenario1_full_map.png';
@@ -74,10 +75,13 @@ const ProloguePage = () => {
     }
   }, [location, step]);
 
-  //효과음
+
+  //효과음 & 배경음 stop
   useEffect(() => {
     if (step === 'mission') {
       audioManager.playSound('missionGuide', 0.5);
+    } else if (step === 'letterMessage'){
+        stopBgm('sparrow_land');
     } else if (step === 'encouragement' && characterLabel === '할아버지') {
         audioManager.playSound('childGrandFather', 0.5);
     } else if (step === 'encouragement' && characterLabel === '할머니'){

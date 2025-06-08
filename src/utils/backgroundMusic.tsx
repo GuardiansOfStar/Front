@@ -26,17 +26,21 @@ export async function initBgm(bgmType: BgmType) {
   bgmPlayers[bgmType] = howl;
 }
 
-export function playBgm(bgmType: BgmType) {
+export async function playBgm(bgmType: BgmType) {
   const player = bgmPlayers[bgmType];
   if (!player) 
     {
       // console.log("no!");
       return;
     }
-  if (!player.playing()) {
+    // 브라우저 정책으로 AudioContext가 suspended 일 경우 resume
+  if (Howler.ctx.state === 'suspended') {
+    await Howler.ctx.resume();
+  }
+  //if (!player.playing()) {
     player.play();
     // console.log("playBgm called");
-  }
+  //}
 }
 
 export function stopBgm(bgmType: BgmType) {

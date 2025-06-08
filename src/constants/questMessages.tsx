@@ -1,6 +1,6 @@
 export const questMessages: Record<string, { success: string; failure: string }> = {
   pothole: {
-    success: "구덩이에서\n속도를 줄이는 모습이\n멋져요",
+    success: "구덩이에서\n속도 줄이는 모습이\n멋져요",
     failure: "구덩이를\n만나면\n속도를 줄여요",
   },
   helmet: {
