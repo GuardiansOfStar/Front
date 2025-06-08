@@ -7,7 +7,7 @@ import EnhancedLoadingScreen from './components/ui/SimpleLoadingScreen';
 import { useDragPrevention } from './hooks/useDragPrevention';
 
 // 레이아웃 컴포넌트들
-// import StartPrologueLayout from './components/layout/StartPrologueLayout';
+import StartPrologueLayout from './components/layout/StartPrologueLayout';
 // import QuestLayout from './components/layout/QuestLayout';
 import ResultLayout from './components/layout/ResultLayout'
 
@@ -53,13 +53,16 @@ function App() {
       <AspectRatioContainer>
         <Routes>
           {/* 시작 및 프롤로그 화면들 */}
+            <Route element={<StartPrologueLayout />}>
             <Route path="/" element={<Navigate to="/home" replace />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/setting" element={<SettingPage />} />
             <Route path="/scenario-select" element={<ScenarioSelectPage />} />
             <Route path="/character-select" element={<CharacterSelectPage />} />
             <Route path="/prologue" element={<ProloguePage />} />
+            </Route>
             <Route path="/driving-prep" element={<DrivingPrepPage />} />
+            
           
 
           {/* 퀘스트 화면들 */}
