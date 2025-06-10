@@ -7,8 +7,13 @@ import './index.css'
 import { BrowserRouter } from 'react-router-dom'
 import { CharacterProvider } from './context/CharacterContext'
 import { simpleImagePreloader, CRITICAL_IMAGES, HIGH_PRIORITY_IMAGES } from './utils/simpleImagePreloader'
+import { setupViewportHeightVar } from './utils/viewportUtils';
+
+// 뷰포트 높이 변수 설정 (앱 시작 전 초기화)
+setupViewportHeightVar();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
+  
  <React.StrictMode>
    <BrowserRouter>
      <CharacterProvider>
@@ -98,6 +103,27 @@ if (process.env.NODE_ENV === 'development') {
      }
    },
    
+   // 뷰포트 디버깅 추가
+   viewport: () => {
+     console.group('📱 뷰포트 정보');
+     console.log(`window.innerHeight: ${window.innerHeight}px`);
+     console.log(`window.innerWidth: ${window.innerWidth}px`);
+     console.log(`document.documentElement.clientHeight: ${document.documentElement.clientHeight}px`);
+     console.log(`document.documentElement.clientWidth: ${document.documentElement.clientWidth}px`);
+     
+     if (window.visualViewport) {
+       console.log(`visualViewport.height: ${window.visualViewport.height}px`);
+       console.log(`visualViewport.width: ${window.visualViewport.width}px`);
+     } else {
+       console.log('visualViewport: 지원되지 않음');
+     }
+     
+     const vh = getComputedStyle(document.documentElement).getPropertyValue('--vh');
+     console.log(`CSS --vh 변수: ${vh}`);
+     
+     console.groupEnd();
+   },
+   
    // 도움말
    help: () => {
      console.log(`
@@ -108,21 +134,24 @@ window.imageDebug.preload([])  - 이미지 수동 프리로드
 window.imageDebug.clear()      - 캐시 클리어
 window.imageDebug.check(url)   - 특정 이미지 상태 확인
 window.imageDebug.test()       - 성능 테스트
+window.imageDebug.viewport()   - 뷰포트 정보 확인
 window.imageDebug.help()       - 이 도움말
 
 예시:
 window.imageDebug.status()
 window.imageDebug.preload(['/assets/images/test.png'])
 window.imageDebug.check('/assets/images/background.png')
+window.imageDebug.viewport()
      `);
    }
  };
  
  // 초기 상태 자동 출력
  setTimeout(() => {
-   console.log('🚀 이미지 프리로더 초기화 완료');
+   console.log('🚀 이미지 프리로더 및 뷰포트 초기화 완료');
    console.log('💡 window.imageDebug.help() 입력으로 사용법 확인');
    (window as any).imageDebug.status();
+   (window as any).imageDebug.viewport();
  }, 2000);
  
  // 주기적 상태 모니터링 (30초마다)

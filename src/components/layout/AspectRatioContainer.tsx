@@ -17,8 +17,13 @@ const AspectRatioContainer = ({
 
   useEffect(() => {
     const calculateSize = () => {
-      const windowWidth = window.innerWidth * 0.95;
-      const windowHeight = window.innerHeight * 0.95;
+      // 모바일 뷰포트 최적화: dvh 단위 효과 적용
+      const windowWidth = window.innerWidth * 0.98;
+      const windowHeight = Math.min(
+        window.innerHeight * 0.98,
+        window.visualViewport?.height || window.innerHeight
+      );
+      
       const windowRatio = windowWidth / windowHeight;
       
       let newWidth, newHeight, newScale;
@@ -39,10 +44,20 @@ const AspectRatioContainer = ({
 
     calculateSize();
     window.addEventListener('resize', calculateSize);
-    return () => window.removeEventListener('resize', calculateSize);
+    
+    // visualViewport 변화 감지 (모바일 키보드, 브라우저 UI 변화)
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', calculateSize);
+    }
+    
+    return () => {
+      window.removeEventListener('resize', calculateSize);
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', calculateSize);
+      }
+    };
   }, [targetRatio]);
 
-  // 드래그 방지 이벤트 핸들러
   const preventDragEvents = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -54,45 +69,27 @@ const AspectRatioContainer = ({
     return false;
   };
 
-  // 스크롤 전파 방지
-  const preventScrollPropagation = (e: React.WheelEvent) => {
-    e.stopPropagation();
-  };
-
-  const preventTouchMove = (e: React.TouchEvent) => {
-    // 게임 컨테이너 내부에서만 터치 이벤트 허용
-    e.stopPropagation();
-  };
-
   return (
     <div 
-      className="w-full h-screen flex items-center justify-center bg-gray-100 game-container no-drag"
-      style={{
-        overflow: 'hidden',
-        overscrollBehavior: 'contain',
-        touchAction: 'manipulation'
+      className="w-full flex items-center justify-center bg-gray-100 overflow-hidden no-drag"
+      style={{ 
+        height: '100dvh', // dvh 단위 사용으로 모바일 최적화
+        minHeight: '100dvh'
       }}
       onDragStart={preventDragEvents}
       onDrag={preventDragEvents}
       onDragEnd={preventDragEvents}
       onContextMenu={preventContextMenu}
-      onWheel={preventScrollPropagation}
-      onTouchMove={preventTouchMove}
     >
       <div 
-        className="relative bg-white shadow-lg game-container no-drag"
+        className="relative bg-white shadow-lg overflow-hidden no-drag"
         style={{ 
           width: `${containerSize.width}px`,
           height: `${containerSize.height}px`,
-          overflow: 'hidden',
-          overscrollBehavior: 'contain',
-          touchAction: 'manipulation'
         }}
         onDragStart={preventDragEvents}
         onDrag={preventDragEvents}
         onDragEnd={preventDragEvents}
-        onWheel={preventScrollPropagation}
-        onTouchMove={preventTouchMove}
       >
         <div 
           className="relative no-drag"
@@ -102,15 +99,10 @@ const AspectRatioContainer = ({
             transform: `scale(${scale})`,
             transformOrigin: 'top left',
             '--scale': scale.toString(),
-            overflow: 'hidden',
-            overscrollBehavior: 'contain',
-            touchAction: 'manipulation'
           } as React.CSSProperties}
           onDragStart={preventDragEvents}
           onDrag={preventDragEvents}
           onDragEnd={preventDragEvents}
-          onWheel={preventScrollPropagation}
-          onTouchMove={preventTouchMove}
         >
           {children}
         </div>
