@@ -48,15 +48,15 @@ const ScenarioItem = ({ scenario, isCurrentSelection }: ScenarioProps) => {
                 <img
                     src={imageMap[scenario.id]}
                     alt={scenario.title}
-                    className="w-full h-full object-cover cursor-pointer"
+                    className="w-full h-full object-cover cursor-pointer relative z-10"
                 />
                 
-                {/* 잠금 표시 (이미지 자체가 grayscale 처리됨) */}
+                {/* 잠금 표시 - z-index를 명시적으로 설정 */}
                 {scenario.locked && (
-                    <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center z-20">
                         <svg 
                             xmlns="http://www.w3.org/2000/svg" 
-                            className="h-20 w-20 text-white" 
+                            className="h-20 w-20 text-white z-30" 
                             fill="none" 
                             viewBox="0 0 24 24" 
                             stroke="currentColor"
