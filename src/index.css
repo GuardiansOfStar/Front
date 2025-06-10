@@ -3,8 +3,16 @@
 @tailwind utilities;
 
 html, body, * {
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', Arial, sans-serif !important;
-  /* font-weight는 !important 제거하거나 명시적 설정 */
+  font-family: 'Pretendard', 
+               system-ui, 
+               -apple-system, 
+               BlinkMacSystemFont, 
+               'Apple SD Gothic Neo', 
+               'Malgun Gothic', 
+               '맑은 고딕', 
+               'Helvetica Neue', 
+               Arial, 
+               sans-serif !important;
 }
 
 /* font-black 강제 적용 */
@@ -61,12 +69,18 @@ html, body, * {
 }
 
 :root {
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Pretendard', 
+               system-ui, 
+               -apple-system, 
+               BlinkMacSystemFont, 
+               'Apple SD Gothic Neo', 
+               'Malgun Gothic', 
+               '맑은 고딕', 
+               sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
@@ -124,6 +138,15 @@ button:focus-visible {
   }
   button {
     background-color: #f9f9f9;
+  }
+}
+
+@media (max-width: 768px) {
+  html, body, * {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-display: fallback;
   }
 }
 

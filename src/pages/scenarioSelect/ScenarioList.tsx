@@ -115,16 +115,20 @@ const ScenarioList = () => {
             audioManager.playSound('etcSound', 0.7);
         }
         
-        if (isDragging || dragDistance > 10 || isConfirming) return; // 확정 중에는 터치 무시
+        if (isDragging || dragDistance > 10 || isConfirming) return;
         
-        if (index === selectedScenarioIndex) {
-            // 현재 선택된 시나리오를 다시 터치하면 선택
-            handleScenarioSelect();
-        } else {
-            // 다른 시나리오를 터치하면 해당 시나리오로 이동
+        // 잠긴 시나리오도 선택 상태 변경 허용 (실행은 막되 시각적 피드백은 제공)
+        if (index !== selectedScenarioIndex) {
             setSelectedScenarioIndex(index);
+            return;
+        }
+        
+        // 현재 선택된 시나리오를 다시 터치하면 선택 (잠긴 것이 아닐 경우에만)
+        if (index === selectedScenarioIndex && !allScenarios[index].locked) {
+            handleScenarioSelect();
         }
     };
+
     
     // 마우스 이벤트 핸들러
     const handleMouseDown = (e: React.MouseEvent) => {
@@ -277,7 +281,7 @@ const ScenarioList = () => {
                             
                             // 확정 애니메이션 적용
                             if (isConfirmingThis) {
-                                scaleValue = SELECTED_SCALE * 1.15; // 살짝 더 크게
+                                scaleValue = SELECTED_SCALE * 1.15;
                                 opacity = 1;
                             }
                             
@@ -301,7 +305,8 @@ const ScenarioList = () => {
                                             width: `${SCENARIO_WIDTH}px`,
                                             height: `calc(200px * ${scale})`,
                                             filter: scenario.locked ? 'grayscale(1) brightness(0.75)' : 'none',
-                                            border: isSelected ? `${FRAME_BORDER_WIDTH}px solid ${frameColor}` : 'none',
+                                            // Border 적용 방식 수정 - 모바일 호환성 개선
+                                            border: isSelected ? `${FRAME_BORDER_WIDTH}px solid ${frameColor}` : `${FRAME_BORDER_WIDTH}px solid transparent`,
                                             boxSizing: 'border-box',
                                             boxShadow: isSelected ? 
                                                 (isConfirmingThis ? 
@@ -309,8 +314,14 @@ const ScenarioList = () => {
                                                     `0 ${4 * scale}px ${6 * scale}px ${-1 * scale}px rgba(0, 0, 0, 0.1)`
                                                 ) : 'none',
                                             cursor: isSelected && !scenario.locked && !isConfirming ? 'pointer' : 'default',
-                                            borderRadius: `calc(12px * ${scale})`,
-                                            transform: isConfirmingThis ? 'translateZ(0)' : 'none' // 하드웨어 가속
+                                            borderRadius: `calc(24px * ${scale})`,
+                                            // 모바일 렌더링 최적화
+                                            transform: 'translateZ(0)', // 항상 하드웨어 가속 적용
+                                            backfaceVisibility: 'hidden',
+                                            WebkitBackfaceVisibility: 'hidden',
+                                            // 모바일에서 border 렌더링 강제
+                                            WebkitTransform: 'translateZ(0)',
+                                            willChange: isSelected ? 'transform, border-color' : 'auto'
                                         }}
                                     >
                                         <img
@@ -324,6 +335,9 @@ const ScenarioList = () => {
                                         {scenario.locked && (
                                             <div 
                                                 className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-80"
+                                                style={{
+                                                    borderRadius: `calc(8px * ${scale})`, // 부모 border-radius와 일치
+                                                }}
                                             >
                                                 <div 
                                                     className="rounded-full"
