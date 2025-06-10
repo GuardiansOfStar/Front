@@ -18,7 +18,12 @@ const AspectRatioContainer = ({
   useEffect(() => {
     const calculateSize = () => {
       const windowWidth = window.innerWidth * 0.95;
-      const windowHeight = window.innerHeight * 0.95;
+      
+      // 모바일 기기 감지
+      const isMobile = window.innerWidth <= 768;
+      const heightRatio = isMobile ? 0.75 : 0.95; // 모바일: 75%, 데스크톱: 95%
+      
+      const windowHeight = window.innerHeight * heightRatio;
       const windowRatio = windowWidth / windowHeight;
       
       let newWidth, newHeight, newScale;
@@ -29,6 +34,11 @@ const AspectRatioContainer = ({
       } else {
         newWidth = windowWidth;
         newHeight = windowWidth / targetRatio;
+      }
+      
+      if (isMobile && newHeight > window.innerHeight * 0.75) {
+        newHeight = window.innerHeight * 0.75;
+        newWidth = newHeight * targetRatio;
       }
       
       newScale = Math.min(newWidth / 1024, newHeight / 768);

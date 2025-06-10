@@ -1,5 +1,5 @@
 // src/App.tsx - 완전 수정 버전
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { CharacterProvider } from './context/CharacterContext';
 import AspectRatioContainer from './components/layout/AspectRatioContainer';
@@ -43,6 +43,20 @@ function App() {
     setIsInitialLoading(false);
     console.log('[App] 초기 로딩 완료');
   };
+
+  useEffect(() => {
+    const preventScroll = (e: TouchEvent) => {
+      if (window.innerWidth <= 768) {
+        e.preventDefault();
+      }
+    };
+    
+    document.addEventListener('touchmove', preventScroll, { passive: false });
+    
+    return () => {
+      document.removeEventListener('touchmove', preventScroll);
+    };
+  }, []);
 
   if (isInitialLoading) {
     return <EnhancedLoadingScreen onLoadComplete={handleLoadComplete} />;
