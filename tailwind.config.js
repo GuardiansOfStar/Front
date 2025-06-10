@@ -89,18 +89,30 @@ module.exports = {
           '75%': { transform: 'translateX(-5px)' },
         },
       },
-      // 고령층 사용자를 위한 기본 설정
+      // 한국어 환경에 최적화된 기본 설정
       fontFamily: {
-        sans: ['Pretendard',
-               '-apple-system',
-               'BlinkMacSystemFont',
-               'system-ui',
-               'Roboto',
-               'Helvetica Neue',
-               'Arial',
-               'sans-serif'
-              ],
-        },
+        sans: [
+          'Pretendard',
+          // iOS 한국어 폰트
+          'Apple SD Gothic Neo',
+          'SF Pro Display',
+          '-apple-system',
+          // Android 한국어 폰트
+          'Noto Sans KR',
+          'Roboto',
+          // Windows 한국어 폰트
+          'Malgun Gothic',
+          '맑은 고딕',
+          // 일반 시스템 폰트
+          'BlinkMacSystemFont',
+          'system-ui',
+          'Segoe UI',
+          'Helvetica Neue',
+          'Arial',
+          // 폴백
+          'sans-serif'
+        ],
+      },
     },
   },
   plugins: [],

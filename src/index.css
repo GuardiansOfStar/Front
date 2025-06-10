@@ -2,14 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 통일된 폰트 설정 - 한국어 환경 최적화 */
 html, body, * {
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', Arial, sans-serif !important;
-  /* font-weight는 !important 제거하거나 명시적 설정 */
+  font-family: 'Pretendard', 
+    /* iOS 한국어 폰트 */
+    'Apple SD Gothic Neo', 
+    'SF Pro Display', 
+    '-apple-system', 
+    /* Android 한국어 폰트 */
+    'Noto Sans KR', 
+    'Roboto', 
+    /* Windows 한국어 폰트 */
+    'Malgun Gothic', 
+    '맑은 고딕',
+    /* 일반 시스템 폰트 */
+    'BlinkMacSystemFont', 
+    'system-ui', 
+    'Segoe UI', 
+    'Helvetica Neue', 
+    'Arial', 
+    /* 폴백 */
+    'sans-serif' !important;
 }
 
-/* font-black 강제 적용 */
-.font-black {
-  font-weight: 900 !important;
+/* 한국어 텍스트 렌더링 최적화 */
+html {
+  font-feature-settings: 'kern' 1, 'liga' 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* 폰트 로딩 최적화 */
+.font-loading {
+  visibility: hidden;
+}
+
+.font-loaded {
+  visibility: visible;
+}
+
+/* 한국어 단어 분리 최적화 */
+body {
+  word-break: keep-all;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 /* src/index.css (Tailwind + 캐릭터 애니메이션 추가)*/
@@ -24,7 +64,7 @@ html, body, * {
 
 /* 1) 스크롤바 트랙(배경 부분)의 높이(가로 모드 기준) 지정 */
 .scroll-container::-webkit-scrollbar {
-  height: 8px; /* 스크롤바 “바닥” 높이: 8px 정도로 얇게 */
+  height: 8px; /* 스크롤바 "바닥" 높이: 8px 정도로 얇게 */
 }
 
 /* 2) 트랙의 배경(스크롤바가 지나가는 부분)을 투명 처리 */
@@ -32,7 +72,7 @@ html, body, * {
   background-color: #5a5a5a;  /* 트랙 자체는 투명하게 두고, 오직 손잡이만 보이게 설정 */
 }
 
-/* 3) 스크롤바 “손잡이(thumb)” 모양 지정 */
+/* 3) 스크롤바 "손잡이(thumb)" 모양 지정 */
 .scroll-container::-webkit-scrollbar-thumb {
   background-color: #d0d0d0; 
   border-radius: 4px;        /* 모서리를 살짝 둥글게 처리(반경 4px) */
@@ -45,7 +85,6 @@ html, body, * {
   scrollbar-width: thick;  /* 스크롤바 두께를 'thin'으로 얇게 */;
   scrollbar-color: #0DA429 transparent;  /* thumb 색상: #0DA429, 트랙: 투명 */
 }
-
 
 @keyframes move-diagonal {
   0% {
@@ -61,121 +100,27 @@ html, body, * {
 }
 
 :root {
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Pretendard', 
+    'Apple SD Gothic Neo', 
+    'SF Pro Display', 
+    '-apple-system', 
+    'Noto Sans KR', 
+    'Roboto', 
+    'Malgun Gothic', 
+    '맑은 고딕',
+    'BlinkMacSystemFont', 
+    'system-ui', 
+    'Segoe UI', 
+    'Helvetica Neue', 
+    'Arial', 
+    'sans-serif';
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
 }
 
-body {
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  font-size: 18px;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-/* button:hover {
-  border-color: #646cff;
-} */
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.6;
-  }
-}
- .animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
- }
- 
-@keyframes slideUp {
-  from { transform: translateY(100%); }
-  to   { transform: translateY(0); }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.scale-enter {
-  opacity: 0;
-  transform: scale(0.8);
-}
-.scale-enter-active {
-  opacity: 1;
-  transform: scale(1);
-  transition: all 300ms ease-out;
-}
-
-.flip-card {
-  perspective: 1000px;
-}
-.flip-card-inner {
-  transition: transform 0.6s;
-  transform-style: preserve-3d;
-}
-.flipped .flip-card-inner {
-  transform: rotateY(180deg);
-}
-
-/* 반응형 기본 스타일 */
+/* 기본 스타일 */
 .responsive-container {
   --base-scale: 1;
 }
@@ -254,13 +199,4 @@ button, [role="button"], .cursor-pointer {
   -ms-user-select: none;
   user-select: none;
   touch-action: manipulation;
-}
-
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-.animate-shimmer {
-  animation: shimmer 1.5s ease-in-out infinite;
 }

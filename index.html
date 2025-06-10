@@ -3,19 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     
-    <!-- Critical 이미지만 preload (crossorigin 제거) -->
+    <!-- Critical 이미지 preload -->
     <link rel="preload" href="/assets/images/background.png" as="image" type="image/png" />
     <link rel="preload" href="/assets/images/star_character.png" as="image" type="image/png" />
     <link rel="preload" href="/assets/images/title.png" as="image" type="image/png" />
     <link rel="preload" href="/assets/images/start_button.png" as="image" type="image/png" />
     
-    <!-- 폰트 preload -->
-    <!-- <link rel="preload" href="/assets/fonts/Pretendard-Regular.woff" as="font" type="font/woff" crossorigin> -->
-    <!-- <link rel="preload" href="/assets/fonts/Pretendard-Bold.woff" as="font" type="font/woff" crossorigin>
+    <!-- 핵심 폰트 preload - WOFF2 우선, WOFF 폴백 -->
+    <link rel="preload" href="/assets/fonts/Pretendard-Black.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/Pretendard-Black.woff" as="font" type="font/woff" crossorigin>
-    <link rel="preload" href="/assets/fonts/Pretendard-ExtraBold.woff" as="font" type="font/woff" crossorigin> -->
+    <link rel="preload" href="/assets/fonts/Pretendard-Bold.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/Pretendard-Bold.woff" as="font" type="font/woff" crossorigin>
+    <link rel="preload" href="/assets/fonts/Pretendard-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/Pretendard-Regular.woff" as="font" type="font/woff" crossorigin>
     
-    <!-- Performance 최적화 -->
+    <!-- DNS prefetch 최적화 -->
     <link rel="dns-prefetch" href="//vercel.app" />
     <meta name="format-detection" content="telephone=no" />
     
@@ -29,6 +31,28 @@
     
     <!-- Critical CSS inlined -->
     <style>
+      /* 폰트 로딩 최적화 */
+      html {
+        font-family: 'Pretendard', 
+          'Apple SD Gothic Neo', 
+          'SF Pro Display', 
+          '-apple-system', 
+          'Noto Sans KR', 
+          'Roboto', 
+          'Malgun Gothic', 
+          '맑은 고딕',
+          'BlinkMacSystemFont', 
+          'system-ui', 
+          'Segoe UI', 
+          'Helvetica Neue', 
+          'Arial', 
+          'sans-serif';
+        font-display: swap;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      
       /* 이미지 로딩 최적화 */
       img {
         image-rendering: auto;
@@ -45,6 +69,7 @@
         align-items: center;
         justify-content: center;
         z-index: 9999;
+        font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', '맑은 고딕', system-ui, sans-serif;
       }
       
       /* 애니메이션 최적화 */
@@ -62,7 +87,45 @@
           animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
         }
       }
+      
+      /* 폰트 로딩 감지 */
+      .font-loading-detector {
+        font-family: 'Pretendard';
+        position: absolute;
+        visibility: hidden;
+        font-size: 100px;
+        width: auto;
+        height: auto;
+        line-height: normal;
+        margin: 0;
+        padding: 0;
+        font-variant: normal;
+        white-space: nowrap;
+      }
     </style>
+    
+    <!-- 폰트 로딩 검증 스크립트 -->
+    <script>
+      (function() {
+        // 폰트 로딩 상태 확인
+        var fontLoadingDetector = document.createElement('div');
+        fontLoadingDetector.className = 'font-loading-detector';
+        fontLoadingDetector.innerHTML = '가나다ABCabc';
+        document.head.appendChild(fontLoadingDetector);
+        
+        // 폰트 로딩 완료 감지
+        if ('fonts' in document) {
+          document.fonts.ready.then(function() {
+            document.documentElement.classList.add('fonts-loaded');
+          });
+        }
+        
+        // 폴백 타이머 (3초 후 강제 로딩 완료 처리)
+        setTimeout(function() {
+          document.documentElement.classList.add('fonts-loaded');
+        }, 3000);
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
