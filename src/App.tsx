@@ -11,6 +11,7 @@ import StartPrologueLayout from './components/layout/StartPrologueLayout';
 // import QuestLayout from './components/layout/QuestLayout';
 import ResultLayout from './components/layout/ResultLayout'
 
+
 // 페이지 컴포넌트들
 import HomePage from './pages/home/HomePage';
 import SettingPage from './pages/home/SettingPage';
