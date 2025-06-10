@@ -1,4 +1,4 @@
-// src/App.tsx - 완전 수정 버전
+// src/App.tsx - 완전 수정 버전 (스크롤 방지 포함)
 import { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { CharacterProvider } from './context/CharacterContext';
@@ -45,16 +45,58 @@ function App() {
   };
 
   useEffect(() => {
+    // 게임 실행 시 body 스크롤 완전 차단
+    document.body.classList.add('no-scroll');
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+    document.body.style.height = '100%';
+    
+    // 모바일 터치 스크롤 방지 (기존 코드 개선)
     const preventScroll = (e: TouchEvent) => {
-      if (window.innerWidth <= 768) {
+      // 게임 컨테이너 내부가 아닌 경우에만 방지
+      const target = e.target as Element;
+      if (!target.closest('.scrollable-content')) {
         e.preventDefault();
       }
     };
     
+    // 휠 스크롤 방지
+    const preventWheel = (e: WheelEvent) => {
+      const target = e.target as Element;
+      if (!target.closest('.scrollable-content')) {
+        e.preventDefault();
+      }
+    };
+    
+    // 키보드 스크롤 방지 (스페이스바, 방향키 등)
+    const preventKeyScroll = (e: KeyboardEvent) => {
+      const scrollKeys = [32, 33, 34, 35, 36, 37, 38, 39, 40];
+      if (scrollKeys.includes(e.keyCode)) {
+        const target = e.target as Element;
+        if (!target.closest('.scrollable-content')) {
+          e.preventDefault();
+        }
+      }
+    };
+    
     document.addEventListener('touchmove', preventScroll, { passive: false });
+    document.addEventListener('wheel', preventWheel, { passive: false });
+    document.addEventListener('keydown', preventKeyScroll, { passive: false });
     
     return () => {
+      // 컴포넌트 언마운트 시 모든 제한 해제
+      document.body.classList.remove('no-scroll');
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
+      
       document.removeEventListener('touchmove', preventScroll);
+      document.removeEventListener('wheel', preventWheel);
+      document.removeEventListener('keydown', preventKeyScroll);
     };
   }, []);
 
@@ -67,29 +109,26 @@ function App() {
       <AspectRatioContainer>
         <Routes>
           {/* 시작 및 프롤로그 화면들 */}
-            <Route element={<StartPrologueLayout />}>
+          <Route element={<StartPrologueLayout />}>
             <Route path="/" element={<Navigate to="/home" replace />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/setting" element={<SettingPage />} />
             <Route path="/scenario-select" element={<ScenarioSelectPage />} />
             <Route path="/character-select" element={<CharacterSelectPage />} />
             <Route path="/prologue" element={<ProloguePage />} />
-            </Route>
-            <Route path="/driving-prep" element={<DrivingPrepPage />} />
-            
+          </Route>
           
+          <Route path="/driving-prep" element={<DrivingPrepPage />} />
 
           {/* 퀘스트 화면들 */}
-            <Route path="/quest" element={<MemoryCardQuest />} />
-            <Route path="/pothole-quest" element={<PotholeQuest />} />
-            <Route path="/makgeolli-quest" element={<MakgeolliQuest/>} />
-            <Route path="/harvest-quest" element={<HarvestQuest />} />
-            <Route path="/return-quest" element={<ReturnQuest/>}/>
-            <Route path="/score" element={<ScorePage />} />
-          
+          <Route path="/quest" element={<MemoryCardQuest />} />
+          <Route path="/pothole-quest" element={<PotholeQuest />} />
+          <Route path="/makgeolli-quest" element={<MakgeolliQuest/>} />
+          <Route path="/harvest-quest" element={<HarvestQuest />} />
+          <Route path="/return-quest" element={<ReturnQuest/>}/>
+          <Route path="/score" element={<ScorePage />} />
            
           {/* 주행 완료 관련 화면들 */}
-          
           <Route path="/success" element={<SuccessBackground />} />
           <Route path="/completion" element={<CompletionBackground />} />
           <Route path='/perfect' element={<PerfectScore/>} />

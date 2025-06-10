@@ -79,23 +79,20 @@ img {
   user-select: none;
 }
 
-/* 필수 이미지 우선순위 */
+/* 이미지 우선순위 클래스 (CSS용) */
 .critical-image {
-  loading: eager;
-  decoding: sync;
-  fetchpriority: high;
+  object-fit: cover;
+  object-position: center;
 }
 
 .high-priority-image {
-  loading: eager;
-  decoding: async;
-  fetchpriority: high;
+  object-fit: cover;
+  object-position: center;
 }
 
 .lazy-image {
-  loading: lazy;
-  decoding: async;
-  fetchpriority: low;
+  object-fit: cover;
+  object-position: center;
 }
 
 /* 성능 모니터링용 */
@@ -117,6 +114,29 @@ img {
 
 .memory-optimized:hover {
   will-change: transform;
+}
+
+/* 스크롤 전파 방지 전용 스타일 */
+.scroll-isolation {
+  overscroll-behavior: contain;
+  touch-action: manipulation;
+  overflow: hidden;
+}
+
+/* 게임 내부 스크롤 허용 영역 */
+.internal-scroll {
+  overscroll-behavior: auto;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 모바일 브라우저 스크롤 방지 */
+@supports (-webkit-touch-callout: none) {
+  .game-container {
+    -webkit-overflow-scrolling: auto;
+    overscroll-behavior-y: contain;
+    overscroll-behavior-x: contain;
+  }
 }
 
 /* Vercel 환경 전용 최적화 */

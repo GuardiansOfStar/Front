@@ -18,12 +18,7 @@ const AspectRatioContainer = ({
   useEffect(() => {
     const calculateSize = () => {
       const windowWidth = window.innerWidth * 0.95;
-      
-      // 모바일 기기 감지
-      const isMobile = window.innerWidth <= 768;
-      const heightRatio = isMobile ? 0.75 : 0.95; // 모바일: 75%, 데스크톱: 95%
-      
-      const windowHeight = window.innerHeight * heightRatio;
+      const windowHeight = window.innerHeight * 0.95;
       const windowRatio = windowWidth / windowHeight;
       
       let newWidth, newHeight, newScale;
@@ -34,11 +29,6 @@ const AspectRatioContainer = ({
       } else {
         newWidth = windowWidth;
         newHeight = windowWidth / targetRatio;
-      }
-      
-      if (isMobile && newHeight > window.innerHeight * 0.75) {
-        newHeight = window.innerHeight * 0.75;
-        newWidth = newHeight * targetRatio;
       }
       
       newScale = Math.min(newWidth / 1024, newHeight / 768);
@@ -64,23 +54,45 @@ const AspectRatioContainer = ({
     return false;
   };
 
+  // 스크롤 전파 방지
+  const preventScrollPropagation = (e: React.WheelEvent) => {
+    e.stopPropagation();
+  };
+
+  const preventTouchMove = (e: React.TouchEvent) => {
+    // 게임 컨테이너 내부에서만 터치 이벤트 허용
+    e.stopPropagation();
+  };
+
   return (
     <div 
-      className="w-full h-screen flex items-center justify-center bg-gray-100 overflow-hidden no-drag"
+      className="w-full h-screen flex items-center justify-center bg-gray-100 game-container no-drag"
+      style={{
+        overflow: 'hidden',
+        overscrollBehavior: 'contain',
+        touchAction: 'manipulation'
+      }}
       onDragStart={preventDragEvents}
       onDrag={preventDragEvents}
       onDragEnd={preventDragEvents}
       onContextMenu={preventContextMenu}
+      onWheel={preventScrollPropagation}
+      onTouchMove={preventTouchMove}
     >
       <div 
-        className="relative bg-white shadow-lg overflow-hidden no-drag"
+        className="relative bg-white shadow-lg game-container no-drag"
         style={{ 
           width: `${containerSize.width}px`,
           height: `${containerSize.height}px`,
+          overflow: 'hidden',
+          overscrollBehavior: 'contain',
+          touchAction: 'manipulation'
         }}
         onDragStart={preventDragEvents}
         onDrag={preventDragEvents}
         onDragEnd={preventDragEvents}
+        onWheel={preventScrollPropagation}
+        onTouchMove={preventTouchMove}
       >
         <div 
           className="relative no-drag"
@@ -90,10 +102,15 @@ const AspectRatioContainer = ({
             transform: `scale(${scale})`,
             transformOrigin: 'top left',
             '--scale': scale.toString(),
+            overflow: 'hidden',
+            overscrollBehavior: 'contain',
+            touchAction: 'manipulation'
           } as React.CSSProperties}
           onDragStart={preventDragEvents}
           onDrag={preventDragEvents}
           onDragEnd={preventDragEvents}
+          onWheel={preventScrollPropagation}
+          onTouchMove={preventTouchMove}
         >
           {children}
         </div>

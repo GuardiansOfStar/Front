@@ -2,72 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body, * {
-  font-family: 'Pretendard', 
-               system-ui, 
-               -apple-system, 
-               BlinkMacSystemFont, 
-               'Apple SD Gothic Neo', 
-               'Malgun Gothic', 
-               '맑은 고딕', 
-               'Helvetica Neue', 
-               Arial, 
-               sans-serif !important;
-}
-
-/* font-black 강제 적용 */
-.font-black {
-  font-weight: 900 !important;
-}
-
-/* src/index.css (Tailwind + 캐릭터 애니메이션 추가)*/
-@keyframes fadein {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.animate-fadein {
-  animation: fadein 2.5s ease-out forwards;
-}
-
-/* 1) 스크롤바 트랙(배경 부분)의 높이(가로 모드 기준) 지정 */
-.scroll-container::-webkit-scrollbar {
-  height: 8px; /* 스크롤바 “바닥” 높이: 8px 정도로 얇게 */
-}
-
-/* 2) 트랙의 배경(스크롤바가 지나가는 부분)을 투명 처리 */
-.scroll-container::-webkit-scrollbar-track {
-  background-color: #5a5a5a;  /* 트랙 자체는 투명하게 두고, 오직 손잡이만 보이게 설정 */
-}
-
-/* 3) 스크롤바 “손잡이(thumb)” 모양 지정 */
-.scroll-container::-webkit-scrollbar-thumb {
-  background-color: #d0d0d0; 
-  border-radius: 4px;        /* 모서리를 살짝 둥글게 처리(반경 4px) */
-  min-width: 80px;          /* 손잡이가 절대로 100px보다 작아지지 않도록 최소 너비 지정 */
-  /* thumb의 높이는 scrollbar 전체 높이에 맞춰 자동 조절 */
-}
-
-/* 4) Firefox용 설정 (선택 사항) */
-.scroll-container {
-  scrollbar-width: thick;  /* 스크롤바 두께를 'thin'으로 얇게 */;
-  scrollbar-color: #0DA429 transparent;  /* thumb 색상: #0DA429, 트랙: 투명 */
-}
-
-
-@keyframes move-diagonal {
-  0% {
-    transform: translate(0, -50%); /* 현재 위치(좌측 중앙)에서 시작 */
-  }
-  100% {
-    /* 오른쪽으로 더 많이 이동하도록 수정 (29vw → 35vw), y 위치도 조정 */
-    transform: translate(35vw, 10vh);
-  }
-}
-.animate-move-diagonal {
-  animation: move-diagonal 2s linear forwards;
-}
-
 :root {
   font-family: 'Pretendard', 
                system-ui, 
@@ -86,11 +20,247 @@ html, body, * {
   background-color: #242424;
 }
 
-body {
+html, body {
+  font-family: 'Pretendard', 
+               system-ui, 
+               -apple-system, 
+               BlinkMacSystemFont, 
+               'Apple SD Gothic Neo', 
+               'Malgun Gothic', 
+               '맑은 고딕', 
+               'Helvetica Neue', 
+               Arial, 
+               sans-serif !important;
   margin: 0;
   padding: 0;
+  overflow: hidden;
+  overscroll-behavior: contain;
+  touch-action: manipulation;
 }
 
+* {
+  font-family: 'Pretendard', 
+               system-ui, 
+               -apple-system, 
+               BlinkMacSystemFont, 
+               'Apple SD Gothic Neo', 
+               'Malgun Gothic', 
+               '맑은 고딕', 
+               'Helvetica Neue', 
+               Arial, 
+               sans-serif !important;
+}
+
+#root {
+  overflow: hidden;
+  overscroll-behavior: contain;
+  touch-action: manipulation;
+  width: 100%;
+  height: 100%;
+}
+
+.game-container {
+  overscroll-behavior: contain;
+  touch-action: manipulation;
+  overflow: hidden;
+}
+
+.scrollable-content {
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 전체 페이지 스크롤 차단 */
+body.no-scroll {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
+}
+
+/* font-black 강제 적용 */
+.font-black {
+  font-weight: 900 !important;
+}
+
+/* 애니메이션 정의 */
+@keyframes fadein {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes move-diagonal {
+  0% { transform: translate(0, -50%); }
+  100% { transform: translate(35vw, 10vh); }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* 애니메이션 클래스 */
+.animate-fadein {
+  animation: fadein 2.5s ease-out forwards;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-move-diagonal {
+  animation: move-diagonal 2s linear forwards;
+}
+
+.animate-shimmer {
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out 2;
+}
+
+/* 스크롤바 스타일 */
+.scroll-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+  background-color: #5a5a5a;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background-color: #d0d0d0; 
+  border-radius: 4px;
+  min-width: 80px;
+}
+
+.scroll-container {
+  scrollbar-width: thick;
+  scrollbar-color: #0DA429 transparent;
+}
+
+/* 카드 플립 효과 */
+.flip-card {
+  perspective: 1000px;
+}
+
+.flip-card-inner {
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+/* 스케일 트랜지션 */
+.scale-enter {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.scale-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: all 300ms ease-out;
+}
+
+/* 반응형 스타일 */
+.responsive-container {
+  --base-scale: 1;
+}
+
+.responsive-image {
+  width: calc(var(--original-width, 100%) * var(--scale, 1));
+  height: calc(var(--original-height, auto) * var(--scale, 1));
+}
+
+.responsive-absolute {
+  position: absolute;
+  transform-origin: top left;
+}
+
+.responsive-p-4 { padding: calc(1rem * var(--scale, 1)); }
+.responsive-m-4 { margin: calc(1rem * var(--scale, 1)); }
+.responsive-gap-4 { gap: calc(1rem * var(--scale, 1)); }
+
+/* 드래그 방지 전역 설정 */
+* {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+}
+
+/* 이미지 드래그 방지 */
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  pointer-events: auto;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 터치 디바이스 스크롤 최적화 */
+.no-drag {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+}
+
+/* 입력 요소는 선택 허용 */
+input, textarea, select, button {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+/* 클릭 가능한 요소들 */
+button, [role="button"], .cursor-pointer {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+/* 기본 스타일 */
 html {
   font-size: 18px;
 }
@@ -100,6 +270,7 @@ a {
   color: #646cff;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #535bf2;
 }
@@ -120,14 +291,13 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
-/* button:hover {
-  border-color: #646cff;
-} */
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* 반응형 미디어 쿼리 */
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -153,148 +323,10 @@ button:focus-visible {
     width: 100%;
     height: 100%;
   }
-}
-
-.mobile-game-container {
-  touch-action: none;
-  overscroll-behavior: none;
-  -webkit-overflow-scrolling: auto;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
+  
+  .mobile-game-container {
+    touch-action: none;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: auto;
   }
-  50% {
-    opacity: 0.6;
-  }
-}
- .animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
- }
- 
-@keyframes slideUp {
-  from { transform: translateY(100%); }
-  to   { transform: translateY(0); }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.scale-enter {
-  opacity: 0;
-  transform: scale(0.8);
-}
-.scale-enter-active {
-  opacity: 1;
-  transform: scale(1);
-  transition: all 300ms ease-out;
-}
-
-.flip-card {
-  perspective: 1000px;
-}
-.flip-card-inner {
-  transition: transform 0.6s;
-  transform-style: preserve-3d;
-}
-.flipped .flip-card-inner {
-  transform: rotateY(180deg);
-}
-
-/* 반응형 기본 스타일 */
-.responsive-container {
-  --base-scale: 1;
-}
-
-/* 반응형 이미지 클래스 */
-.responsive-image {
-  width: calc(var(--original-width, 100%) * var(--scale, 1));
-  height: calc(var(--original-height, auto) * var(--scale, 1));
-}
-
-/* 반응형 포지션 클래스 */
-.responsive-absolute {
-  position: absolute;
-  transform-origin: top left;
-}
-
-/* 반응형 패딩/마진 */
-.responsive-p-4 { padding: calc(1rem * var(--scale, 1)); }
-.responsive-m-4 { margin: calc(1rem * var(--scale, 1)); }
-.responsive-gap-4 { gap: calc(1rem * var(--scale, 1)); }
-
-/* 기존 shake 애니메이션 아래에 추가 */
-.animate-shake {
-  animation: shake 0.5s ease-in-out 2;
-}
-
-/* 드래그 방지 전역 설정 */
-* {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  -webkit-user-drag: none;
-  -khtml-user-drag: none;
-  -moz-user-drag: none;
-  -o-user-drag: none;
-  user-drag: none;
-}
-
-/* 이미지 드래그 방지 */
-img {
-  -webkit-user-drag: none;
-  -khtml-user-drag: none;
-  -moz-user-drag: none;
-  -o-user-drag: none;
-  user-drag: none;
-  pointer-events: auto;
-  -webkit-touch-callout: none;
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* 터치 디바이스 스크롤 최적화 */
-.no-drag {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  -webkit-user-drag: none;
-  user-drag: none;
-  -webkit-touch-callout: none;
-  touch-action: manipulation;
-}
-
-/* 입력 요소는 선택 허용 */
-input, textarea, select, button {
-  -webkit-user-select: text;
-  -moz-user-select: text;
-  -ms-user-select: text;
-  user-select: text;
-}
-
-/* 클릭 가능한 요소들 */
-button, [role="button"], .cursor-pointer {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  touch-action: manipulation;
-}
-
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-.animate-shimmer {
-  animation: shimmer 1.5s ease-in-out infinite;
 }
