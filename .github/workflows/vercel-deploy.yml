@@ -16,7 +16,7 @@ jobs:
         run: npm install -g vercel
 
       - name: Deploy to Vercel
-        run: vercel --prod --yes --token=$VERCEL_TOKEN --name=starfollow-ddrive
+        run: vercel --prod --yes --token=$VERCEL_TOKEN --follow-star-safe-driving
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           ORG_ID: ${{ secrets.ORG_ID }}
