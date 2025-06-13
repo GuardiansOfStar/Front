@@ -60,14 +60,6 @@ const ScenarioList = () => {
         setFrameColor(allScenarios[selectedScenarioIndex].locked ? '#718096' : '#0DA429');
     }, [selectedScenarioIndex]);
 
-    useEffect(() => {
-        // 다음 페이지 이미지 미리 로딩
-        simpleImagePreloader.preloadImages([
-            '/assets/images/game_character_grandfather.png',
-            '/assets/images/game_character_grandmother.png'
-        ]);
-    }, []);
-    
     // 드래그 시작 핸들러
     const handleDragStart = useCallback((clientX: number) => {
         setIsDragging(true);

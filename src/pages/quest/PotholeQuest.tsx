@@ -148,18 +148,6 @@ const PotholeQuest = () => {
     }
   }, [gamePhase, scale]);
 
-  useEffect(() => {
-    // 포트홀 퀘스트 이미지 프리로드
-    simpleImagePreloader.preloadImages([
-      drivingRoad,
-      motorcycle,
-      smallPothole,
-      potholeAccident,
-      dangerWarning,
-      successCircle
-    ]);
-  }, []);
-
   const handleConfirmClick = () => {
     //선택 버튼 효과음
     audioManager.playButtonClick();

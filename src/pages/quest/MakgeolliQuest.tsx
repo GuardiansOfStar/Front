@@ -333,22 +333,6 @@ const MakgeolliQuest = () => {
       .catch(err => console.error("❌ 시도 기록 실패", err));
   }, [gamePhase]);
 
-  useEffect(() => {
-    // 막걸리 퀘스트 이미지 프리로드
-    simpleImagePreloader.preloadImages([
-      orchardWorkBackground,
-      mealLadyBackground,
-      sparrow,
-      mealLady,
-      makgeolliGameTray,
-      makgeolliCup,
-      kimchi,
-      noodles,
-      makgeolli,
-      mission3Success
-    ]);
-  }, []);
-
   // 트레이 아이템 초기화 함수
   const initTrayItems = () => {
     const items: TrayItem[] = TRAY_ITEM_POSITIONS.map((pos, index) => ({
