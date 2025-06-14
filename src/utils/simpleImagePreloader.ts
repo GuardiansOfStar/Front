@@ -144,14 +144,17 @@ interface ImageCache {
 class SimpleImagePreloader {
   private cache: ImageCache = {};
   private loadPromises: Map<string, Promise<HTMLImageElement>> = new Map();
+  private allLoadingPromise: Promise<void> | null = null;
 
   constructor() {
-    this.preloadAllImages()
+    this.allLoadingPromise = this.preloadAllImages();
   }
 
-  private preloadAllImages() {
+  private async preloadAllImages(): Promise<void> {
+    console.log('[Preloader] 모든 이미지 로딩 시작');
     const promises = imagePaths.map(src => this.loadImage(src));
-    Promise.allSettled(promises);
+    await Promise.allSettled(promises);
+    console.log('[Preloader] 모든 이미지 로딩 완료');
   }
 
   async loadImage(src: string): Promise<HTMLImageElement> {
@@ -169,19 +172,21 @@ class SimpleImagePreloader {
       img.decoding = 'sync';
 
       const timeoutId = setTimeout(() => {
+        console.warn(`[Preloader] 타임아웃: ${src}`);
+        this.cache[src] = { element: img, loaded: false, error: true };
         reject(new Error(`Timeout: ${src}`));
-      }, 10000);
+      }, 15000);
 
       img.onload = () => {
         clearTimeout(timeoutId);
         this.cache[src] = { element: img, loaded: true, error: false };
-        console.log(`[Preloader] 로딩 성공: ${src}`);
         resolve(img);
       };
 
       img.onerror = (error) => {
         clearTimeout(timeoutId);
         this.cache[src] = { element: img, loaded: false, error: true };
+        console.error(`[Preloader] 로딩 실패: ${src}`, error);
         reject(error);
       };
 
@@ -200,9 +205,28 @@ class SimpleImagePreloader {
     return this.cache[src]?.element || null;
   }
 
+  getLoadedCount(): number {
+    return imagePaths.filter(src => this.isLoaded(src)).length;
+  }
+
+  getTotalCount(): number {
+    return imagePaths.length;
+  }
+
+  getLoadProgress(): number {
+    return Math.round((this.getLoadedCount() / this.getTotalCount()) * 100);
+  }
+
+  async waitForAllImages(): Promise<void> {
+    if (this.allLoadingPromise) {
+      await this.allLoadingPromise;
+    }
+  }
+
   clearCache() {
     this.cache = {};
     this.loadPromises.clear();
+    this.allLoadingPromise = null;
   }
 }
 
