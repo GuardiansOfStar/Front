@@ -35,6 +35,7 @@ import Memory from './pages/ResultScreen/Memory';
 import VillageRank from './pages/ResultScreen/VillageRank';
 import DevelopmentNotice from './pages/DevelopmentNotice';
 
+
 function App() {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   useDragPrevention();
