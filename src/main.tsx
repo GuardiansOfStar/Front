@@ -49,18 +49,6 @@ if (process.env.NODE_ENV === 'development') {
      };
    },
    
-   // 수동 이미지 프리로드
-   preload: (images: string[]) => {
-     console.log(`🚀 수동 프리로드 시작: ${images.length}개`);
-     simpleImagePreloader.preloadImages(images);
-     
-     // 1초 후 결과 확인
-     setTimeout(() => {
-       const loaded = images.filter(src => simpleImagePreloader.isLoaded(src));
-       console.log(`✅ 프리로드 완료: ${loaded.length}/${images.length}`);
-     }, 1000);
-   },
-   
    // 캐시 클리어
    clear: () => {
      simpleImagePreloader.clearCache();

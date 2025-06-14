@@ -1,7 +1,7 @@
 // src/components/ui/SimpleLoadingScreen.tsx - 단순하고 확실한 로딩
 import { useState, useEffect } from 'react';
 import { useScale } from '../../hooks/useScale';
-import { simpleImagePreloader, CRITICAL_IMAGES } from '../../utils/simpleImagePreloader';
+import { simpleImagePreloader, CRITICAL_IMAGES, imagePaths } from '../../utils/simpleImagePreloader';
 
 interface SimpleLoadingScreenProps {
   onLoadComplete: () => void;
@@ -30,14 +30,14 @@ const SimpleLoadingScreen = ({
 
     const checkLoading = () => {
       // Critical 이미지 로딩 확인
-      const criticalLoaded = CRITICAL_IMAGES.filter(src => 
+      const imageLoaded = imagePaths.filter(src => 
         simpleImagePreloader.isLoaded(src)
       ).length;
       
-      const loadProgress = (criticalLoaded / CRITICAL_IMAGES.length) * 100;
+      const loadProgress = (imageLoaded / imagePaths.length) * 100;
       const elapsed = Date.now() - startTime;
       
-      console.log(`[LoadingScreen] 진행: ${criticalLoaded}/${CRITICAL_IMAGES.length} (${loadProgress.toFixed(1)}%)`);
+      console.log(`[LoadingScreen] 진행: ${imageLoaded}/${imagePaths.length} (${loadProgress.toFixed(1)}%)`);
       
       if (loadProgress >= 100 && elapsed >= minLoadTime) {
         clearInterval(progressInterval);

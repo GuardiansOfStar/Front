@@ -109,14 +109,6 @@ const ProloguePage = () => {
     }
   }, []);
 
-  useEffect(() => {
-    // 프롤로그 페이지 이미지 프리로드
-    simpleImagePreloader.preloadImages([
-      '/assets/images/scenario1_full_map.png',
-      '/assets/images/depart_button.png'
-    ]);
-  }, []);
-
   // 다음 단계로 이동 핸들러
   const handleNextStep = () => {
     //선택 효과음
