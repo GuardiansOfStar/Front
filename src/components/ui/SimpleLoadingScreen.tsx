@@ -1,36 +1,36 @@
-// src/components/ui/SimpleLoadingScreen.tsx - 단순하고 확실한 로딩
+// src/components/ui/SimpleLoadingScreen.tsx - simpleImagePreloader 변경에 맞춘 수정본
 import { useState, useEffect } from 'react';
 import { useScale } from '../../hooks/useScale';
-import { simpleImagePreloader, CRITICAL_IMAGES, imagePaths } from '../../utils/simpleImagePreloader';
+import { simpleImagePreloader, imagePaths } from '../../utils/simpleImagePreloader';
 
 interface SimpleLoadingScreenProps {
   onLoadComplete: () => void;
   minLoadTime?: number;
+  targetPercentage?: number; // 완료로 간주할 로딩 비율
 }
 
 const SimpleLoadingScreen = ({ 
   onLoadComplete, 
-  minLoadTime = 1000 
+  minLoadTime = 1000,
+  targetPercentage = 70 // 70% 로딩되면 완료로 간주
 }: SimpleLoadingScreenProps) => {
   const [progress, setProgress] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
   const scale = useScale();
 
-  // src/components/ui/SimpleLoadingScreen.tsx - 로딩 체크 로직만 수정
   useEffect(() => {
     const startTime = Date.now();
     let progressValue = 0;
 
     const progressInterval = setInterval(() => {
-      if (progressValue < 90) {
-        progressValue += Math.random() * 10;
-        setProgress(Math.min(progressValue, 90));
+      if (progressValue < 85) {
+        progressValue += Math.random() * 8;
+        setProgress(Math.min(progressValue, 85));
       }
     }, 100);
 
     const checkLoading = () => {
-      // Critical 이미지 로딩 확인
-      const imageLoaded = imagePaths.filter(src => 
+      const imageLoaded = imagePaths.filter((src: string) => 
         simpleImagePreloader.isLoaded(src)
       ).length;
       
@@ -39,7 +39,8 @@ const SimpleLoadingScreen = ({
       
       console.log(`[LoadingScreen] 진행: ${imageLoaded}/${imagePaths.length} (${loadProgress.toFixed(1)}%)`);
       
-      if (loadProgress >= 100 && elapsed >= minLoadTime) {
+      // 목표 비율에 도달하고 최소 시간이 지났으면 완료
+      if (loadProgress >= targetPercentage && elapsed >= minLoadTime) {
         clearInterval(progressInterval);
         clearInterval(checkInterval);
         
@@ -48,27 +49,31 @@ const SimpleLoadingScreen = ({
           setIsComplete(true);
           setTimeout(onLoadComplete, 300);
         }, 200);
+      } else {
+        // 실제 로딩 진행률을 UI에 반영
+        const uiProgress = Math.max(progressValue, (loadProgress * 0.85)); // 최대 85%까지
+        setProgress(uiProgress);
       }
     };
 
-    const checkInterval = setInterval(checkLoading, 100);
+    const checkInterval = setInterval(checkLoading, 150);
 
-    // 최대 대기 시간
+    // 최대 대기 시간 (8초)
     const maxTimeout = setTimeout(() => {
-      console.warn('[LoadingScreen] 최대 대기 시간 초과');
+      console.warn('[LoadingScreen] 최대 대기 시간 초과, 강제 완료');
       clearInterval(progressInterval);
       clearInterval(checkInterval);
       setProgress(100);
       setIsComplete(true);
       onLoadComplete();
-    }, 6000);
+    }, 8000);
 
     return () => {
       clearInterval(progressInterval);
       clearInterval(checkInterval);
       clearTimeout(maxTimeout);
     };
-  }, [onLoadComplete, minLoadTime]);
+  }, [onLoadComplete, minLoadTime, targetPercentage]);
 
   if (isComplete) return null;
 
@@ -111,6 +116,16 @@ const SimpleLoadingScreen = ({
       >
         게임을 준비하고 있어요... ({Math.round(progress)}%)
       </div>
+      
+      {/* 로딩 상태 표시 (개발 모드에서만) */}
+      {process.env.NODE_ENV === 'development' && (
+        <div 
+          className="mt-2 text-center text-gray-600 text-sm"
+          style={{ fontSize: `calc(12px * ${scale})` }}
+        >
+          이미지: {imagePaths.filter(src => simpleImagePreloader.isLoaded(src)).length}/{imagePaths.length}
+        </div>
+      )}
     </div>
   );
 };

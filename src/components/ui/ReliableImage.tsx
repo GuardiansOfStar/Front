@@ -1,6 +1,6 @@
-// src/components/ui/ReliableImage.tsx - 기존 파일 개선
+// src/components/ui/ReliableImage.tsx - simpleImagePreloader 변경에 맞춘 수정본
 import { useState, useEffect, useRef } from 'react';
-import { simpleImagePreloader, CRITICAL_IMAGES } from '../../utils/simpleImagePreloader';
+import { simpleImagePreloader } from '../../utils/simpleImagePreloader';
 
 interface ReliableImageProps {
   src: string;
@@ -10,8 +10,20 @@ interface ReliableImageProps {
   onClick?: () => void;
   onLoad?: () => void;
   onError?: (error: Error) => void;
-  priority?: 'critical' | 'high' | 'normal';
+  priority?: 'high' | 'normal' | 'low';
 }
+
+// 중요한 이미지들 (빠른 로딩 필요)
+const HIGH_PRIORITY_IMAGES = [
+  '/assets/images/background.png',
+  '/assets/images/star_character.png',
+  '/assets/images/title.png',
+  '/assets/images/start_button.png',
+  '/assets/images/home_button.png',
+  '/assets/images/back_button.png',
+  '/assets/images/next_button.png',
+  '/assets/images/confirm_button.png'
+];
 
 const ReliableImage = ({ 
   src, 
@@ -26,15 +38,16 @@ const ReliableImage = ({
   const [loadState, setLoadState] = useState<'loading' | 'loaded' | 'error'>('loading');
   const [imageSrc, setImageSrc] = useState<string>('');
   const imgRef = useRef<HTMLImageElement>(null);
-  const isCritical = CRITICAL_IMAGES.includes(src) || priority === 'critical';
+  
+  const isHighPriority = HIGH_PRIORITY_IMAGES.includes(src) || priority === 'high';
 
   useEffect(() => {
     let isCancelled = false;
 
     const loadImage = async () => {
       try {
-        // Critical 이미지는 즉시 확인
-        if (isCritical && simpleImagePreloader.isLoaded(src)) {
+        // 이미 로딩된 이미지는 즉시 표시
+        if (simpleImagePreloader.isLoaded(src)) {
           if (!isCancelled) {
             setImageSrc(src);
             setLoadState('loaded');
@@ -43,7 +56,7 @@ const ReliableImage = ({
           return;
         }
 
-        // 이미지 로딩
+        // 이미지 로딩 시도
         await simpleImagePreloader.loadImage(src);
         
         if (!isCancelled) {
@@ -65,7 +78,7 @@ const ReliableImage = ({
     return () => {
       isCancelled = true;
     };
-  }, [src, onLoad, onError, isCritical]);
+  }, [src, onLoad, onError]);
 
   // 로딩 중 스켈레톤
   if (loadState === 'loading') {
@@ -107,8 +120,8 @@ const ReliableImage = ({
       style={style}
       draggable={false}
       onClick={onClick}
-      loading={isCritical ? 'eager' : 'lazy'}
-      decoding={isCritical ? 'sync' : 'async'}
+      loading={isHighPriority ? 'eager' : 'lazy'}
+      decoding={isHighPriority ? 'sync' : 'async'}
     />
   );
 };
