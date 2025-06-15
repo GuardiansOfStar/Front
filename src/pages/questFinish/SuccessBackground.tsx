@@ -31,9 +31,9 @@ const SuccessBackground = () => {
             setHideMotorcycle(true);
         }, 7400 * Math.max(0.8, scale));
         
-        // 8초 후 결과 화면으로 자동 이동 (스케일에 따라 시간 조정)
+        // 8초 후 상장 화면으로 자동 이동 (스케일에 따라 시간 조정)
         const navigationTimer = setTimeout(() => {
-            navigate('/result');
+            navigate('/perfect');
         }, 15000 * Math.max(0.8, scale));
 
         return () => {
