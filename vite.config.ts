@@ -47,7 +47,7 @@ export default defineConfig({
           }
           
           if (/woff|woff2|eot|ttf|otf/i.test(extType)) {
-            return `assets/fonts/[name]-[hash][extname]`;
+            return `assets/fonts/[name][extname]`;
           }
           
           if (/mp3|wav|ogg/i.test(extType)) {
