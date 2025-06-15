@@ -20,7 +20,7 @@ const Certificate = () => {
 
   //음성 메세지 추가
   useEffect(() => {
-    audioManager.playSound('childThanks', 0.5);
+    audioManager.playSound('childThanks', 0.7);
   },);
 
   //효과음을 위해 핸들러 추가

@@ -83,10 +83,10 @@ const TRAY_ITEM_POSITIONS: { type: TrayItem['type'], xRatio: number, yRatio: num
 // 상수 - 숨겨진 막걸리 위치 정의 (상대적 비율)
 const HIDDEN_MAKGEOLLI_POSITIONS: { xRatio: number, yRatio: number, rotation: number, scale: number, zIndex: number }[] = [
   { xRatio: 0.8, yRatio: 0.56, rotation: 0, scale: 2.2, zIndex: 5 }, // 하나는 위 배치와 완전 동일한 거 하나
-  { xRatio: 0.40, yRatio: 0.58, rotation: 0, scale: 2.2, zIndex: 5 }, // 중앙 막걸리
-  { xRatio: 0.13, yRatio: 0.82, rotation: -60, scale: 2.2, zIndex: 7 }, // 왼쪽 아래에 누워있는 거 하나
+  { xRatio: 0.40, yRatio: 0.68, rotation: 0, scale: 2.2, zIndex: 5 }, // 중앙 막걸리
+  { xRatio: 0.13, yRatio: 0.85, rotation: -75, scale: 2.2, zIndex: 7 }, // 왼쪽 아래에 누워있는 거 하나
   { xRatio: 0.29, yRatio: 0.46, rotation: 0, scale: 2.2, zIndex: 4 }, // 중앙 막걸리의 왼쪽
-  { xRatio: 0.66, yRatio: 0.45, rotation: 40, scale: 1.6, zIndex: 5 }, // 오른쪽으로 누워있는 쌩뚱맞은 곳 하나
+  { xRatio: 0.67, yRatio: 0.67, rotation: 90, scale: 1.8, zIndex: 2 }, // 오른쪽으로 누워있는 쌩뚱맞은 곳 하나
 ];
 
 const MakgeolliQuest = () => {

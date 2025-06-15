@@ -83,9 +83,9 @@ const ProloguePage = () => {
     } else if (step === 'letterMessage'){
         stopBgm('sparrow_land');
     } else if (step === 'encouragement' && characterLabel === '할아버지') {
-        audioManager.playSound('childGrandFather', 0.5);
+        audioManager.playSound('childGrandFather', 0.7);
     } else if (step === 'encouragement' && characterLabel === '할머니'){
-      audioManager.playSound('childGrandMother', 0.5);
+      audioManager.playSound('childGrandMother', 0.7);
     }
   },[step]);
 
