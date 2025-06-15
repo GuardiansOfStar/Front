@@ -147,6 +147,7 @@ body.no-scroll {
 /* 스크롤바 스타일 */
 .scroll-container::-webkit-scrollbar {
   height: 8px;
+  display: none; /* 모바일에서 스크롤바 숨김 */
 }
 
 .scroll-container::-webkit-scrollbar-track {
@@ -160,8 +161,24 @@ body.no-scroll {
 }
 
 .scroll-container {
-  scrollbar-width: thick;
+  scrollbar-width: none; /* Firefox */
   scrollbar-color: #0DA429 transparent;
+  -webkit-overflow-scrolling: touch; /* iOS 부드러운 스크롤 */
+  overscroll-behavior-x: contain; /* 가로 스크롤 경계 처리 */
+  scroll-behavior: smooth; /* 부드러운 스크롤 */
+}
+
+/* 모바일 터치 스크롤 개선 */
+@media (max-width: 768px) {
+  .scroll-container {
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
+  
+  .scroll-container > div {
+    scroll-snap-align: start;
+  }
 }
 
 /* 카드 플립 효과 */

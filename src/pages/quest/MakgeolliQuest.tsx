@@ -537,34 +537,47 @@ const MakgeolliQuest = () => {
             </h1>
           </div>
           
-          {/* 참새 애니메이션 - 스케일 적용 */}
           <motion.img
             src={sparrow}
             alt="참새"
             className="absolute"
             style={{
-              top: `calc(27% * ${scale})`,
-              left: 0 ,
-              width: `calc(150px * ${scale})`,
-              height: 'auto'
+              top: `27%`,
+              left: 0,
+              width: `${150 * scale}px`,
+              height: 'auto',
+              zIndex: 60
             }}
-            initial={{ x: `calc(-150px * ${scale})` }}
+            initial={{ 
+              x: `-${150 * scale}px`  // 참새 크기만큼 왼쪽 밖에서 시작
+            }}
             animate={{ 
-              x: `calc(${(window.innerWidth + 150) * scale}px)`,
+              x: `${1024 + (150 * scale)}px`,  // 컨테이너 너비 + 참새 크기만큼 이동
               y: [
                 0, 
-                `calc(-20px * ${scale})`, 
-                `calc(10px * ${scale})`, 
-                `calc(-15px * ${scale})`, 
-                `calc(5px * ${scale})`, 
+                `${-20 * scale}px`, 
+                `${10 * scale}px`, 
+                `${-15 * scale}px`, 
+                `${5 * scale}px`, 
                 0
               ],
               rotate: [0, 5, -3, 2, 0]
             }}
             transition={{
-              x: { duration: 5 * Math.max(0.8, scale), ease: "easeInOut" },
-              y: { duration: 2.5 * Math.max(0.8, scale), repeat: 1, ease: "easeInOut" },
-              rotate: { duration: 2.5 * Math.max(0.8, scale), repeat: 1, ease: "easeInOut" }
+              x: { 
+                duration: 5, // 고정된 5초 duration
+                ease: "linear" // 일정한 속도로 변경
+              },
+              y: { 
+                duration: 2.5, 
+                repeat: 1, 
+                ease: "easeInOut" 
+              },
+              rotate: { 
+                duration: 2.5, 
+                repeat: 1, 
+                ease: "easeInOut" 
+              }
             }}
           />
         </div>

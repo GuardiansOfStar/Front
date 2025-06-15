@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Background from '../../components/ui/Background';
 import { createVillage, getVillageRanking, RankingEntry } from '../../services/endpoints/village';
@@ -33,6 +33,15 @@ const SettingPage = () => {
     const [registeredRegions, setRegisteredRegions] = useState<string[]>([]);
     const [loadingRegions, setLoadingRegions] = useState(true);
 
+    // 터치 드래그를 위한 ref와 상태
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const [isDragging, setIsDragging] = useState(false);
+    const [startX, setStartX] = useState(0);
+    const [scrollLeft, setScrollLeft] = useState(0);
+    const [startTime, setStartTime] = useState(0);
+    const [hasMoved, setHasMoved] = useState(false);
+
+
     const navigate = useNavigate();
 
     const allRegions = Object.values(locationData).flat();
@@ -65,34 +74,84 @@ const SettingPage = () => {
     };
 
     fetchRegisteredRegions();
-  }, []);
+    }, []);
+
+    const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
+        if (!scrollContainerRef.current) return;
+        
+        const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+        setStartX(clientX - scrollContainerRef.current.offsetLeft);
+        setScrollLeft(scrollContainerRef.current.scrollLeft);
+        setStartTime(Date.now());
+        setHasMoved(false);
+        setIsDragging(true);
+    };
+
+    const handleDragMove = (e: React.MouseEvent | React.TouchEvent) => {
+        if (!isDragging || !scrollContainerRef.current) return;
+        
+        const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+        const x = clientX - scrollContainerRef.current.offsetLeft;
+        const moveDistance = Math.abs(x - startX);
+        
+        // 5px 이상 움직였으면 드래그로 간주
+        if (moveDistance > 5) {
+            setHasMoved(true);
+            e.preventDefault();
+            const walk = (x - startX) * 2;
+            scrollContainerRef.current.scrollLeft = scrollLeft - walk;
+        }
+    };
+
+    const handleDragEnd = () => {
+        const endTime = Date.now();
+        const duration = endTime - startTime;
+        
+        // 300ms 이하이고 5px 이하로만 움직였으면 탭으로 간주
+        const isTap = duration < 300 && !hasMoved;
+        
+        setIsDragging(false);
+        setHasMoved(false);
+        
+        return isTap;
+    };
+
+    const handleRegionClick = (region: string, e: React.MouseEvent | React.TouchEvent) => {
+        // 드래그 종료 시 탭인지 확인
+        const isTap = handleDragEnd();
+        
+        // 탭이거나 마우스 클릭인 경우만 선택 처리
+        if (isTap || e.type === 'click') {
+            setSelectedRegion(region);
+        }
+    };
     
     const handleSubmit = async() => {
-      //선택 버튼 효과음
-      audioManager.playButtonClick();
-      if (selectedRegion) {
-        try {
-          // 1) 서버에 village 생성 또는 조회 후 village_id 반환
-          const villageId = (await createVillage(selectedRegion)).data.village_id;
+        //선택 버튼 효과음
+        audioManager.playButtonClick();
+        if (selectedRegion) {
+          try {
+            // 1) 서버에 village 생성 또는 조회 후 village_id 반환
+            const villageId = (await createVillage(selectedRegion)).data.village_id;
 
-          // 2) localStorage에 선택된 지역 이름 & 마을 id 저장
-          localStorage.setItem('selectedRegion', selectedRegion);
-          localStorage.setItem('village_id', villageId);
+            // 2) localStorage에 선택된 지역 이름 & 마을 id 저장
+            localStorage.setItem('selectedRegion', selectedRegion);
+            localStorage.setItem('village_id', villageId);
 
-          // 3) 등록 목록에 추가 (중복 없이)
-          setRegisteredRegions((prev) =>
-            prev.includes(selectedRegion) ? prev : [...prev, selectedRegion]
-          );
+            // 3) 등록 목록에 추가 (중복 없이)
+            setRegisteredRegions((prev) =>
+              prev.includes(selectedRegion) ? prev : [...prev, selectedRegion]
+            );
 
-          // 4) village_id도 localStorage에 저장 (이미 getOrCreateVillage 내부에서 저장됨)
-          console.log('저장된 village_id:', villageId);
+            // 4) village_id도 localStorage에 저장 (이미 getOrCreateVillage 내부에서 저장됨)
+            console.log('저장된 village_id:', villageId);
 
-          // 5) 설정 완료 후 메인 페이지로 이동
-          navigate('/');
-        } catch (err) {
-          console.error('마을 생성/조회 실패', err);
+            // 5) 설정 완료 후 메인 페이지로 이동
+            navigate('/');
+          } catch (err) {
+            console.error('마을 생성/조회 실패', err);
+          }
         }
-      }
     };
 
     const handleExit = () => {
@@ -100,6 +159,8 @@ const SettingPage = () => {
         audioManager.playButtonClick();
         navigate('/');
     };
+
+
 
     return (
         <div className="relative w-full h-full flex flex-col items-center justify-center bg-[#F9F9F9]">
@@ -155,12 +216,27 @@ const SettingPage = () => {
             이미 등록된 지역 목록
             </div>
 
-            <div className="absolute left-[194px] top-[380px] max-w-[90%] w-[640px] overflow-x-auto scroll-container">
+            <div 
+                ref={scrollContainerRef}
+                className={`absolute left-[194px] top-[380px] max-w-[90%] w-[640px] overflow-x-auto scroll-container ${isDragging && hasMoved ? 'cursor-grabbing' : 'cursor-grab'}`}
+                onMouseDown={handleDragStart}
+                onMouseMove={handleDragMove}
+                onMouseUp={handleDragEnd}
+                onMouseLeave={handleDragEnd}
+                onTouchStart={handleDragStart}
+                onTouchMove={handleDragMove}
+                onTouchEnd={handleDragEnd}
+                style={{ 
+                    scrollBehavior: isDragging && hasMoved ? 'auto' : 'smooth',
+                    userSelect: 'none'
+                }}
+            >
                 <div className="flex gap-4">
                 {registeredRegions.map((region) => (
                     <button
                     key={region}
-                    onClick={() => setSelectedRegion(region)}
+                    onClick={(e) => handleRegionClick(region, e)}
+                    onTouchEnd={(e) => handleRegionClick(region, e)}
                     className={`
                         ${selectedRegion === region ? 'bg-green-700' : 'bg-[rgba(11,159,38,0.5)]'}
                         border-[7px] border-[#0E8E12]
@@ -168,6 +244,7 @@ const SettingPage = () => {
                         flex items-center justify-center 
                         text-white text-[33px] font-extrabold
                         whitespace-nowrap px-3 py-1.5
+                        select-none
                     `}
                     >
                     {region}
