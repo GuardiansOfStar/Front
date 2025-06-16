@@ -21,9 +21,22 @@ const ScorePage = () => {
   const [scenarioId, setScenarioId] = useState<string | null>(null);
   const [questId, setQuestId] = useState<string | null>(null);
   const [showScore, setShowScore] = useState(false); // 점수 표시 제어
+  const [totalScore, setTotalScore] = useState<number|null>(null);
 
   const scale = useScale();
   
+  useEffect(() => {
+    const sessionId = localStorage.getItem('session_id');
+    if (!sessionId) return;
+
+    getSession(sessionId)
+      .then(res => setTotalScore(res.data.total_score))
+      .catch(err => {
+        console.error('getSession 오류:', err);
+        setTotalScore(null);
+      });
+  }, []);
+
   // URL 쿼리 파라미터에서 정보 가져오기
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -32,6 +45,7 @@ const ScorePage = () => {
     const sId = searchParams.get('scenario');
     const qId = searchParams.get('quest');
 
+    /*
     const sessionId = localStorage.getItem('session_id');
     let totalScore: number | null = null;
 
@@ -45,11 +59,16 @@ const ScorePage = () => {
           console.error(' getSession 오류:', err);
           totalScore = null;
         })
-      }
+      }*/
     
     console.log("ScorePage - 받은 파라미터:", { score: scoreParam, correct: correctParam, scenario: sId, quest: qId });
     
     const finalScore = scoreParam ? parseInt(scoreParam) : 0;
+    /*
+    if (qId === '5' && totalScore !== null) {
+    setTotalScore(prev => prev! + finalScore);
+    console.log("보정 totalScore~!", totalScore);
+  }*/
     const isAnswerCorrect = correctParam === 'true'; //효과음을 위해 변수 추가가
 
     setScore(finalScore);
@@ -106,8 +125,10 @@ const ScorePage = () => {
           console.log("미션4 완료 → 미션5로 직접 이동");
           navigate(`/return-quest?scenario=${sId}&quest=5`);
           break;
+          /*
         case '5':
           // 미션5 완료 → 성공 화면으로 이동
+          console.log("totalScore: ", totalScore);
             if (totalScore === 100) {
               navigate('/success');
             } else {
@@ -115,16 +136,30 @@ const ScorePage = () => {
             }
           //console.log("미션5 완료 → 성공 화면으로 이동");
           //navigate(`/completion?scenario=${sId}`);
-          break;
+          break;*/
+          /*
         default:
           // 알 수 없는 미션 → 홈으로 이동
           console.log("알 수 없는 미션 ID입니다. 홈으로 이동합니다.");
-          navigate('/');
+          navigate('/');*/
       }
     }, 4000);
     
     return () => clearTimeout(timer);
   }, [location, navigate]);
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const scoreParam = searchParams.get('score');
+    const finalScore = scoreParam ? parseInt(scoreParam) : 0;
+    if (questId !== '5' || totalScore === null) return;
+    console.log("final score : ", totalScore);
+    const t = setTimeout(() => {
+      if (totalScore + finalScore >= 100) navigate('/success');
+      else navigate(`/completion?scenario=${scenarioId}`);
+    }, 4000);
+    return () => clearTimeout(t);
+  }, [questId, totalScore, scenarioId, navigate]);
 
   return (
     <div className="relative w-full h-full">
