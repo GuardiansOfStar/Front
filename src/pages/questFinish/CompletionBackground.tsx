@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useScale } from '../../hooks/useScale';
 import Confetti from 'react-confetti';
 import { audioManager } from '../../utils/audioManager';
-// import { getSession } from '../../services/endpoints/session';
+import { getSession } from '../../services/endpoints/session';
 import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
 
 const completion_background = '/assets/images/completion_background_long.png';
@@ -26,7 +26,6 @@ const CompletionBackground = () => {
         setStartAnimation(true);
         console.log("CompletionBackground - 애니메이션 시작");
 
-        /*
         // 100점 확인하기 위해 sessionId로 확인!
         const sessionId = localStorage.getItem('session_id');
         let totalScore: number | null = null;
@@ -64,7 +63,7 @@ const CompletionBackground = () => {
         );
         navigate('/result');
       }, 8000 * Math.max(0.8, scale));
-    }*/
+    }
    navigationTimerRef.current = window.setTimeout(() => {
         console.log(
           '8초 뒤 /result로 이동'
