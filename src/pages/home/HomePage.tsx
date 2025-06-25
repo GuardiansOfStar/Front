@@ -100,6 +100,20 @@ const HomePage = () => {
         alt="팀이름"
         className="absolute bottom-[3%] right-[3%] w-[30%] z-10"
       />
+      <div
+        className="absolute left-3 bottom-3 text-[12px] text-gray-700 bg-white/60 backdrop-blur-sm px-2 py-1 rounded shadow pointer-events-none"
+      >
+        본 서비스는 카카오임팩트의 기술 이니셔티브&nbsp;
+        <a
+          href="https://techforimpact.io/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline text-blue-600 pointer-events-auto hover:text-blue-800"
+        >
+          테크포임팩트
+        </a>
+        의 지원으로 개발되었습니다.
+      </div>
     </div>
   );
 };

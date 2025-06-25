@@ -5,6 +5,7 @@ import HomeButton from '../../components/ui/HomeButton';
 import { useScale } from '../../hooks/useScale';
 import { audioManager } from '../../utils/audioManager';
 import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
+import { getSession } from '../../services/endpoints/session';
 
 // 이미지 임포트
 const grandchildrenHappy = '/assets/images/grandchildren_happy.png';
@@ -30,6 +31,21 @@ const ScorePage = () => {
     const correctParam = searchParams.get('correct');
     const sId = searchParams.get('scenario');
     const qId = searchParams.get('quest');
+
+    const sessionId = localStorage.getItem('session_id');
+    let totalScore: number | null = null;
+
+    if (sessionId) {
+      getSession(sessionId)
+        .then((res) => {
+          totalScore = res.data.total_score;
+          console.log('score:', totalScore);
+        })
+        .catch((err) => {
+          console.error(' getSession 오류:', err);
+          totalScore = null;
+        })
+      }
     
     console.log("ScorePage - 받은 파라미터:", { score: scoreParam, correct: correctParam, scenario: sId, quest: qId });
     
@@ -92,8 +108,13 @@ const ScorePage = () => {
           break;
         case '5':
           // 미션5 완료 → 성공 화면으로 이동
-          console.log("미션5 완료 → 성공 화면으로 이동");
-          navigate(`/completion?scenario=${sId}`);
+            if (totalScore === 100) {
+              navigate('/success');
+            } else {
+              navigate(`/completion?scenario=${sId}`);
+            }
+          //console.log("미션5 완료 → 성공 화면으로 이동");
+          //navigate(`/completion?scenario=${sId}`);
           break;
         default:
           // 알 수 없는 미션 → 홈으로 이동

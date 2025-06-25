@@ -4,13 +4,14 @@
 
 :root {
   font-family: 'Pretendard', 
-               system-ui, 
-               -apple-system, 
-               BlinkMacSystemFont, 
                'Apple SD Gothic Neo', 
                'Malgun Gothic', 
-               '맑은 고딕', 
-               sans-serif;
+               '맑은 고딕',
+               'Helvetica Neue',
+               Helvetica,
+               Arial,
+               sans-serif !important;
+  font-display: swap;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -345,6 +346,16 @@ button:focus-visible {
     touch-action: none;
     overscroll-behavior: none;
     -webkit-overflow-scrolling: auto;
+  }
+
+  * {
+    font-family: 'Pretendard', 
+                 -apple-system,
+                 BlinkMacSystemFont,
+                 'Apple SD Gothic Neo',
+                 'Helvetica Neue',
+                 sans-serif !important;
+    text-rendering: optimizeSpeed; /* optimizeLegibility 대신 */
   }
 }
 
