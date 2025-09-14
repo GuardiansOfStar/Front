@@ -5,9 +5,13 @@ import StartButton from '../../components/ui/StartButton';
 import RegionBubble from '../../components/ui/RegionBubble';
 import SettingButton from '../../components/ui/SettingButton';
 import EnhancedOptimizedImage from '../../components/ui/ReliableImage';
+import { createVillage } from '../../services/endpoints/village';
 
 const title = '/assets/images/title.png';
 const team_name = '/assets/images/team_name.png'
+
+const DEFAULT_REGION_NAME = '충청남도 예산군'; // 250914 예산군
+
 
 const HomePage = () => {
   // localStorage에 저장했던 session_id, user_id 초기화!
@@ -15,6 +19,32 @@ const HomePage = () => {
     localStorage.removeItem("session_id");
     localStorage.removeItem("user_id");
     localStorage.removeItem("total_score");
+
+    (async () => {
+      let region = localStorage.getItem('selectedRegion');
+      let villageId = localStorage.getItem('village_id');
+
+      if (!region || !villageId) {
+        try {
+          // 이미 있으면 200, 없으면 201로 생성되어 VIllage 객체가 옴
+          const { data: village } = await createVillage(DEFAULT_REGION_NAME);
+          region = village.village_name;       // '예산군'
+          villageId = village.village_id;      // 예산군 village ID
+
+          localStorage.setItem('selectedRegion', region);
+          localStorage.setItem('village_id', villageId);
+        } catch (e) {
+          console.error('createVillage 실패', e);
+          // 실패해도 UX 끊기지 않게 지역명만 기본값으로
+          region = DEFAULT_REGION_NAME;
+          localStorage.setItem('selectedRegion', region);
+          // village_id는 비워두고, 다음 진입 때 재시도하도록 남겨둠
+        }
+      }
+
+      setSelectedRegion(region);
+      setHasRegion(true);
+    })();
   }, []);
 
 
